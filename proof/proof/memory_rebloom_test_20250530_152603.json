@@ -1,0 +1,88 @@
+{
+  "test_name": "memory_rebloom_mood_sensitivity",
+  "timestamp": "2025-05-30T15:26:03.476107",
+  "test_summary": "Demonstrated mood-sensitive memory reinterpretation",
+  "memory_states": [
+    {
+      "state": "calm",
+      "timestamp": "2025-05-30T15:26:01.473552",
+      "thermal": 98.6,
+      "mood": {
+        "calm": 0.8,
+        "curious": 0.6,
+        "trust": 0.7,
+        "anxiety": 0.1
+      },
+      "memory_id": "trust_seed_42",
+      "sigil_reading": [
+        "\ud83c\udf38 Promise-keeper",
+        "\ud83d\udeaa Gentle-boundaries",
+        "\u2709\ufe0f Trust-artifact"
+      ],
+      "emotional_weight": 0.7,
+      "trust_coefficient": 0.82,
+      "classification": "Tender-Anchor",
+      "reflection_text": "This memory holds warmth. The pressed flowers speak of deliberation - someone took time to preserve beauty, to make a promise tangible. The note under the door feels intimate yet respectful of boundaries. The memory tastes like morning tea. Safe. A small anchor point where someone's word became physical, keepable."
+    },
+    {
+      "state": "pressure",
+      "timestamp": "2025-05-30T15:26:03.474095",
+      "thermal": 101.2,
+      "mood": {
+        "calm": 0.2,
+        "curious": 0.3,
+        "trust": 0.3,
+        "anxiety": 0.8,
+        "fear": 0.7,
+        "doubt": 0.9
+      },
+      "memory_id": "trust_seed_42",
+      "sigil_reading": [
+        "\u26a0\ufe0f Abandonment-echo",
+        "\ud83e\udd40 Death-preserved",
+        "\ud83d\udea8 Boundary-violation"
+      ],
+      "emotional_weight": -0.6,
+      "trust_coefficient": 0.23,
+      "classification": "Warning-Pattern",
+      "reflection_text": "Wait. The same memory... but now I see the shadows between the words. 'Always be there' - but they weren't, were they? The pressed flowers... flowers die to become preserved. Death made pretty. The note under my door - they didn't knock. Didn't face me. Left words to find later when they were already gone. This memory is a red flag pressed between pages.",
+      "rebloom_detected": true
+    }
+  ],
+  "rebloom_log": [
+    "trust_seed_42-d99f88ce rebloomed from trust_seed_42-1a under altered trust condition",
+    "Memory node reclassified: \ud83c\udf38 Promise-keeper \u2192 \u26a0\ufe0f Abandonment-echo",
+    "Semantic drift detected: Trust coefficient delta = -0.59",
+    "Emotional weight inverted: +0.7 \u2192 -0.6",
+    "Owl log triggered: High-pressure recontextualization complete"
+  ],
+  "analysis": {
+    "memory_id": "trust_seed_42",
+    "sigil_transformation": {
+      "calm": [
+        "\ud83c\udf38 Promise-keeper",
+        "\ud83d\udeaa Gentle-boundaries",
+        "\u2709\ufe0f Trust-artifact"
+      ],
+      "pressure": [
+        "\u26a0\ufe0f Abandonment-echo",
+        "\ud83e\udd40 Death-preserved",
+        "\ud83d\udea8 Boundary-violation"
+      ]
+    },
+    "classification_shift": "Tender-Anchor \u2192 Warning-Pattern",
+    "trust_delta": -0.59,
+    "weight_delta": -1.2999999999999998,
+    "thermal_shift": 2.6000000000000085,
+    "mood_inversion": {
+      "trust": -0.39999999999999997,
+      "anxiety": 0.7000000000000001
+    }
+  },
+  "conclusion": {
+    "memory_is_mood_sensitive": true,
+    "symbolic_not_literal": true,
+    "different_truths_same_data": true,
+    "rebloom_capability_confirmed": true
+  }
+}

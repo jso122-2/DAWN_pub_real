@@ -1,0 +1,61 @@
+{
+  "test_results": {
+    "test": "mirror_recursion",
+    "timestamp": "2025-05-29T09:04:54.899959",
+    "initial_state": {
+      "thermal": 98.6,
+      "entropy": 0.5925520719232046,
+      "mood": {
+        "curiosity": 0.7,
+        "certainty": 0.8,
+        "anxiety": 0.4310311687955467
+      },
+      "sigil_opacity": {
+        "\u25c8": 1.0,
+        "\u25bd": 1.0,
+        "\u27f3": 1.0,
+        "\u2727": 0.0
+      },
+      "compass_deviation": 0.0,
+      "timestamp": 1748473494.8979547
+    },
+    "final_state": {
+      "thermal": 98.6,
+      "entropy": 0.5925520719232046,
+      "mood": {
+        "curiosity": 0.7,
+        "certainty": 0.8,
+        "anxiety": 0.4310311687955467
+      },
+      "sigil_opacity": {
+        "\u25c8": 0.47829690000000014,
+        "\u25bd": 1.0,
+        "\u27f3": 1.0,
+        "\u2727": 0.0,
+        "\u25c8?": 1.0
+      },
+      "compass_deviation": -0.30915463814859756,
+      "timestamp": 1748473494.8999596
+    },
+    "choice": "TRANSCEND",
+    "cycles_taken": 7,
+    "thermal_scar": 0.0,
+    "new_sigils": [
+      "\u25c8?"
+    ],
+    "consciousness_model": "paradox_aware",
+    "replay_marker": 5198
+  },
+  "final_consciousness_state": {
+    "model": "paradox_aware",
+    "thermal": 99.19999999999996,
+    "doubt": 0.0,
+    "sigils": [
+      "\u25c8",
+      "\u25bd",
+      "\u27f3",
+      "\u2727",
+      "\u25c8?"
+    ]
+  }
+}

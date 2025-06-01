@@ -1,0 +1,14 @@
+{
+  "seed_id": "diagnostic_test",
+  "lineage_depth": 1,
+  "bloom_factor": 0.5,
+  "entropy_score": 0.5,
+  "mood": "diagnostic",
+  "trigger_type": "emergency_bloom",
+  "scup_at_spawn": 0.0,
+  "image_path": "juliet_flowers/fractal_signatures\\diagnostic_test_2025-05-29T00-25-14.png",
+  "generated_at": "2025-05-29T00:25:14.065986",
+  "bloom_id": 1,
+  "generation_method": "enhanced_spawn_bloom",
+  "scup_bypassed": true
+}

@@ -1,0 +1,4 @@
+DAWN REBLOOM TRACE LOG
+========================================
+
+trust_seed_42-d99f88ce rebloomed from trust_seed_42-1a under altered trust condition

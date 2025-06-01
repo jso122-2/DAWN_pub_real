@@ -1,0 +1,246 @@
+import os
+import json
+import time
+import pandas as pd
+from datetime import datetime
+from collections import defaultdict
+from schema.schema_state import get_current_zone, get_zone_streak
+from core.event_bus import event_bus, BloomEmitted, TickEvent
+from tracers.spider import SpiderTrace
+from pulse.pulse_heat import PulseHeat
+from semantic.vector_core import similarity, embed_text
+from semantic.vector_model import model
+from bloom.juliet_flower import JulietFlower
+from codex.sigil_emitter import scup_sigil_emitter
+from owl.visual_inspector import run_visual
+from owl.visual_registry import get_visual_modules
+from owl.owl_tracer_log import owl_log
+from schema.scup_loop import get_latest_scup
+
+
+TRUST_FILE = "juliet_flowers/cluster_report/seed_trust_scores.json"
+ANCESTRY_LOG_PATH = "logs/rebloom_ancestry.json"
+os.makedirs(os.path.dirname(ANCESTRY_LOG_PATH), exist_ok=True)
+
+class OwlAuditor:
+    def __init__(self, pulse: PulseHeat):
+        self.pulse = pulse
+        self.last_moods = defaultdict(set)
+        self.mood_pressure = defaultdict(int)
+        self.seed_penalties = {}
+        self.last_decay = time.time()
+        self.enabled = False
+        self.tick_count = 0
+        self.tick_interval = 50
+        self.trust_scores = self.load_trust_scores()
+
+        event_bus.subscribe(SpiderTrace, self.on_spider_trace)
+
+
+    def enable_scheduling(self, tick_interval: int = 50):
+        self.enabled = True
+        self.tick_interval = tick_interval
+        event_bus.subscribe(BloomEmitted, self.on_bloom)
+        event_bus.subscribe(TickEvent, self._on_tick)
+
+    async def on_spider_trace(self, event: SpiderTrace):
+        print(f"[Owl] 🧠 Received SpiderTrace: {event.action} → {event.bloom_id} | {event.reason}")
+        if event.action == "revive":
+            run_visual("belief_zone_animator")
+            owl_log(f"[Owl] Triggered 'belief_zone_animator' from Spider: {event.bloom_id}")
+        elif event.action == "prune":
+            run_visual("entropy_cluster_plot")
+            owl_log(f"[Owl] Triggered 'entropy_cluster_plot' from Spider: {event.bloom_id}")
+        elif event.action == "review":
+            run_visual("drift_compass")
+            run_visual("rebloom_lineage_animator")
+            owl_log(f"[Owl] Triggered 'drift_compass' and 'rebloom_lineage_animator' from Spider: {event.bloom_id}")
+
+    async def on_bloom(self, event: BloomEmitted):
+        print(f"[Owl] Bloom received from {event.source} | mood: {event.mood_tag}")
+
+        for seed in event.semantic_seeds:
+            trust = self.trust_scores.get(seed, 0.5)
+            if trust < 0.3:
+                self.pulse.apply_penalty(seed, factor=0.7)
+                print(f"[TrustPrune] ❌ Pruning low-trust seed {seed} | score={trust}")
+
+            previous = self.last_moods[seed]
+            if event.source not in previous:
+                self.pulse.decay_penalty_for_seed(seed, 0.1)
+            previous.add(event.source)
+            self.last_moods[seed] = previous
+
+            if event.mood_tag in ["reflective", "anxious", "overload"]:
+                flower = JulietFlower(
+                    agent=event.source,
+                    mood=event.mood_tag,
+                    seed_context=event.semantic_seeds,
+                    sentences=[
+                        f"I am {event.source}.",
+                        f"My mood is {event.mood_tag}.",
+                        f"I passed through {seed} again.",
+                        "The memory is faint, but returning.",
+                        "I suspect a pattern in this reflection.",
+                        "Calm or not, I have seen this node before.",
+                        "Drift feels gentle now.",
+                        "The rhythm of pulses remains steady.",
+                        "I sense the weight of past iterations.",
+                        "This sentence completes the thought bloom."
+                    ]
+                )
+                flower.save()
+
+        self.mood_pressure[event.mood_tag] += 1
+        self._update_heat()
+
+    async def _on_tick(self, event: TickEvent):
+        if not self.enabled:
+            return
+
+        self.tick_count += 1
+
+        if self.tick_count % self.tick_interval == 0:
+            self._decay_pressure()
+            self._update_heat()
+
+        # Zone-aware reflex
+        zone = get_current_zone(self.pulse)
+        current_zone, streak = get_zone_streak()
+        if current_zone == "🔴 surge" and streak >= 5:
+            print("[Reflex] ⚠️ Sustained surge zone — invoking decay reflex.")
+            self._decay_pressure()
+            owl_log(f"[Reflex] 🔥 Decay triggered at tick {self.tick_count} due to surge streak.")
+
+        if self.tick_count % 150 == 0:
+            print(f"[Owl] 🧠 Visual audit at tick {self.tick_count}")
+            for visual in get_visual_modules():
+                run_visual(visual)
+
+        if self.tick_count % 25 == 0:
+            await scup_sigil_emitter()
+
+
+    def log_vector_drift(self, parent_text: str, child_text: str, bloom_id: str):
+        parent_vec = embed_text(parent_text, model)
+        child_vec = embed_text(child_text, model)
+        drift_score = 1 - similarity(parent_vec, child_vec)
+
+        log_path = f"juliet_flowers/cluster_report/vector_drift_{bloom_id}.log"
+        with open(log_path, "w", encoding="utf-8") as f:
+            f.write(f"🌱 Drift between reblooms:\n")
+            f.write(f"Bloom ID: {bloom_id}\n")
+            f.write(f"Semantic Drift Score: {drift_score:.4f}\n")
+
+        print(f"[Owl] 🧠 Vector drift logged for {bloom_id} | Δ = {drift_score:.4f}")
+
+    def reflect_on_zone_pulse(self):
+        history = self.pulse.get_recent_zone_window(15)
+        if not history:
+            return
+        zone_counts = pd.DataFrame(history)["zone"].value_counts().to_dict()
+        most_common = max(zone_counts, key=zone_counts.get)
+        owl_log(f"📊 Recent pulse pattern: {zone_counts} | Dominant: {most_common}")
+
+    def load_trust_scores(self):
+        try:
+            with open(TRUST_FILE, "r") as f:
+                return json.load(f)
+        except:
+            return {}
+
+    def _decay_pressure(self):
+        now = time.time()
+        if now - self.last_decay >= 5:
+            for mood in list(self.mood_pressure):
+                self.mood_pressure[mood] = max(0, self.mood_pressure[mood] - 1)
+            self.last_decay = now
+
+    def _update_heat(self):
+        weights = {
+            "calm": 0.5,
+            "curious": 0.8,
+            "reflective": 1.0,
+            "anxious": 1.3,
+            "overload": 1.6
+        }
+        total = sum(self.mood_pressure.values())
+        if total == 0:
+            self.pulse.heat = 1.0
+            return
+
+        weighted_sum = sum(
+            self.mood_pressure[mood] * weights.get(mood, 1.0)
+            for mood in self.mood_pressure
+        )
+
+        self.pulse.heat = min(2.0, max(0.3, weighted_sum / total))
+
+        async def on_spider_trace(self, event: SpiderTrace):
+            print(f"[Owl] 🧠 Received SpiderTrace: {event.action} → {event.bloom_id} | {event.reason}")
+            if event.action == "revive":
+                # Trigger 'belief_zone_animator' if SpiderTrace action is 'revive'
+                visual_modules = get_visual_modules()  # Get the list of available visual modules
+                if "belief_zone_animator" in visual_modules:
+                    run_visual("belief_zone_animator")  # Assuming `run_visual()` is a function that runs the visual
+                    owl_log(f"[Owl] Triggered 'belief_zone_animator' from Spider: {event.bloom_id}")
+            elif event.action == "prune":
+                # Trigger 'entropy_cluster_plot' if SpiderTrace action is 'prune'
+                visual_modules = get_visual_modules()
+                if "entropy_cluster_plot" in visual_modules:
+                    run_visual("entropy_cluster_plot")
+                    owl_log(f"[Owl] Triggered 'entropy_cluster_plot' from Spider: {event.bloom_id}")
+            elif event.action == "review":
+                # Trigger both 'drift_compass' and 'rebloom_lineage_animator' if SpiderTrace action is 'review'
+                visual_modules = get_visual_modules()
+                if "drift_compass" in visual_modules:
+                    run_visual("drift_compass")
+                if "rebloom_lineage_animator" in visual_modules:
+                    run_visual("rebloom_lineage_animator")
+                owl_log(f"[Owl] Triggered 'drift_compass' and 'rebloom_lineage_animator' from Spider: {event.bloom_id}")
+
+def run_entropy_scan():
+        """
+        Placeholder for DAWN's entropy analysis logic via Owl.
+        Currently logs a basic pulse with SCUP and mood pressure.
+        """
+        from pulse.pulse_heat import pulse
+        print(f"[OwlAuditor] 🔎 Entropy Scan → Pulse Heat: {pulse.current_heat:.3f}")
+        # Optional: insert SCUP, sigil, or drift probe here
+
+
+
+# === Reblooms: Ancestry Tracking ===
+
+def track_rebloom_ancestry(bloom_data, parent_bloom=None):
+    parent_id = getattr(parent_bloom, "seed_id", None) if parent_bloom else None
+    parent_line = getattr(parent_bloom, "ancestry_line", []) if parent_bloom else []
+
+    ancestry_line = parent_line + [parent_id] if parent_id else parent_line
+    bloom_data["parent_id"] = parent_id
+    bloom_data["ancestry_line"] = ancestry_line
+
+    if len(ancestry_line) > 10:
+        bloom_data["ancestry_locked"] = True
+
+    log_ancestry(bloom_data["seed_id"], ancestry_line)
+    return bloom_data
+
+def log_ancestry(seed_id, lineage):
+    path = "logs/rebloom_ancestry.json"
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    if os.path.exists(path):
+        with open(path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+    else:
+        data = {}
+
+    data[seed_id] = {
+        "timestamp": datetime.utcnow().isoformat(),
+        "lineage": lineage
+    }
+
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump(data, f, indent=2)
+
+    print(f"[OwlAudit] 🧬 Tracked ancestry for {seed_id}: {lineage}")

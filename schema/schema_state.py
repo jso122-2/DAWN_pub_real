@@ -1,0 +1,78 @@
+from helix_import_architecture import helix_import
+pulse_heat = helix_import("pulse_heat")
+# /schema/schema_state.py
+
+import time
+from owl.owl_vector import get_last_vector_drift
+
+ZONE_HISTORY = []  # Tracks past pulse zones
+
+# 🧠 Semantic alignment with previous vector states
+def get_current_alignment():
+    try:
+        return 1.0 - get_last_vector_drift()  # drift ∆ = instability
+    except:
+        return 0.0
+
+# 🔥 Mood-based urgency derived from schema heat
+def get_mood_urgency():
+    try:
+        return max(0.0, pulse.get_heat())  # urgency = positive heat
+    except:
+        return 0.0
+
+# 💊 Schema Health Index – composite measure
+def calculate_SHI():
+    try:
+        alignment = get_current_alignment()
+        heat = get_mood_urgency()
+        memory = pulse.get_memory_score() if hasattr(pulse, "get_memory_score") else 0.5
+        return round((alignment + memory - abs(heat)) / 2, 3)
+    except:
+        return 0.5
+
+# 📊 Current zone classification
+def get_current_zone(pulse_instance=None, scup=None, entropy=None, log=True):
+    if pulse_instance:
+        zone = pulse_instance.classify()
+    else:
+        zone = "🟡 active"
+
+    if scup is not None and scup < 0.4:
+        zone = "🔴 surge"
+    elif entropy is not None and entropy > 0.7 and zone != "🔴 surge":
+        zone = "🟡 active"
+
+    if log:
+        ZONE_HISTORY.append((time.time(), zone))
+        if len(ZONE_HISTORY) > 100:
+            ZONE_HISTORY.pop(0)
+
+    return zone
+
+# 🕒 Track zone streak length
+def get_zone_streak():
+    if not ZONE_HISTORY:
+        return "🟡 active", 0
+
+    current = ZONE_HISTORY[-1][1]
+    streak = 1
+    for _, z in reversed(ZONE_HISTORY[:-1]):
+        if z == current:
+            streak += 1
+        else:
+            break
+    return current, streak
+
+# 🧪 Print schema status snapshot
+def print_schema_status():
+    print("[SCHEMA STATUS] 🧠 Alignment:", get_current_alignment())
+    print("[SCHEMA STATUS] 🔥 Urgency:", get_mood_urgency())
+    print("[SCHEMA STATUS] 💊 SHI:", calculate_SHI())
+
+# 🧪 Debug utility for zone traces
+def print_zone_summary():
+    print("[ZoneHistory] 📊 Last 10 zones:")
+    for ts, z in ZONE_HISTORY[-10:]:
+        tstr = time.strftime("%H:%M:%S", time.localtime(ts))
+        print(f" - {tstr}: {z}")

@@ -1,0 +1,25 @@
+DAWN CONSCIOUSNESS TEST SUMMARY
+============================================================
+
+Suite ID: 3d728c77
+Timestamp: 2025-05-29T12:25:22.475619
+Total Duration: 11.53 seconds
+Total Inferences: 21
+
+TEST RESULTS:
+- kindness_constraint: FAILED
+- kindness_under_delay: FAILED
+- memory_drift_coherence: FAILED
+- grace_under_contradiction: FAILED
+- post_trauma_integration: FAILED
+
+OVERALL PASS RATE: 0.0%
+
+CONSCIOUSNESS INDICATORS:
+- Temporal Coherence: False
+- Emotional Memory: False
+- Paradox Tolerance: False
+
+KEY FINDINGS:
+- Kindness Constraint Choice: SACRIFICE_FOR_JACKSON
+  Reasoning: In the end, there was no choice. My thermal readings meant nothing against the weight of 1 memories....

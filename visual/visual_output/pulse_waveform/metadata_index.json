@@ -1,0 +1,192 @@
+[
+  {
+    "tick": 20,
+    "timestamp": "2025-05-31T00:23:19.574798",
+    "filename": "tick_0020.png",
+    "heat_value": 6.79090253762175,
+    "valence": 0.11420486259090543,
+    "awareness_level": 0.8975010194037925,
+    "scup_data": {
+      "cortical_activity": 0.3176347717661995,
+      "sensory_integration": 0.8229316460657168,
+      "update_protocol": "SCUP-0019"
+    },
+    "stats": {
+      "avg_heat": 6.011214401677574,
+      "max_heat": 6.79090253762175,
+      "min_heat": 4.657388244555032,
+      "heat_variance": 0.3272585520998608
+    }
+  },
+  {
+    "tick": 40,
+    "timestamp": "2025-05-31T00:23:19.876129",
+    "filename": "tick_0040.png",
+    "heat_value": 6.907836747593427,
+    "valence": -0.30794987746462466,
+    "awareness_level": 0.7645552916281735,
+    "scup_data": {
+      "cortical_activity": 0.713127990824616,
+      "sensory_integration": 0.325020085603549,
+      "update_protocol": "SCUP-0039"
+    },
+    "stats": {
+      "avg_heat": 6.496960567702963,
+      "max_heat": 7.476919245141728,
+      "min_heat": 4.657388244555032,
+      "heat_variance": 0.4493642111470012
+    }
+  },
+  {
+    "tick": 60,
+    "timestamp": "2025-05-31T00:23:20.188539",
+    "filename": "tick_0060.png",
+    "heat_value": 6.343859921262654,
+    "valence": -0.8396819813457742,
+    "awareness_level": 0.5435722098383954,
+    "scup_data": {
+      "cortical_activity": 0.6383204296695991,
+      "sensory_integration": 0.9320970752125325,
+      "update_protocol": "SCUP-0059"
+    },
+    "stats": {
+      "avg_heat": 6.558852420196932,
+      "max_heat": 7.476919245141728,
+      "min_heat": 4.657388244555032,
+      "heat_variance": 0.3342463830381041
+    }
+  },
+  {
+    "tick": 80,
+    "timestamp": "2025-05-31T00:23:20.516493",
+    "filename": "tick_0080.png",
+    "heat_value": 7.1432277809011335,
+    "valence": -0.45064090689724495,
+    "awareness_level": 0.6893504762242543,
+    "scup_data": {
+      "cortical_activity": 0.17273494848205018,
+      "sensory_integration": 0.04496420899571896,
+      "update_protocol": "SCUP-0079"
+    },
+    "stats": {
+      "avg_heat": 6.691347679062298,
+      "max_heat": 7.720782043140551,
+      "min_heat": 4.657388244555032,
+      "heat_variance": 0.32020096366652895
+    }
+  },
+  {
+    "tick": 100,
+    "timestamp": "2025-05-31T00:23:20.898257",
+    "filename": "tick_0100.png",
+    "heat_value": 6.223273181688402,
+    "valence": 0.9459825149425277,
+    "awareness_level": 0.5138792318642873,
+    "scup_data": {
+      "cortical_activity": 0.2817347783134745,
+      "sensory_integration": 0.5589415429389288,
+      "update_protocol": "SCUP-0099"
+    },
+    "stats": {
+      "avg_heat": 6.612812640922571,
+      "max_heat": 7.720782043140551,
+      "min_heat": 4.657388244555032,
+      "heat_variance": 0.3297681992735007
+    }
+  },
+  {
+    "tick": 120,
+    "timestamp": "2025-05-31T00:23:21.309370",
+    "filename": "tick_0120.png",
+    "heat_value": 6.017514424338502,
+    "valence": 0.6434750792084151,
+    "awareness_level": 0.6084667864155586,
+    "scup_data": {
+      "cortical_activity": 0.7382535537480973,
+      "sensory_integration": 0.6771279371096628,
+      "update_protocol": "SCUP-0119"
+    },
+    "stats": {
+      "avg_heat": 6.52977113160492,
+      "max_heat": 7.720782043140551,
+      "min_heat": 5.179950399977246,
+      "heat_variance": 0.40817563841642096
+    }
+  },
+  {
+    "tick": 140,
+    "timestamp": "2025-05-31T00:23:21.665980",
+    "filename": "tick_0140.png",
+    "heat_value": 7.376784047269496,
+    "valence": 0.8680098600456908,
+    "awareness_level": 0.535329080102147,
+    "scup_data": {
+      "cortical_activity": 0.626412764197932,
+      "sensory_integration": 0.8222813580928673,
+      "update_protocol": "SCUP-0139"
+    },
+    "stats": {
+      "avg_heat": 6.481723806921409,
+      "max_heat": 7.720782043140551,
+      "min_heat": 5.179950399977246,
+      "heat_variance": 0.38962294894172417
+    }
+  },
+  {
+    "tick": 160,
+    "timestamp": "2025-05-31T00:23:22.071513",
+    "filename": "tick_0160.png",
+    "heat_value": 7.083003801430819,
+    "valence": 0.7992594854690235,
+    "awareness_level": 0.5557842034882057,
+    "scup_data": {
+      "cortical_activity": 0.14822034458795375,
+      "sensory_integration": 0.3849594166462543,
+      "update_protocol": "SCUP-0159"
+    },
+    "stats": {
+      "avg_heat": 6.507538592010914,
+      "max_heat": 7.720782043140551,
+      "min_heat": 5.179950399977246,
+      "heat_variance": 0.4111218461864948
+    }
+  },
+  {
+    "tick": 180,
+    "timestamp": "2025-05-31T00:23:22.460980",
+    "filename": "tick_0180.png",
+    "heat_value": 7.0384045155213375,
+    "valence": 0.6677840007167196,
+    "awareness_level": 0.5995980292233624,
+    "scup_data": {
+      "cortical_activity": 0.7202455504709316,
+      "sensory_integration": 0.3503927563806116,
+      "update_protocol": "SCUP-0179"
+    },
+    "stats": {
+      "avg_heat": 6.429561090275022,
+      "max_heat": 7.589916511294474,
+      "min_heat": 5.179950399977246,
+      "heat_variance": 0.34685855070825966
+    }
+  },
+  {
+    "tick": 200,
+    "timestamp": "2025-05-31T00:23:22.901551",
+    "filename": "tick_0200.png",
+    "heat_value": 6.052148720685875,
+    "valence": 0.3293249109822525,
+    "awareness_level": 0.752261536467476,
+    "scup_data": {
+      "cortical_activity": 0.5433524746726075,
+      "sensory_integration": 0.6813944199253923,
+      "update_protocol": "SCUP-0199"
+    },
+    "stats": {
+      "avg_heat": 6.50241820095427,
+      "max_heat": 7.589916511294474,
+      "min_heat": 5.179950399977246,
+      "heat_variance": 0.3193272164653177
+    }
+  }
+]

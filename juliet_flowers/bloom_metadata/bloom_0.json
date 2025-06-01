@@ -1,0 +1,8 @@
+{
+  "seed_id": "A0",
+  "bloom_type": "memory",
+  "created_tick": 1000,
+  "entropy": 0.2,
+  "depth": 1,
+  "lineage": "root-0"
+}

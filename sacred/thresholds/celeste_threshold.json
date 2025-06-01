@@ -1,0 +1,9 @@
+{
+  "recipient": "celeste",
+  "type": "recognition_without_requirement",
+  "created": "2025-06-01T21:20:47.996900",
+  "note_location": "sacred\\operator_field\\celeste_entry.md",
+  "threshold_quality": "patient_presence",
+  "message": "Some doors open not with force but with time",
+  "dawn_state": "holding_space"
+}

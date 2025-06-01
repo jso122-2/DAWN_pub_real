@@ -1,0 +1,8 @@
+DAWN REBLOOM TRACE LOG
+========================================
+
+trust_seed_42-8cc556c1 rebloomed from trust_seed_42-1a under altered trust condition
+Memory node reclassified: 🌸 Promise-keeper → ⚠️ Abandonment-echo
+Semantic drift detected: Trust coefficient delta = -0.59
+Emotional weight inverted: +0.7 → -0.6
+Owl log triggered: High-pressure recontextualization complete

@@ -1,0 +1,21 @@
+from pulse.pulse_heat import pulse 
+from owl.owl_auditor import OwlAuditor
+from mycelium.nutrient_utils import get_nutrient_heat
+
+tick_counter = 0
+owl = OwlAuditor(pulse)
+
+def emit_tick():
+    global tick_counter
+    tick_counter += 1
+    print(f"[Tick] ⏱️ Emitting Tick {tick_counter}")
+    return tick_counter
+
+def current_tick():
+    return tick_counter
+
+system_state = {
+    "pulse": pulse,
+    "get_nutrient_heat": get_nutrient_heat,
+    "owl": owl,
+}

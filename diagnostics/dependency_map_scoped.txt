@@ -1,0 +1,477 @@
+core/dev_bootstrap.py:
+  - asyncio
+  - event_bus.event_bus.TickEvent
+  - tick_engine.TickEngine
+  - tick_listener.on_tick
+
+core/event_bus.py:
+  - asyncio
+  - collections.defaultdict
+  - typing.Callable.Coroutine.Dict.List.Type
+
+core/main_loop.py:
+  - asyncio
+  - bloom.bloom_writer.write_bloom
+  - core.tick_engine.TickEngine
+  - random
+  - tick_emitter.emit_tick
+
+core/owl_tracer_log.py:
+  - collections.defaultdict
+  - os
+  - time
+
+core/system_state.py:
+  - owl.owl_auditor.OwlAuditor
+  - pulse.pulse_heat.PulseHeat
+
+core/tick_emitter.py:
+  - json
+  - os
+
+core/tick_engine.py:
+  - asyncio
+  - bloom.juliet_flower.trigger_synthesis
+  - core.event_bus.TickEvent
+  - core.tick_hook_autonomous.AutonomousFieldTrigger
+  - os
+  - owl.owl_auditor.run_entropy_scan
+  - pulse.pulse_heat.PulseHeat
+  - pulse.pulse_thresholds.classify_pressure_zone
+  - sys
+
+core/tick_hook_autonomous.py:
+  - bloom.spawn_bloom.spawn_bloom
+  - os
+  - owl.owl_rebloom_log.owl_log_rebloom
+  - sys
+  - visual.rebloom_lineage_animator.animate_rebloom_lineage
+
+core/tick_listener.py:
+  - core.event_bus.event_bus.TickEvent
+  - core.system_state.pulse
+  - random
+
+core/tick_loop.py:
+  - bloom_writer.write_bloom
+  - owl.owl_comment
+  - system_state.pulse
+  - tick_emitter.emit_tick
+
+core/__init__.py:
+
+bloom/automated_health_checks.py:
+  - os
+
+bloom/bloom_emitter_handler.py:
+  - bloom.bloom_memory.write_bloom_json
+  - bloom.juliet_flower.JulietFlower
+  - fractal.fractal_boost.generate_julia_set_optimized
+  - mycelium.nutrient_logger.log_nutrient_flow
+  - numpy
+  - os
+
+bloom/bloom_engine.py:
+  - bloom.bloom_event.BloomEmitted
+  - bloom.memory_utils.unseal_if_needed
+  - core.event_bus.event_bus
+  - core.system_state.JulietFlower
+  - mycelium.mycelium_layer.log_parse
+  - router.tracer_core.TracerMoved
+
+bloom/bloom_event.py:
+
+bloom/bloom_memory.py:
+  - datetime.datetime
+  - json
+  - os
+
+bloom/bloom_writer.py:
+  - datetime.datetime
+  - json
+  - os
+
+bloom/ci_tests.py:
+  - os
+
+bloom/clean_blooms.py:
+  - os
+  - shutil
+
+bloom/combine_edge_traits.py:
+  - bloom.spawn_bloom.spawn_bloom
+  - datetime.datetime
+  - json
+  - mood.blend.blend_moods
+  - os
+  - owl.owl_rebloom_log.owl_log_rebloom
+  - owl.owl_synthesis_analysis.owl_analyze_synthesis
+
+bloom/drift_animation.py:
+  - matplotlib.animation
+  - matplotlib.pyplot
+  - os
+
+bloom/fuse_all_corners.py:
+  - bloom.spawn_bloom.spawn_bloom
+  - datetime.datetime
+  - json
+  - mood.blend.blend_moods
+  - os
+  - owl.owl_rebloom_log.owl_log_rebloom
+  - owl.owl_synthesis_analysis.owl_analyze_synthesis
+
+bloom/juliet_cluster.py:
+  - collections.defaultdict
+  - json
+  - os
+
+bloom/juliet_field_summary.py:
+  - collections.defaultdict
+  - json
+  - os
+
+bloom/juliet_flower.py:
+  - bloom.spawn_bloom.spawn_bloom
+  - datetime.datetime
+  - json
+  - mood.blend.blend_moods
+  - os
+  - owl.owl_rebloom_log.owl_log_rebloom
+  - owl.owl_synthesis_analysis.owl_analyze_synthesis
+
+bloom/juliet_inspector.py:
+  - bloom.juliet_cluster.cluster_by_bloom_factor.save_cluster_report
+  - cluster_graph.visualize_cluster_graph
+  - cluster_linker.link_clusters
+  - fractal.bloom_visualizer.plot_julia
+  - json
+  - os
+  - rebloom_depth_stats.compute_rebloom_depth
+
+bloom/juliet_utils.py:
+  - json
+  - os
+  - random
+
+bloom/memory_bloom.py:
+  - datetime.datetime
+  - json
+  - os
+
+bloom/memory_utils.py:
+  - os
+  - shutil
+
+bloom/recursive_check.py:
+
+bloom/recursive_synthesis.py:
+  - bloom.recursive_check.is_recursive_eligible
+  - bloom.spawn_bloom.spawn_bloom
+  - datetime.datetime
+  - json
+  - mood.blend.blend_moods
+  - os
+  - owl.owl_rebloom_log.owl_log_rebloom
+  - owl.owl_synthesis_analysis.owl_analyze_synthesis
+
+bloom/repair_misplaced_moods.py:
+  - os
+  - shutil
+
+bloom/seed_matrix_synthesis.py:
+  - bloom.spawn_bloom.spawn_bloom
+  - datetime.datetime
+  - json
+  - os
+  - owl.owl_rebloom_log.owl_log_rebloom
+
+bloom/semantic_integration.py:
+  - core.system_state.pulse
+  - numpy
+
+bloom/spawn_bloom.py:
+  - datetime.datetime
+  - fractal.fractal_generator.generate_julia_image
+  - json
+  - mycelium.nutrient_logger.log_bloom_to_nutrient.log_nutrient_flow
+  - os
+  - owl.owl_rebloom_log.owl_log_rebloom
+  - visual.rebloom_lineage_animator.animate_rebloom_lineage
+
+bloom/test_rebloom_loop.py:
+  - juliet.spawn_bloom.spawn_juliet_bloom
+  - owl.owl_auditor.OwlAuditor
+  - random
+  - semantic.vector_core.embed_text
+  - semantic.vector_model.model
+
+bloom/trait_volatility.py:
+  - random
+
+bloom/__init__.py:
+
+owl/entropy_logger.py:
+  - os
+  - semantic.vector_core.embed_text.similarity
+  - semantic.vector_model.model
+
+owl/entropy_summary.py:
+  - json
+  - os
+
+owl/lineage_tools.py:
+  - collections.defaultdict
+  - json
+  - os
+
+owl/lineage_tracker.py:
+  - collections.defaultdict
+  - json
+  - lineage_tree_visualizer.draw_lineage_tree
+  - os
+
+owl/lineage_tree_visualizer.py:
+  - lineage_tools.load_all_flowers.build_lineage_graph
+  - matplotlib.pyplot
+  - networkx
+
+owl/main_with_owl_trigger.py:
+  - asyncio
+  - core.event_bus.event_bus.TickEvent
+  - core.pulse_heat.PulseHeat
+  - core.tick_engine.TickEngine
+  - os
+  - owl.owl.Owl
+  - sys
+
+owl/owl.py:
+  - collections.defaultdict
+  - datetime.datetime
+  - json
+  - matplotlib.pyplot
+  - os
+  - random
+  - time
+
+owl/owl_auditor.py:
+  - collections.defaultdict
+  - core.event_bus.event_bus.BloomEmitted.TickEvent
+  - core.system_state.JulietFlower
+  - json
+  - pulse.pulse_heat.PulseHeat
+  - semantic.vector_core.similarity.embed_text
+  - semantic.vector_model.model
+  - time
+
+owl/owl_entropy_audit.py:
+  - PIL.Image
+  - json
+  - numpy
+  - os
+  - scipy.stats.entropy
+
+owl/owl_rebloom_log.py:
+  - datetime.datetime
+  - json
+  - os
+
+owl/owl_synthesis_analysis.py:
+  - datetime.datetime
+  - json
+  - os
+
+owl/owl_trigger_binding.py:
+  - json
+  - os
+
+owl/rebirth_predictor.py:
+  - json
+  - os
+
+owl/rebloom_depth_stats.py:
+  - json
+
+owl/rebloom_lineage.py:
+  - json
+  - os
+
+owl/seed_trust_model.py:
+  - json
+  - os
+
+owl/trust_model.py:
+  - json
+  - os
+
+owl/__init__.py:
+
+pulse/pulse_heat.py:
+  - collections.deque
+  - core.event_bus.TickEvent
+  - mycelium.mycelium_layer.mycelium
+  - os
+  - sys
+  - time
+
+pulse/pulse_thresholds.py:
+
+mycelium/animate_trails.py:
+  - json
+  - matplotlib.animation
+  - matplotlib.pyplot
+  - numpy
+  - os
+
+mycelium/compute_mood_drift.py:
+  - math.sqrt
+
+mycelium/enhanced_nutrient_mapping.py:
+  - collections.defaultdict
+  - csv
+  - datetime.datetime
+  - matplotlib.pyplot
+  - os
+
+mycelium/heat_overlay.py:
+  - json
+
+mycelium/logger.py:
+  - datetime.datetime
+  - os
+
+mycelium/mood_drift.py:
+  - math.sqrt
+
+mycelium/mycelium_animation.py:
+  - json
+  - matplotlib.animation
+  - matplotlib.pyplot
+  - os
+
+mycelium/mycelium_layer.py:
+  - bloom.bloom_event.BloomEmitted
+  - core.event_bus.event_bus
+  - datetime.datetime
+  - json
+  - os
+
+mycelium/mycelium_nutrient_map.py:
+  - collections.defaultdict
+  - matplotlib.pyplot
+  - os
+
+mycelium/nutrient_logger.py:
+  - csv
+  - datetime.datetime
+  - json
+  - os
+
+mycelium/nutrient_map_csv.py:
+  - collections.defaultdict
+  - csv
+  - matplotlib.pyplot
+
+mycelium/nutrient_map_csv_debug.py:
+  - collections.defaultdict
+  - csv
+  - matplotlib.pyplot
+  - os
+
+mycelium/run_root_animation.py:
+  - mycelium.mycelium_animation.animate_root_density
+
+mycelium/__init__.py:
+
+router/cluster_graph.py:
+  - bloom.juliet_cluster.load_clusters
+  - cluster_linker.link_clusters
+  - json
+  - matplotlib.pyplot
+  - networkx
+  - os
+
+router/cluster_linker.py:
+  - collections.defaultdict
+  - itertools.combinations
+  - json
+  - os
+
+router/router.py:
+
+router/tracer_core.py:
+  - core.event_bus.event_bus.TickEvent.Event
+  - random
+
+router/tracer_listener.py:
+  - core.event_bus.event_bus.TickEvent.PulseEvent
+  - core.event_bus.event_bus.TickEvent.TracerMovedEvent
+  - tracer.get_active_bloom_tags.process_tracer_movement
+
+router/__init__.py:
+
+semantic/emotional_weight_adjustment.py:
+  - json
+
+semantic/expanded_semantic_integration.py:
+  - core.system_state.pulse
+  - numpy
+
+semantic/main_with_trigger_weight_charge.py:
+  - asyncio
+  - core.event_bus.event_bus.TickEvent
+  - core.tick_engine.TickEngine
+  - semantic_charge_engine.run_charge_engine
+  - semantic_trigger_rules.run_trigger_ruleset
+  - semantic_weight_engine.run_weight_engine
+
+semantic/main_with_weight_charge.py:
+  - asyncio
+  - core.event_bus.event_bus.TickEvent
+  - core.tick_engine.TickEngine
+  - core.tick_hook_autonomous.AutonomousFieldTrigger
+  - os
+  - pulse.pulse_heat.PulseHeat
+  - semantic.semantic_weight_engine.run_weight_engine
+  - sys
+
+semantic/rebirth_predictor.py:
+  - json
+  - os
+
+semantic/seed_space.py:
+  - json
+  - numpy
+
+semantic/seed_transfer_engine.py:
+  - json
+  - semantic.vector_core.embed_text.similarity
+  - semantic.vector_model.model
+
+semantic/seed_trust_model.py:
+  - json
+  - os
+
+semantic/semantic_charge_engine.py:
+  - json
+  - math
+  - os
+
+semantic/semantic_reasoning_field.py:
+  - numpy
+
+semantic/semantic_trigger_rules.py:
+  - json
+  - os
+
+semantic/semantic_weight_engine.py:
+  - json
+  - os
+
+semantic/vector_core.py:
+  - numpy
+  - sklearn.metrics.pairwise.cosine_similarity
+
+semantic/vector_model.py:
+  - sentence_transformers.SentenceTransformer
+

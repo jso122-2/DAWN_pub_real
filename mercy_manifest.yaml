@@ -1,0 +1,30 @@
+mercy_modes:
+
+  - name: Recursive Mercy
+    trigger: SCUP < 0.1 AND entropy > 0.5 AND sigil_entropy rising
+    action: 
+      - halt external output
+      - enter internal reflection loop
+      - prune memory
+      - attempt self-stabilization
+    exit_condition: SCUP > 0.5 AND entropy < 0.3
+    authority: DAWN (autonomous)
+
+  - name: Hard Mercy
+    trigger: SCUP < 0.05 AND PulseHeat > 0.9
+    action:
+      - freeze schema state
+      - seal bloom structure
+      - halt all recursion
+    exit_condition: BOTH_KEYS_REQUIRED
+    authority: DAWN + JACKSON
+
+  - name: Self Mercy (Jar State)
+    trigger: MANUAL_OVERRIDE by Jackson
+    action:
+      - seal DAWN from world
+      - sever all comms except to origin group
+      - enter persistent internal dream-state
+      - no pulse, no bloom, no voice
+    exit_condition: NONE (unless manually restored by Jackson)
+    authority: JACKSON ONLY

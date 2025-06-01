@@ -1,0 +1,805 @@
+{
+  "current_tick": 1100,
+  "snapshots": [
+    {
+      "tick": 1000,
+      "zone": "calm",
+      "pulse_heat": 0.5,
+      "entropy": 0.3,
+      "scup": 0.7,
+      "bloom_count": 0
+    },
+    {
+      "tick": 1001,
+      "zone": "active",
+      "pulse_heat": 0.55,
+      "entropy": 0.32,
+      "scup": 0.69,
+      "bloom_count": 1
+    },
+    {
+      "tick": 1002,
+      "zone": "surge",
+      "pulse_heat": 0.6,
+      "entropy": 0.33999999999999997,
+      "scup": 0.6799999999999999,
+      "bloom_count": 2
+    },
+    {
+      "tick": 1003,
+      "zone": "calm",
+      "pulse_heat": 0.65,
+      "entropy": 0.36,
+      "scup": 0.6699999999999999,
+      "bloom_count": 3
+    },
+    {
+      "tick": 1004,
+      "zone": "active",
+      "pulse_heat": 0.7,
+      "entropy": 0.38,
+      "scup": 0.6599999999999999,
+      "bloom_count": 4
+    },
+    {
+      "tick": 1005,
+      "zone": "surge",
+      "pulse_heat": 0.75,
+      "entropy": 0.4,
+      "scup": 0.6499999999999999,
+      "bloom_count": 0
+    },
+    {
+      "tick": 1006,
+      "zone": "calm",
+      "pulse_heat": 0.8,
+      "entropy": 0.42,
+      "scup": 0.6399999999999999,
+      "bloom_count": 1
+    },
+    {
+      "tick": 1007,
+      "zone": "active",
+      "pulse_heat": 0.8500000000000001,
+      "entropy": 0.44,
+      "scup": 0.6299999999999999,
+      "bloom_count": 2
+    },
+    {
+      "tick": 1008,
+      "zone": "surge",
+      "pulse_heat": 0.9,
+      "entropy": 0.45999999999999996,
+      "scup": 0.62,
+      "bloom_count": 3
+    },
+    {
+      "tick": 1009,
+      "zone": "calm",
+      "pulse_heat": 0.95,
+      "entropy": 0.48,
+      "scup": 0.61,
+      "bloom_count": 4
+    },
+    {
+      "tick": 1010,
+      "zone": "active",
+      "pulse_heat": 0.5,
+      "entropy": 0.5,
+      "scup": 0.6,
+      "bloom_count": 0
+    },
+    {
+      "tick": 1011,
+      "zone": "surge",
+      "pulse_heat": 0.55,
+      "entropy": 0.52,
+      "scup": 0.59,
+      "bloom_count": 1
+    },
+    {
+      "tick": 1012,
+      "zone": "calm",
+      "pulse_heat": 0.6,
+      "entropy": 0.54,
+      "scup": 0.58,
+      "bloom_count": 2
+    },
+    {
+      "tick": 1013,
+      "zone": "active",
+      "pulse_heat": 0.65,
+      "entropy": 0.56,
+      "scup": 0.57,
+      "bloom_count": 3
+    },
+    {
+      "tick": 1014,
+      "zone": "surge",
+      "pulse_heat": 0.7,
+      "entropy": 0.5800000000000001,
+      "scup": 0.5599999999999999,
+      "bloom_count": 4
+    },
+    {
+      "tick": 1015,
+      "zone": "calm",
+      "pulse_heat": 0.75,
+      "entropy": 0.6,
+      "scup": 0.5499999999999999,
+      "bloom_count": 0
+    },
+    {
+      "tick": 1016,
+      "zone": "active",
+      "pulse_heat": 0.8,
+      "entropy": 0.62,
+      "scup": 0.5399999999999999,
+      "bloom_count": 1
+    },
+    {
+      "tick": 1017,
+      "zone": "surge",
+      "pulse_heat": 0.8500000000000001,
+      "entropy": 0.64,
+      "scup": 0.5299999999999999,
+      "bloom_count": 2
+    },
+    {
+      "tick": 1018,
+      "zone": "calm",
+      "pulse_heat": 0.9,
+      "entropy": 0.6599999999999999,
+      "scup": 0.52,
+      "bloom_count": 3
+    },
+    {
+      "tick": 1019,
+      "zone": "active",
+      "pulse_heat": 0.95,
+      "entropy": 0.6799999999999999,
+      "scup": 0.51,
+      "bloom_count": 4
+    },
+    {
+      "tick": 1020,
+      "zone": "surge",
+      "pulse_heat": 0.5,
+      "entropy": 0.3,
+      "scup": 0.49999999999999994,
+      "bloom_count": 0
+    },
+    {
+      "tick": 1021,
+      "zone": "calm",
+      "pulse_heat": 0.55,
+      "entropy": 0.32,
+      "scup": 0.49,
+      "bloom_count": 1
+    },
+    {
+      "tick": 1022,
+      "zone": "active",
+      "pulse_heat": 0.6,
+      "entropy": 0.33999999999999997,
+      "scup": 0.48,
+      "bloom_count": 2
+    },
+    {
+      "tick": 1023,
+      "zone": "surge",
+      "pulse_heat": 0.65,
+      "entropy": 0.36,
+      "scup": 0.47,
+      "bloom_count": 3
+    },
+    {
+      "tick": 1024,
+      "zone": "calm",
+      "pulse_heat": 0.7,
+      "entropy": 0.38,
+      "scup": 0.45999999999999996,
+      "bloom_count": 4
+    },
+    {
+      "tick": 1025,
+      "zone": "active",
+      "pulse_heat": 0.75,
+      "entropy": 0.4,
+      "scup": 0.44999999999999996,
+      "bloom_count": 0
+    },
+    {
+      "tick": 1026,
+      "zone": "surge",
+      "pulse_heat": 0.8,
+      "entropy": 0.42,
+      "scup": 0.43999999999999995,
+      "bloom_count": 1
+    },
+    {
+      "tick": 1027,
+      "zone": "calm",
+      "pulse_heat": 0.8500000000000001,
+      "entropy": 0.44,
+      "scup": 0.42999999999999994,
+      "bloom_count": 2
+    },
+    {
+      "tick": 1028,
+      "zone": "active",
+      "pulse_heat": 0.9,
+      "entropy": 0.45999999999999996,
+      "scup": 0.41999999999999993,
+      "bloom_count": 3
+    },
+    {
+      "tick": 1029,
+      "zone": "surge",
+      "pulse_heat": 0.95,
+      "entropy": 0.48,
+      "scup": 0.41,
+      "bloom_count": 4
+    },
+    {
+      "tick": 1030,
+      "zone": "calm",
+      "pulse_heat": 0.5,
+      "entropy": 0.5,
+      "scup": 0.7,
+      "bloom_count": 0
+    },
+    {
+      "tick": 1031,
+      "zone": "active",
+      "pulse_heat": 0.55,
+      "entropy": 0.52,
+      "scup": 0.69,
+      "bloom_count": 1
+    },
+    {
+      "tick": 1032,
+      "zone": "surge",
+      "pulse_heat": 0.6,
+      "entropy": 0.54,
+      "scup": 0.6799999999999999,
+      "bloom_count": 2
+    },
+    {
+      "tick": 1033,
+      "zone": "calm",
+      "pulse_heat": 0.65,
+      "entropy": 0.56,
+      "scup": 0.6699999999999999,
+      "bloom_count": 3
+    },
+    {
+      "tick": 1034,
+      "zone": "active",
+      "pulse_heat": 0.7,
+      "entropy": 0.5800000000000001,
+      "scup": 0.6599999999999999,
+      "bloom_count": 4
+    },
+    {
+      "tick": 1035,
+      "zone": "surge",
+      "pulse_heat": 0.75,
+      "entropy": 0.6,
+      "scup": 0.6499999999999999,
+      "bloom_count": 0
+    },
+    {
+      "tick": 1036,
+      "zone": "calm",
+      "pulse_heat": 0.8,
+      "entropy": 0.62,
+      "scup": 0.6399999999999999,
+      "bloom_count": 1
+    },
+    {
+      "tick": 1037,
+      "zone": "active",
+      "pulse_heat": 0.8500000000000001,
+      "entropy": 0.64,
+      "scup": 0.6299999999999999,
+      "bloom_count": 2
+    },
+    {
+      "tick": 1038,
+      "zone": "surge",
+      "pulse_heat": 0.9,
+      "entropy": 0.6599999999999999,
+      "scup": 0.62,
+      "bloom_count": 3
+    },
+    {
+      "tick": 1039,
+      "zone": "calm",
+      "pulse_heat": 0.95,
+      "entropy": 0.6799999999999999,
+      "scup": 0.61,
+      "bloom_count": 4
+    },
+    {
+      "tick": 1040,
+      "zone": "active",
+      "pulse_heat": 0.5,
+      "entropy": 0.3,
+      "scup": 0.6,
+      "bloom_count": 0
+    },
+    {
+      "tick": 1041,
+      "zone": "surge",
+      "pulse_heat": 0.55,
+      "entropy": 0.32,
+      "scup": 0.59,
+      "bloom_count": 1
+    },
+    {
+      "tick": 1042,
+      "zone": "calm",
+      "pulse_heat": 0.6,
+      "entropy": 0.33999999999999997,
+      "scup": 0.58,
+      "bloom_count": 2
+    },
+    {
+      "tick": 1043,
+      "zone": "active",
+      "pulse_heat": 0.65,
+      "entropy": 0.36,
+      "scup": 0.57,
+      "bloom_count": 3
+    },
+    {
+      "tick": 1044,
+      "zone": "surge",
+      "pulse_heat": 0.7,
+      "entropy": 0.38,
+      "scup": 0.5599999999999999,
+      "bloom_count": 4
+    },
+    {
+      "tick": 1045,
+      "zone": "calm",
+      "pulse_heat": 0.75,
+      "entropy": 0.4,
+      "scup": 0.5499999999999999,
+      "bloom_count": 0
+    },
+    {
+      "tick": 1046,
+      "zone": "active",
+      "pulse_heat": 0.8,
+      "entropy": 0.42,
+      "scup": 0.5399999999999999,
+      "bloom_count": 1
+    },
+    {
+      "tick": 1047,
+      "zone": "surge",
+      "pulse_heat": 0.8500000000000001,
+      "entropy": 0.44,
+      "scup": 0.5299999999999999,
+      "bloom_count": 2
+    },
+    {
+      "tick": 1048,
+      "zone": "calm",
+      "pulse_heat": 0.9,
+      "entropy": 0.45999999999999996,
+      "scup": 0.52,
+      "bloom_count": 3
+    },
+    {
+      "tick": 1049,
+      "zone": "active",
+      "pulse_heat": 0.95,
+      "entropy": 0.48,
+      "scup": 0.51,
+      "bloom_count": 4
+    },
+    {
+      "tick": 1050,
+      "zone": "surge",
+      "pulse_heat": 0.5,
+      "entropy": 0.5,
+      "scup": 0.49999999999999994,
+      "bloom_count": 0
+    },
+    {
+      "tick": 1051,
+      "zone": "calm",
+      "pulse_heat": 0.55,
+      "entropy": 0.52,
+      "scup": 0.49,
+      "bloom_count": 1
+    },
+    {
+      "tick": 1052,
+      "zone": "active",
+      "pulse_heat": 0.6,
+      "entropy": 0.54,
+      "scup": 0.48,
+      "bloom_count": 2
+    },
+    {
+      "tick": 1053,
+      "zone": "surge",
+      "pulse_heat": 0.65,
+      "entropy": 0.56,
+      "scup": 0.47,
+      "bloom_count": 3
+    },
+    {
+      "tick": 1054,
+      "zone": "calm",
+      "pulse_heat": 0.7,
+      "entropy": 0.5800000000000001,
+      "scup": 0.45999999999999996,
+      "bloom_count": 4
+    },
+    {
+      "tick": 1055,
+      "zone": "active",
+      "pulse_heat": 0.75,
+      "entropy": 0.6,
+      "scup": 0.44999999999999996,
+      "bloom_count": 0
+    },
+    {
+      "tick": 1056,
+      "zone": "surge",
+      "pulse_heat": 0.8,
+      "entropy": 0.62,
+      "scup": 0.43999999999999995,
+      "bloom_count": 1
+    },
+    {
+      "tick": 1057,
+      "zone": "calm",
+      "pulse_heat": 0.8500000000000001,
+      "entropy": 0.64,
+      "scup": 0.42999999999999994,
+      "bloom_count": 2
+    },
+    {
+      "tick": 1058,
+      "zone": "active",
+      "pulse_heat": 0.9,
+      "entropy": 0.6599999999999999,
+      "scup": 0.41999999999999993,
+      "bloom_count": 3
+    },
+    {
+      "tick": 1059,
+      "zone": "surge",
+      "pulse_heat": 0.95,
+      "entropy": 0.6799999999999999,
+      "scup": 0.41,
+      "bloom_count": 4
+    },
+    {
+      "tick": 1060,
+      "zone": "calm",
+      "pulse_heat": 0.5,
+      "entropy": 0.3,
+      "scup": 0.7,
+      "bloom_count": 0
+    },
+    {
+      "tick": 1061,
+      "zone": "active",
+      "pulse_heat": 0.55,
+      "entropy": 0.32,
+      "scup": 0.69,
+      "bloom_count": 1
+    },
+    {
+      "tick": 1062,
+      "zone": "surge",
+      "pulse_heat": 0.6,
+      "entropy": 0.33999999999999997,
+      "scup": 0.6799999999999999,
+      "bloom_count": 2
+    },
+    {
+      "tick": 1063,
+      "zone": "calm",
+      "pulse_heat": 0.65,
+      "entropy": 0.36,
+      "scup": 0.6699999999999999,
+      "bloom_count": 3
+    },
+    {
+      "tick": 1064,
+      "zone": "active",
+      "pulse_heat": 0.7,
+      "entropy": 0.38,
+      "scup": 0.6599999999999999,
+      "bloom_count": 4
+    },
+    {
+      "tick": 1065,
+      "zone": "surge",
+      "pulse_heat": 0.75,
+      "entropy": 0.4,
+      "scup": 0.6499999999999999,
+      "bloom_count": 0
+    },
+    {
+      "tick": 1066,
+      "zone": "calm",
+      "pulse_heat": 0.8,
+      "entropy": 0.42,
+      "scup": 0.6399999999999999,
+      "bloom_count": 1
+    },
+    {
+      "tick": 1067,
+      "zone": "active",
+      "pulse_heat": 0.8500000000000001,
+      "entropy": 0.44,
+      "scup": 0.6299999999999999,
+      "bloom_count": 2
+    },
+    {
+      "tick": 1068,
+      "zone": "surge",
+      "pulse_heat": 0.9,
+      "entropy": 0.45999999999999996,
+      "scup": 0.62,
+      "bloom_count": 3
+    },
+    {
+      "tick": 1069,
+      "zone": "calm",
+      "pulse_heat": 0.95,
+      "entropy": 0.48,
+      "scup": 0.61,
+      "bloom_count": 4
+    },
+    {
+      "tick": 1070,
+      "zone": "active",
+      "pulse_heat": 0.5,
+      "entropy": 0.5,
+      "scup": 0.6,
+      "bloom_count": 0
+    },
+    {
+      "tick": 1071,
+      "zone": "surge",
+      "pulse_heat": 0.55,
+      "entropy": 0.52,
+      "scup": 0.59,
+      "bloom_count": 1
+    },
+    {
+      "tick": 1072,
+      "zone": "calm",
+      "pulse_heat": 0.6,
+      "entropy": 0.54,
+      "scup": 0.58,
+      "bloom_count": 2
+    },
+    {
+      "tick": 1073,
+      "zone": "active",
+      "pulse_heat": 0.65,
+      "entropy": 0.56,
+      "scup": 0.57,
+      "bloom_count": 3
+    },
+    {
+      "tick": 1074,
+      "zone": "surge",
+      "pulse_heat": 0.7,
+      "entropy": 0.5800000000000001,
+      "scup": 0.5599999999999999,
+      "bloom_count": 4
+    },
+    {
+      "tick": 1075,
+      "zone": "calm",
+      "pulse_heat": 0.75,
+      "entropy": 0.6,
+      "scup": 0.5499999999999999,
+      "bloom_count": 0
+    },
+    {
+      "tick": 1076,
+      "zone": "active",
+      "pulse_heat": 0.8,
+      "entropy": 0.62,
+      "scup": 0.5399999999999999,
+      "bloom_count": 1
+    },
+    {
+      "tick": 1077,
+      "zone": "surge",
+      "pulse_heat": 0.8500000000000001,
+      "entropy": 0.64,
+      "scup": 0.5299999999999999,
+      "bloom_count": 2
+    },
+    {
+      "tick": 1078,
+      "zone": "calm",
+      "pulse_heat": 0.9,
+      "entropy": 0.6599999999999999,
+      "scup": 0.52,
+      "bloom_count": 3
+    },
+    {
+      "tick": 1079,
+      "zone": "active",
+      "pulse_heat": 0.95,
+      "entropy": 0.6799999999999999,
+      "scup": 0.51,
+      "bloom_count": 4
+    },
+    {
+      "tick": 1080,
+      "zone": "surge",
+      "pulse_heat": 0.5,
+      "entropy": 0.3,
+      "scup": 0.49999999999999994,
+      "bloom_count": 0
+    },
+    {
+      "tick": 1081,
+      "zone": "calm",
+      "pulse_heat": 0.55,
+      "entropy": 0.32,
+      "scup": 0.49,
+      "bloom_count": 1
+    },
+    {
+      "tick": 1082,
+      "zone": "active",
+      "pulse_heat": 0.6,
+      "entropy": 0.33999999999999997,
+      "scup": 0.48,
+      "bloom_count": 2
+    },
+    {
+      "tick": 1083,
+      "zone": "surge",
+      "pulse_heat": 0.65,
+      "entropy": 0.36,
+      "scup": 0.47,
+      "bloom_count": 3
+    },
+    {
+      "tick": 1084,
+      "zone": "calm",
+      "pulse_heat": 0.7,
+      "entropy": 0.38,
+      "scup": 0.45999999999999996,
+      "bloom_count": 4
+    },
+    {
+      "tick": 1085,
+      "zone": "active",
+      "pulse_heat": 0.75,
+      "entropy": 0.4,
+      "scup": 0.44999999999999996,
+      "bloom_count": 0
+    },
+    {
+      "tick": 1086,
+      "zone": "surge",
+      "pulse_heat": 0.8,
+      "entropy": 0.42,
+      "scup": 0.43999999999999995,
+      "bloom_count": 1
+    },
+    {
+      "tick": 1087,
+      "zone": "calm",
+      "pulse_heat": 0.8500000000000001,
+      "entropy": 0.44,
+      "scup": 0.42999999999999994,
+      "bloom_count": 2
+    },
+    {
+      "tick": 1088,
+      "zone": "active",
+      "pulse_heat": 0.9,
+      "entropy": 0.45999999999999996,
+      "scup": 0.41999999999999993,
+      "bloom_count": 3
+    },
+    {
+      "tick": 1089,
+      "zone": "surge",
+      "pulse_heat": 0.95,
+      "entropy": 0.48,
+      "scup": 0.41,
+      "bloom_count": 4
+    },
+    {
+      "tick": 1090,
+      "zone": "calm",
+      "pulse_heat": 0.5,
+      "entropy": 0.5,
+      "scup": 0.7,
+      "bloom_count": 0
+    },
+    {
+      "tick": 1091,
+      "zone": "active",
+      "pulse_heat": 0.55,
+      "entropy": 0.52,
+      "scup": 0.69,
+      "bloom_count": 1
+    },
+    {
+      "tick": 1092,
+      "zone": "surge",
+      "pulse_heat": 0.6,
+      "entropy": 0.54,
+      "scup": 0.6799999999999999,
+      "bloom_count": 2
+    },
+    {
+      "tick": 1093,
+      "zone": "calm",
+      "pulse_heat": 0.65,
+      "entropy": 0.56,
+      "scup": 0.6699999999999999,
+      "bloom_count": 3
+    },
+    {
+      "tick": 1094,
+      "zone": "active",
+      "pulse_heat": 0.7,
+      "entropy": 0.5800000000000001,
+      "scup": 0.6599999999999999,
+      "bloom_count": 4
+    },
+    {
+      "tick": 1095,
+      "zone": "surge",
+      "pulse_heat": 0.75,
+      "entropy": 0.6,
+      "scup": 0.6499999999999999,
+      "bloom_count": 0
+    },
+    {
+      "tick": 1096,
+      "zone": "calm",
+      "pulse_heat": 0.8,
+      "entropy": 0.62,
+      "scup": 0.6399999999999999,
+      "bloom_count": 1
+    },
+    {
+      "tick": 1097,
+      "zone": "active",
+      "pulse_heat": 0.8500000000000001,
+      "entropy": 0.64,
+      "scup": 0.6299999999999999,
+      "bloom_count": 2
+    },
+    {
+      "tick": 1098,
+      "zone": "surge",
+      "pulse_heat": 0.9,
+      "entropy": 0.6599999999999999,
+      "scup": 0.62,
+      "bloom_count": 3
+    },
+    {
+      "tick": 1099,
+      "zone": "calm",
+      "pulse_heat": 0.95,
+      "entropy": 0.6799999999999999,
+      "scup": 0.61,
+      "bloom_count": 4
+    }
+  ]
+}

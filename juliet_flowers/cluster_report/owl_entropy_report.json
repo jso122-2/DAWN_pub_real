@@ -1,0 +1,377 @@
+{
+  "flower-whale-000_2025-05-24T09-36-57.160285": {
+    "avg_entropy": 0.0,
+    "delta_entropy": 0.0,
+    "status": "stable"
+  },
+  "flower-whale-000_2025-05-24T09-45-06.968188": {
+    "avg_entropy": 0.0804,
+    "delta_entropy": 0.9646,
+    "status": "chaotic"
+  },
+  "flower-whale-000_2025-05-24T09-45-12.760317": {
+    "avg_entropy": 0.2803,
+    "delta_entropy": 2.8036,
+    "status": "chaotic"
+  },
+  "flower-whale-000_2025-05-24T09-45-15.065082": {
+    "avg_entropy": 0.3648,
+    "delta_entropy": 2.8036,
+    "status": "chaotic"
+  },
+  "flower-whale-000_2025-05-24T09-36-57.970717": {
+    "avg_entropy": 0.0,
+    "delta_entropy": 0.0,
+    "status": "stable"
+  },
+  "flower-whale-000_2025-05-24T09-45-16.324528": {
+    "avg_entropy": 0.3549,
+    "delta_entropy": 2.8036,
+    "status": "chaotic"
+  },
+  "flower-whale-000_2025-05-24T09-45-18.606506": {
+    "avg_entropy": 0.3497,
+    "delta_entropy": 2.8036,
+    "status": "chaotic"
+  },
+  "flower-whale-000_2025-05-24T09-45-19.788031": {
+    "avg_entropy": 0.4465,
+    "delta_entropy": 2.8036,
+    "status": "chaotic"
+  },
+  "flower-whale-000_2025-05-24T09-45-20.960988": {
+    "avg_entropy": 0.4649,
+    "delta_entropy": 2.8036,
+    "status": "chaotic"
+  },
+  "flower-whale-000_2025-05-24T09-36-58.966534": {
+    "avg_entropy": 0.0,
+    "delta_entropy": 0.0,
+    "status": "stable"
+  },
+  "flower-whale-000_2025-05-24T09-37-00.765395": {
+    "avg_entropy": 0.0,
+    "delta_entropy": 0.0,
+    "status": "stable"
+  },
+  "flower-whale-000_2025-05-24T09-37-01.981171": {
+    "avg_entropy": 0.0,
+    "delta_entropy": 0.0,
+    "status": "stable"
+  },
+  "flower-whale-000_2025-05-24T09-37-06.344314": {
+    "avg_entropy": 0.0,
+    "delta_entropy": 0.0,
+    "status": "stable"
+  },
+  "flower-whale-000_2025-05-24T09-45-07.991269": {
+    "avg_entropy": 0.0742,
+    "delta_entropy": 0.9646,
+    "status": "chaotic"
+  },
+  "flower-whale-000_2025-05-24T09-45-13.849910": {
+    "avg_entropy": 0.2647,
+    "delta_entropy": 2.8036,
+    "status": "chaotic"
+  },
+  "flower-whale-000_2025-05-24T09-45-17.489619": {
+    "avg_entropy": 0.338,
+    "delta_entropy": 2.8036,
+    "status": "chaotic"
+  },
+  "flower-whale-000_2025-05-24T09-37-03.743279": {
+    "avg_entropy": 0.0,
+    "delta_entropy": 0.0,
+    "status": "stable"
+  },
+  "flower-whale-000_2025-05-24T09-37-04.569587": {
+    "avg_entropy": 0.0,
+    "delta_entropy": 0.0,
+    "status": "stable"
+  },
+  "flower-whale-000_2025-05-24T09-37-05.500589": {
+    "avg_entropy": 0.0,
+    "delta_entropy": 0.0,
+    "status": "stable"
+  },
+  "flower-whale-000_2025-05-24T09-45-09.302889": {
+    "avg_entropy": 0.0689,
+    "delta_entropy": 0.9646,
+    "status": "chaotic"
+  },
+  "flower-whale-000_2025-05-24T09-45-10.443584": {
+    "avg_entropy": 0.1308,
+    "delta_entropy": 0.9965,
+    "status": "chaotic"
+  },
+  "flower-whale-000_2025-05-24T09-45-11.701369": {
+    "avg_entropy": 0.1226,
+    "delta_entropy": 0.9965,
+    "status": "chaotic"
+  },
+  "flower-whale-000_2025-05-24T09-45-22.348985": {
+    "avg_entropy": 0.458,
+    "delta_entropy": 2.8036,
+    "status": "chaotic"
+  },
+  "flower-whale-000_2025-05-24T09-36-59.824750": {
+    "avg_entropy": 0.0,
+    "delta_entropy": 0.0,
+    "status": "stable"
+  },
+  "flower-whale-000_2025-05-24T09-37-02.886364": {
+    "avg_entropy": 0.0,
+    "delta_entropy": 0.0,
+    "status": "stable"
+  },
+  "flower-whale-001_2025-05-24T09-37-05.507616": {
+    "avg_entropy": 0.0,
+    "delta_entropy": 0.0,
+    "status": "stable"
+  },
+  "flower-whale-001_2025-05-24T09-45-10.486583": {
+    "avg_entropy": 0.2505,
+    "delta_entropy": 2.983,
+    "status": "chaotic"
+  },
+  "flower-whale-001_2025-05-24T09-45-15.113282": {
+    "avg_entropy": 0.366,
+    "delta_entropy": 2.983,
+    "status": "chaotic"
+  },
+  "flower-whale-001_2025-05-24T09-45-16.423195": {
+    "avg_entropy": 0.3539,
+    "delta_entropy": 2.983,
+    "status": "chaotic"
+  },
+  "flower-whale-001_2025-05-24T09-45-19.843027": {
+    "avg_entropy": 0.3717,
+    "delta_entropy": 2.983,
+    "status": "chaotic"
+  },
+  "flower-whale-001_2025-05-24T09-45-21.070598": {
+    "avg_entropy": 0.4648,
+    "delta_entropy": 2.983,
+    "status": "chaotic"
+  },
+  "flower-whale-001_2025-05-24T09-45-22.452994": {
+    "avg_entropy": 0.448,
+    "delta_entropy": 2.983,
+    "status": "chaotic"
+  },
+  "flower-whale-001_2025-05-24T09-37-00.777169": {
+    "avg_entropy": 0.0,
+    "delta_entropy": 0.0,
+    "status": "stable"
+  },
+  "flower-whale-001_2025-05-24T09-37-03.752869": {
+    "avg_entropy": 0.0,
+    "delta_entropy": 0.0,
+    "status": "stable"
+  },
+  "flower-whale-001_2025-05-24T09-36-57.162288": {
+    "avg_entropy": 0.0,
+    "delta_entropy": 0.0,
+    "status": "stable"
+  },
+  "flower-whale-001_2025-05-24T09-45-06.994498": {
+    "avg_entropy": 0.0,
+    "delta_entropy": 0.0,
+    "status": "stable"
+  },
+  "flower-whale-001_2025-05-24T09-45-08.023273": {
+    "avg_entropy": 0.0596,
+    "delta_entropy": 0.775,
+    "status": "chaotic"
+  },
+  "flower-whale-001_2025-05-24T09-45-09.336890": {
+    "avg_entropy": 0.0554,
+    "delta_entropy": 0.775,
+    "status": "chaotic"
+  },
+  "flower-whale-001_2025-05-24T09-45-11.739001": {
+    "avg_entropy": 0.2349,
+    "delta_entropy": 2.983,
+    "status": "chaotic"
+  },
+  "flower-whale-001_2025-05-24T09-36-57.984710": {
+    "avg_entropy": 0.0,
+    "delta_entropy": 0.0,
+    "status": "stable"
+  },
+  "flower-whale-001_2025-05-24T09-45-18.717790": {
+    "avg_entropy": 0.3218,
+    "delta_entropy": 2.983,
+    "status": "chaotic"
+  },
+  "flower-whale-001_2025-05-24T09-36-59.834751": {
+    "avg_entropy": 0.0,
+    "delta_entropy": 0.0,
+    "status": "stable"
+  },
+  "flower-whale-001_2025-05-24T09-37-06.358319": {
+    "avg_entropy": 0.0,
+    "delta_entropy": 0.0,
+    "status": "stable"
+  },
+  "flower-whale-001_2025-05-24T09-45-12.801317": {
+    "avg_entropy": 0.2211,
+    "delta_entropy": 2.983,
+    "status": "chaotic"
+  },
+  "flower-whale-001_2025-05-24T09-45-13.906060": {
+    "avg_entropy": 0.2545,
+    "delta_entropy": 2.983,
+    "status": "chaotic"
+  },
+  "flower-whale-001_2025-05-24T09-45-17.554339": {
+    "avg_entropy": 0.3371,
+    "delta_entropy": 2.983,
+    "status": "chaotic"
+  },
+  "flower-whale-001_2025-05-24T09-36-58.976535": {
+    "avg_entropy": 0.0,
+    "delta_entropy": 0.0,
+    "status": "stable"
+  },
+  "flower-whale-001_2025-05-24T09-37-02.002896": {
+    "avg_entropy": 0.0,
+    "delta_entropy": 0.0,
+    "status": "stable"
+  },
+  "flower-whale-001_2025-05-24T09-37-02.895911": {
+    "avg_entropy": 0.0,
+    "delta_entropy": 0.0,
+    "status": "stable"
+  },
+  "flower-whale-001_2025-05-24T09-37-04.579169": {
+    "avg_entropy": 0.0,
+    "delta_entropy": 0.0,
+    "status": "stable"
+  },
+  "flower-whale-002_2025-05-24T09-36-57.170284": {
+    "avg_entropy": 0.0,
+    "delta_entropy": 0.0,
+    "status": "stable"
+  },
+  "flower-whale-002_2025-05-24T09-37-06.378321": {
+    "avg_entropy": 0.0,
+    "delta_entropy": 0.0,
+    "status": "stable"
+  },
+  "flower-whale-002_2025-05-24T09-45-07.036543": {
+    "avg_entropy": 0.2553,
+    "delta_entropy": 3.0638,
+    "status": "chaotic"
+  },
+  "flower-whale-002_2025-05-24T09-45-08.079731": {
+    "avg_entropy": 0.345,
+    "delta_entropy": 3.0638,
+    "status": "chaotic"
+  },
+  "flower-whale-002_2025-05-24T09-45-15.209501": {
+    "avg_entropy": 0.3167,
+    "delta_entropy": 3.0638,
+    "status": "chaotic"
+  },
+  "flower-whale-002_2025-05-24T09-45-19.954918": {
+    "avg_entropy": 0.3361,
+    "delta_entropy": 3.0638,
+    "status": "chaotic"
+  },
+  "flower-whale-002_2025-05-24T09-45-21.196001": {
+    "avg_entropy": 0.4136,
+    "delta_entropy": 3.0638,
+    "status": "chaotic"
+  },
+  "flower-whale-002_2025-05-24T09-36-59.844751": {
+    "avg_entropy": 0.0,
+    "delta_entropy": 0.0,
+    "status": "stable"
+  },
+  "flower-whale-002_2025-05-24T09-37-05.516592": {
+    "avg_entropy": 0.0,
+    "delta_entropy": 0.0,
+    "status": "stable"
+  },
+  "flower-whale-002_2025-05-24T09-45-10.562150": {
+    "avg_entropy": 0.299,
+    "delta_entropy": 3.0638,
+    "status": "chaotic"
+  },
+  "flower-whale-002_2025-05-24T09-45-12.872316": {
+    "avg_entropy": 0.2639,
+    "delta_entropy": 3.0638,
+    "status": "chaotic"
+  },
+  "flower-whale-002_2025-05-24T09-45-13.981895": {
+    "avg_entropy": 0.2492,
+    "delta_entropy": 3.0638,
+    "status": "chaotic"
+  },
+  "flower-whale-002_2025-05-24T09-45-16.518772": {
+    "avg_entropy": 0.3009,
+    "delta_entropy": 3.0638,
+    "status": "chaotic"
+  },
+  "flower-whale-002_2025-05-24T09-45-18.840857": {
+    "avg_entropy": 0.2736,
+    "delta_entropy": 3.0638,
+    "status": "chaotic"
+  },
+  "flower-whale-002_2025-05-24T09-36-58.985533": {
+    "avg_entropy": 0.0,
+    "delta_entropy": 0.0,
+    "status": "stable"
+  },
+  "flower-whale-002_2025-05-24T09-37-04.588172": {
+    "avg_entropy": 0.0,
+    "delta_entropy": 0.0,
+    "status": "stable"
+  },
+  "flower-whale-002_2025-05-24T09-45-09.395892": {
+    "avg_entropy": 0.3204,
+    "delta_entropy": 3.0638,
+    "status": "chaotic"
+  },
+  "flower-whale-002_2025-05-24T09-45-11.805002": {
+    "avg_entropy": 0.2803,
+    "delta_entropy": 3.0638,
+    "status": "chaotic"
+  },
+  "flower-whale-002_2025-05-24T09-36-57.995717": {
+    "avg_entropy": 0.0,
+    "delta_entropy": 0.0,
+    "status": "stable"
+  },
+  "flower-whale-002_2025-05-24T09-45-17.650928": {
+    "avg_entropy": 0.2866,
+    "delta_entropy": 3.0638,
+    "status": "chaotic"
+  },
+  "flower-whale-002_2025-05-24T09-45-22.589927": {
+    "avg_entropy": 0.397,
+    "delta_entropy": 3.0638,
+    "status": "chaotic"
+  },
+  "flower-whale-002_2025-05-24T09-37-00.790154": {
+    "avg_entropy": 0.0,
+    "delta_entropy": 0.0,
+    "status": "stable"
+  },
+  "flower-whale-002_2025-05-24T09-37-02.018897": {
+    "avg_entropy": 0.0,
+    "delta_entropy": 0.0,
+    "status": "stable"
+  },
+  "flower-whale-002_2025-05-24T09-37-02.904940": {
+    "avg_entropy": 0.0,
+    "delta_entropy": 0.0,
+    "status": "stable"
+  },
+  "flower-whale-002_2025-05-24T09-37-03.763869": {
+    "avg_entropy": 0.0,
+    "delta_entropy": 0.0,
+    "status": "stable"
+  }
+}

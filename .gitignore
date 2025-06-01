@@ -1,0 +1,8 @@
+# DAWN Git Ignore
+*.env
+*.secrets
+config/notion_credentials.json
+*.safetensors
+__pycache__/
+.cache/
+*.log

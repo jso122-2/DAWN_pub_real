@@ -1,0 +1,4 @@
+timestamp,bloom_id,seed,mood,entropy_score,bloom_factor,lineage_depth,flow_strength
+2025-05-24T14:21:28.642744,whale-000_test,whale-000,calm,0.919,0.714,4,0.656166
+2025-05-24T14:21:28.954155,whale-001_test,whale-001,anxious,0.162,0.566,2,0.091692
+2025-05-24T14:21:29.248298,whale-002_test,whale-002,anxious,0.897,0.693,0,0.621621

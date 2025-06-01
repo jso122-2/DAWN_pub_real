@@ -1,0 +1,18 @@
+{
+  "seed_id": "emergency_test_9996",
+  "trigger_type": "emergency_debug",
+  "lineage_depth": 2,
+  "bloom_factor": 1.2,
+  "entropy_score": 0.8,
+  "mood": "agitated",
+  "tags": [
+    "emergency",
+    "debug"
+  ],
+  "scup_at_spawn": 0.0,
+  "image_path": "juliet_flowers/fractal_signatures\\emergency_test_9996_2025-05-28T21-22-56.png",
+  "generated_at": "2025-05-28T21:22:56.190334",
+  "bloom_id": 1,
+  "generation_method": "enhanced_spawn_bloom",
+  "scup_bypassed": true
+}

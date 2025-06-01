@@ -1,0 +1,66 @@
+# File Path: /src/codex/sigil_emitter.py
+
+import json
+import os
+from datetime import datetime
+from core.event_bus import event_bus, Event
+from codex.sigils import invoke_sigil
+from schema.scup_loop import get_latest_scup
+from pulse.pulse_heat import PulseHeat
+
+
+def log_sigil_emit(sigil, reason):
+    path = "juliet_flowers/cluster_report/sigil_emission_log.json"
+    entry = {"sigil": sigil, "reason": reason, "timestamp": datetime.now().isoformat()}
+    if os.path.exists(path):
+        with open(path) as f:
+            data = json.load(f)
+    else:
+        data = []
+    data.append(entry)
+    with open(path, "w") as f:
+        json.dump(data[-100:], f, indent=2)
+
+class SigilEmitted(Event):
+    def __init__(self, sigil, reason):
+        self.sigil = sigil
+        self.reason = reason
+
+async def emit_sigil_from_scup(pulse: PulseHeat = None):
+    scup = get_latest_scup()
+    heat = pulse.get_heat() if pulse else 1.0
+
+    if scup < 0.3:
+        sigil = "/suppress"
+        reason = "SCUP low: semantic instability"
+    elif scup < 0.6:
+        sigil = "/stabilize"
+        reason = "SCUP moderate: partial coherence"
+    else:
+        sigil = "/revive"
+        reason = "SCUP healthy: schema stable"
+
+    print(f"[SigilEmitter] 🧭 Emitting {sigil} → {reason}")
+    invoke_sigil(sigil)
+    await event_bus.publish(SigilEmitted(sigil, reason))
+
+
+# If you prefer scup_sigil_emitter to be used in owl_auditor.py, use the same logic in this function:
+async def scup_sigil_emitter(pulse: PulseHeat = None):
+    scup = get_latest_scup()
+    heat = pulse.get_heat() if pulse else 1.0
+
+    if scup < 0.3:
+        sigil = "/suppress"
+        reason = "SCUP low: semantic instability"
+    elif scup < 0.6:
+        sigil = "/stabilize"
+        reason = "SCUP moderate: partial coherence"
+    else:
+        sigil = "/revive"
+        reason = "SCUP healthy: schema stable"
+
+    print(f"[SigilEmitter] 🧭 Emitting {sigil} → {reason}")
+    invoke_sigil(sigil)
+    await event_bus.publish(SigilEmitted(sigil, reason))
+

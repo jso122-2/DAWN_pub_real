@@ -1,0 +1,209 @@
+{
+  "A1": {
+    "curious": []
+  },
+  "B2": {
+    "calm": []
+  },
+  "bee-001": {
+    "anxious": [],
+    "calm": [],
+    "curious": [],
+    "reflective": []
+  },
+  "bloom_metadata": {},
+  "C3": {
+    "anxious": []
+  },
+  "cluster_report": {},
+  "crow-003": {
+    "anxious": [],
+    "calm": [],
+    "curious": [],
+    "reflective": []
+  },
+  "D4": {
+    "reflective": []
+  },
+  "field_logs": {},
+  "fractal_signatures": {},
+  "index": {},
+  "mycelium_log": {
+    "2025-05-24": [
+      "A1.log",
+      "B2.log",
+      "bee-001.log",
+      "C3.log",
+      "crow-003.log",
+      "D4.log",
+      "whale-002.log"
+    ],
+    "2025-05-25": [
+      "A1.log",
+      "B2.log",
+      "bee-001.log",
+      "C3.log",
+      "crow-003.log",
+      "D4.log",
+      "whale-002.log"
+    ],
+    "2025-05-26": [
+      "A1.log",
+      "B2.log",
+      "bee-001.log",
+      "C3.log",
+      "crow-003.log",
+      "D4.log",
+      "whale-002.log"
+    ],
+    "2025-05-27": [
+      "A1.log",
+      "B2.log",
+      "bee-001.log",
+      "C3.log",
+      "crow-003.log",
+      "D4.log",
+      "whale-002.log"
+    ]
+  },
+  "seed-\u22062143FJ": {
+    "reflective": [
+      "juliet_2025-05-24T20-34-44.txt",
+      "juliet_2025-05-24T20-36-34.txt",
+      "juliet_2025-05-24T20-38-25.txt",
+      "juliet_2025-05-24T20-40-44.txt",
+      "juliet_2025-05-24T20-42-40.txt",
+      "juliet_2025-05-24T20-44-57.txt",
+      "juliet_2025-05-24T20-50-25.txt",
+      "juliet_2025-05-24T21-08-06.txt",
+      "juliet_2025-05-25T12-50-16.txt",
+      "juliet_2025-05-25T12-55-40.txt",
+      "juliet_2025-05-25T13-08-35.txt",
+      "juliet_2025-05-25T13-39-08.txt"
+    ]
+  },
+  "seed-\u2206test": {
+    "reflective": [
+      "julia_lineage1.png",
+      "juliet_2025-05-25T13-34-50.txt"
+    ],
+    "resilient": [
+      "juliet_2025-05-24T20-45-12.txt",
+      "juliet_2025-05-24T20-50-40.txt",
+      "juliet_2025-05-24T21-08-21.txt",
+      "juliet_2025-05-25T12-50-31.txt",
+      "juliet_2025-05-25T12-55-55.txt",
+      "juliet_2025-05-25T13-08-50.txt",
+      "juliet_2025-05-25T13-39-23.txt"
+    ]
+  },
+  "synthesis": {},
+  "test": {},
+  "whale-000": {
+    "anxious": [
+      "1",
+      "12",
+      "17",
+      "19",
+      "2",
+      "20",
+      "22",
+      "23",
+      "24",
+      "3",
+      "5",
+      "6"
+    ],
+    "calm": [
+      "11",
+      "13",
+      "18",
+      "21",
+      "8",
+      "9",
+      "whale-000_test.json",
+      "whale-000_test.png"
+    ],
+    "excited": [
+      "10",
+      "14",
+      "15",
+      "16",
+      "25",
+      "4",
+      "7"
+    ]
+  },
+  "whale-001": {
+    "anxious": [
+      "10",
+      "15",
+      "19",
+      "20",
+      "23",
+      "24",
+      "25",
+      "5",
+      "8",
+      "whale-001_test.json",
+      "whale-001_test.png"
+    ],
+    "calm": [
+      "1",
+      "12",
+      "13",
+      "14",
+      "16",
+      "2",
+      "22",
+      "4"
+    ],
+    "excited": [
+      "11",
+      "17",
+      "18",
+      "21",
+      "3",
+      "6",
+      "7",
+      "9"
+    ]
+  },
+  "whale-002": {
+    "anxious": [
+      "1",
+      "11",
+      "12",
+      "13",
+      "19",
+      "23",
+      "24",
+      "4",
+      "whale-002_test.json",
+      "whale-002_test.png"
+    ],
+    "calm": [
+      "10",
+      "15",
+      "17",
+      "18",
+      "20",
+      "22",
+      "3",
+      "9"
+    ],
+    "curious": [],
+    "excited": [
+      "14",
+      "16",
+      "2",
+      "21",
+      "25",
+      "5",
+      "6",
+      "7",
+      "8"
+    ],
+    "reflective": []
+  }
+}

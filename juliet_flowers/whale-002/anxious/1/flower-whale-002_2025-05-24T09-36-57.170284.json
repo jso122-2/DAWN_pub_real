@@ -1,0 +1,28 @@
+{
+  "id": "flower-whale-002_2025-05-24T09-36-57.170284",
+  "agent": "whale-002",
+  "mood": "anxious",
+  "seed_context": [
+    "whale-002"
+  ],
+  "timestamp": "2025-05-24T09-36-57.170284",
+  "tick": 1,
+  "seed_coord": [
+    2,
+    1
+  ],
+  "semantic_pressure": 0.459,
+  "mood_prev": "neutral",
+  "sentences": [
+    "I am whale-002.",
+    "My mood is anxious.",
+    "Tick: 1."
+  ],
+  "ancestor_id": null,
+  "fractal_signature": {
+    "mood_weight": 1.0,
+    "seed_density": 2,
+    "sentence_complexity": 4.8,
+    "bloom_factor": 9.6
+  }
+}

@@ -1,0 +1,387 @@
+# /memory/bloom_genetics.py
+
+import uuid
+import math
+import random
+from typing import Dict, List, Set, Optional, Tuple
+from dataclasses import dataclass, field
+from datetime import datetime, timedelta
+from collections import defaultdict
+from enum import Enum
+
+from core.pulse_heat import add_heat
+from core.semantic_field import SemanticField, NodeCharge
+
+class BloomType(Enum):
+    """Types of memory blooms with different characteristics"""
+    EPISODIC = "episodic"       # Specific memories/experiences
+    SEMANTIC = "semantic"       # Conceptual knowledge
+    PROCEDURAL = "procedural"   # Skills and processes
+    EMOTIONAL = "emotional"     # Emotional associations
+    PATTERN = "pattern"         # Recognized patterns
+    CREATIVE = "creative"       # Creative insights/associations
+
+class GeneticTrait(Enum):
+    """Genetic traits that blooms can inherit and evolve"""
+    PERSISTENCE = "persistence"     # Resistance to decay
+    ADAPTABILITY = "adaptability"   # Ability to form new connections
+    RESONANCE = "resonance"         # Strength of semantic associations
+    CREATIVITY = "creativity"       # Tendency to novel combinations
+    STABILITY = "stability"         # Resistance to mutation
+    GROWTH_RATE = "growth_rate"     # Speed of development
+
+@dataclass
+class BloomGenome:
+    """Genetic information for a memory bloom"""
+    traits: Dict[GeneticTrait, float] = field(default_factory=dict)
+    generation: int = 1
+    parent_ids: List[str] = field(default_factory=list)
+    mutation_rate: float = 0.05
+    crossover_points: List[int] = field(default_factory=list)
+    
+    def __post_init__(self):
+        # Initialize traits if not provided
+        if not self.traits:
+            for trait in GeneticTrait:
+                self.traits[trait] = random.uniform(0.3, 0.7)
+    
+    def express_trait(self, trait: GeneticTrait) -> float:
+        """Express genetic trait with some environmental influence"""
+        base_value = self.traits.get(trait, 0.5)
+        
+        # Add small random variation for expression
+        expression_noise = random.gauss(0, 0.05)
+        expressed_value = base_value + expression_noise
+        
+        return max(0.0, min(1.0, expressed_value))
+
+@dataclass
+class MemoryBloom:
+    """Enhanced memory bloom with genetic inheritance"""
+    bloom_id: str
+    content: str
+    bloom_type: BloomType
+    genome: BloomGenome
+    
+    # Bloom state
+    vitality: float = 1.0
+    age_ticks: int = 0
+    access_count: int = 0
+    last_accessed: datetime = field(default_factory=datetime.utcnow)
+    
+    # Semantic properties
+    semantic_position: Optional[List[float]] = None
+    semantic_charge: NodeCharge = NodeCharge.STATIC_NEUTRAL
+    resonance_partners: Set[str] = field(default_factory=set)
+    
+    # Genetic expression
+    expressed_traits: Dict[GeneticTrait, float] = field(default_factory=dict)
+    
+    # Reproductive state
+    reproductive_readiness: float = 0.0
+    offspring_count: int = 0
+    max_offspring: int = 5
+    
+    def __post_init__(self):
+        # Express genetic traits
+        self.update_trait_expression()
+    
+    def update_trait_expression(self):
+        """Update expressed traits based on genome and environment"""
+        for trait in GeneticTrait:
+            self.expressed_traits[trait] = self.genome.express_trait(trait)
+    
+    def age_bloom(self, environmental_factors: Dict = None):
+        """Age the bloom by one tick with genetic influence"""
+        self.age_ticks += 1
+        
+        # Genetic influence on aging
+        persistence = self.expressed_traits.get(GeneticTrait.PERSISTENCE, 0.5)
+        stability = self.expressed_traits.get(GeneticTrait.STABILITY, 0.5)
+        
+        # Base decay rate modified by genetics
+        base_decay = 0.001
+        genetic_modifier = (persistence + stability) / 2.0
+        actual_decay = base_decay * (2.0 - genetic_modifier)  # Higher genes = lower decay
+        
+        # Environmental factors
+        if environmental_factors:
+            thermal_stress = environmental_factors.get('thermal_stress', 0.0)
+            semantic_pressure = environmental_factors.get('semantic_pressure', 0.0)
+            
+            stress_factor = 1.0 + (thermal_stress + semantic_pressure) * 0.1
+            actual_decay *= stress_factor
+        
+        # Apply aging
+        self.vitality = max(0.0, self.vitality - actual_decay)
+        
+        # Update reproductive readiness
+        self._update_reproductive_state()
+    
+    def _update_reproductive_state(self):
+        """Update readiness for genetic reproduction"""
+        # Factors that influence reproductive readiness
+        age_factor = min(self.age_ticks / 100.0, 1.0)  # Need some maturity
+        vitality_factor = self.vitality
+        access_factor = min(self.access_count / 10.0, 1.0)  # Used memories are more ready
+        
+        # Genetic influence
+        adaptability = self.expressed_traits.get(GeneticTrait.ADAPTABILITY, 0.5)
+        growth_rate = self.expressed_traits.get(GeneticTrait.GROWTH_RATE, 0.5)
+        
+        self.reproductive_readiness = (
+            age_factor * 0.25 +
+            vitality_factor * 0.3 +
+            access_factor * 0.2 +
+            adaptability * 0.15 +
+            growth_rate * 0.1
+        )
+    
+    def can_reproduce(self) -> bool:
+        """Check if bloom is ready for reproduction"""
+        return (self.reproductive_readiness > 0.6 and 
+                self.offspring_count < self.max_offspring and
+                self.vitality > 0.3)
+    
+    def mutate(self) -> 'MemoryBloom':
+        """Create mutated copy of this bloom"""
+        new_genome = BloomGenome(
+            traits=self.genome.traits.copy(),
+            generation=self.genome.generation + 1,
+            parent_ids=[self.bloom_id],
+            mutation_rate=self.genome.mutation_rate
+        )
+        
+        # Apply mutations
+        for trait in GeneticTrait:
+            if random.random() < new_genome.mutation_rate:
+                current_value = new_genome.traits[trait]
+                mutation_strength = random.gauss(0, 0.1)
+                new_value = current_value + mutation_strength
+                new_genome.traits[trait] = max(0.0, min(1.0, new_value))
+        
+        # Create new bloom
+        new_bloom = MemoryBloom(
+            bloom_id=str(uuid.uuid4()),
+            content=f"[mutated] {self.content}",
+            bloom_type=self.bloom_type,
+            genome=new_genome,
+            semantic_charge=self.semantic_charge
+        )
+        
+        self.offspring_count += 1
+        return new_bloom
+
+class BloomGeneticsEngine:
+    """Manages genetic evolution and inheritance of memory blooms"""
+    
+    def __init__(self):
+        # Bloom registry
+        self.blooms: Dict[str, MemoryBloom] = {}
+        self.genealogy: Dict[str, List[str]] = defaultdict(list)  # parent -> children
+        self.generation_stats: Dict[int, Dict] = defaultdict(dict)
+        
+        # Evolution parameters
+        self.selection_pressure = 0.3
+        self.crossover_rate = 0.1
+        self.mutation_rate = 0.05
+        self.max_population = 1000
+        
+        # Environmental factors
+        self.environmental_stress = 0.0
+        self.selection_criteria: Dict[str, float] = {
+            'vitality': 0.3,
+            'access_frequency': 0.25,
+            'genetic_fitness': 0.2,
+            'semantic_relevance': 0.15,
+            'age_appropriateness': 0.1
+        }
+        
+        print("[BloomGenetics] 🧬 Genetic memory system initialized")
+    
+    def create_bloom(self, content: str, bloom_type: BloomType, 
+                    parent_blooms: Optional[List[MemoryBloom]] = None) -> MemoryBloom:
+        """Create new memory bloom with genetic inheritance"""
+        
+        if parent_blooms and len(parent_blooms) >= 2:
+            # Sexual reproduction - crossover genetics
+            genome = self._crossover_genetics(parent_blooms[0], parent_blooms[1])
+        elif parent_blooms and len(parent_blooms) == 1:
+            # Asexual reproduction - mutation only
+            parent_genome = parent_blooms[0].genome
+            genome = BloomGenome(
+                traits=parent_genome.traits.copy(),
+                generation=parent_genome.generation + 1,
+                parent_ids=[parent_blooms[0].bloom_id]
+            )
+        else:
+            # New bloom - random genetics
+            genome = BloomGenome()
+        
+        # Create bloom
+        bloom = MemoryBloom(
+            bloom_id=str(uuid.uuid4()),
+            content=content,
+            bloom_type=bloom_type,
+            genome=genome
+        )
+        
+        # Register bloom
+        self.blooms[bloom.bloom_id] = bloom
+        
+        # Update genealogy
+        for parent_id in genome.parent_ids:
+            self.genealogy[parent_id].append(bloom.bloom_id)
+        
+        # Add to semantic field
+        self._integrate_with_semantic_field(bloom)
+        
+        print(f"[BloomGenetics] 🌱 Created bloom gen-{genome.generation}: {content[:30]}...")
+        
+        return bloom
+    
+    def _crossover_genetics(self, parent1: MemoryBloom, parent2: MemoryBloom) -> BloomGenome:
+        """Perform genetic crossover between two parent blooms"""
+        new_traits = {}
+        new_generation = max(parent1.genome.generation, parent2.genome.generation) + 1
+        
+        # Crossover traits
+        for trait in GeneticTrait:
+            # Random crossover point
+            if random.random() < 0.5:
+                new_traits[trait] = parent1.genome.traits.get(trait, 0.5)
+            else:
+                new_traits[trait] = parent2.genome.traits.get(trait, 0.5)
+            
+            # Apply mutation
+            if random.random() < self.mutation_rate:
+                mutation = random.gauss(0, 0.08)
+                new_traits[trait] = max(0.0, min(1.0, new_traits[trait] + mutation))
+        
+        return BloomGenome(
+            traits=new_traits,
+            generation=new_generation,
+            parent_ids=[parent1.bloom_id, parent2.bloom_id]
+        )
+    
+    def _integrate_with_semantic_field(self, bloom: MemoryBloom):
+        """Integrate new bloom with semantic field"""
+        # Convert content to embedding (simplified)
+        # In practice, this would use actual embedding model
+        import numpy as np
+        embedding = np.random.randn(384)
+        
+        # Add to semantic field with genetic influence on charge
+        creativity = bloom.expressed_traits.get(GeneticTrait.CREATIVITY, 0.5)
+        adaptability = bloom.expressed_traits.get(GeneticTrait.ADAPTABILITY, 0.5)
+        
+        # Higher creativity/adaptability = more active charge
+        if creativity > 0.6 or adaptability > 0.6:
+            charge_type = NodeCharge.ACTIVE_POSITIVE
+        elif creativity < 0.3 and adaptability < 0.3:
+            charge_type = NodeCharge.STATIC_NEUTRAL
+        else:
+            charge_type = NodeCharge.LATENT_POSITIVE
+        
+        bloom.semantic_charge = charge_type
+        
+        # Add to semantic field
+        semantic_node_id = SemanticField.add_semantic_node(
+            content=bloom.content,
+            embedding=embedding,
+            charge_type=charge_type
+        )
+        
+        # Store semantic position reference
+        field_data = SemanticField.get_field_visualization_data()
+        if semantic_node_id in field_data['nodes']:
+            bloom.semantic_position = field_data['nodes'][semantic_node_id]['position']
+    
+    def evolve_population(self, selection_count: int = 50) -> Dict:
+        """Perform evolutionary selection and reproduction"""
+        if len(self.blooms) < 10:
+            return {'message': 'insufficient_population'}
+        
+        # Calculate fitness scores
+        fitness_scores = self._calculate_fitness_scores()
+        
+        # Selection
+        selected_blooms = self._selection(fitness_scores, selection_count)
+        
+        # Reproduction
+        new_blooms = self._reproduction(selected_blooms)
+        
+        # Environmental selection (cull weak blooms)
+        self._environmental_culling()
+        
+        # Update generation statistics
+        self._update_generation_stats()
+        
+        evolution_stats = {
+            'total_population': len(self.blooms),
+            'selected_for_reproduction': len(selected_blooms),
+            'new_offspring': len(new_blooms),
+            'average_generation': self._calculate_average_generation(),
+            'genetic_diversity': self._calculate_genetic_diversity(),
+            'strongest_traits': self._identify_strongest_traits()
+        }
+        
+        add_heat("genetic_evolution", 0.2, f"evolved {len(new_blooms)} new blooms")
+        
+        print(f"[BloomGenetics] 🧬 Evolution cycle: {evolution_stats['new_offspring']} offspring, "
+              f"avg gen {evolution_stats['average_generation']:.1f}")
+        
+        return evolution_stats
+    
+    def _calculate_fitness_scores(self) -> Dict[str, float]:
+        """Calculate fitness scores for all blooms"""
+        fitness_scores = {}
+        current_time = datetime.utcnow()
+        
+        for bloom_id, bloom in self.blooms.items():
+            # Vitality component
+            vitality_score = bloom.vitality
+            
+            # Access frequency component
+            time_since_access = (current_time - bloom.last_accessed).days
+            access_score = bloom.access_count / (1 + time_since_access * 0.1)
+            access_score = min(access_score / 10.0, 1.0)  # Normalize
+            
+            # Genetic fitness component
+            genetic_score = self._calculate_genetic_fitness(bloom)
+            
+            # Semantic relevance component
+            semantic_score = self._calculate_semantic_relevance(bloom)
+            
+            # Age appropriateness (not too young, not too old)
+            age_score = self._calculate_age_fitness(bloom)
+            
+            # Weighted combination
+            total_fitness = (
+                vitality_score * self.selection_criteria['vitality'] +
+                access_score * self.selection_criteria['access_frequency'] +
+                genetic_score * self.selection_criteria['genetic_fitness'] +
+                semantic_score * self.selection_criteria['semantic_relevance'] +
+                age_score * self.selection_criteria['age_appropriateness']
+            )
+            
+            fitness_scores[bloom_id] = total_fitness
+        
+        return fitness_scores
+    
+    def _calculate_genetic_fitness(self, bloom: MemoryBloom) -> float:
+        """Calculate fitness based on genetic trait combination"""
+        traits = bloom.expressed_traits
+        
+        # Balanced traits are generally better
+        trait_values = list(traits.values())
+        
+        # Avoid extreme values (too high or too low)
+        balance_score = 1.0 - np.var(trait_values)
+        
+        # Bonus for beneficial trait combinations
+        persistence = traits.get(GeneticTrait.PERSISTENCE, 0.5)
+        adaptability = traits.get(GeneticTrait.ADAPTABILITY, 0.5)
+        resonance = traits.get(GeneticTrait.RESONANCE, 0.5)
+        
+        synergy

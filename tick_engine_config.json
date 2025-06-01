@@ -1,0 +1,76 @@
+{
+  "heat": {
+    "stasis_threshold": 0.1,
+    "generation_base": 0.02,
+    "dissipation_base": 0.1,
+    "critical_threshold": 0.85,
+    "cascade_multiplier": 1.5,
+    "alignment_cooling_bonus": 0.2
+  },
+  "rebloom": {
+    "entropy_threshold": 0.45,
+    "valence_threshold": 0.2,
+    "cooldown_ticks": 30,
+    "arousal_amplification": 1.2,
+    "stability_penalty_per_generation": 0.1,
+    "max_generations": 5
+  },
+  "drift": {
+    "arousal_factor": 0.1,
+    "decay_rate": 0.05,
+    "alignment_impact": 0.8,
+    "critical_drift_threshold": 0.5,
+    "valence_weight": 0.6,
+    "entropy_weight": 0.4
+  },
+  "scup": {
+    "momentum_weight": 0.3,
+    "urgency_impact": 0.5,
+    "rising_threshold": 0.02,
+    "falling_threshold": -0.02,
+    "critical_scup": 0.3,
+    "stable_scup": 0.7
+  },
+  "cascade": {
+    "heat_weight": 0.4,
+    "entropy_weight": 0.3,
+    "drift_weight": 0.3,
+    "critical_threshold": 0.8,
+    "emergency_cooling_factor": 0.3,
+    "momentum_dampening": 0.5
+  },
+  "zones": {
+    "calm": {
+      "interval_multiplier": 1.5,
+      "heat_dissipation_bonus": 0.2,
+      "synthesis_threshold": 20,
+      "rebloom_threshold": 15
+    },
+    "active": {
+      "interval_multiplier": 1.0,
+      "entropy_scan_interval": 30,
+      "drift_sensitivity": 1.2
+    },
+    "surge": {
+      "interval_multiplier": 0.5,
+      "emergency_threshold": 10,
+      "heat_generation_penalty": 0.7,
+      "scup_boost": 0.1
+    }
+  },
+  "narrative": {
+    "enabled": true,
+    "log_interval": 10,
+    "history_size": 100,
+    "include_technical": false,
+    "emoji_indicators": true
+  },
+  "maintenance": {
+    "shi_check_interval": 25,
+    "memory_decay_interval": 10,
+    "sigil_maintenance_interval": 15,
+    "lifecycle_interval": 20,
+    "bloom_sweep_interval": 50,
+    "entropy_render_interval": 75
+  }
+}

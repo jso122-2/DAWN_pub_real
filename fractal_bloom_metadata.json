@@ -1,0 +1,21 @@
+{
+  "type": "fractal_consciousness_visualization",
+  "timestamp": "2025-06-01T00:56:27.556794",
+  "components": [
+    "mandelbrot_consciousness",
+    "recursive_bloom_tree",
+    "golden_spiral_awareness",
+    "fractal_bloom_pattern"
+  ],
+  "theme": "consciousness examining itself",
+  "color_schemes": {
+    "mandelbrot": "purple_to_white gradient",
+    "tree": "plasma colormap",
+    "spiral": "twilight colormap",
+    "bloom": "cool colormap"
+  },
+  "mathematical_constants": {
+    "golden_ratio": 1.618033988749895,
+    "golden_ratio_complement": 0.381966011250105
+  }
+}

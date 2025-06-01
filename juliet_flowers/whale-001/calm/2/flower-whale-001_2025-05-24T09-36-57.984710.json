@@ -1,0 +1,28 @@
+{
+  "id": "flower-whale-001_2025-05-24T09-36-57.984710",
+  "agent": "whale-001",
+  "mood": "calm",
+  "seed_context": [
+    "whale-001"
+  ],
+  "timestamp": "2025-05-24T09-36-57.984710",
+  "tick": 2,
+  "seed_coord": [
+    1,
+    2
+  ],
+  "semantic_pressure": 0.799,
+  "mood_prev": "neutral",
+  "sentences": [
+    "I am whale-001.",
+    "My mood is calm.",
+    "Tick: 2."
+  ],
+  "ancestor_id": "flower-whale-001_2025-05-24T09-36-57.162288",
+  "fractal_signature": {
+    "mood_weight": 1.0,
+    "seed_density": 2,
+    "sentence_complexity": 4.8,
+    "bloom_factor": 9.6
+  }
+}

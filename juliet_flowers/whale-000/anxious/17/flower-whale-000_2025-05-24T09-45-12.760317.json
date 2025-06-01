@@ -1,0 +1,31 @@
+{
+  "id": "flower-whale-000_2025-05-24T09-45-12.760317",
+  "agent": "whale-000",
+  "mood": "anxious",
+  "seed_context": [
+    "whale-000"
+  ],
+  "timestamp": "2025-05-24T09-45-12.760317",
+  "tick": 17,
+  "seed_coord": [
+    98,
+    3
+  ],
+  "semantic_pressure": 0.162,
+  "mood_prev": "sad",
+  "sentences": [
+    "I am whale-000.",
+    "My mood is anxious.",
+    "I carry 16 generations behind me.",
+    "Tick: 17.",
+    "I feel sad still echoing.",
+    "The bloom continues."
+  ],
+  "ancestor_id": "flower-whale-000_2025-05-24T09-45-11.701369",
+  "fractal_signature": {
+    "mood_weight": 1.5,
+    "seed_density": 17,
+    "sentence_complexity": 12.6,
+    "bloom_factor": 2.754
+  }
+}
