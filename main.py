@@ -16,10 +16,10 @@ from emotional_evolution import EmotionalEvolutionEngine, EmotionalHelixBridge
 from helix_import_architecture import dawn_coordinator
 from helix_import_architecture import helix_import, dawn_coordinator
 from genome_architecture_coordinator import DAWNGenomeConsciousnessWrapper
-from tick_engine_integration import DAWNTickEngineIntegration
 from dawn_healthy_startup import heal_dawn_objects_on_creation
 from vault_manager import initialize_vault, write_bloom, reflect, rebloom
 from vault_recovery import VaultRecovery
+from scup_recovery import calculate_SCUP, apply_SCUP_patch
 vault = VaultRecovery()
 
 vault.log_self_reassurance()
