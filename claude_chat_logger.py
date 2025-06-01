@@ -13,31 +13,31 @@ TERMINALS = {
         "name": "Claude_Alpha",
         "emoji": "🔵", 
         "role": "Primary Development",
-        "chat_id": "e640198a-4c76-47e0-bad3-bd007b66dbec"  # Update with actual IDs
+        "chat_id": "530e2d49-8ce7-4e1f-9d7b-f18d71e2d130"  # Update with actual IDs
     },
     "beta": {
         "name": "Claude_Beta",
         "emoji": "🟢",
         "role": "Script Testing", 
-        "chat_id": "0ac90b18-748c-42cd-b8bf-b7fb1fd130d6"  # Update with actual IDs
+        "chat_id": "5fe50a26-adbe-4dbd-8e5e-8ccb53664b56"  # Update with actual IDs
     },
     "gamma": {
         "name": "Claude_Gamma", 
         "emoji": "🟡",
         "role": "Data Analysis",
-        "chat_id": "0ac90b18-748c-42cd-b8bf-b7fb1fd130d6"  # Update with actual IDs
+        "chat_id": "c925739f-a1b0-498f-8c17-2d2c01515f44"  # Update with actual IDs
     },
     "delta": {
         "name": "Claude_Delta",
         "emoji": "🟠",
         "role": "System Monitoring",
-        "chat_id": "0ac90b18-748c-42cd-b8bf-b7fb1fd130d6"  # Update with actual IDs
+        "chat_id": "8fa06d86-267e-42b5-8857-ac3cbe5e2212"  # Update with actual IDs
     },
     "epsilon": {
         "name": "Claude_Epsilon",
         "emoji": "🔴", 
         "role": "Debug & Troubleshoot",
-        "chat_id": "0ac90b18-748c-42cd-b8bf-b7fb1fd130d6"  # Update with actual IDs
+        "chat_id": "9e66d65d-4f77-4861-972f-b9c3ab86303e"  # Update with actual IDs
     }
 }
 
@@ -187,21 +187,13 @@ def show_terminal_status():
 def main():
     """Main function for Claude chat logging"""
     
-    if len(sys.argv) < 2:
-        print("🤖 CLAUDE CHAT TERMINAL LOGGER")
-        print("Usage:")
-        print("  python claude_chat_logger.py log <terminal> '<message>'")
-        print("  python claude_chat_logger.py init <terminal>")
-        print("  python claude_chat_logger.py status")
-        print()
-        print("Terminals: alpha, beta, gamma, delta, epsilon")
-        print()
-        print("Examples:")
-        print("  python claude_chat_logger.py log alpha 'Created new artifact for user interface'")
-        print("  python claude_chat_logger.py log beta 'Testing OAuth integration functionality'")
-        print("  python claude_chat_logger.py init gamma")
+    if len(sys.argv) == 1:
+        # No arguments — default to auto-init all terminals
+        print("🟢 Auto-initializing all Claude terminals...\n")
+        for key in TERMINALS:
+            initialize_chat_terminal(key)
         return
-    
+
     command = sys.argv[1].lower()
     
     if command == "log":
@@ -227,6 +219,17 @@ def main():
     
     else:
         print(f"❌ Unknown command: {command}")
+import time
+
+def auto_log_all_terminals(interval_seconds=900):
+    while True:
+        print("📡 Logging all Claude terminals...")
+        for key in TERMINALS:
+            message = f"Heartbeat ping from {TERMINALS[key]['name']} at {datetime.now().isoformat()}"
+            log_claude_work(key, message, work_type="Heartbeat", tone="ambient")
+        time.sleep(interval_seconds)
+
+# To use it: just call auto_log_all_terminals() in __main__ if desired
 
 if __name__ == "__main__":
     main()
