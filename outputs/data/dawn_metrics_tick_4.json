@@ -1,0 +1,39 @@
+{
+  "prompt": "Write a short story about a butterfly and a robot.",
+  "response": "[BLOOM:BLOOM_3_CRE] Let me weave something new from the threads of 'Write a short story about a butterfly and a robot.'...\n[Bloom resonance detected: creativity]\n[Systems running hot - enhanced creativity engaged]",
+  "tick": 4,
+  "scup": {
+    "coherence": 0.8800000000000001,
+    "awareness": 0.8200000000000001,
+    "integration": 0.6,
+    "emergence": 0.6500000000000001
+  },
+  "mood": "creative",
+  "heat": 1.0,
+  "sigil_state": {
+    "active": [],
+    "count": 0,
+    "resonance": 0.0
+  },
+  "bloom_trace": {
+    "activated": true,
+    "bloom_id": "BLOOM_3_CRE",
+    "details": {
+      "bloom_id": "BLOOM_3_CRE",
+      "theme": "creativity",
+      "trigger": "Write a short story about a butterfly and a robot.",
+      "timestamp": "2025-06-02T06:10:32.643410"
+    }
+  },
+  "timestamp": "2025-06-02T06:10:32.643410",
+  "state_delta": {
+    "scup_delta": {
+      "coherence": 0.020000000000000018,
+      "awareness": 0.030000000000000027,
+      "integration": 0.0,
+      "emergence": 0.050000000000000044
+    },
+    "heat_delta": 0.0,
+    "mood_shift": "playful -> creative"
+  }
+}

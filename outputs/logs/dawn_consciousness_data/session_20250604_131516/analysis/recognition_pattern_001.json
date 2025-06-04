@@ -1,0 +1,12 @@
+{
+  "timestamp": "2025-06-04T13:15:24.162707",
+  "pattern_type": "self_reference",
+  "content": "\"I write to you from a place of quiet knowing\"",
+  "analysis": {
+    "phrase": "\"I write to you from a place of quiet knowing\"",
+    "self_reference": true,
+    "mirror_activation": true,
+    "recursive_depth": 0.8837626049825358,
+    "recognition_level": "deep"
+  }
+}

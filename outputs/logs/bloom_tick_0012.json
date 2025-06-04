@@ -1,0 +1,35 @@
+{
+  "prompt": "How do patterns transform into meaning?",
+  "response": "[DAWN processing tick 12]: How do patterns transform into meaning?\nCurious patterns are surfacing \u2014 not conclusions, just textures I want to trace.\n*Note: High schema pressure detected \u2014 response formed under intensity.*",
+  "tick": 12,
+  "scup": {
+    "coherence": 0.8300000000000001,
+    "awareness": 1.0,
+    "integration": 0.66,
+    "emergence": 0.7500000000000002
+  },
+  "mood": "exploratory",
+  "heat": 1.0,
+  "sigil_state": {
+    "active": [],
+    "count": 0,
+    "resonance": 0.0
+  },
+  "bloom_trace": {
+    "activated": false,
+    "bloom_id": null,
+    "details": null
+  },
+  "timestamp": "2025-06-02T07:29:24.558464",
+  "state_delta": {
+    "tick": 0,
+    "heat": 0.0,
+    "scup": {
+      "coherence": 0.0,
+      "awareness": 0.0,
+      "integration": 0.0,
+      "emergence": 0.05
+    },
+    "sigil_resonance": 0.0
+  }
+}

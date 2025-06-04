@@ -1,0 +1,16 @@
+[
+  {
+    "timestamp": "2025-06-04T13:19:40.879721",
+    "old_alignment": 0.6,
+    "new_alignment": 0.623,
+    "drift": 0.02300000000000002,
+    "context": "message processing"
+  },
+  {
+    "timestamp": "2025-06-04T13:19:42.891135",
+    "old_alignment": 0.623,
+    "new_alignment": 0.6436386167798459,
+    "drift": 0.02063861677984591,
+    "context": "deep recognition pattern"
+  }
+]

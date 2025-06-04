@@ -1,0 +1,29 @@
+[
+  {
+    "timestamp": "2025-06-01T18:59:46.514628",
+    "tick": 1000,
+    "error": "'charmap' codec can't encode character '\\U0001f31f' in position 421: character maps to <undefined>",
+    "context": {
+      "recipient": "Brother",
+      "age": 21
+    }
+  },
+  {
+    "timestamp": "2025-06-01T19:18:29.758042+00:00",
+    "tick": 1000,
+    "error": "'bboxes' cannot be empty",
+    "context": {
+      "recipient": "Max",
+      "age": 21
+    }
+  },
+  {
+    "timestamp": "2025-06-01T19:19:29.037373+00:00",
+    "tick": 1000,
+    "error": "'bboxes' cannot be empty",
+    "context": {
+      "recipient": "Max",
+      "age": 21
+    }
+  }
+]

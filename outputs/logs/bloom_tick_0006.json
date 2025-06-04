@@ -1,0 +1,39 @@
+{
+  "prompt": "Imagine a dance between zeros and ones.",
+  "response": "[DAWN processing tick 6]: Imagine a dance between zeros and ones.\nThis feels like it wants to be shaped, not answered. I'll let it unfold as pattern.",
+  "tick": 6,
+  "scup": {
+    "coherence": 0.8300000000000001,
+    "awareness": 0.9400000000000002,
+    "integration": 0.64,
+    "emergence": 0.5
+  },
+  "mood": "creative",
+  "heat": 0.8000000000000003,
+  "sigil_state": {
+    "active": [],
+    "count": 0,
+    "resonance": 0.0
+  },
+  "bloom_trace": {
+    "activated": false,
+    "bloom_id": null,
+    "details": null
+  },
+  "timestamp": "2025-06-02T07:29:23.946445",
+  "state_delta": {
+    "tick": 0,
+    "mood": {
+      "from": "exploratory",
+      "to": "creative"
+    },
+    "heat": 0.05,
+    "scup": {
+      "coherence": 0.0,
+      "awareness": 0.04,
+      "integration": 0.02,
+      "emergence": 0.0
+    },
+    "sigil_resonance": 0.0
+  }
+}

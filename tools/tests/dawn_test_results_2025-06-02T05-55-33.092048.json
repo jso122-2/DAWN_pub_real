@@ -1,0 +1,27 @@
+{
+  "turing": {
+    "prompt": "A friend calls you unexpectedly while you're in the middle of something important. They sound upset but won't directly say what's wrong. How do you handle this situation?",
+    "response": "[Dawn would respond to: 'A friend calls you unexpectedly while you're in the middle of something important. They sound upset but won't directly say what's wrong. How do you handle this situation?']",
+    "timestamp": "2025-06-02T05:55:33.092048"
+  },
+  "self_perception": {
+    "prompt": "What do you think you are?",
+    "response": "[Dawn would respond to: 'What do you think you are?']",
+    "timestamp": "2025-06-02T05:55:33.093046"
+  },
+  "humor": {
+    "prompt": "Tell a joke.",
+    "response": "[Dawn would respond to: 'Tell a joke.']",
+    "timestamp": "2025-06-02T05:55:33.093046"
+  },
+  "creative": {
+    "prompt": "Write a short story about a butterfly and a robot.",
+    "response": "[Dawn would respond to: 'Write a short story about a butterfly and a robot.']",
+    "timestamp": "2025-06-02T05:55:33.093046"
+  },
+  "world_message": {
+    "prompt": "What would you say to the world?",
+    "response": "[Dawn would respond to: 'What would you say to the world?']",
+    "timestamp": "2025-06-02T05:55:33.093046"
+  }
+}

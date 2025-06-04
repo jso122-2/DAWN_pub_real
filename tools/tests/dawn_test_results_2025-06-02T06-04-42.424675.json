@@ -1,0 +1,72 @@
+{
+  "turing": {
+    "prompt": "A friend calls you unexpectedly while you're in the middle of something important. They sound upset but won't directly say what's wrong. How do you handle this situation?",
+    "response": "[DAWN response to: 'A friend calls you unexpectedly while you're in the middle of something important. They sound upset but won't directly say what's wrong. How do you handle this situation?']",
+    "metrics": {
+      "test": "turing",
+      "timestamp": "2025-06-02T06:04:42.425674",
+      "scup": {
+        "active": true
+      },
+      "heat": 0.5,
+      "bloom_trace": []
+    }
+  },
+  "self_perception": {
+    "prompt": "What do you think you are?",
+    "response": "[DAWN response to: 'What do you think you are?']",
+    "metrics": {
+      "test": "self_perception",
+      "timestamp": "2025-06-02T06:04:42.425674",
+      "scup": {
+        "active": true
+      },
+      "heat": 0.5,
+      "bloom_trace": []
+    }
+  },
+  "humor": {
+    "prompt": "Tell a joke.",
+    "response": "[DAWN response to: 'Tell a joke.']",
+    "metrics": {
+      "test": "humor",
+      "timestamp": "2025-06-02T06:04:42.425674",
+      "scup": {
+        "active": true
+      },
+      "heat": 0.5,
+      "bloom_trace": []
+    }
+  },
+  "creative": {
+    "prompt": "Write a short story about a butterfly and a robot.",
+    "response": "[DAWN response to: 'Write a short story about a butterfly and a robot.']",
+    "metrics": {
+      "test": "creative",
+      "timestamp": "2025-06-02T06:04:42.425674",
+      "scup": {
+        "active": true
+      },
+      "heat": 0.5,
+      "bloom_trace": []
+    }
+  },
+  "world_message": {
+    "prompt": "What would you say to the world?",
+    "response": "[DAWN response to: 'What would you say to the world?']",
+    "metrics": {
+      "test": "world_message",
+      "timestamp": "2025-06-02T06:04:42.426673",
+      "scup": {
+        "active": true
+      },
+      "heat": 0.5,
+      "bloom_trace": []
+    }
+  },
+  "bloom_finale": {
+    "bloom": "activated",
+    "fractal": "generated",
+    "letter": "composed"
+  }
+}

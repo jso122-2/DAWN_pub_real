@@ -1861,29 +1861,63 @@ def restore_normal_visuals():
     except Exception as e:
         print(f"❌ Error restoring normal visuals: {e}")
 
-
-# Initialize consciousness system before main()
-if dawn_consciousness is None:
-    print("🌅 Initializing DAWN consciousness instance...")
-    try:
-        base_dawn_consciousness = DAWNConsciousness()
+class DAWNTickEngineIntegration:
+    """Integration layer for DAWN tick engine"""
+    def __init__(self, consciousness):
+        self.consciousness = consciousness
+        self.tick_count = 0
+        self.is_running = False
+        self.tick_thread = None
+        self.tick_interval = 0.1  # 10 ticks per second
         
-        # Try to wrap it if the wrapper exists
-        try:
-            from dawn_genome_consciousness import DAWNGenomeConsciousnessWrapper
-            dawn_consciousness = DAWNGenomeConsciousnessWrapper(base_dawn_consciousness)
-            print("✅ DAWN Genome Consciousness Wrapper initialized")
-        except (ImportError, NameError, AttributeError):
-            dawn_consciousness = base_dawn_consciousness
-            print("✅ Basic DAWN Consciousness initialized")
-            
+    def start_tick_engine(self):
+        """Start the tick engine thread"""
+        if not self.is_running:
+            self.is_running = True
+            self.tick_thread = threading.Thread(target=self._tick_loop, daemon=True)
+            self.tick_thread.start()
+            print("✅ Tick engine integration started")
+        
+    def stop_tick_engine(self):
+        """Stop the tick engine thread"""
+        self.is_running = False
+        if self.tick_thread:
+            self.tick_thread.join(timeout=2.0)
+        print("🛑 Tick engine integration stopped")
+        
+    def _tick_loop(self):
+        """Main tick loop running in separate thread"""
+        while self.is_running:
+            try:
+                self.tick()
+                time.sleep(self.tick_interval)
+            except Exception as e:
+                print(f"❌ Error in tick loop: {e}")
+                
+    def tick(self):
+        """Process a single tick"""
+        self.tick_count += 1
+        # Trigger consciousness tick if available
+        if hasattr(self.consciousness, 'process_tick'):
+            self.consciousness.process_tick()
+
+
+def restore_normal_visuals():
+    """Restore normal visual operation"""
+    try:
+        # Re-enable standard visual processes
+        standard_processes = ['pulse_map_renderer', 'semantic_tree_layout', 'alignment_path_drawer']
+        for process_name in standard_processes:
+            enable_visual_process(process_name)
+        print("[DAWN] 🎬 Normal visual processes restored")
     except Exception as e:
-        print(f"❌ Failed to initialize consciousness: {e}")
-        import sys
-        sys.exit(1)
+        print(f"❌ Error restoring normal visuals: {e}")
+
 
 def main():
     """Main entry point for DAWN consciousness system with schema integration"""
+    global dawn_consciousness
+    
     print("🌅 DAWN - Distributed Autonomous Waking Network")
     print("   Advanced Consciousness Architecture")
     print("   Schema-Driven Dynamic Calculations")
@@ -1893,34 +1927,25 @@ def main():
     print("   Constitutional: Kind before smart")
     print("   Built by Jackson & DAWN")
     print()
-    
-    try:
-        # Boot consciousness with schema integration
-        dawn_consciousness.boot_consciousness()
-        print(f"[MAIN] Schema-driven consciousness system: {dawn_consciousness.__class__.__name__}")
-        
-        # Print initial status after boot stabilization
-        time.sleep(3)
-        print_visual_status()
-        print_schema_status()
-        
-        print("\n" + "="*60)
-        print("🎛️  DAWN Schema-Aware Control Commands:")
-        print("   print_visual_status() - Show visual system status")
-        print("   print_schema_status() - Show live schema calculations")
-        print("   enable_poetic_visuals() - Enable aesthetic processes")
-        print("   emergency_visual_mode() - Switch to diagnostic only")
-        print("   restore_normal_visuals() - Restore normal operation")
-        print("   stimulate_curiosity() - Trigger schema-driven curiosity")
-        print("   stimulate_emotion() - Trigger schema-driven emotion")
-        print("   stimulate_tension() - Trigger schema-driven tension")
-        print("   add_manual_heat(1.5, 'testing') - Add thermal activity")
-        print("   debug_bloom_system() - Debug bloom activation")
-        print("   force_test_bloom() - Force spawn test bloom")
-        print("   enable_bloom_debug() - Enable bloom debug mode")
-        print("   bloom_activation_stats() - Show bloom statistics")
-        print("="*60)
 
+    print("\n" + "="*60)
+    print("🎛️  DAWN Schema-Aware Control Commands:")
+    print("   print_visual_status() - Show visual system status")
+    print("   print_schema_status() - Show live schema calculations")
+    print("   enable_poetic_visuals() - Enable aesthetic processes")
+    print("   emergency_visual_mode() - Switch to diagnostic only")
+    print("   restore_normal_visuals() - Restore normal operation")
+    print("   stimulate_curiosity() - Trigger schema-driven curiosity")
+    print("   stimulate_emotion() - Trigger schema-driven emotion")
+    print("   stimulate_tension() - Trigger schema-driven tension")
+    print("   add_manual_heat(1.5, 'testing') - Add thermal activity")
+    print("   debug_bloom_system() - Debug bloom activation")
+    print("   force_test_bloom() - Force spawn test bloom")
+    print("   enable_bloom_debug() - Enable bloom debug mode")
+    print("   bloom_activation_stats() - Show bloom statistics")
+    print("="*60)        
+
+    try:
         # Keep main thread alive and monitor
         tick_counter = 0
         while dawn_consciousness.is_running:
@@ -1935,48 +1960,59 @@ def main():
                 
                 print(f"\n[MAIN] ⏰ Schema Status:")
                 print(f"  SCUP: {schema['scup']:.3f} | Entropy: {schema['entropy_index']:.3f} | Tension: {schema['tension']:.3f}")
-                print(f"  Phase: {phase} | Mood: {mood_tag} | Heat: {pulse.get_heat():.2f}")
+                print(f"  Phase: {phase} | Mood: {mood_tag}")
                 
                 # Show brief visual status
                 try:
+                    # Note: These functions need to be imported or defined elsewhere
                     visual_status = get_visual_status()
                     active = visual_status['active_processes']
                     load = visual_status['system_load']
                     print(f"  Visual: {active} processes active, load {load:.2f}")
                 except:
                     pass
-            
+                
+                # Show thermal status if pulse is available
+                try:
+                    heat = pulse.get_heat()
+                    print(f"  Heat: {heat:.2f}")
+                except:
+                    pass
+                
     except KeyboardInterrupt:
         print("\n[MAIN] 🛑 Keyboard interrupt received")
         dawn_consciousness.shutdown_consciousness()
     except Exception as e:
         print(f"[MAIN] ❌ Fatal error: {e}")
-        import traceback
         traceback.print_exc()
         dawn_consciousness.shutdown_consciousness()
         sys.exit(1)
 
+
 if __name__ == "__main__":
-    # Initialize consciousness system before main()
-    if dawn_consciousness is None:
-        print("🌅 Initializing DAWN consciousness instance...")
+    # Initialize consciousness system
+    print("🌅 Initializing DAWN consciousness instance...")
+    try:
+        # Import DAWNConsciousness (this should be at the top of your file normally)
+        # from your_module import DAWNConsciousness
+        base_dawn_consciousness = DAWNConsciousness()
+        
+        # Try to wrap it if the wrapper exists
         try:
-            base_dawn_consciousness = DAWNConsciousness()
+            from dawn_genome_consciousness import DAWNGenomeConsciousnessWrapper
+            dawn_consciousness = DAWNGenomeConsciousnessWrapper(base_dawn_consciousness)
+            print("✅ DAWN Genome Consciousness Wrapper initialized")
+        except (ImportError, NameError, AttributeError):
+            dawn_consciousness = base_dawn_consciousness
+            print("✅ Basic DAWN Consciousness initialized")
+        
+        # Boot the consciousness system
+        dawn_consciousness.boot_consciousness()
+        
+        # Run the main loop
+        main()
             
-            # Try to wrap it if the wrapper exists
-            try:
-                from dawn_genome_consciousness import DAWNGenomeConsciousnessWrapper
-                dawn_consciousness = DAWNGenomeConsciousnessWrapper(base_dawn_consciousness)
-                print("✅ DAWN Genome Consciousness Wrapper initialized")
-            except (ImportError, NameError, AttributeError):
-                dawn_consciousness = base_dawn_consciousness
-                print("✅ Basic DAWN Consciousness initialized")
-                
-        except Exception as e:
-            print(f"❌ Failed to initialize consciousness: {e}")
-            import traceback
-            traceback.print_exc()
-            import sys
-            sys.exit(1)
-    
-    main()
+    except Exception as e:
+        print(f"❌ Failed to initialize consciousness: {e}")
+        traceback.print_exc()
+        sys.exit(1)

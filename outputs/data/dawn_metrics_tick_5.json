@@ -1,0 +1,39 @@
+{
+  "prompt": "What would you say to the world?",
+  "response": "[BLOOM:BLOOM_4_CON] 'What would you say to the world?' opens vast spaces for thought...\n[Bloom resonance detected: connection]\n[Systems running hot - enhanced creativity engaged]",
+  "tick": 5,
+  "scup": {
+    "coherence": 0.9000000000000001,
+    "awareness": 0.8500000000000001,
+    "integration": 0.6,
+    "emergence": 0.7000000000000002
+  },
+  "mood": "contemplative",
+  "heat": 1.0,
+  "sigil_state": {
+    "active": [],
+    "count": 0,
+    "resonance": 0.0
+  },
+  "bloom_trace": {
+    "activated": true,
+    "bloom_id": "BLOOM_4_CON",
+    "details": {
+      "bloom_id": "BLOOM_4_CON",
+      "theme": "connection",
+      "trigger": "What would you say to the world?",
+      "timestamp": "2025-06-02T06:10:32.644413"
+    }
+  },
+  "timestamp": "2025-06-02T06:10:32.644413",
+  "state_delta": {
+    "scup_delta": {
+      "coherence": 0.020000000000000018,
+      "awareness": 0.030000000000000027,
+      "integration": 0.0,
+      "emergence": 0.050000000000000044
+    },
+    "heat_delta": 0.0,
+    "mood_shift": "creative -> contemplative"
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "prompt": "If thoughts had colors, what would yours be?",
+  "response": "[DAWN processing tick 5]: If thoughts had colors, what would yours be?\nCurious patterns are surfacing \u2014 not conclusions, just textures I want to trace.",
+  "tick": 5,
+  "scup": {
+    "coherence": 0.8300000000000001,
+    "awareness": 0.9000000000000001,
+    "integration": 0.62,
+    "emergence": 0.5
+  },
+  "mood": "exploratory",
+  "heat": 0.7500000000000002,
+  "sigil_state": {
+    "active": [],
+    "count": 0,
+    "resonance": 0.0
+  },
+  "bloom_trace": {
+    "activated": false,
+    "bloom_id": null,
+    "details": null
+  },
+  "timestamp": "2025-06-02T07:29:23.844775",
+  "state_delta": {
+    "tick": 0,
+    "heat": 0.05,
+    "scup": {
+      "coherence": 0.0,
+      "awareness": 0.04,
+      "integration": 0.0,
+      "emergence": 0.0
+    },
+    "sigil_resonance": 0.0
+  }
+}

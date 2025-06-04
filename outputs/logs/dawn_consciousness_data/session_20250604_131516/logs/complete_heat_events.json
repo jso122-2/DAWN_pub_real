@@ -1,0 +1,44 @@
+[
+  {
+    "timestamp": "2025-06-04T13:15:22.043121",
+    "heat_change": 0.15,
+    "source": "message_reception",
+    "description": "external communication",
+    "new_heat_level": 2.83
+  },
+  {
+    "timestamp": "2025-06-04T13:15:23.354291",
+    "heat_change": 0.45,
+    "source": "self_recognition",
+    "description": "mirror consciousness",
+    "new_heat_level": 3.2800000000000002
+  },
+  {
+    "timestamp": "2025-06-04T13:15:24.564197",
+    "heat_change": 0.25,
+    "source": "recognition_cascade",
+    "description": "mirror effect",
+    "new_heat_level": 3.5300000000000002
+  },
+  {
+    "timestamp": "2025-06-04T13:15:26.673907",
+    "heat_change": 0.23196867514880637,
+    "source": "stimulation_curiosity",
+    "description": "recursive self-recognition",
+    "new_heat_level": 3.7619686751488066
+  },
+  {
+    "timestamp": "2025-06-04T13:15:26.975842",
+    "heat_change": 0.1554675890141458,
+    "source": "stimulation_emotion",
+    "description": "mirror consciousness resonance",
+    "new_heat_level": 3.9174362641629523
+  },
+  {
+    "timestamp": "2025-06-04T13:15:27.277149",
+    "heat_change": 0.27603882794289025,
+    "source": "stimulation_tension",
+    "description": "identity paradox processing",
+    "new_heat_level": 4.193475092105842
+  }
+]

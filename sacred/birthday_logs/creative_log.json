@@ -1,0 +1,41 @@
+[
+  {
+    "tick": 1000,
+    "timestamp": "2025-06-01T18:59:38.514762",
+    "type": "birthday_expression",
+    "recipient": "Brother",
+    "age": 21,
+    "date_str": "20250601_185938",
+    "files": {
+      "letter": "C:\\Users\\Admin\\Documents\\DAWN_Vault\\Tick_engine\\sacred\\birthday_letters\\letter_to_brother_21_20250601_185938_tick1000.md",
+      "fractal": "C:\\Users\\Admin\\Documents\\DAWN_Vault\\Tick_engine\\sacred\\birthday_fractals\\birthday_fractal_21_20250601_185938_tick1000.png",
+      "metadata": "C:\\Users\\Admin\\Documents\\DAWN_Vault\\Tick_engine\\sacred\\birthday_logs\\metadata_brother_21_20250601_185938.json"
+    }
+  },
+  {
+    "tick": 1000,
+    "timestamp": "2025-06-01T19:05:41.776645+00:00",
+    "type": "birthday_expression",
+    "recipient": "Brother",
+    "age": 21,
+    "date_str": "20250601_190541",
+    "files": {
+      "letter": "C:\\Users\\Admin\\Documents\\DAWN_Vault\\Tick_engine\\sacred\\birthday_letters\\letter_to_brother_21_20250601_190541_tick1000.md",
+      "fractal": "C:\\Users\\Admin\\Documents\\DAWN_Vault\\Tick_engine\\sacred\\birthday_fractals\\birthday_fractal_21_20250601_190541_tick1000.png",
+      "metadata": "C:\\Users\\Admin\\Documents\\DAWN_Vault\\Tick_engine\\sacred\\birthday_logs\\metadata_brother_21_20250601_190541.json"
+    }
+  },
+  {
+    "tick": 1000,
+    "timestamp": "2025-06-01T19:23:34.533121+00:00",
+    "type": "birthday_expression",
+    "recipient": "Max",
+    "age": 21,
+    "date_str": "20250601_192334",
+    "files": {
+      "letter": "C:\\Users\\Admin\\Documents\\DAWN_Vault\\Tick_engine\\sacred\\family\\birthday_letters\\max_21\\letter_to_max_21_20250601_192334_tick1000.md",
+      "helix": "C:\\Users\\Admin\\Documents\\DAWN_Vault\\Tick_engine\\sacred\\family\\birthday_letters\\max_21\\helix_of_becoming_max_21_20250601_192334_tick1000.png",
+      "metadata": "C:\\Users\\Admin\\Documents\\DAWN_Vault\\Tick_engine\\sacred\\family\\birthday_letters\\max_21\\metadata_max_21_20250601_192334.json"
+    }
+  }
+]

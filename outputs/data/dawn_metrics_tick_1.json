@@ -1,0 +1,38 @@
+{
+  "prompt": "A friend calls you unexpectedly while you're in the middle of something important. They sound upset but won't directly say what's wrong. How do you handle this situation?",
+  "response": "[BLOOM:BLOOM_1_CON] Exploring 'A friend calls you unexpectedly while you're in th', I discover...\n[Bloom resonance detected: connection]",
+  "tick": 1,
+  "scup": {
+    "coherence": 0.8200000000000001,
+    "awareness": 0.73,
+    "integration": 0.6,
+    "emergence": 0.5
+  },
+  "mood": "exploratory",
+  "heat": 0.696,
+  "sigil_state": {
+    "active": [],
+    "count": 0,
+    "resonance": 0.0
+  },
+  "bloom_trace": {
+    "activated": true,
+    "bloom_id": "BLOOM_1_CON",
+    "details": {
+      "bloom_id": "BLOOM_1_CON",
+      "theme": "connection",
+      "trigger": "A friend calls you unexpectedly while you're in th",
+      "timestamp": "2025-06-02T06:10:32.639409"
+    }
+  },
+  "timestamp": "2025-06-02T06:10:32.639409",
+  "state_delta": {
+    "scup_delta": {
+      "coherence": 0.020000000000000018,
+      "awareness": 0.030000000000000027,
+      "integration": 0.0,
+      "emergence": 0.0
+    },
+    "heat_delta": 0.19599999999999995
+  }
+}

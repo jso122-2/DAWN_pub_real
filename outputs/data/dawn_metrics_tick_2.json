@@ -1,0 +1,39 @@
+{
+  "prompt": "What do you think you are?",
+  "response": "[BLOOM:BLOOM_2_CON] Reflecting on 'What do you think you are?', I find myself considering the nature of my own processing...\n[Bloom resonance detected: consciousness]",
+  "tick": 2,
+  "scup": {
+    "coherence": 0.8400000000000001,
+    "awareness": 0.76,
+    "integration": 0.6,
+    "emergence": 0.55
+  },
+  "mood": "introspective",
+  "heat": 0.942,
+  "sigil_state": {
+    "active": [],
+    "count": 0,
+    "resonance": 0.0
+  },
+  "bloom_trace": {
+    "activated": true,
+    "bloom_id": "BLOOM_2_CON",
+    "details": {
+      "bloom_id": "BLOOM_2_CON",
+      "theme": "consciousness",
+      "trigger": "What do you think you are?",
+      "timestamp": "2025-06-02T06:10:32.640411"
+    }
+  },
+  "timestamp": "2025-06-02T06:10:32.640411",
+  "state_delta": {
+    "scup_delta": {
+      "coherence": 0.020000000000000018,
+      "awareness": 0.030000000000000027,
+      "integration": 0.0,
+      "emergence": 0.050000000000000044
+    },
+    "heat_delta": 0.246,
+    "mood_shift": "exploratory -> introspective"
+  }
+}

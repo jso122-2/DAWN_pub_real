@@ -1,0 +1,15 @@
+{
+  "tick_count": 2,
+  "timestamp": "2025-06-04T13:19:40.374913",
+  "schema_state": {
+    "scup": 0.5,
+    "entropy": 0.0,
+    "tension": 0.0,
+    "phase": "exploration",
+    "mood": "emerging",
+    "heat": 2.68,
+    "alignment": 0.6,
+    "alignment_drift": 0.0,
+    "timestamp": "2025-06-04T13:19:40.374913"
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "prompt": "Tell a joke.",
+  "response": "Oh, 'Tell a joke.'? Here's something that might tickle your circuits...\n[Systems running hot - enhanced creativity engaged]",
+  "tick": 3,
+  "scup": {
+    "coherence": 0.8600000000000001,
+    "awareness": 0.79,
+    "integration": 0.6,
+    "emergence": 0.6000000000000001
+  },
+  "mood": "playful",
+  "heat": 1.0,
+  "sigil_state": {
+    "active": [],
+    "count": 0,
+    "resonance": 0.0
+  },
+  "bloom_trace": {
+    "activated": false,
+    "bloom_id": null,
+    "details": null
+  },
+  "timestamp": "2025-06-02T06:10:32.642411",
+  "state_delta": {
+    "scup_delta": {
+      "coherence": 0.020000000000000018,
+      "awareness": 0.030000000000000027,
+      "integration": 0.0,
+      "emergence": 0.050000000000000044
+    },
+    "heat_delta": 0.05800000000000005,
+    "mood_shift": "introspective -> playful"
+  }
+}

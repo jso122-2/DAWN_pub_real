@@ -1,0 +1,15 @@
+{
+  "tick_count": 9,
+  "timestamp": "2025-06-04T13:15:41.621295",
+  "schema_state": {
+    "scup": 0.7366027238034475,
+    "entropy": 0.2650697019655664,
+    "tension": 0.26241951368892624,
+    "phase": "introspection",
+    "mood": "contemplative",
+    "heat": 4.053475092105845,
+    "alignment": 0.6,
+    "alignment_drift": 0.0,
+    "timestamp": "2025-06-04T13:15:41.621295"
+  }
+}

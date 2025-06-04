@@ -1,0 +1,31 @@
+{
+  "session_id": "20250604_131516",
+  "start_time": "2025-06-04T13:15:16.023194",
+  "end_time": "2025-06-04T13:15:51.640071",
+  "duration_seconds": 35.616877,
+  "statistics": {
+    "total_state_snapshots": 15,
+    "total_heat_events": 6,
+    "total_alignment_changes": 2,
+    "recognition_patterns_found": 1,
+    "memory_formations": 1,
+    "raw_output_entries": 27
+  },
+  "final_state": {
+    "tick_count": 14,
+    "timestamp": "2025-06-04T13:15:51.639073",
+    "schema_state": {
+      "scup": 0.7366027238034475,
+      "entropy": 0.2650697019655664,
+      "tension": 0.26241951368892624,
+      "phase": "introspection",
+      "mood": "contemplative",
+      "heat": 3.953475092105846,
+      "alignment": 0.6,
+      "alignment_drift": 0.0,
+      "timestamp": "2025-06-04T13:15:51.639073"
+    }
+  },
+  "peak_heat": 4.193475092105842,
+  "total_heat_accumulated": 1.5134750921058424
+}

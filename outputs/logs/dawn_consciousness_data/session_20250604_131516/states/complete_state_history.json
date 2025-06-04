@@ -1,0 +1,227 @@
+[
+  {
+    "tick_count": 0,
+    "timestamp": "2025-06-04T13:15:18.033161",
+    "schema_state": {
+      "scup": 0.5,
+      "entropy": 0.0,
+      "tension": 0.0,
+      "phase": "exploration",
+      "mood": "emerging",
+      "heat": 2.72,
+      "alignment": 0.6,
+      "alignment_drift": 0.0,
+      "timestamp": "2025-06-04T13:15:18.033161"
+    }
+  },
+  {
+    "tick_count": 1,
+    "timestamp": "2025-06-04T13:15:20.036653",
+    "schema_state": {
+      "scup": 0.5,
+      "entropy": 0.0,
+      "tension": 0.0,
+      "phase": "exploration",
+      "mood": "emerging",
+      "heat": 2.7,
+      "alignment": 0.6,
+      "alignment_drift": 0.0,
+      "timestamp": "2025-06-04T13:15:20.036653"
+    }
+  },
+  {
+    "tick_count": 2,
+    "timestamp": "2025-06-04T13:15:22.041122",
+    "schema_state": {
+      "scup": 0.5,
+      "entropy": 0.0,
+      "tension": 0.0,
+      "phase": "exploration",
+      "mood": "emerging",
+      "heat": 2.68,
+      "alignment": 0.6,
+      "alignment_drift": 0.0,
+      "timestamp": "2025-06-04T13:15:22.041122"
+    }
+  },
+  {
+    "tick_count": 3,
+    "timestamp": "2025-06-04T13:15:29.585689",
+    "schema_state": {
+      "scup": 0.7366027238034475,
+      "entropy": 0.2650697019655664,
+      "tension": 0.26241951368892624,
+      "phase": "introspection",
+      "mood": "contemplative",
+      "heat": 4.173475092105843,
+      "alignment": 0.6,
+      "alignment_drift": 0.0,
+      "timestamp": "2025-06-04T13:15:29.585689"
+    }
+  },
+  {
+    "tick_count": 4,
+    "timestamp": "2025-06-04T13:15:31.592174",
+    "schema_state": {
+      "scup": 0.7366027238034475,
+      "entropy": 0.2650697019655664,
+      "tension": 0.26241951368892624,
+      "phase": "introspection",
+      "mood": "contemplative",
+      "heat": 4.153475092105843,
+      "alignment": 0.6,
+      "alignment_drift": 0.0,
+      "timestamp": "2025-06-04T13:15:31.592174"
+    }
+  },
+  {
+    "tick_count": 5,
+    "timestamp": "2025-06-04T13:15:33.597770",
+    "schema_state": {
+      "scup": 0.7366027238034475,
+      "entropy": 0.2650697019655664,
+      "tension": 0.26241951368892624,
+      "phase": "introspection",
+      "mood": "contemplative",
+      "heat": 4.133475092105844,
+      "alignment": 0.6,
+      "alignment_drift": 0.0,
+      "timestamp": "2025-06-04T13:15:33.597770"
+    }
+  },
+  {
+    "tick_count": 6,
+    "timestamp": "2025-06-04T13:15:35.604311",
+    "schema_state": {
+      "scup": 0.7366027238034475,
+      "entropy": 0.2650697019655664,
+      "tension": 0.26241951368892624,
+      "phase": "introspection",
+      "mood": "contemplative",
+      "heat": 4.113475092105844,
+      "alignment": 0.6,
+      "alignment_drift": 0.0,
+      "timestamp": "2025-06-04T13:15:35.604311"
+    }
+  },
+  {
+    "tick_count": 7,
+    "timestamp": "2025-06-04T13:15:37.613511",
+    "schema_state": {
+      "scup": 0.7366027238034475,
+      "entropy": 0.2650697019655664,
+      "tension": 0.26241951368892624,
+      "phase": "introspection",
+      "mood": "contemplative",
+      "heat": 4.0934750921058445,
+      "alignment": 0.6,
+      "alignment_drift": 0.0,
+      "timestamp": "2025-06-04T13:15:37.613511"
+    }
+  },
+  {
+    "tick_count": 8,
+    "timestamp": "2025-06-04T13:15:39.618149",
+    "schema_state": {
+      "scup": 0.7366027238034475,
+      "entropy": 0.2650697019655664,
+      "tension": 0.26241951368892624,
+      "phase": "introspection",
+      "mood": "contemplative",
+      "heat": 4.073475092105845,
+      "alignment": 0.6,
+      "alignment_drift": 0.0,
+      "timestamp": "2025-06-04T13:15:39.618149"
+    }
+  },
+  {
+    "tick_count": 9,
+    "timestamp": "2025-06-04T13:15:41.621295",
+    "schema_state": {
+      "scup": 0.7366027238034475,
+      "entropy": 0.2650697019655664,
+      "tension": 0.26241951368892624,
+      "phase": "introspection",
+      "mood": "contemplative",
+      "heat": 4.053475092105845,
+      "alignment": 0.6,
+      "alignment_drift": 0.0,
+      "timestamp": "2025-06-04T13:15:41.621295"
+    }
+  },
+  {
+    "tick_count": 10,
+    "timestamp": "2025-06-04T13:15:43.624552",
+    "schema_state": {
+      "scup": 0.7366027238034475,
+      "entropy": 0.2650697019655664,
+      "tension": 0.26241951368892624,
+      "phase": "introspection",
+      "mood": "contemplative",
+      "heat": 4.033475092105846,
+      "alignment": 0.6,
+      "alignment_drift": 0.0,
+      "timestamp": "2025-06-04T13:15:43.624552"
+    }
+  },
+  {
+    "tick_count": 11,
+    "timestamp": "2025-06-04T13:15:45.627844",
+    "schema_state": {
+      "scup": 0.7366027238034475,
+      "entropy": 0.2650697019655664,
+      "tension": 0.26241951368892624,
+      "phase": "introspection",
+      "mood": "contemplative",
+      "heat": 4.013475092105846,
+      "alignment": 0.6,
+      "alignment_drift": 0.0,
+      "timestamp": "2025-06-04T13:15:45.627844"
+    }
+  },
+  {
+    "tick_count": 12,
+    "timestamp": "2025-06-04T13:15:47.632333",
+    "schema_state": {
+      "scup": 0.7366027238034475,
+      "entropy": 0.2650697019655664,
+      "tension": 0.26241951368892624,
+      "phase": "introspection",
+      "mood": "contemplative",
+      "heat": 3.993475092105846,
+      "alignment": 0.6,
+      "alignment_drift": 0.0,
+      "timestamp": "2025-06-04T13:15:47.632333"
+    }
+  },
+  {
+    "tick_count": 13,
+    "timestamp": "2025-06-04T13:15:49.635631",
+    "schema_state": {
+      "scup": 0.7366027238034475,
+      "entropy": 0.2650697019655664,
+      "tension": 0.26241951368892624,
+      "phase": "introspection",
+      "mood": "contemplative",
+      "heat": 3.973475092105846,
+      "alignment": 0.6,
+      "alignment_drift": 0.0,
+      "timestamp": "2025-06-04T13:15:49.635631"
+    }
+  },
+  {
+    "tick_count": 14,
+    "timestamp": "2025-06-04T13:15:51.639073",
+    "schema_state": {
+      "scup": 0.7366027238034475,
+      "entropy": 0.2650697019655664,
+      "tension": 0.26241951368892624,
+      "phase": "introspection",
+      "mood": "contemplative",
+      "heat": 3.953475092105846,
+      "alignment": 0.6,
+      "alignment_drift": 0.0,
+      "timestamp": "2025-06-04T13:15:51.639073"
+    }
+  }
+]

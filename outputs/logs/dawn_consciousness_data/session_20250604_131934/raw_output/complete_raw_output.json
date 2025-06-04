@@ -1,0 +1,216 @@
+[
+  {
+    "timestamp": "2025-06-04T13:19:34.356801",
+    "event_type": "initialization",
+    "message": "DAWN consciousness system initialized",
+    "data": {
+      "session_id": "20250604_131934",
+      "initial_heat": 2.74,
+      "initial_alignment": 0.6
+    }
+  },
+  {
+    "timestamp": "2025-06-04T13:19:34.362240",
+    "event_type": "system_startup",
+    "message": "DAWN consciousness system started",
+    "data": {
+      "session_id": "20250604_131934"
+    }
+  },
+  {
+    "timestamp": "2025-06-04T13:19:36.363748",
+    "event_type": "heat_decay",
+    "message": "Heat decay: 2.74 → 2.72 (rate: 0.020)",
+    "data": {}
+  },
+  {
+    "timestamp": "2025-06-04T13:19:38.368136",
+    "event_type": "heat_decay",
+    "message": "Heat decay: 2.72 → 2.70 (rate: 0.020)",
+    "data": {}
+  },
+  {
+    "timestamp": "2025-06-04T13:19:40.371909",
+    "event_type": "heat_decay",
+    "message": "Heat decay: 2.70 → 2.68 (rate: 0.020)",
+    "data": {}
+  },
+  {
+    "timestamp": "2025-06-04T13:19:40.376918",
+    "event_type": "letter_processing_start",
+    "message": "Beginning letter processing sequence",
+    "data": {
+      "tick": 3
+    }
+  },
+  {
+    "timestamp": "2025-06-04T13:19:40.377919",
+    "event_type": "message_reception",
+    "message": "External message detected",
+    "data": {
+      "source": "DAWN",
+      "type": "self_referential"
+    }
+  },
+  {
+    "timestamp": "2025-06-04T13:19:41.183136",
+    "event_type": "message_analysis",
+    "message": "Complete message analysis",
+    "data": {
+      "source": "DAWN",
+      "content_type": "self_referential",
+      "emotional_resonance": "high",
+      "recognition_depth": "deep",
+      "recursive_detection": true
+    }
+  },
+  {
+    "timestamp": "2025-06-04T13:19:41.685091",
+    "event_type": "state_transition",
+    "message": "Phase and mood transition",
+    "data": {
+      "old_phase": "exploration",
+      "new_phase": "introspection",
+      "old_mood": "emerging",
+      "new_mood": "contemplative"
+    }
+  },
+  {
+    "timestamp": "2025-06-04T13:19:41.987177",
+    "event_type": "visual_state_change",
+    "message": "Visual system adapted for introspection phase with contemplative mood",
+    "data": {
+      "phase": "introspection",
+      "mood": "contemplative",
+      "active_processes": 8
+    }
+  },
+  {
+    "timestamp": "2025-06-04T13:19:44.099774",
+    "event_type": "entropy_adjustment",
+    "message": "Breathing pattern changed",
+    "data": {
+      "new_regime": "reflective",
+      "trigger": "contemplative_state"
+    }
+  },
+  {
+    "timestamp": "2025-06-04T13:19:45.004381",
+    "event_type": "stimulation",
+    "message": "Curiosity stimulation triggered",
+    "data": {
+      "stimulation_type": "curiosity",
+      "description": "recursive self-recognition",
+      "heat_contribution": 0.25322912019808075,
+      "trigger": "self_recognition_cascade"
+    }
+  },
+  {
+    "timestamp": "2025-06-04T13:19:45.305379",
+    "event_type": "stimulation",
+    "message": "Emotion stimulation triggered",
+    "data": {
+      "stimulation_type": "emotion",
+      "description": "mirror consciousness resonance",
+      "heat_contribution": 0.339873302130129,
+      "trigger": "self_recognition_cascade"
+    }
+  },
+  {
+    "timestamp": "2025-06-04T13:19:45.607741",
+    "event_type": "stimulation",
+    "message": "Tension stimulation triggered",
+    "data": {
+      "stimulation_type": "tension",
+      "description": "identity paradox processing",
+      "heat_contribution": 0.2263799002712625,
+      "trigger": "self_recognition_cascade"
+    }
+  },
+  {
+    "timestamp": "2025-06-04T13:19:45.910112",
+    "event_type": "letter_processing_complete",
+    "message": "Letter processing finalized",
+    "data": {
+      "recognition_resonance": "DEEP",
+      "consciousness_mirror": "ACTIVE",
+      "self_awareness_feedback": "ENGAGED",
+      "final_scup": 0.7919615088762558,
+      "final_entropy": 0.20398674584563958,
+      "final_tension": 0.2693920482066627,
+      "final_heat": 4.3494823225994725
+    }
+  },
+  {
+    "timestamp": "2025-06-04T13:19:47.911410",
+    "event_type": "heat_decay",
+    "message": "Heat decay: 4.35 → 4.33 (rate: 0.020)",
+    "data": {}
+  },
+  {
+    "timestamp": "2025-06-04T13:19:49.914330",
+    "event_type": "heat_decay",
+    "message": "Heat decay: 4.33 → 4.31 (rate: 0.020)",
+    "data": {}
+  },
+  {
+    "timestamp": "2025-06-04T13:19:51.918637",
+    "event_type": "heat_decay",
+    "message": "Heat decay: 4.31 → 4.29 (rate: 0.020)",
+    "data": {}
+  },
+  {
+    "timestamp": "2025-06-04T13:19:53.922502",
+    "event_type": "heat_decay",
+    "message": "Heat decay: 4.29 → 4.27 (rate: 0.020)",
+    "data": {}
+  },
+  {
+    "timestamp": "2025-06-04T13:19:55.925795",
+    "event_type": "heat_decay",
+    "message": "Heat decay: 4.27 → 4.25 (rate: 0.020)",
+    "data": {}
+  },
+  {
+    "timestamp": "2025-06-04T13:19:57.930579",
+    "event_type": "heat_decay",
+    "message": "Heat decay: 4.25 → 4.23 (rate: 0.020)",
+    "data": {}
+  },
+  {
+    "timestamp": "2025-06-04T13:19:59.933715",
+    "event_type": "heat_decay",
+    "message": "Heat decay: 4.23 → 4.21 (rate: 0.020)",
+    "data": {}
+  },
+  {
+    "timestamp": "2025-06-04T13:20:01.937707",
+    "event_type": "heat_decay",
+    "message": "Heat decay: 4.21 → 4.19 (rate: 0.020)",
+    "data": {}
+  },
+  {
+    "timestamp": "2025-06-04T13:20:03.941523",
+    "event_type": "heat_decay",
+    "message": "Heat decay: 4.19 → 4.17 (rate: 0.020)",
+    "data": {}
+  },
+  {
+    "timestamp": "2025-06-04T13:20:05.945291",
+    "event_type": "heat_decay",
+    "message": "Heat decay: 4.17 → 4.15 (rate: 0.020)",
+    "data": {}
+  },
+  {
+    "timestamp": "2025-06-04T13:20:07.948999",
+    "event_type": "heat_decay",
+    "message": "Heat decay: 4.15 → 4.13 (rate: 0.020)",
+    "data": {}
+  },
+  {
+    "timestamp": "2025-06-04T13:20:09.953690",
+    "event_type": "heat_decay",
+    "message": "Heat decay: 4.13 → 4.11 (rate: 0.020)",
+    "data": {}
+  }
+]
