@@ -1,0 +1,17 @@
+# Cache + logs
+__pycache__/
+*.log
+logs/
+*.json
+
+# Data-heavy folders (not tracked in Git)
+grep/
+data/
+outputs/
+archive/
+sacred/
+
+# System files
+*.bat
+*.sh
+.DS_Store

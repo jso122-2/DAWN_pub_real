@@ -1,0 +1,75 @@
+# Tick Engine Configuration
+
+# Core Settings
+tick_interval: 1.0
+tick_interval_min: 0.1
+tick_interval_max: 5.0
+tick_interval_adjustment: 0.95
+
+# Thermal Settings
+thermal_momentum_decay: 0.95
+thermal_stability_threshold: 0.7
+thermal_cooling_rate: 0.05
+thermal_heating_rate: 0.1
+thermal_critical_threshold: 0.9
+
+# Performance Settings
+performance_monitoring_interval: 1.0
+performance_thresholds:
+  cpu_usage: 80.0
+  memory_usage: 1024.0  # MB
+  event_latency: 0.1    # seconds
+
+# Error Handling
+max_errors: 3
+max_recoveries: 3
+recovery_cooldown: 300  # seconds
+error_reset_threshold: 100  # ticks
+
+# Event Queue
+event_queue_size: 1000
+event_processing_batch: 10
+event_timeout: 5.0  # seconds
+
+# Logging
+logging:
+  enabled: true
+  level: INFO
+  file: logs/tick_events.log
+  metrics_file: logs/metrics/metrics_{date}.json
+  max_size: 10485760  # 10MB
+  backup_count: 5
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+
+# Monitoring
+monitoring:
+  enabled: true
+  metrics_interval: 1.0
+  alert_thresholds:
+    cpu_usage: 90.0
+    memory_usage: 2048.0  # MB
+    event_latency: 0.2    # seconds
+  alert_cooldown: 60  # seconds
+
+# Handler Settings
+handler:
+  default_priority: 0
+  max_priority: 100
+  min_priority: -100
+  timeout: 5.0  # seconds
+
+# State Management
+state:
+  persistence_interval: 300  # seconds
+  backup_count: 3
+  compression: true
+  encryption: false
+
+# Recovery Settings
+recovery:
+  enabled: true
+  max_attempts: 3
+  cooldown: 300  # seconds
+  reset_threshold: 1000  # ticks
+  state_reset: true
+  queue_clear: true 

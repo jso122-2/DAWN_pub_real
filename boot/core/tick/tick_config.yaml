@@ -1,0 +1,9 @@
+log_level: INFO
+subsystems:
+  pulse:
+    priority: 1
+  schema:
+    priority: 2
+  visual:
+    priority: 3
+tick_rate: 1.0

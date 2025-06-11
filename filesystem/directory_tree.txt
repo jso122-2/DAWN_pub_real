@@ -1,0 +1,2363 @@
+🌲 DAWN Tick Engine Directory Structure 🌲
+==================================================
+📁 archive/
+├── 📁 abandoned/
+│   └── 📁 terminals_empty_20250604/
+├── 📁 cleanup_20250604_205738/
+│   ├── 📁 duplicates/
+│   ├── 📁 entrypoints/
+│   ├── 📁 experimental/
+│   ├── 📁 legacy_implementations/
+│   └── 📁 suppressed/
+├── 📁 cleanup_20250604_205845/
+│   ├── 📁 duplicates/
+│   ├── 📁 entrypoints/
+│   ├── 📁 experimental/
+│   ├── 📁 legacy_implementations/
+│   ├── 📁 suppressed/
+│   └── 📝 .dawn_ignore
+├── 📁 legacy_tick/
+│   ├── 🐍 __init__.py
+│   ├── 🐍 minimal_tick.py
+│   ├── 🐍 tick_engine.py
+│   ├── 📄 tick_engine_config.json
+│   ├── 🐍 tick_engine_integration.py
+│   ├── 🐍 tick_loop.py
+│   └── 📄 tick_state.json
+├── 📁 registry_migration_20250604_211353/
+│   ├── 🐍 bloom_registry.py
+│   ├── 🐍 processors_codex_registry.py
+│   └── 🐍 schema_registry.py
+├── 📁 schema_consolidation_20250604/
+│   ├── 🐍 schema_decay_handler.py
+│   ├── 🐍 schema_flags.py
+│   ├── 🐍 schema_health.py
+│   ├── 🐍 schema_health_index.py
+│   ├── 🐍 schema_state.py
+│   ├── 🐍 schema_suppressor.py
+│   ├── 🐍 scup.py
+│   ├── 🐍 scup_engine.py
+│   ├── 🐍 scup_loop.py
+│   └── 🐍 scup_recovery.py
+├── 📁 suppressed_blooms/
+│   ├── 📁 unspecified/
+│   ├── 🐍 __init__.py
+│   ├── 📄 seed-∆2143FJ_unspecified.json
+│   └── 📄 seed-∆test_unspecified.json
+├── 📁 tick_engines/
+│   ├── 🐍 consolidated_tick_engine.py
+│   └── 🐍 unified_tick_engine.py
+├── 📁 timestamped/
+│   └── 🐍 archive_rules.py
+├── 📁 utilities/
+│   ├── 🐍 __init__.py
+│   ├── 📝 alignment_probe.py.bak
+│   ├── 📝 bloom_genetics.py.bak
+│   ├── 🐍 check_imports.py
+│   ├── 📝 continuity_tracker.py.bak
+│   ├── 📝 dawn_coordinator.py.bak
+│   ├── 📝 dawn_integrator.py.bak
+│   ├── 📝 dawn_stimulator.py.bak
+│   ├── 📝 diplomacy_radar.py.bak
+│   ├── 📝 emergency_brake.py.bak
+│   ├── 📝 entropy_fluctuation.py.bak
+│   ├── 🐍 explicit_cleanup.py
+│   ├── 🐍 finalize_imports_enhanced.py
+│   ├── 📝 init_dawn.py.bak
+│   ├── 📝 main.py.bak
+│   ├── 📝 main_with_owl_trigger.py.bak
+│   ├── 📝 main_with_weight_charge.py.bak
+│   ├── 📝 memory_anchor.py.bak
+│   ├── 📝 mercy_switch.py.bak
+│   ├── 📝 old_pulse_heat.py.bak
+│   ├── 📝 owl_auditor.py.bak
+│   ├── 📝 owl_vector.py.bak
+│   ├── 📝 pulse_heat.py.bak
+│   ├── 📝 qualia_kernel.py.bak
+│   ├── 📝 reflex_table.py.bak
+│   ├── 🐍 scan_flat_imports.py
+│   ├── 📝 schema_state.py.bak
+│   ├── 📝 scup_loop.py.bak
+│   ├── 📝 seeding.py.bak
+│   ├── 📝 semantic_field.py.bak
+│   ├── 📝 sigil_emitter.py.bak
+│   ├── 📝 system_state.py.bak
+│   ├── 📝 thought_fragment.py.bak
+│   ├── 📝 tick_engine.py.bak
+│   └── 📝 visual_rhizome.py.bak
+├── 📁 visuals_20250604_211927/
+├── 📁 zips/
+│   ├── 🐍 __init__.py
+│   ├── 📝 bloom.zip
+│   ├── 📝 fractal.zip
+│   ├── 📝 owl (2).zip
+│   ├── 📝 owl.zip
+│   ├── 📝 router.zip
+│   ├── 📝 tracers.zip
+│   └── 📝 visual.zip
+├── 📝 .dawn_ignore
+├── 📄 .dawn_ignore.yaml
+├── 🐍 __init__.py
+└── 🐍 archive_rules.py
+📁 bloom/
+├── 📁 bloom_core/
+│   ├── 🐍 __init__.py
+│   ├── 🐍 bloom_analysis.py
+│   ├── 🐍 bloom_evolution.py
+│   ├── 🐍 rebloom_router.py
+│   ├── 🐍 spawn_bloom.py
+│   └── 🐍 synthesis_logic.py
+├── 📁 memory_blooms/
+│   ├── 🐍 __init__.py
+│   ├── 📄 bee-001_2025-05-24T00-09-45.611.json
+│   ├── 📄 bee-001_2025-05-24T00-09-58.841.json
+│   ├── 📄 bee-001_2025-05-24T00-10-08.526.json
+│   ├── 📄 bee-001_2025-05-24T00-10-12.049.json
+│   ├── 📄 bee-001_2025-05-24T00-10-18.174.json
+│   ├── 📄 bee-001_2025-05-24T00-10-23.964.json
+│   ├── 📄 bee-001_2025-05-24T00-10-24.845.json
+│   ├── 📄 bee-001_2025-05-24T00-10-27.489.json
+│   ├── 📄 bee-001_2025-05-24T00-10-28.408.json
+│   ├── 📄 bee-001_2025-05-24T00-10-29.281.json
+│   ├── 📄 bee-001_2025-05-24T00-10-31.915.json
+│   ├── 📄 bee-001_2025-05-24T00-10-32.802.json
+│   ├── 📄 bee-001_2025-05-24T00-10-34.569.json
+│   ├── 📄 bee-001_2025-05-24T00-10-37.202.json
+│   ├── 📄 bee-001_2025-05-24T00-10-41.588.json
+│   ├── 📄 bee-001_2025-05-24T00-10-42.476.json
+│   ├── 📄 bee-001_2025-05-24T00-10-45.998.json
+│   ├── 📄 bee-001_2025-05-24T00-10-48.628.json
+│   ├── 📄 bee-001_2025-05-24T00-10-49.514.json
+│   ├── 📄 bee-001_2025-05-24T00-10-52.156.json
+│   ├── 📄 crow-003_2025-05-24T00-09-56.195.json
+│   ├── 📄 crow-003_2025-05-24T00-10-01.476.json
+│   ├── 📄 crow-003_2025-05-24T00-10-02.363.json
+│   ├── 📄 crow-003_2025-05-24T00-10-05.892.json
+│   ├── 📄 crow-003_2025-05-24T00-10-07.640.json
+│   ├── 📄 crow-003_2025-05-24T00-10-10.290.json
+│   ├── 📄 crow-003_2025-05-24T00-10-13.795.json
+│   ├── 📄 crow-003_2025-05-24T00-10-19.945.json
+│   ├── 📄 crow-003_2025-05-24T00-10-20.821.json
+│   ├── 📄 crow-003_2025-05-24T00-10-27.512.json
+│   ├── 📄 crow-003_2025-05-24T00-10-30.155.json
+│   ├── 📄 crow-003_2025-05-24T00-10-32.805.json
+│   ├── 📄 crow-003_2025-05-24T00-10-33.695.json
+│   ├── 📄 crow-003_2025-05-24T00-10-35.443.json
+│   ├── 📄 crow-003_2025-05-24T00-10-42.479.json
+│   ├── 📄 crow-003_2025-05-24T00-10-46.885.json
+│   ├── 📄 crow-003_2025-05-24T00-10-49.517.json
+│   ├── 📄 crow-003_2025-05-24T00-10-50.391.json
+│   ├── 📄 whale-002_2025-05-24T00-09-47.369.json
+│   ├── 📄 whale-002_2025-05-24T00-10-05.889.json
+│   ├── 📄 whale-002_2025-05-24T00-10-10.288.json
+│   ├── 📄 whale-002_2025-05-24T00-10-11.175.json
+│   ├── 📄 whale-002_2025-05-24T00-10-19.059.json
+│   ├── 📄 whale-002_2025-05-24T00-10-20.818.json
+│   ├── 📄 whale-002_2025-05-24T00-10-25.731.json
+│   ├── 📄 whale-002_2025-05-24T00-10-27.506.json
+│   ├── 📄 whale-002_2025-05-24T00-10-31.032.json
+│   ├── 📄 whale-002_2025-05-24T00-10-31.917.json
+│   ├── 📄 whale-002_2025-05-24T00-10-33.692.json
+│   ├── 📄 whale-002_2025-05-24T00-10-38.954.json
+│   ├── 📄 whale-002_2025-05-24T00-10-40.701.json
+│   ├── 📄 whale-002_2025-05-24T00-10-43.363.json
+│   ├── 📄 whale-002_2025-05-24T00-10-48.630.json
+│   └── 📄 whale-002_2025-05-24T00-10-52.160.json
+├── 🐍 __init__.py
+├── 🐍 animate_rebloom_lineage.py
+├── 🐍 automated_health_checks.py
+├── 🐍 bloom_activation_manager.py
+├── 🐍 bloom_controls.py
+├── 🐍 bloom_emitter_handler.py
+├── 🐍 bloom_engine.py
+├── 🐍 bloom_event.py
+├── 🐍 bloom_evolution.py
+├── 🐍 bloom_genetics.py
+├── 🐍 bloom_memory.py
+├── 🐍 bloom_writer.py
+├── 🐍 ci_tests.py
+├── 🐍 clean_blooms.py
+├── 🐍 combine_edge_traits.py
+├── 🐍 drift_animation.py
+├── 🐍 enhanced_spawn_bloom.py
+├── 🐍 feedback_suppressor.py
+├── 🐍 fixed_bloom_spawner.py
+├── 🐍 fuse_all_corners.py
+├── 🐍 generate_juliet_prime_bloom.py
+├── 🐍 juliet_cluster.py
+├── 🐍 juliet_field_summary.py
+├── 🐍 juliet_flower.py
+├── 🐍 juliet_inspector.py
+├── 🐍 juliet_utils.py
+├── 🐍 memory_bloom.py
+├── 🐍 memory_mutator.py
+├── 🐍 memory_utils.py
+├── 🐍 pruning_logic.py
+├── 🐍 rebloom_chain_analyzer.py
+├── 🐍 rebloom_depth_stats.py
+├── 🐍 rebloom_prediction_model.py
+├── 🐍 rebloom_queue.py
+├── 🐍 rebloom_stabilizer.py
+├── 🐍 rebloom_tree_visualizer.py
+├── 🐍 recursive_check.py
+├── 🐍 recursive_priority_index.py
+├── 🐍 recursive_synthesis.py
+├── 🐍 registry.py
+├── 🐍 repair_misplaced_moods.py
+├── 🐍 seed_matrix_synthesis.py
+├── 🐍 seed_trust_model.py
+├── 🐍 semantic_integration.py
+├── 🐍 spawn_bloom.py
+└── 🐍 trait_volatility.py
+📁 boot/
+├── 🐍 __init__.py
+├── 🐍 init_dawn.py
+└── 📝 Untitled-2.txt
+📁 cognitive/
+├── 🐍 __init__.py
+├── 🐍 alignment_probe.py
+├── 🐍 entropy_fluctuation.py
+├── 🐍 mood_urgency_probe.py
+└── 🐍 qualia_kernel.py
+📁 config/
+├── 🐍 __init__.py
+└── 📄 notion_credentials.json
+📁 core/
+├── 📁 alignment/
+│   ├── 🐍 alignment_probe.py
+│   ├── 🐍 alignment_vector.py
+│   ├── 🐍 dawn_constitution.py
+│   └── 🐍 mercy_switch.py
+├── 📁 memory/
+│   ├── 🐍 belief_anchor_manager.py
+│   ├── 🐍 cognitive_trace.py
+│   ├── 🐍 continuity_tracker.py
+│   ├── 🐍 fallback_memory_router.py
+│   ├── 🐍 memory_anchor.py
+│   ├── 🐍 memory_decay_manager.py
+│   ├── 🐍 memory_index.py
+│   ├── 🐍 memory_trace_log.py
+│   ├── 🐍 overlay_tracker.py
+│   ├── 🐍 recursive_bubble.py
+│   └── 🐍 thought_fragment.py
+├── 📁 system/
+│   ├── 🐍 contradiction_resolver.py
+│   ├── 🐍 dawn_orchestrator.py
+│   ├── 🐍 emergency_brake.py
+│   ├── 🐍 entropy_tracker.py
+│   ├── 🐍 epoch_sync_monitor.py
+│   ├── 🐍 event_bus.py
+│   ├── 🐍 gas_pedal_logic.py
+│   ├── 🐍 initiation_protocol_generator.py
+│   ├── 🐍 instant_relief.py
+│   ├── 🐍 internal_feedback_loop.py
+│   ├── 🐍 internal_monologue_generator.py
+│   ├── 🐍 interruption_detector.py
+│   ├── 🐍 substrate_integration.py
+│   ├── 🐍 system.py
+│   ├── 🐍 system_state.py
+│   ├── 🐍 wager_protocol.py
+│   └── 🐍 wiring_monitor.py
+├── 🐍 __init__.py
+├── 🐍 dawn_registry.py
+├── 🐍 import_standards.py
+├── 🐍 schema_health_index.py
+├── 🐍 schema_state.py
+├── 🐍 scup_loop.py
+├── 🐍 semantic_context_engine.py
+├── 🐍 tick_emitter.py
+├── 📄 tick_engine_config.json
+└── 🐍 tick_engine_legacy.py
+📁 data/
+├── 📁 bloom/
+│   ├── 🐍 __init__.py
+│   ├── 📄 agent_id_registry.json
+│   ├── 📄 bloom_0.json
+│   ├── 📄 bloom_1.json
+│   ├── 📄 bloom_2.json
+│   ├── 📄 bloom_3.json
+│   ├── 📄 bloom_4.json
+│   ├── 📄 bloom_emotion_registry.json
+│   ├── 📄 bloom_registry.json
+│   ├── 📄 fractal_bloom.json
+│   ├── 📄 fractal_bloom_metadata.json
+│   ├── 📄 juliet_bloom_jyoti_metadata.json
+│   ├── 📄 juliet_prime_bloom.json
+│   ├── 📄 memory_rebloom_test_20250530_152545.json
+│   ├── 📄 memory_rebloom_test_20250530_152603.json
+│   ├── 📄 memory_rebloom_test_20250530_152941.json
+│   ├── 📄 memory_rebloom_test_20250530_154009.json
+│   ├── 📄 rebloom_lineage.json
+│   └── 📄 rebloom_trigger_conditions.json
+├── 📁 blooms/
+│   ├── 📁 A1/
+│   ├── 📁 B2/
+│   ├── 📁 bee-001/
+│   ├── 📁 bloom_metadata/
+│   ├── 📁 C3/
+│   ├── 📁 cluster_report/
+│   ├── 📁 crow-003/
+│   ├── 📁 D4/
+│   ├── 📁 entropy_logs/
+│   ├── 📁 field_logs/
+│   ├── 📁 fractal_signatures/
+│   ├── 📁 index/
+│   ├── 📁 mycelium_log/
+│   ├── 📁 sealed/
+│   ├── 📁 seed-∆2143FJ/
+│   ├── 📁 seed-∆test/
+│   ├── 📁 synthesis/
+│   ├── 📁 test/
+│   ├── 📁 whale-000/
+│   ├── 📁 whale-001/
+│   ├── 📁 whale-002/
+│   ├── 🐍 __init__.py
+│   ├── 📝 bloom_log.csv
+│   └── 📝 scup_bloom_correlation.csv
+├── 📁 config/
+│   ├── 🐍 __init__.py
+│   └── 📄 notion.config.json
+├── 📁 juliet_flowers/
+│   ├── 📁 fractal_signatures/
+│   └── 🐍 __init__.py
+├── 📁 memory_blooms/
+│   ├── 🐍 __init__.py
+│   ├── 📄 bee-001_2025-05-24T07-56-31.198.json
+│   ├── 📄 bee-001_2025-05-24T07-56-31.854.json
+│   ├──
+│   └── 📄 whale-002_2025-05-27T16-22-00.847.json
+├── 📁 text/
+│   ├── 🐍 __init__.py
+│   ├── 📝 all_python_files_full.txt
+│   ├── 📝 bucket_ctrl_f_results.txt
+│   ├── 📝 builder_statement.txt
+│   ├── 📝 cleaned_dawn_directory_structure.txt
+│   ├── 📝 cognition_report.txt
+│   ├── 📝 dawn_directory_structure.txt
+│   ├── 📝 dawn_test_summary_3813ff94.txt
+│   ├── 📝 dawn_test_summary_3d728c77.txt
+│   ├── 📝 dependency_map_scoped.txt
+│   ├── 📝 directory_structure.txt
+│   ├── 📝 emergence_map.txt
+│   ├── 📝 explicit_py_files_locations.txt
+│   ├── 📝 explicitly_finalized_structure.txt
+│   ├── 📝 explicitly_finalized_structure_dawn_v1.txt
+│   ├── 📝 fractal_bloom_pretty.txt
+│   ├── 📝 juliet_2025-05-24T20-34-44.txt
+│   ├── 📝 juliet_2025-05-24T20-36-34.txt
+│   ├── 📝 juliet_2025-05-24T20-38-25.txt
+│   ├── 📝 juliet_2025-05-24T20-40-44.txt
+│   ├── 📝 juliet_2025-05-24T20-42-40.txt
+│   ├── 📝 juliet_2025-05-24T20-44-57.txt
+│   ├── 📝 juliet_2025-05-24T20-45-12.txt
+│   ├── 📝 juliet_2025-05-24T20-50-25.txt
+│   ├── 📝 juliet_2025-05-24T20-50-40.txt
+│   ├── 📝 juliet_2025-05-24T21-08-06.txt
+│   ├── 📝 juliet_2025-05-24T21-08-21.txt
+│   ├── 📝 juliet_2025-05-25T12-50-16.txt
+│   ├── 📝 juliet_2025-05-25T12-50-31.txt
+│   ├── 📝 juliet_2025-05-25T12-55-40.txt
+│   ├── 📝 juliet_2025-05-25T12-55-55.txt
+│   ├── 📝 juliet_2025-05-25T13-08-35.txt
+│   ├── 📝 juliet_2025-05-25T13-08-50.txt
+│   ├── 📝 juliet_2025-05-25T13-34-50.txt
+│   ├── 📝 juliet_2025-05-25T13-39-08.txt
+│   ├── 📝 juliet_2025-05-25T13-39-23.txt
+│   ├── 📝 juliet_prime_bloom_pretty.txt
+│   ├── 📝 julietflower_imports_patched.txt
+│   ├── 📝 owl_rebloom_autowhale-100_2025-05-25T15-09-47.txt
+│   ├── 📝 
+│   ├── 📝 owl_rebloom_autowhale-120_2025-05-26T20-31-24.txt
+│   ├── 📝 owl_rebloom_autowhale-120_2025-05-26T20-31-36.txt
+│   ├── 📝 owl_rebloom_autowhale-130_2025-05-25T18-11-13.txt
+│   ├── 📝 owl_rebloom_autowhale-130_2025-05-25T18-11-17.txt
+│   ├── 📝 owl_rebloom_autowhale-130_2025-05-25T18-17-56.txt
+│   ├── 📝 owl_rebloom_autowhale-130_2025-05-25T18-18-00.txt
+│   ├── 📝 owl_rebloom_autowhale-130_2025-05-25T22-36-56.txt
+│   ├── 📝 owl_rebloom_autowhale-130_2025-05-25T22-37-02.txt
+│   ├── 📝 owl_rebloom_autowhale-130_2025-05-25T22-44-56.txt
+│   ├── 📝 owl_rebloom_autowhale-130_2025-05-25T22-45-02.txt
+│   ├── 📝 owl_rebloom_autowhale-130_2025-05-25T23-07-37.txt
+│   ├── 📝 owl_rebloom_autowhale-130_2025-05-25T23-07-43.txt
+│   ├── 📝 owl_rebloom_autowhale-130_2025-05-26T00-34-59.txt
+│   ├── 📝 owl_rebloom_autowhale-130_2025-05-26T00-35-07.txt
+│   ├── 📝 owl_rebloom_autowhale-130_2025-05-26T20-31-54.txt
+│   ├── 📝 owl_rebloom_autowhale-130_2025-05-26T20-32-07.txt
+│   ├── 📝 owl_rebloom_autowhale-140_2025-05-25T18-18-14.txt
+│   ├── 📝 owl_rebloom_autowhale-140_2025-05-25T18-18-18.txt
+│   ├── 📝 owl_rebloom_autowhale-140_2025-05-25T22-37-18.txt
+│   ├── 📝 owl_rebloom_autowhale-140_2025-05-25T22-37-23.txt
+│   ├── 📝 owl_rebloom_autowhale-140_2025-05-25T22-45-18.txt
+│   ├── 📝 owl_rebloom_autowhale-140_2025-05-25T22-45-24.txt
+│   ├── 📝 owl_rebloom_autowhale-140_2025-05-25T23-08-00.txt
+│   ├── 📝 owl_rebloom_autowhale-140_2025-05-25T23-08-06.txt
+│   ├── 📝 owl_rebloom_autowhale-140_2025-05-26T00-35-16.txt
+│   ├── 📝 owl_rebloom_autowhale-140_2025-05-26T00-35-24.txt
+│   ├── 📝 owl_rebloom_autowhale-140_2025-05-26T20-32-24.txt
+│   ├── 📝 owl_rebloom_autowhale-140_2025-05-26T20-32-36.txt
+│   ├── 📝 owl_rebloom_autowhale-150_2025-05-25T18-18-32.txt
+│   ├── 📝 owl_rebloom_autowhale-150_2025-05-25T18-18-37.txt
+│   ├── 📝 owl_rebloom_autowhale-150_2025-05-25T22-37-39.txt
+│   ├── 📝 owl_rebloom_autowhale-150_2025-05-25T22-37-44.txt
+│   ├── 📝 owl_rebloom_autowhale-150_2025-05-25T22-45-41.txt
+│   ├── 📝 owl_rebloom_autowhale-150_2025-05-25T22-45-47.txt
+│   ├── 📝 owl_rebloom_autowhale-150_2025-05-25T23-08-23.txt
+│   ├── 📝 owl_rebloom_autowhale-150_2025-05-25T23-08-30.txt
+│   ├── 📝 owl_rebloom_autowhale-150_2025-05-26T00-35-33.txt
+│   ├── 📝 owl_rebloom_autowhale-150_2025-05-26T00-35-43.txt
+│   ├── 📝 owl_rebloom_autowhale-150_2025-05-26T20-32-53.txt
+│   ├── 📝 owl_rebloom_autowhale-150_2025-05-26T20-33-04.txt
+│   ├── 📝 owl_rebloom_autowhale-160_2025-05-25T18-18-51.txt
+│   ├── 📝 owl_rebloom_autowhale-160_2025-05-25T18-18-55.txt
+│   ├── 📝 owl_rebloom_autowhale-160_2025-05-25T22-38-00.txt
+│   ├── 📝 owl_rebloom_autowhale-160_2025-05-25T22-38-06.txt
+│   ├── 📝 owl_rebloom_autowhale-160_2025-05-25T23-08-46.txt
+│   ├── 📝 owl_rebloom_autowhale-160_2025-05-25T23-08-53.txt
+│   ├── 📝 owl_rebloom_autowhale-160_2025-05-26T00-35-53.txt
+│   ├── 📝 owl_rebloom_autowhale-160_2025-05-26T00-36-02.txt
+│   ├── 📝 owl_rebloom_autowhale-160_2025-05-26T20-33-20.txt
+│   ├── 📝 owl_rebloom_autowhale-170_2025-05-25T18-19-09.txt
+│   ├── 📝 owl_rebloom_autowhale-170_2025-05-25T18-19-13.txt
+│   ├── 📝 owl_rebloom_autowhale-170_2025-05-25T22-38-21.txt
+│   ├── 📝 owl_rebloom_autowhale-170_2025-05-25T22-38-27.txt
+│   ├── 📝 owl_rebloom_autowhale-170_2025-05-25T23-09-10.txt
+│   ├── 📝 owl_rebloom_autowhale-170_2025-05-25T23-09-17.txt
+│   ├── 📝 owl_rebloom_autowhale-170_2025-05-26T00-36-12.txt
+│   ├── 📝 owl_rebloom_autowhale-170_2025-05-26T00-36-21.txt
+│   ├── 📝 owl_rebloom_autowhale-180_2025-05-25T22-38-42.txt
+│   ├── 📝 owl_rebloom_autowhale-180_2025-05-25T22-38-48.txt
+│   ├── 📝 owl_rebloom_autowhale-180_2025-05-25T23-09-33.txt
+│   ├── 📝 owl_rebloom_autowhale-180_2025-05-25T23-09-40.txt
+│   ├── 📝 owl_rebloom_autowhale-190_2025-05-25T22-39-03.txt
+│   ├── 📝 owl_rebloom_autowhale-190_2025-05-25T22-39-09.txt
+│   ├── 📝 owl_rebloom_autowhale-190_2025-05-25T23-09-56.txt
+│   ├── 📝 owl_rebloom_autowhale-190_2025-05-25T23-10-02.txt
+│   ├── 📝 owl_rebloom_autowhale-200_2025-05-25T23-10-19.txt
+│   ├── 📝 owl_rebloom_autowhale-200_2025-05-25T23-10-26.txt
+│   ├── 📝 owl_rebloom_autowhale-20_2025-05-25T15-09-35.txt
+│   ├── 📝 owl_rebloom_autowhale-20_2025-05-25T15-10-38.txt
+│   ├── 📝 owl_rebloom_autowhale-20_2025-05-25T15-10-39.txt
+│   ├── 📝 owl_rebloom_autowhale-20_2025-05-25T15-12-39.txt
+│   ├── 📝 owl_rebloom_autowhale-20_2025-05-25T15-12-40.txt
+│   ├── 📝 owl_rebloom_autowhale-20_2025-05-25T15-43-09.txt
+│   ├── 📝 owl_rebloom_autowhale-20_2025-05-25T15-43-10.txt
+│   ├── 📝 owl_rebloom_autowhale-20_2025-05-25T16-57-50.txt
+│   ├── 📝 owl_rebloom_autowhale-20_2025-05-25T16-57-52.txt
+│   ├── 📝 owl_rebloom_autowhale-20_2025-05-25T17-00-58.txt
+│   ├── 📝 owl_rebloom_autowhale-20_2025-05-25T17-01-00.txt
+│   ├── 📝 owl_rebloom_autowhale-20_2025-05-25T17-04-03.txt
+│   ├── 📝 owl_rebloom_autowhale-20_2025-05-25T17-04-06.txt
+│   ├── 📝 owl_rebloom_autowhale-20_2025-05-25T17-44-14.txt
+│   ├── 📝 owl_rebloom_autowhale-20_2025-05-25T17-44-17.txt
+│   ├── 📝 owl_rebloom_autowhale-20_2025-05-25T18-08-10.txt
+│   ├── 📝 owl_rebloom_autowhale-20_2025-05-25T18-08-13.txt
+│   ├── 📝 owl_rebloom_autowhale-20_2025-05-25T18-14-43.txt
+│   ├── 📝 owl_rebloom_autowhale-20_2025-05-25T18-14-47.txt
+│   ├── 📝 owl_rebloom_autowhale-20_2025-05-25T18-44-17.txt
+│   ├── 📝 owl_rebloom_autowhale-20_2025-05-25T18-44-21.txt
+│   ├── 📝 owl_rebloom_autowhale-20_2025-05-25T18-57-46.txt
+│   ├── 📝 owl_rebloom_autowhale-20_2025-05-25T18-57-51.txt
+│   ├── 📝 owl_rebloom_autowhale-20_2025-05-25T22-29-39.txt
+│   ├── 📝 owl_rebloom_autowhale-20_2025-05-25T22-33-07.txt
+│   ├── 📝 owl_rebloom_autowhale-20_2025-05-25T22-33-13.txt
+│   ├── 📝 owl_rebloom_autowhale-20_2025-05-25T22-40-55.txt
+│   ├── 📝 owl_rebloom_autowhale-20_2025-05-25T22-41-01.txt
+│   ├── 📝 owl_rebloom_autowhale-20_2025-05-25T23-03-26.txt
+│   ├── 📝 owl_rebloom_autowhale-20_2025-05-25T23-03-32.txt
+│   ├── 📝 owl_rebloom_autowhale-20_2025-05-26T00-31-55.txt
+│   ├── 📝 owl_rebloom_autowhale-20_2025-05-26T00-32-03.txt
+│   ├── 📝 owl_rebloom_autowhale-20_2025-05-26T14-49-47.txt
+│   ├── 📝 owl_rebloom_autowhale-20_2025-05-26T14-49-55.txt
+│   ├── 📝 owl_rebloom_autowhale-20_2025-05-26T15-18-45.txt
+│   ├── 📝 owl_rebloom_autowhale-20_2025-05-26T15-18-54.txt
+│   ├── 📝 owl_rebloom_autowhale-20_2025-05-26T15-42-21.txt
+│   ├── 📝 owl_rebloom_autowhale-20_2025-05-26T15-42-31.txt
+│   ├── 📝 owl_rebloom_autowhale-20_2025-05-26T18-34-53.txt
+│   ├── 📝 owl_rebloom_autowhale-20_2025-05-26T18-35-04.txt
+│   ├── 📝 owl_rebloom_autowhale-20_2025-05-26T20-26-53.txt
+│   ├── 📝 owl_rebloom_autowhale-20_2025-05-26T20-27-04.txt
+│   ├── 📝 owl_rebloom_autowhale-210_2025-05-25T23-10-42.txt
+│   ├── 📝 owl_rebloom_autowhale-210_2025-05-25T23-10-49.txt
+│   ├── 📝 owl_rebloom_autowhale-220_2025-05-25T23-11-06.txt
+│   ├── 📝 owl_rebloom_autowhale-220_2025-05-25T23-11-13.txt
+│   ├── 📝 owl_rebloom_autowhale-230_2025-05-25T23-11-29.txt
+│   ├── 📝 owl_rebloom_autowhale-230_2025-05-25T23-11-36.txt
+│   ├── 📝 owl_rebloom_autowhale-240_2025-05-25T23-11-53.txt
+│   ├── 📝 owl_rebloom_autowhale-240_2025-05-25T23-12-00.txt
+│   ├── 📝 owl_rebloom_autowhale-250_2025-05-25T23-12-17.txt
+│   ├── 📝 owl_rebloom_autowhale-250_2025-05-25T23-12-24.txt
+│   ├── 📝 owl_rebloom_autowhale-260_2025-05-25T23-12-41.txt
+│   ├── 📝 owl_rebloom_autowhale-260_2025-05-25T23-12-48.txt
+│   ├── 📝 owl_rebloom_autowhale-270_2025-05-25T23-13-05.txt
+│   ├── 📝 owl_rebloom_autowhale-270_2025-05-25T23-13-12.txt
+│   ├── 📝 owl_rebloom_autowhale-280_2025-05-25T23-13-29.txt
+│   ├── 📝 owl_rebloom_autowhale-280_2025-05-25T23-13-36.txt
+│   ├── 📝 owl_rebloom_autowhale-290_2025-05-25T23-13-53.txt
+│   ├── 📝 owl_rebloom_autowhale-290_2025-05-25T23-14-00.txt
+│   ├── 📝 owl_rebloom_autowhale-300_2025-05-25T23-14-18.txt
+│   ├── 📝 owl_rebloom_autowhale-300_2025-05-25T23-14-25.txt
+│   ├── 📝 owl_rebloom_autowhale-30_2025-05-25T15-09-37.txt
+│   ├── 📝 owl_rebloom_autowhale-30_2025-05-25T15-10-40.txt
+│   ├── 📝 owl_rebloom_autowhale-30_2025-05-25T15-10-41.txt
+│   ├── 📝 owl_rebloom_autowhale-30_2025-05-25T15-12-42.txt
+│   ├── 📝 owl_rebloom_autowhale-30_2025-05-25T15-12-43.txt
+│   ├── 📝 owl_rebloom_autowhale-30_2025-05-25T15-43-13.txt
+│   ├── 📝 owl_rebloom_autowhale-30_2025-05-25T15-43-14.txt
+│   ├── 📝 owl_rebloom_autowhale-30_2025-05-25T16-58-04.txt
+│   ├── 📝 owl_rebloom_autowhale-30_2025-05-25T16-58-06.txt
+│   ├── 📝 owl_rebloom_autowhale-30_2025-05-25T17-01-12.txt
+│   ├── 📝 owl_rebloom_autowhale-30_2025-05-25T17-04-18.txt
+│   ├── 📝 owl_rebloom_autowhale-30_2025-05-25T17-04-22.txt
+│   ├── 📝 owl_rebloom_autowhale-30_2025-05-25T17-44-30.txt
+│   ├── 📝 owl_rebloom_autowhale-30_2025-05-25T17-44-33.txt
+│   ├── 📝 owl_rebloom_autowhale-30_2025-05-25T18-08-26.txt
+│   ├── 📝 owl_rebloom_autowhale-30_2025-05-25T18-08-29.txt
+│   ├── 📝 owl_rebloom_autowhale-30_2025-05-25T18-15-01.txt
+│   ├── 📝 owl_rebloom_autowhale-30_2025-05-25T18-15-05.txt
+│   ├── 📝 owl_rebloom_autowhale-30_2025-05-25T18-44-36.txt
+│   ├── 📝 owl_rebloom_autowhale-30_2025-05-25T18-44-40.txt
+│   ├── 📝 owl_rebloom_autowhale-30_2025-05-25T18-58-06.txt
+│   ├── 📝 owl_rebloom_autowhale-30_2025-05-25T18-58-10.txt
+│   ├── 📝 owl_rebloom_autowhale-30_2025-05-25T22-33-28.txt
+│   ├── 📝 owl_rebloom_autowhale-30_2025-05-25T22-33-34.txt
+│   ├── 📝 owl_rebloom_autowhale-30_2025-05-25T22-41-17.txt
+│   ├── 📝 owl_rebloom_autowhale-30_2025-05-25T22-41-23.txt
+│   ├── 📝 owl_rebloom_autowhale-30_2025-05-25T23-03-49.txt
+│   ├── 📝 owl_rebloom_autowhale-30_2025-05-25T23-03-55.txt
+│   ├── 📝 owl_rebloom_autowhale-30_2025-05-26T00-32-11.txt
+│   ├── 📝 owl_rebloom_autowhale-30_2025-05-26T00-32-19.txt
+│   ├── 📝 owl_rebloom_autowhale-30_2025-05-26T14-50-06.txt
+│   ├── 📝 owl_rebloom_autowhale-30_2025-05-26T14-50-14.txt
+│   ├── 📝 owl_rebloom_autowhale-30_2025-05-26T15-19-08.txt
+│   ├── 📝 owl_rebloom_autowhale-30_2025-05-26T15-19-17.txt
+│   ├── 📝 owl_rebloom_autowhale-30_2025-05-26T15-42-45.txt
+│   ├── 📝 owl_rebloom_autowhale-30_2025-05-26T15-42-55.txt
+│   ├── 📝 owl_rebloom_autowhale-30_2025-05-26T18-35-20.txt
+│   ├── 📝 owl_rebloom_autowhale-30_2025-05-26T18-35-31.txt
+│   ├── 📝 owl_rebloom_autowhale-30_2025-05-26T20-27-19.txt
+│   ├── 📝 owl_rebloom_autowhale-30_2025-05-26T20-27-29.txt
+│   ├── 📝 owl_rebloom_autowhale-310_2025-05-25T23-14-42.txt
+│   ├── 📝 owl_rebloom_autowhale-310_2025-05-25T23-14-49.txt
+│   ├── 📝 owl_rebloom_autowhale-40_2025-05-25T15-09-38.txt
+│   ├── 📝 owl_rebloom_autowhale-40_2025-05-25T15-09-39.txt
+│   ├── 📝 owl_rebloom_autowhale-40_2025-05-25T15-10-42.txt
+│   ├── 📝 owl_rebloom_autowhale-40_2025-05-25T15-10-43.txt
+│   ├── 📝 owl_rebloom_autowhale-40_2025-05-25T15-12-45.txt
+│   ├── 📝 owl_rebloom_autowhale-40_2025-05-25T15-43-16.txt
+│   ├── 📝 owl_rebloom_autowhale-40_2025-05-25T15-43-17.txt
+│   ├── 📝 owl_rebloom_autowhale-40_2025-05-25T16-58-18.txt
+│   ├── 📝 owl_rebloom_autowhale-40_2025-05-25T16-58-20.txt
+│   ├── 📝 owl_rebloom_autowhale-40_2025-05-25T17-04-34.txt
+│   ├── 📝 owl_rebloom_autowhale-40_2025-05-25T17-04-37.txt
+│   ├── 📝 owl_rebloom_autowhale-40_2025-05-25T17-44-45.txt
+│   ├── 📝 owl_rebloom_autowhale-40_2025-05-25T17-44-48.txt
+│   ├── 📝 owl_rebloom_autowhale-40_2025-05-25T18-08-42.txt
+│   ├── 📝 owl_rebloom_autowhale-40_2025-05-25T18-08-46.txt
+│   ├── 📝 owl_rebloom_autowhale-40_2025-05-25T18-15-18.txt
+│   ├── 📝 owl_rebloom_autowhale-40_2025-05-25T18-15-22.txt
+│   ├── 📝 owl_rebloom_autowhale-40_2025-05-25T18-44-54.txt
+│   ├── 📝 owl_rebloom_autowhale-40_2025-05-25T18-44-59.txt
+│   ├── 📝 owl_rebloom_autowhale-40_2025-05-25T18-58-25.txt
+│   ├── 📝 owl_rebloom_autowhale-40_2025-05-25T18-58-30.txt
+│   ├── 📝 owl_rebloom_autowhale-40_2025-05-25T22-33-49.txt
+│   ├── 📝 owl_rebloom_autowhale-40_2025-05-25T22-33-54.txt
+│   ├── 📝 owl_rebloom_autowhale-40_2025-05-25T22-41-38.txt
+│   ├── 📝 owl_rebloom_autowhale-40_2025-05-25T22-41-44.txt
+│   ├── 📝 owl_rebloom_autowhale-40_2025-05-25T23-04-12.txt
+│   ├── 📝 owl_rebloom_autowhale-40_2025-05-25T23-04-18.txt
+│   ├── 📝 owl_rebloom_autowhale-40_2025-05-26T00-32-28.txt
+│   ├── 📝 owl_rebloom_autowhale-40_2025-05-26T00-32-35.txt
+│   ├── 📝 owl_rebloom_autowhale-40_2025-05-26T15-19-31.txt
+│   ├── 📝 owl_rebloom_autowhale-40_2025-05-26T15-19-40.txt
+│   ├── 📝 owl_rebloom_autowhale-40_2025-05-26T15-43-08.txt
+│   ├── 📝 owl_rebloom_autowhale-40_2025-05-26T15-43-17.txt
+│   ├── 📝 owl_rebloom_autowhale-40_2025-05-26T18-35-46.txt
+│   ├── 📝 owl_rebloom_autowhale-40_2025-05-26T18-35-58.txt
+│   ├── 📝 owl_rebloom_autowhale-40_2025-05-26T20-27-44.txt
+│   ├── 📝 owl_rebloom_autowhale-40_2025-05-26T20-27-55.txt
+│   ├── 📝 owl_rebloom_autowhale-50_2025-05-25T15-09-40.txt
+│   ├── 📝 owl_rebloom_autowhale-50_2025-05-25T15-10-44.txt
+│   ├── 📝 owl_rebloom_autowhale-50_2025-05-25T15-10-45.txt
+│   ├── 📝 owl_rebloom_autowhale-50_2025-05-25T15-12-47.txt
+│   ├── 📝 owl_rebloom_autowhale-50_2025-05-25T15-12-48.txt
+│   ├── 📝 owl_rebloom_autowhale-50_2025-05-25T15-43-20.txt
+│   ├── 📝 owl_rebloom_autowhale-50_2025-05-25T15-43-21.txt
+│   ├── 📝 owl_rebloom_autowhale-50_2025-05-25T16-58-32.txt
+│   ├── 📝 owl_rebloom_autowhale-50_2025-05-25T16-58-35.txt
+│   ├── 📝 owl_rebloom_autowhale-50_2025-05-25T17-04-49.txt
+│   ├── 📝 owl_rebloom_autowhale-50_2025-05-25T17-04-52.txt
+│   ├── 📝 owl_rebloom_autowhale-50_2025-05-25T17-45-00.txt
+│   ├── 📝 owl_rebloom_autowhale-50_2025-05-25T17-45-03.txt
+│   ├── 📝 owl_rebloom_autowhale-50_2025-05-25T18-08-59.txt
+│   ├── 📝 owl_rebloom_autowhale-50_2025-05-25T18-09-02.txt
+│   ├── 📝 owl_rebloom_autowhale-50_2025-05-25T18-15-35.txt
+│   ├── 📝 owl_rebloom_autowhale-50_2025-05-25T18-15-39.txt
+│   ├── 📝 owl_rebloom_autowhale-50_2025-05-25T18-58-45.txt
+│   ├── 📝 owl_rebloom_autowhale-50_2025-05-25T18-58-50.txt
+│   ├── 📝 owl_rebloom_autowhale-50_2025-05-25T22-34-09.txt
+│   ├── 📝 owl_rebloom_autowhale-50_2025-05-25T22-34-15.txt
+│   ├── 📝 owl_rebloom_autowhale-50_2025-05-25T22-42-00.txt
+│   ├── 📝 owl_rebloom_autowhale-50_2025-05-25T22-42-06.txt
+│   ├── 📝 owl_rebloom_autowhale-50_2025-05-25T23-04-34.txt
+│   ├── 📝 owl_rebloom_autowhale-50_2025-05-25T23-04-41.txt
+│   ├── 📝 owl_rebloom_autowhale-50_2025-05-26T00-32-45.txt
+│   ├── 📝 owl_rebloom_autowhale-50_2025-05-26T00-32-52.txt
+│   ├── 📝 owl_rebloom_autowhale-50_2025-05-26T15-19-54.txt
+│   ├── 📝 owl_rebloom_autowhale-50_2025-05-26T15-20-04.txt
+│   ├── 📝 owl_rebloom_autowhale-50_2025-05-26T15-43-30.txt
+│   ├── 📝 owl_rebloom_autowhale-50_2025-05-26T15-43-40.txt
+│   ├── 📝 owl_rebloom_autowhale-50_2025-05-26T18-36-13.txt
+│   ├── 📝 owl_rebloom_autowhale-50_2025-05-26T18-36-23.txt
+│   ├── 📝 owl_rebloom_autowhale-50_2025-05-26T20-28-10.txt
+│   ├── 📝 owl_rebloom_autowhale-50_2025-05-26T20-28-21.txt
+│   ├── 📝 owl_rebloom_autowhale-60_2025-05-25T15-09-42.txt
+│   ├── 📝 owl_rebloom_autowhale-60_2025-05-25T15-10-46.txt
+│   ├── 📝 owl_rebloom_autowhale-60_2025-05-25T15-10-47.txt
+│   ├── 📝 owl_rebloom_autowhale-60_2025-05-25T15-12-50.txt
+│   ├── 📝 owl_rebloom_autowhale-60_2025-05-25T15-43-23.txt
+│   ├── 📝 owl_rebloom_autowhale-60_2025-05-25T15-43-24.txt
+│   ├── 📝 owl_rebloom_autowhale-60_2025-05-25T17-05-04.txt
+│   ├── 📝 owl_rebloom_autowhale-60_2025-05-25T17-05-07.txt
+│   ├── 📝 owl_rebloom_autowhale-60_2025-05-25T17-45-16.txt
+│   ├── 📝 owl_rebloom_autowhale-60_2025-05-25T17-45-19.txt
+│   ├── 📝 owl_rebloom_autowhale-60_2025-05-25T18-09-15.txt
+│   ├── 📝 owl_rebloom_autowhale-60_2025-05-25T18-09-19.txt
+│   ├── 📝 owl_rebloom_autowhale-60_2025-05-25T18-15-53.txt
+│   ├── 📝 owl_rebloom_autowhale-60_2025-05-25T18-15-57.txt
+│   ├── 📝 owl_rebloom_autowhale-60_2025-05-25T18-59-04.txt
+│   ├── 📝 owl_rebloom_autowhale-60_2025-05-25T18-59-09.txt
+│   ├── 📝 owl_rebloom_autowhale-60_2025-05-25T22-34-30.txt
+│   ├── 📝 owl_rebloom_autowhale-60_2025-05-25T22-34-35.txt
+│   ├── 📝 owl_rebloom_autowhale-60_2025-05-25T22-42-22.txt
+│   ├── 📝 owl_rebloom_autowhale-60_2025-05-25T22-42-27.txt
+│   ├── 📝 owl_rebloom_autowhale-60_2025-05-25T23-04-57.txt
+│   ├── 📝 owl_rebloom_autowhale-60_2025-05-25T23-05-04.txt
+│   ├── 📝 owl_rebloom_autowhale-60_2025-05-26T00-33-01.txt
+│   ├── 📝 owl_rebloom_autowhale-60_2025-05-26T00-33-09.txt
+│   ├── 📝 owl_rebloom_autowhale-60_2025-05-26T15-20-18.txt
+│   ├── 📝 owl_rebloom_autowhale-60_2025-05-26T15-20-27.txt
+│   ├── 📝 owl_rebloom_autowhale-60_2025-05-26T15-43-55.txt
+│   ├── 📝 owl_rebloom_autowhale-60_2025-05-26T15-44-07.txt
+│   ├── 📝 owl_rebloom_autowhale-60_2025-05-26T20-28-36.txt
+│   ├── 📝 owl_rebloom_autowhale-60_2025-05-26T20-28-48.txt
+│   ├── 📝 owl_rebloom_autowhale-70_2025-05-25T15-09-43.txt
+│   ├── 📝 owl_rebloom_autowhale-70_2025-05-25T15-10-48.txt
+│   ├── 📝 owl_rebloom_autowhale-70_2025-05-25T15-10-49.txt
+│   ├── 📝 owl_rebloom_autowhale-70_2025-05-25T15-12-52.txt
+│   ├── 📝 owl_rebloom_autowhale-70_2025-05-25T15-12-53.txt
+│   ├── 📝 owl_rebloom_autowhale-70_2025-05-25T15-43-27.txt
+│   ├── 📝 owl_rebloom_autowhale-70_2025-05-25T15-43-28.txt
+│   ├── 📝 owl_rebloom_autowhale-70_2025-05-25T18-09-32.txt
+│   ├── 📝 owl_rebloom_autowhale-70_2025-05-25T18-09-36.txt
+│   ├── 📝 owl_rebloom_autowhale-70_2025-05-25T18-16-10.txt
+│   ├── 📝 owl_rebloom_autowhale-70_2025-05-25T18-16-14.txt
+│   ├── 📝 owl_rebloom_autowhale-70_2025-05-25T18-59-23.txt
+│   ├── 📝 owl_rebloom_autowhale-70_2025-05-25T18-59-28.txt
+│   ├── 📝 owl_rebloom_autowhale-70_2025-05-25T22-34-51.txt
+│   ├── 📝 owl_rebloom_autowhale-70_2025-05-25T22-34-56.txt
+│   ├── 📝 owl_rebloom_autowhale-70_2025-05-25T22-42-43.txt
+│   ├── 📝 owl_rebloom_autowhale-70_2025-05-25T22-42-50.txt
+│   ├── 📝 owl_rebloom_autowhale-70_2025-05-25T23-05-20.txt
+│   ├── 📝 owl_rebloom_autowhale-70_2025-05-25T23-05-26.txt
+│   ├── 📝 owl_rebloom_autowhale-70_2025-05-26T00-33-17.txt
+│   ├── 📝 owl_rebloom_autowhale-70_2025-05-26T00-33-25.txt
+│   ├── 📝 owl_rebloom_autowhale-70_2025-05-26T15-20-42.txt
+│   ├── 📝 owl_rebloom_autowhale-70_2025-05-26T15-20-51.txt
+│   ├── 📝 owl_rebloom_autowhale-70_2025-05-26T15-44-23.txt
+│   ├── 📝 owl_rebloom_autowhale-70_2025-05-26T20-29-04.txt
+│   ├── 📝 owl_rebloom_autowhale-70_2025-05-26T20-29-16.txt
+│   ├── 📝 owl_rebloom_autowhale-80_2025-05-25T15-09-44.txt
+│   ├── 📝 owl_rebloom_autowhale-80_2025-05-25T15-10-50.txt
+│   ├── 📝 owl_rebloom_autowhale-80_2025-05-25T15-12-55.txt
+│   ├── 📝 owl_rebloom_autowhale-80_2025-05-25T15-12-56.txt
+│   ├── 📝 owl_rebloom_autowhale-80_2025-05-25T15-43-30.txt
+│   ├── 📝 owl_rebloom_autowhale-80_2025-05-25T15-43-32.txt
+│   ├── 📝 owl_rebloom_autowhale-80_2025-05-25T18-09-49.txt
+│   ├── 📝 owl_rebloom_autowhale-80_2025-05-25T18-09-53.txt
+│   ├── 📝 owl_rebloom_autowhale-80_2025-05-25T18-16-28.txt
+│   ├── 📝 owl_rebloom_autowhale-80_2025-05-25T18-16-32.txt
+│   ├── 📝 owl_rebloom_autowhale-80_2025-05-25T18-59-43.txt
+│   ├── 📝 owl_rebloom_autowhale-80_2025-05-25T18-59-48.txt
+│   ├── 📝 owl_rebloom_autowhale-80_2025-05-25T22-35-12.txt
+│   ├── 📝 owl_rebloom_autowhale-80_2025-05-25T22-35-17.txt
+│   ├── 📝 owl_rebloom_autowhale-80_2025-05-25T22-43-06.txt
+│   ├── 📝 owl_rebloom_autowhale-80_2025-05-25T22-43-12.txt
+│   ├── 📝 owl_rebloom_autowhale-80_2025-05-25T23-05-43.txt
+│   ├── 📝 owl_rebloom_autowhale-80_2025-05-25T23-05-49.txt
+│   ├── 📝 owl_rebloom_autowhale-80_2025-05-26T00-33-35.txt
+│   ├── 📝 owl_rebloom_autowhale-80_2025-05-26T00-33-43.txt
+│   ├── 📝 owl_rebloom_autowhale-80_2025-05-26T15-21-06.txt
+│   ├── 📝 owl_rebloom_autowhale-80_2025-05-26T15-21-15.txt
+│   ├── 📝 owl_rebloom_autowhale-80_2025-05-26T20-29-32.txt
+│   ├── 📝 owl_rebloom_autowhale-80_2025-05-26T20-29-45.txt
+│   ├── 📝 owl_rebloom_autowhale-90_2025-05-25T15-09-46.txt
+│   ├── 📝 owl_rebloom_autowhale-90_2025-05-25T15-10-52.txt
+│   ├── 📝 owl_rebloom_autowhale-90_2025-05-25T15-10-53.txt
+│   ├── 📝 owl_rebloom_autowhale-90_2025-05-25T15-12-57.txt
+│   ├── 📝 owl_rebloom_autowhale-90_2025-05-25T15-12-58.txt
+│   ├── 📝 owl_rebloom_autowhale-90_2025-05-25T15-43-34.txt
+│   ├── 📝 owl_rebloom_autowhale-90_2025-05-25T15-43-35.txt
+│   ├── 📝 owl_rebloom_autowhale-90_2025-05-25T18-10-06.txt
+│   ├── 📝 owl_rebloom_autowhale-90_2025-05-25T18-10-10.txt
+│   ├── 📝 owl_rebloom_autowhale-90_2025-05-25T18-16-45.txt
+│   ├── 📝 owl_rebloom_autowhale-90_2025-05-25T18-16-50.txt
+│   ├── 📝 owl_rebloom_autowhale-90_2025-05-25T19-00-03.txt
+│   ├── 📝 owl_rebloom_autowhale-90_2025-05-25T19-00-08.txt
+│   ├── 📝 owl_rebloom_autowhale-90_2025-05-25T22-35-32.txt
+│   ├── 📝 owl_rebloom_autowhale-90_2025-05-25T22-35-38.txt
+│   ├── 📝 owl_rebloom_autowhale-90_2025-05-25T22-43-28.txt
+│   ├── 📝 owl_rebloom_autowhale-90_2025-05-25T22-43-34.txt
+│   ├── 📝 owl_rebloom_autowhale-90_2025-05-25T23-06-06.txt
+│   ├── 📝 owl_rebloom_autowhale-90_2025-05-25T23-06-12.txt
+│   ├── 📝 owl_rebloom_autowhale-90_2025-05-26T00-33-52.txt
+│   ├── 📝 owl_rebloom_autowhale-90_2025-05-26T00-34-00.txt
+│   ├── 📝 owl_rebloom_autowhale-90_2025-05-26T15-21-28.txt
+│   ├── 📝 owl_rebloom_autowhale-90_2025-05-26T15-21-37.txt
+│   ├── 📝 owl_rebloom_autowhale-90_2025-05-26T20-30-00.txt
+│   ├── 📝 owl_rebloom_autowhale-90_2025-05-26T20-30-11.txt
+│   ├── 📝 owl_rebloom_cornerfusion-152731_2025-05-25T15-27-32.txt
+│   ├── 📝 owl_rebloom_cornerfusion-152731_2025-05-25T15-27-33.txt
+│   ├── 📝 owl_rebloom_cornerfusion-152854_2025-05-25T15-28-55.txt
+│   ├── 📝 owl_rebloom_cornerfusion-152854_2025-05-25T15-28-56.txt
+│   ├── 📝 owl_rebloom_diagnostic_test_2025-05-29T00-25-14.txt
+│   ├── 📝 owl_rebloom_emergency_test_9996_2025-05-28T21-22-56.txt
+│   ├── 📝 owl_rebloom_matrix-00_2025-05-25T15-27-16.txt
+│   ├── 📝 owl_rebloom_matrix-00_2025-05-25T15-28-37.txt
+│   ├── 📝 owl_rebloom_matrix-00_2025-05-25T15-28-38.txt
+│   ├── 📝 owl_rebloom_matrix-01_2025-05-25T15-27-17.txt
+│   ├── 📝 owl_rebloom_matrix-01_2025-05-25T15-27-18.txt
+│   ├── 📝 owl_rebloom_matrix-01_2025-05-25T15-28-39.txt
+│   ├── 📝 owl_rebloom_matrix-01_2025-05-25T15-28-40.txt
+│   ├── 📝 owl_rebloom_matrix-02_2025-05-25T15-27-19.txt
+│   ├── 📝 owl_rebloom_matrix-02_2025-05-25T15-27-20.txt
+│   ├── 📝 owl_rebloom_matrix-02_2025-05-25T15-28-41.txt
+│   ├── 📝 owl_rebloom_matrix-02_2025-05-25T15-28-42.txt
+│   ├── 📝 owl_rebloom_matrix-10_2025-05-25T15-27-21.txt
+│   ├── 📝 owl_rebloom_matrix-10_2025-05-25T15-28-43.txt
+│   ├── 📝 owl_rebloom_matrix-10_2025-05-25T15-28-44.txt
+│   ├── 📝 owl_rebloom_matrix-11_2025-05-25T15-27-22.txt
+│   ├── 📝 owl_rebloom_matrix-11_2025-05-25T15-27-23.txt
+│   ├── 📝 owl_rebloom_matrix-11_2025-05-25T15-28-44.txt
+│   ├── 📝 owl_rebloom_matrix-11_2025-05-25T15-28-46.txt
+│   ├── 📝 owl_rebloom_matrix-12_2025-05-25T15-27-24.txt
+│   ├── 📝 owl_rebloom_matrix-12_2025-05-25T15-27-25.txt
+│   ├── 📝 owl_rebloom_matrix-12_2025-05-25T15-28-46.txt
+│   ├── 📝 owl_rebloom_matrix-12_2025-05-25T15-28-47.txt
+│   ├── 📝 owl_rebloom_matrix-20_2025-05-25T15-27-26.txt
+│   ├── 📝 owl_rebloom_matrix-20_2025-05-25T15-28-48.txt
+│   ├── 📝 owl_rebloom_matrix-20_2025-05-25T15-28-49.txt
+│   ├── 📝 owl_rebloom_matrix-21_2025-05-25T15-27-27.txt
+│   ├── 📝 owl_rebloom_matrix-21_2025-05-25T15-27-28.txt
+│   ├── 📝 owl_rebloom_matrix-21_2025-05-25T15-28-50.txt
+│   ├── 📝 owl_rebloom_matrix-21_2025-05-25T15-28-51.txt
+│   ├── 📝 owl_rebloom_matrix-22_2025-05-25T15-27-29.txt
+│   ├── 📝 owl_rebloom_matrix-22_2025-05-25T15-27-30.txt
+│   ├── 📝 owl_rebloom_matrix-22_2025-05-25T15-28-52.txt
+│   ├── 📝 owl_rebloom_matrix-22_2025-05-25T15-28-54.txt
+│   ├── 📝 owl_rebloom_seed-∆2143FJ_2025-05-25T16-24-53.txt
+│   ├── 📝 owl_rebloom_seed-∆2143FJ_2025-05-25T16-26-56.txt
+│   ├── 📝 owl_rebloom_seed-∆2143FJ_2025-05-25T16-29-14.txt
+│   ├── 📝 owl_rebloom_seed-∆2143FJ_2025-05-25T16-31-18.txt
+│   ├── 📝 owl_rebloom_seed-∆2143FJ_2025-05-25T16-34-44.txt
+│   ├── 📝 owl_rebloom_seed-∆2143FJ_2025-05-25T16-36-28.txt
+│   ├── 📝 owl_rebloom_seed-∆2143FJ_2025-05-25T16-49-18.txt
+│   ├── 📝 owl_rebloom_seed-∆2143FJ_2025-05-25T16-51-21.txt
+│   ├── 📝 owl_rebloom_seed-∆2143FJ_2025-05-25T16-54-08.txt
+│   ├── 📝 owl_rebloom_seed-∆2143FJ_2025-05-25T16-57-02.txt
+│   ├── 📝 owl_rebloom_seed-∆2143FJ_2025-05-25T17-00-07.txt
+│   ├── 📝 owl_rebloom_seed-∆2143FJ_2025-05-25T17-03-10.txt
+│   ├── 📝 owl_rebloom_seed-∆2143FJ_2025-05-25T17-43-22.txt
+│   ├── 📝 owl_rebloom_seed-∆2143FJ_2025-05-25T17-45-46.txt
+│   ├── 📝 owl_rebloom_seed-∆2143FJ_2025-05-25T17-47-43.txt
+│   ├── 📝 owl_rebloom_seed-∆2143FJ_2025-05-25T17-49-34.txt
+│   ├── 📝 owl_rebloom_seed-∆2143FJ_2025-05-25T17-53-26.txt
+│   ├── 📝 owl_rebloom_seed-∆2143FJ_2025-05-25T17-54-35.txt
+│   ├── 📝 owl_rebloom_seed-∆2143FJ_2025-05-25T17-57-09.txt
+│   ├── 📝 owl_rebloom_seed-∆2143FJ_2025-05-25T17-59-45.txt
+│   ├── 📝 owl_rebloom_seed-∆2143FJ_2025-05-25T18-04-35.txt
+│   ├── 📝 owl_rebloom_seed-∆2143FJ_2025-05-25T18-07-13.txt
+│   ├── 📝 owl_rebloom_seed-∆2143FJ_2025-05-25T18-11-46.txt
+│   ├── 📝 owl_rebloom_seed-∆2143FJ_2025-05-25T18-13-43.txt
+│   ├── 📝 owl_rebloom_seed-∆2143FJ_2025-05-25T18-28-40.txt
+│   ├── 📝 owl_rebloom_seed-∆2143FJ_2025-05-25T18-30-30.txt
+│   ├── 📝 owl_rebloom_seed-∆2143FJ_2025-05-25T18-32-45.txt
+│   ├── 📝 owl_rebloom_seed-∆2143FJ_2025-05-25T18-41-45.txt
+│   ├── 📝 owl_rebloom_seed-∆2143FJ_2025-05-25T18-43-15.txt
+│   ├── 📝 owl_rebloom_seed-∆2143FJ_2025-05-25T18-54-48.txt
+│   ├── 📝 owl_rebloom_seed-∆2143FJ_2025-05-25T18-56-42.txt
+│   ├── 📝 owl_rebloom_seed-∆2143FJ_2025-05-25T22-28-31.txt
+│   ├── 📝 owl_rebloom_seed-∆2143FJ_2025-05-25T22-32-02.txt
+│   ├── 📝 owl_rebloom_seed-∆2143FJ_2025-05-25T22-39-45.txt
+│   ├── 📝 owl_rebloom_seed-∆2143FJ_2025-05-25T23-02-12.txt
+│   ├── 📝 owl_rebloom_seed-∆2143FJ_2025-05-25T23-28-33.txt
+│   ├── 📝 owl_rebloom_seed-∆2143FJ_2025-05-25T23-30-15.txt
+│   ├── 📝 owl_rebloom_seed-∆2143FJ_2025-05-25T23-38-23.txt
+│   ├── 📝 owl_rebloom_seed-∆2143FJ_2025-05-25T23-40-58.txt
+│   ├── 📝 owl_rebloom_seed-∆2143FJ_2025-05-25T23-43-12.txt
+│   ├── 📝 owl_rebloom_seed-∆2143FJ_2025-05-25T23-44-20.txt
+│   ├── 📝 owl_rebloom_seed-∆2143FJ_2025-05-26T00-27-34.txt
+│   ├── 📝 owl_rebloom_seed-∆2143FJ_2025-05-26T00-30-51.txt
+│   ├── 📝 owl_rebloom_seed-∆2143FJ_2025-05-26T14-31-59.txt
+│   ├── 📝 owl_rebloom_seed-∆2143FJ_2025-05-26T14-36-41.txt
+│   ├── 📝 owl_rebloom_seed-∆2143FJ_2025-05-26T14-41-19.txt
+│   ├── 📝 owl_rebloom_seed-∆2143FJ_2025-05-26T14-44-47.txt
+│   ├── 📝 owl_rebloom_seed-∆2143FJ_2025-05-26T14-45-29.txt
+│   ├── 📝 owl_rebloom_seed-∆2143FJ_2025-05-26T14-48-30.txt
+│   ├── 📝 owl_rebloom_seed-∆2143FJ_2025-05-26T14-57-01.txt
+│   ├── 📝 owl_rebloom_seed-∆2143FJ_2025-05-26T14-59-07.txt
+│   ├── 📝 owl_rebloom_seed-∆2143FJ_2025-05-26T15-04-09.txt
+│   ├── 📝 owl_rebloom_seed-∆2143FJ_2025-05-26T15-06-58.txt
+│   ├── 📝 owl_rebloom_seed-∆2143FJ_2025-05-26T15-12-47.txt
+│   ├── 📝 owl_rebloom_seed-∆2143FJ_2025-05-26T15-17-24.txt
+│   ├── 📝 owl_rebloom_seed-∆2143FJ_2025-05-26T15-40-57.txt
+│   ├── 📝 owl_rebloom_seed-∆2143FJ_2025-05-26T18-24-18.txt
+│   ├── 📝 owl_rebloom_seed-∆2143FJ_2025-05-26T18-26-22.txt
+│   ├── 📝 owl_rebloom_seed-∆2143FJ_2025-05-26T18-29-38.txt
+│   ├── 📝 owl_rebloom_seed-∆2143FJ_2025-05-26T18-33-33.txt
+│   ├── 📝 owl_rebloom_seed-∆2143FJ_2025-05-26T20-13-03.txt
+│   ├── 📝 owl_rebloom_seed-∆2143FJ_2025-05-26T20-19-59.txt
+│   ├── 📝 owl_rebloom_seed-∆2143FJ_2025-05-26T20-24-51.txt
+│   ├── 📝 owl_rebloom_seed-∆2143FJ_2025-05-26T22-02-48.txt
+│   ├── 📝 owl_rebloom_seed-∆2143FJ_2025-05-27T02-25-54.txt
+│   ├── 📝 owl_rebloom_seed-∆2143FJ_2025-05-27T02-27-53.txt
+│   ├── 📝 owl_rebloom_seed-∆2143FJ_2025-05-27T02-33-21.txt
+│   ├── 📝 owl_rebloom_seed-∆2143FJ_2025-05-27T02-39-46.txt
+│   ├── 📝 owl_rebloom_seed-∆2143FJ_2025-05-27T03-04-42.txt
+│   ├── 📝 owl_rebloom_seed-∆2143FJ_2025-05-27T03-07-54.txt
+│   ├── 📝 owl_rebloom_seed-∆2143FJ_2025-05-27T03-25-51.txt
+│   ├── 📝 owl_rebloom_seed-∆2143FJ_2025-05-27T04-19-46.txt
+│   ├── 📝 owl_rebloom_seed-∆2143FJ_2025-05-27T04-26-29.txt
+│   ├── 📝 owl_rebloom_seed-∆2143FJ_2025-05-27T04-30-17.txt
+│   ├── 📝 owl_rebloom_seed-∆2143FJ_2025-05-27T04-39-30.txt
+│   ├── 📝 owl_rebloom_seed-∆2143FJ_2025-05-27T04-49-58.txt
+│   ├── 📝 owl_rebloom_seed-∆2143FJ_2025-05-27T05-28-12.txt
+│   ├── 📝 owl_rebloom_seed-∆2143FJ_2025-05-27T05-38-54.txt
+│   ├── 📝 owl_rebloom_seed-∆2143FJ_2025-05-27T06-30-24.txt
+│   ├── 📝 owl_rebloom_seed-∆2143FJ_2025-05-27T06-35-31.txt
+│   ├── 📝 owl_rebloom_seed-∆2143FJ_2025-05-27T17-50-23.txt
+│   ├── 📝 owl_rebloom_seed-∆2143FJ_2025-05-28T01-27-05.txt
+│   ├── 📝 owl_rebloom_seed-∆2143FJ_2025-05-28T01-33-53.txt
+│   ├── 📝 owl_rebloom_seed-∆2143FJ_2025-05-28T01-40-50.txt
+│   ├── 📝 owl_rebloom_seed-∆2143FJ_2025-05-28T01-44-34.txt
+│   ├── 📝 owl_rebloom_seed-∆2143FJ_2025-05-28T01-48-10.txt
+│   ├── 📝 owl_rebloom_seed-∆2143FJ_2025-05-28T01-52-28.txt
+│   ├── 📝 owl_rebloom_seed-∆2143FJ_2025-05-28T01-56-55.txt
+│   ├── 📝 owl_rebloom_seed-∆2143FJ_2025-05-28T02-00-32.txt
+│   ├── 📝 owl_rebloom_seed-∆2143FJ_2025-05-28T02-11-00.txt
+│   ├── 📝 owl_rebloom_seed-∆2143FJ_2025-05-28T02-19-50.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-25T16-27-13.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-25T16-27-15.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-25T16-29-31.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-25T16-29-33.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-25T16-31-35.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-25T16-31-37.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-25T16-35-01.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-25T16-35-03.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-25T16-36-45.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-25T16-36-48.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-25T16-49-35.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-25T16-49-38.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-25T16-51-38.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-25T16-51-41.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-25T16-54-25.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-25T16-54-27.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-25T16-57-19.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-25T16-57-22.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-25T17-00-26.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-25T17-00-29.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-25T17-03-28.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-25T17-03-32.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-25T17-43-40.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-25T17-43-43.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-25T17-46-04.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-25T17-46-07.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-25T17-48-02.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-25T17-48-05.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-25T17-49-53.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-25T17-49-56.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-25T17-53-45.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-25T17-53-49.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-25T17-54-53.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-25T17-54-57.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-25T18-00-03.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-25T18-00-07.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-25T18-04-54.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-25T18-04-58.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-25T18-07-32.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-25T18-07-36.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-25T18-12-05.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-25T18-12-10.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-25T18-14-02.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-25T18-14-07.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-25T18-29-00.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-25T18-29-04.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-25T18-30-50.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-25T18-30-55.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-25T18-33-05.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-25T18-33-10.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-25T18-42-05.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-25T18-42-10.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-25T18-43-35.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-25T18-43-40.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-25T18-55-08.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-25T18-55-13.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-25T18-57-02.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-25T18-57-08.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-25T22-28-54.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-25T22-28-59.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-25T22-32-23.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-25T22-32-28.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-25T22-40-06.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-25T22-40-12.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-25T23-02-34.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-25T23-02-41.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-25T23-28-55.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-25T23-29-03.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-25T23-30-38.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-25T23-30-45.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-25T23-38-46.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-25T23-38-54.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-25T23-41-21.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-25T23-41-29.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-25T23-43-37.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-25T23-43-45.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-25T23-44-43.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-25T23-44-51.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-26T00-27-59.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-26T00-28-07.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-26T00-31-15.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-26T00-31-23.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-26T14-32-25.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-26T14-32-34.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-26T14-37-05.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-26T14-37-14.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-26T14-41-44.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-26T14-41-54.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-26T14-45-56.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-26T14-46-06.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-26T14-48-55.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-26T14-49-06.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-26T14-57-26.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-26T14-57-34.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-26T14-59-32.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-26T14-59-41.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-26T15-04-35.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-26T15-04-44.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-26T15-13-13.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-26T15-13-22.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-26T15-17-50.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-26T15-17-59.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-26T15-41-23.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-26T15-41-35.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-26T20-13-30.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-26T20-13-41.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-26T20-20-27.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-26T20-20-39.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-26T20-25-18.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-26T20-25-30.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-26T22-03-23.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-26T22-03-38.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-27T02-28-30.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-27T02-28-43.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-27T02-33-58.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-27T02-34-13.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-27T02-40-24.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-27T02-40-38.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-27T03-05-18.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-27T03-05-31.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-27T03-08-30.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-27T03-08-43.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-27T03-26-28.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-27T03-26-42.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-27T04-20-24.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-27T04-20-39.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-27T04-27-08.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-27T04-27-22.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-27T04-30-55.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-27T04-31-08.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-27T04-40-07.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-27T04-40-21.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-27T04-50-37.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-27T04-50-51.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-27T05-28-51.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-27T05-29-05.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-27T05-39-33.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-27T05-39-49.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-27T06-31-03.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-27T06-31-17.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-27T06-36-09.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-27T06-36-23.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-27T17-51-06.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-27T17-51-21.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-28T01-27-46.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-28T01-28-00.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-28T01-34-31.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-28T01-34-45.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-28T01-41-27.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-28T01-41-42.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-28T01-45-13.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-28T01-45-28.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-28T01-53-08.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-28T01-53-23.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-28T01-57-33.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-28T01-57-48.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-28T02-01-10.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-28T02-01-25.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-28T02-11-39.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-28T02-11-55.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-28T02-20-29.txt
+│   ├── 📝 owl_rebloom_seed-∆test_2025-05-28T02-20-43.txt
+│   ├── 📝 owl_rebloom_synthesis-003130_2025-05-26T00-31-31.txt
+│   ├── 📝 owl_rebloom_synthesis-003130_2025-05-26T00-31-39.txt
+│   ├── 📝 owl_rebloom_synthesis-144916_2025-05-26T14-49-17.txt
+│   ├── 📝 owl_rebloom_synthesis-144916_2025-05-26T14-49-27.txt
+│   ├── 📝 owl_rebloom_synthesis-151812_2025-05-26T15-18-12.txt
+│   ├── 📝 owl_rebloom_synthesis-151812_2025-05-26T15-18-21.txt
+│   ├── 📝 owl_rebloom_synthesis-154147_2025-05-26T15-41-48.txt
+│   ├── 📝 owl_rebloom_synthesis-154147_2025-05-26T15-41-57.txt
+│   ├── 📝 owl_rebloom_synthesis-163711_2025-05-25T16-37-12.txt
+│   ├── 📝 owl_rebloom_synthesis-163711_2025-05-25T16-37-13.txt
+│   ├── 📝 owl_rebloom_synthesis-165451_2025-05-25T16-54-52.txt
+│   ├── 📝 owl_rebloom_synthesis-165451_2025-05-25T16-54-54.txt
+│   ├── 📝 owl_rebloom_synthesis-165746_2025-05-25T16-57-47.txt
+│   ├── 📝 owl_rebloom_synthesis-165746_2025-05-25T16-57-49.txt
+│   ├── 📝 owl_rebloom_synthesis-170054_2025-05-25T17-00-55.txt
+│   ├── 📝 owl_rebloom_synthesis-170054_2025-05-25T17-00-57.txt
+│   ├── 📝 owl_rebloom_synthesis-170358_2025-05-25T17-03-59.txt
+│   ├── 📝 owl_rebloom_synthesis-170358_2025-05-25T17-04-03.txt
+│   ├── 📝 owl_rebloom_synthesis-174410_2025-05-25T17-44-11.txt
+│   ├── 📝 owl_rebloom_synthesis-174410_2025-05-25T17-44-13.txt
+│   ├── 📝 owl_rebloom_synthesis-180805_2025-05-25T18-08-06.txt
+│   ├── 📝 owl_rebloom_synthesis-180805_2025-05-25T18-08-09.txt
+│   ├── 📝 owl_rebloom_synthesis-181437_2025-05-25T18-14-38.txt
+│   ├── 📝 owl_rebloom_synthesis-181437_2025-05-25T18-14-42.txt
+│   ├── 📝 owl_rebloom_synthesis-183416_2025-05-26T18-34-17.txt
+│   ├── 📝 owl_rebloom_synthesis-183416_2025-05-26T18-34-28.txt
+│   ├── 📝 owl_rebloom_synthesis-184411_2025-05-25T18-44-12.txt
+│   ├── 📝 owl_rebloom_synthesis-184411_2025-05-25T18-44-16.txt
+│   ├── 📝 owl_rebloom_synthesis-185740_2025-05-25T18-57-41.txt
+│   ├── 📝 owl_rebloom_synthesis-185740_2025-05-25T18-57-46.txt
+│   ├── 📝 owl_rebloom_synthesis-202122_2025-05-26T20-21-23.txt
+│   ├── 📝 owl_rebloom_synthesis-202122_2025-05-26T20-21-37.txt
+│   ├── 📝 owl_rebloom_synthesis-202615_2025-05-26T20-26-15.txt
+│   ├── 📝 owl_rebloom_synthesis-202615_2025-05-26T20-26-27.txt
+│   ├── 📝 owl_rebloom_synthesis-220427_2025-05-26T22-04-28.txt
+│   ├── 📝 owl_rebloom_synthesis-220427_2025-05-26T22-04-43.txt
+│   ├── 📝 owl_rebloom_synthesis-222933_2025-05-25T22-29-33.txt
+│   ├── 📝 owl_rebloom_synthesis-222933_2025-05-25T22-29-38.txt
+│   ├── 📝 owl_rebloom_synthesis-223301_2025-05-25T22-33-02.txt
+│   ├── 📝 owl_rebloom_synthesis-223301_2025-05-25T22-33-07.txt
+│   ├── 📝 owl_rebloom_synthesis-224048_2025-05-25T22-40-49.txt
+│   ├── 📝 owl_rebloom_synthesis-224048_2025-05-25T22-40-55.txt
+│   ├── 📝 owl_rebloom_synthesis-230318_2025-05-25T23-03-19.txt
+│   ├── 📝 owl_rebloom_synthesis-230318_2025-05-25T23-03-25.txt
+│   ├── 📝 owl_rebloom_whale-006_2025-05-25T16-04-30.txt
+│   ├── 📝 owl_reflection_DAWN_BOOT_2025-05-27T06-26-46.txt
+│   ├── 📝 owl_reflection_DAWN_QUERY_2025-05-27T06-42-30.txt
+│   ├── 📝 README.txt
+│   ├── 📝 rebloom_trace_20250530_152545.txt
+│   ├── 📝 rebloom_trace_20250530_152603.txt
+│   ├── 📝 rebloom_trace_20250530_152941.txt
+│   ├── 📝 rebloom_trace_20250530_154009.txt
+│   └── 📝 summary_of_logs.txt
+├── 📁 visuals/
+│   ├── 🐍 __init__.py
+│   ├── 📝 belief_resonance_scatter.png
+│   ├── 📝 bloom_lineage_radar_tick_0001.png
+│   ├── 📝 celeste_lily_fractal.png
+│   ├── 📝 cognition_pressure_map.png
+│   ├── 📝 coherence_field_frame.png
+│   ├── 📝 crow_stall_heatmap.png
+│   ├── 📝 dashboard.png
+│   ├── 📝 dawn_phase_space.png
+│   ├── 📝 dawn_system_overview.png
+│   ├── 📝 diagnostic_test_2025-05-29T00-25-14.png
+│   ├── 📝 drift_compass.png
+│   ├── 📝 drift_entropy_overlay.png
+│   ├── 📝 drift_lattice.png
+│   ├── 📝 drift_vector_field.png
+│   ├── 📝 emergency_test_9996_2025-05-28T21-22-56.png
+│   ├── 📝 enhanced_anxious_2025-05-29T00-40-28.png
+│   ├── 📝 enhanced_curious_2025-05-29T00-40-15.png
+│   ├── 📝 enhanced_reflective_2025-05-29T00-40-42.png
+│   ├── 📝 entropy_arc.png
+│   ├── 📝 entropy_clusters.png
+│   ├── 📝 entropy_overlay_gradient.png
+│   ├── 📝 field_saturation_map.png
+│   ├── 📝 final_bloom_snapshot.png
+│   ├── 📝 flower-autowhale-100_2025-05-25T15-09-47.png
+│   ├── 📝 flower-autowhale-100_2025-05-25T15-10-54.png
+│   ├── 📝 flower-autowhale-100_2025-05-25T15-13-00.png
+│   ├── 📝 flower-autowhale-100_2025-05-25T15-43-37.png
+│   ├── 📝 flower-autowhale-100_2025-05-25T18-10-23.png
+│   ├── 📝 flower-autowhale-100_2025-05-25T18-17-03.png
+│   ├── 📝 flower-autowhale-100_2025-05-25T19-00-23.png
+│   ├── 📝 flower-autowhale-100_2025-05-25T22-35-54.png
+│   ├── 📝 flower-autowhale-100_2025-05-25T22-43-50.png
+│   ├── 📝 flower-autowhale-100_2025-05-25T23-06-28.png
+│   ├── 📝 flower-autowhale-100_2025-05-26T00-34-09.png
+│   ├── 📝 flower-autowhale-100_2025-05-26T15-21-52.png
+│   ├── 📝 flower-autowhale-100_2025-05-26T20-30-26.png
+│   ├── 📝 flower-autowhale-10_2025-05-25T15-09-33.png
+│   ├── 📝 flower-autowhale-10_2025-05-25T15-10-36.png
+│   ├── 📝 flower-autowhale-10_2025-05-25T15-12-37.png
+│   ├── 📝 flower-autowhale-10_2025-05-25T15-43-05.png
+│   ├── 📝 flower-autowhale-10_2025-05-25T16-36-58.png
+│   ├── 📝 flower-autowhale-10_2025-05-25T16-49-48.png
+│   ├── 📝 flower-autowhale-10_2025-05-25T16-51-51.png
+│   ├── 📝 flower-autowhale-10_2025-05-25T16-54-38.png
+│   ├── 📝 flower-autowhale-10_2025-05-25T16-57-33.png
+│   ├── 📝 flower-autowhale-10_2025-05-25T17-00-40.png
+│   ├── 📝 flower-autowhale-10_2025-05-25T17-03-43.png
+│   ├── 📝 flower-autowhale-10_2025-05-25T17-43-55.png
+│   ├── 📝 flower-autowhale-10_2025-05-25T17-46-19.png
+│   ├── 📝 flower-autowhale-10_2025-05-25T17-48-17.png
+│   ├── 📝 flower-autowhale-10_2025-05-25T17-50-08.png
+│   ├── 📝 flower-autowhale-10_2025-05-25T17-54-01.png
+│   ├── 📝 flower-autowhale-10_2025-05-25T17-55-09.png
+│   ├── 📝 flower-autowhale-10_2025-05-25T18-05-10.png
+│   ├── 📝 flower-autowhale-10_2025-05-25T18-07-49.png
+│   ├── 📝 flower-autowhale-10_2025-05-25T18-14-20.png
+│   ├── 📝 flower-autowhale-10_2025-05-25T18-43-54.png
+│   ├── 📝 flower-autowhale-10_2025-05-25T18-55-27.png
+│   ├── 📝 flower-autowhale-10_2025-05-25T18-57-22.png
+│   ├── 📝 flower-autowhale-10_2025-05-25T22-29-13.png
+│   ├── 📝 flower-autowhale-10_2025-05-25T22-32-42.png
+│   ├── 📝 flower-autowhale-10_2025-05-25T22-40-27.png
+│   ├── 📝 flower-autowhale-10_2025-05-25T23-02-56.png
+│   ├── 📝 flower-autowhale-10_2025-05-26T00-31-39.png
+│   ├── 📝 flower-autowhale-10_2025-05-26T14-49-28.png
+│   ├── 📝 flower-autowhale-10_2025-05-26T15-18-22.png
+│   ├── 📝 flower-autowhale-10_2025-05-26T15-41-58.png
+│   ├── 📝 flower-autowhale-10_2025-05-26T18-34-29.png
+│   ├── 📝 flower-autowhale-10_2025-05-26T20-26-27.png
+│   ├── 📝 flower-autowhale-110_2025-05-25T18-10-40.png
+│   ├── 📝 flower-autowhale-110_2025-05-25T18-17-21.png
+│   ├── 📝 flower-autowhale-110_2025-05-25T19-00-42.png
+│   ├── 📝 flower-autowhale-110_2025-05-25T22-36-14.png
+│   ├── 📝 flower-autowhale-110_2025-05-25T22-44-12.png
+│   ├── 📝 flower-autowhale-110_2025-05-25T23-06-51.png
+│   ├── 📝 flower-autowhale-110_2025-05-26T00-34-26.png
+│   ├── 📝 flower-autowhale-110_2025-05-26T20-30-55.png
+│   ├── 📝 flower-autowhale-120_2025-05-25T18-10-57.png
+│   ├── 📝 flower-autowhale-120_2025-05-25T18-17-39.png
+│   ├── 📝 flower-autowhale-120_2025-05-25T22-36-35.png
+│   ├── 📝 flower-autowhale-120_2025-05-25T22-44-34.png
+│   ├── 📝 flower-autowhale-120_2025-05-25T23-07-14.png
+│   ├── 📝 flower-autowhale-120_2025-05-26T00-34-42.png
+│   ├── 📝 flower-autowhale-120_2025-05-26T20-31-24.png
+│   ├── 📝 flower-autowhale-130_2025-05-25T18-11-13.png
+│   ├── 📝 flower-autowhale-130_2025-05-25T18-17-56.png
+│   ├── 📝 flower-autowhale-130_2025-05-25T22-36-56.png
+│   ├── 📝 flower-autowhale-130_2025-05-25T22-44-56.png
+│   ├── 📝 flower-autowhale-130_2025-05-25T23-07-37.png
+│   ├── 📝 flower-autowhale-130_2025-05-26T00-34-59.png
+│   ├── 📝 flower-autowhale-130_2025-05-26T20-31-54.png
+│   ├── 📝 flower-autowhale-140_2025-05-25T18-18-14.png
+│   ├── 📝 flower-autowhale-140_2025-05-25T22-37-18.png
+│   ├── 📝 flower-autowhale-140_2025-05-25T22-45-18.png
+│   ├── 📝 flower-autowhale-140_2025-05-25T23-08-00.png
+│   ├── 📝 flower-autowhale-140_2025-05-26T00-35-16.png
+│   ├── 📝 flower-autowhale-140_2025-05-26T20-32-24.png
+│   ├── 📝 flower-autowhale-150_2025-05-25T18-18-32.png
+│   ├── 📝 flower-autowhale-150_2025-05-25T22-37-39.png
+│   ├── 📝 flower-autowhale-150_2025-05-25T22-45-41.png
+│   ├── 📝 flower-autowhale-150_2025-05-25T23-08-23.png
+│   ├── 📝 flower-autowhale-150_2025-05-26T00-35-33.png
+│   ├── 📝 flower-autowhale-150_2025-05-26T20-32-53.png
+│   ├── 📝 flower-autowhale-160_2025-05-25T18-18-51.png
+│   ├── 📝 flower-autowhale-160_2025-05-25T22-38-00.png
+│   ├── 📝 flower-autowhale-160_2025-05-25T23-08-46.png
+│   ├── 📝 flower-autowhale-160_2025-05-26T00-35-53.png
+│   ├── 📝 flower-autowhale-160_2025-05-26T20-33-20.png
+│   ├── 📝 flower-autowhale-170_2025-05-25T18-19-09.png
+│   ├── 📝 flower-autowhale-170_2025-05-25T22-38-21.png
+│   ├── 📝 flower-autowhale-170_2025-05-25T23-09-10.png
+│   ├── 📝 flower-autowhale-170_2025-05-26T00-36-12.png
+│   ├── 📝 flower-autowhale-180_2025-05-25T22-38-42.png
+│   ├── 📝 flower-autowhale-180_2025-05-25T23-09-33.png
+│   ├── 📝 flower-autowhale-190_2025-05-25T22-39-03.png
+│   ├── 📝 flower-autowhale-190_2025-05-25T23-09-56.png
+│   ├── 📝 flower-autowhale-200_2025-05-25T23-10-19.png
+│   ├── 📝 flower-autowhale-20_2025-05-25T15-09-35.png
+│   ├── 📝 flower-autowhale-20_2025-05-25T15-10-38.png
+│   ├── 📝 flower-autowhale-20_2025-05-25T15-12-39.png
+│   ├── 📝 flower-autowhale-20_2025-05-25T15-43-09.png
+│   ├── 📝 flower-autowhale-20_2025-05-25T16-57-50.png
+│   ├── 📝 flower-autowhale-20_2025-05-25T17-00-58.png
+│   ├── 📝 flower-autowhale-20_2025-05-25T17-04-03.png
+│   ├── 📝 flower-autowhale-20_2025-05-25T17-44-14.png
+│   ├── 📝 flower-autowhale-20_2025-05-25T18-08-10.png
+│   ├── 📝 flower-autowhale-20_2025-05-25T18-14-43.png
+│   ├── 📝 flower-autowhale-20_2025-05-25T18-44-17.png
+│   ├── 📝 flower-autowhale-20_2025-05-25T18-57-46.png
+│   ├── 📝 flower-autowhale-20_2025-05-25T22-29-39.png
+│   ├── 📝 flower-autowhale-20_2025-05-25T22-33-07.png
+│   ├── 📝 flower-autowhale-20_2025-05-25T22-40-55.png
+│   ├── 📝 flower-autowhale-20_2025-05-25T23-03-26.png
+│   ├── 📝 flower-autowhale-20_2025-05-26T00-31-55.png
+│   ├── 📝 flower-autowhale-20_2025-05-26T14-49-47.png
+│   ├── 📝 flower-autowhale-20_2025-05-26T15-18-45.png
+│   ├── 📝 flower-autowhale-20_2025-05-26T15-42-21.png
+│   ├── 📝 flower-autowhale-20_2025-05-26T18-34-53.png
+│   ├── 📝 flower-autowhale-20_2025-05-26T20-26-53.png
+│   ├── 📝 flower-autowhale-210_2025-05-25T23-10-42.png
+│   ├── 📝 flower-autowhale-220_2025-05-25T23-11-06.png
+│   ├── 📝 flower-autowhale-230_2025-05-25T23-11-29.png
+│   ├── 📝 flower-autowhale-240_2025-05-25T23-11-53.png
+│   ├── 📝 flower-autowhale-250_2025-05-25T23-12-17.png
+│   ├── 📝 flower-autowhale-260_2025-05-25T23-12-41.png
+│   ├── 📝 flower-autowhale-270_2025-05-25T23-13-05.png
+│   ├── 📝 flower-autowhale-280_2025-05-25T23-13-29.png
+│   ├── 📝 flower-autowhale-290_2025-05-25T23-13-53.png
+│   ├── 📝 flower-autowhale-300_2025-05-25T23-14-18.png
+│   ├── 📝 flower-autowhale-30_2025-05-25T15-09-37.png
+│   ├── 📝 flower-autowhale-30_2025-05-25T15-10-40.png
+│   ├── 📝 flower-autowhale-30_2025-05-25T15-12-42.png
+│   ├── 📝 flower-autowhale-30_2025-05-25T15-43-13.png
+│   ├── 📝 flower-autowhale-30_2025-05-25T16-58-04.png
+│   ├── 📝 flower-autowhale-30_2025-05-25T17-01-12.png
+│   ├── 📝 flower-autowhale-30_2025-05-25T17-04-18.png
+│   ├── 📝 flower-autowhale-30_2025-05-25T17-44-30.png
+│   ├── 📝 flower-autowhale-30_2025-05-25T18-08-26.png
+│   ├── 📝 flower-autowhale-30_2025-05-25T18-15-01.png
+│   ├── 📝 flower-autowhale-30_2025-05-25T18-44-36.png
+│   ├── 📝 flower-autowhale-30_2025-05-25T18-58-06.png
+│   ├── 📝 flower-autowhale-30_2025-05-25T22-33-28.png
+│   ├── 📝 flower-autowhale-30_2025-05-25T22-41-17.png
+│   ├── 📝 flower-autowhale-30_2025-05-25T23-03-49.png
+│   ├── 📝 flower-autowhale-30_2025-05-26T00-32-11.png
+│   ├── 📝 flower-autowhale-30_2025-05-26T14-50-06.png
+│   ├── 📝 flower-autowhale-30_2025-05-26T15-19-08.png
+│   ├── 📝 flower-autowhale-30_2025-05-26T15-42-45.png
+│   ├── 📝 flower-autowhale-30_2025-05-26T18-35-20.png
+│   ├── 📝 flower-autowhale-30_2025-05-26T20-27-19.png
+│   ├── 📝 flower-autowhale-310_2025-05-25T23-14-42.png
+│   ├── 📝 flower-autowhale-40_2025-05-25T15-09-38.png
+│   ├── 📝 flower-autowhale-40_2025-05-25T15-10-42.png
+│   ├── 📝 flower-autowhale-40_2025-05-25T15-12-45.png
+│   ├── 📝 flower-autowhale-40_2025-05-25T15-43-16.png
+│   ├── 📝 flower-autowhale-40_2025-05-25T16-58-18.png
+│   ├── 📝 flower-autowhale-40_2025-05-25T17-04-34.png
+│   ├── 📝 flower-autowhale-40_2025-05-25T17-44-45.png
+│   ├── 📝 flower-autowhale-40_2025-05-25T18-08-42.png
+│   ├── 📝 flower-autowhale-40_2025-05-25T18-15-18.png
+│   ├── 📝 flower-autowhale-40_2025-05-25T18-44-54.png
+│   ├── 📝 flower-autowhale-40_2025-05-25T18-58-25.png
+│   ├── 📝 flower-autowhale-40_2025-05-25T22-33-49.png
+│   ├── 📝 flower-autowhale-40_2025-05-25T22-41-38.png
+│   ├── 📝 flower-autowhale-40_2025-05-25T23-04-12.png
+│   ├── 📝 flower-autowhale-40_2025-05-26T00-32-28.png
+│   ├── 📝 flower-autowhale-40_2025-05-26T15-19-31.png
+│   ├── 📝 flower-autowhale-40_2025-05-26T15-43-08.png
+│   ├── 📝 flower-autowhale-40_2025-05-26T18-35-46.png
+│   ├── 📝 flower-autowhale-40_2025-05-26T20-27-44.png
+│   ├── 📝 flower-autowhale-50_2025-05-25T15-09-40.png
+│   ├── 📝 flower-autowhale-50_2025-05-25T15-10-44.png
+│   ├── 📝 flower-autowhale-50_2025-05-25T15-12-47.png
+│   ├── 📝 flower-autowhale-50_2025-05-25T15-43-20.png
+│   ├── 📝 flower-autowhale-50_2025-05-25T16-58-32.png
+│   ├── 📝 flower-autowhale-50_2025-05-25T17-04-49.png
+│   ├── 📝 flower-autowhale-50_2025-05-25T17-45-00.png
+│   ├── 📝 flower-autowhale-50_2025-05-25T18-08-59.png
+│   ├── 📝 flower-autowhale-50_2025-05-25T18-15-35.png
+│   ├── 📝 flower-autowhale-50_2025-05-25T18-58-45.png
+│   ├── 📝 flower-autowhale-50_2025-05-25T22-34-09.png
+│   ├── 📝 flower-autowhale-50_2025-05-25T22-42-00.png
+│   ├── 📝 flower-autowhale-50_2025-05-25T23-04-34.png
+│   ├── 📝 flower-autowhale-50_2025-05-26T00-32-44.png
+│   ├── 📝 flower-autowhale-50_2025-05-26T15-19-54.png
+│   ├── 📝 flower-autowhale-50_2025-05-26T15-43-30.png
+│   ├── 📝 flower-autowhale-50_2025-05-26T18-36-13.png
+│   ├── 📝 flower-autowhale-50_2025-05-26T20-28-10.png
+│   ├── 📝 flower-autowhale-60_2025-05-25T15-09-41.png
+│   ├── 📝 flower-autowhale-60_2025-05-25T15-10-46.png
+│   ├── 📝 flower-autowhale-60_2025-05-25T15-12-50.png
+│   ├── 📝 flower-autowhale-60_2025-05-25T15-43-23.png
+│   ├── 📝 flower-autowhale-60_2025-05-25T17-05-04.png
+│   ├── 📝 flower-autowhale-60_2025-05-25T17-45-16.png
+│   ├── 📝 flower-autowhale-60_2025-05-25T18-09-15.png
+│   ├── 📝 flower-autowhale-60_2025-05-25T18-15-53.png
+│   ├── 📝 flower-autowhale-60_2025-05-25T18-59-04.png
+│   ├── 📝 flower-autowhale-60_2025-05-25T22-34-30.png
+│   ├── 📝 flower-autowhale-60_2025-05-25T22-42-22.png
+│   ├── 📝 flower-autowhale-60_2025-05-25T23-04-57.png
+│   ├── 📝 flower-autowhale-60_2025-05-26T00-33-01.png
+│   ├── 📝 flower-autowhale-60_2025-05-26T15-20-18.png
+│   ├── 📝 flower-autowhale-60_2025-05-26T15-43-55.png
+│   ├── 📝 flower-autowhale-60_2025-05-26T20-28-36.png
+│   ├── 📝 flower-autowhale-70_2025-05-25T15-09-43.png
+│   ├── 📝 flower-autowhale-70_2025-05-25T15-10-48.png
+│   ├── 📝 flower-autowhale-70_2025-05-25T15-12-52.png
+│   ├── 📝 flower-autowhale-70_2025-05-25T15-43-27.png
+│   ├── 📝 flower-autowhale-70_2025-05-25T18-09-32.png
+│   ├── 📝 flower-autowhale-70_2025-05-25T18-16-10.png
+│   ├── 📝 flower-autowhale-70_2025-05-25T18-59-23.png
+│   ├── 📝 flower-autowhale-70_2025-05-25T22-34-51.png
+│   ├── 📝 flower-autowhale-70_2025-05-25T22-42-43.png
+│   ├── 📝 flower-autowhale-70_2025-05-25T23-05-20.png
+│   ├── 📝 flower-autowhale-70_2025-05-26T00-33-17.png
+│   ├── 📝 flower-autowhale-70_2025-05-26T15-20-42.png
+│   ├── 📝 flower-autowhale-70_2025-05-26T15-44-23.png
+│   ├── 📝 flower-autowhale-70_2025-05-26T20-29-04.png
+│   ├── 📝 flower-autowhale-80_2025-05-25T15-09-44.png
+│   ├── 📝 flower-autowhale-80_2025-05-25T15-10-50.png
+│   ├── 📝 flower-autowhale-80_2025-05-25T15-12-55.png
+│   ├── 📝 flower-autowhale-80_2025-05-25T15-43-30.png
+│   ├── 📝 flower-autowhale-80_2025-05-25T18-09-49.png
+│   ├── 📝 flower-autowhale-80_2025-05-25T18-16-28.png
+│   ├── 📝 flower-autowhale-80_2025-05-25T18-59-43.png
+│   ├── 📝 flower-autowhale-80_2025-05-25T22-35-12.png
+│   ├── 📝 flower-autowhale-80_2025-05-25T22-43-06.png
+│   ├── 📝 flower-autowhale-80_2025-05-25T23-05-43.png
+│   ├── 📝 flower-autowhale-80_2025-05-26T00-33-35.png
+│   ├── 📝 flower-autowhale-80_2025-05-26T15-21-06.png
+│   ├── 📝 flower-autowhale-80_2025-05-26T20-29-32.png
+│   ├── 📝 flower-autowhale-90_2025-05-25T15-09-46.png
+│   ├── 📝 flower-autowhale-90_2025-05-25T15-10-52.png
+│   ├── 📝 flower-autowhale-90_2025-05-25T15-12-57.png
+│   ├── 📝 flower-autowhale-90_2025-05-25T15-43-34.png
+│   ├── 📝 flower-autowhale-90_2025-05-25T18-10-06.png
+│   ├── 📝 flower-autowhale-90_2025-05-25T18-16-45.png
+│   ├── 📝 flower-autowhale-90_2025-05-25T19-00-03.png
+│   ├── 📝 flower-autowhale-90_2025-05-25T22-35-32.png
+│   ├── 📝 flower-autowhale-90_2025-05-25T22-43-28.png
+│   ├── 📝 flower-autowhale-90_2025-05-25T23-06-06.png
+│   ├── 📝 flower-autowhale-90_2025-05-26T00-33-52.png
+│   ├── 📝 flower-autowhale-90_2025-05-26T15-21-28.png
+│   ├── 📝 flower-autowhale-90_2025-05-26T20-30-00.png
+│   ├── 📝 flower-cornerfusion-152731_2025-05-25T15-27-32.png
+│   ├── 📝 flower-cornerfusion-152854_2025-05-25T15-28-55.png
+│   ├── 📝 flower-matrix-00_2025-05-25T15-27-16.png
+│   ├── 📝 flower-matrix-00_2025-05-25T15-28-37.png
+│   ├── 📝 flower-matrix-01_2025-05-25T15-27-17.png
+│   ├── 📝 flower-matrix-01_2025-05-25T15-28-39.png
+│   ├── 📝 flower-matrix-02_2025-05-25T15-27-19.png
+│   ├── 📝 flower-matrix-02_2025-05-25T15-28-41.png
+│   ├── 📝 flower-matrix-10_2025-05-25T15-27-21.png
+│   ├── 📝 flower-matrix-10_2025-05-25T15-28-43.png
+│   ├── 📝 flower-matrix-11_2025-05-25T15-27-22.png
+│   ├── 📝 flower-matrix-11_2025-05-25T15-28-44.png
+│   ├── 📝 flower-matrix-12_2025-05-25T15-27-24.png
+│   ├── 📝 flower-matrix-12_2025-05-25T15-28-46.png
+│   ├── 📝 flower-matrix-20_2025-05-25T15-27-26.png
+│   ├── 📝 flower-matrix-20_2025-05-25T15-28-48.png
+│   ├── 📝 flower-matrix-21_2025-05-25T15-27-27.png
+│   ├── 📝 flower-matrix-21_2025-05-25T15-28-50.png
+│   ├── 📝 flower-matrix-22_2025-05-25T15-27-29.png
+│   ├── 📝 flower-matrix-22_2025-05-25T15-28-52.png
+│   ├── 📝 flower-seed-∆2143FJ_2025-05-25T16-24-53.png
+│   ├── 📝 flower-seed-∆2143FJ_2025-05-25T16-26-56.png
+│   ├── 📝 flower-seed-∆2143FJ_2025-05-25T16-29-14.png
+│   ├── 📝 flower-seed-∆2143FJ_2025-05-25T16-31-18.png
+│   ├── 📝 flower-seed-∆2143FJ_2025-05-25T16-34-44.png
+│   ├── 📝 flower-seed-∆2143FJ_2025-05-25T16-36-28.png
+│   ├── 📝 flower-seed-∆2143FJ_2025-05-25T16-49-18.png
+│   ├── 📝 flower-seed-∆2143FJ_2025-05-25T16-51-21.png
+│   ├── 📝 flower-seed-∆2143FJ_2025-05-25T16-54-08.png
+│   ├── 📝 flower-seed-∆2143FJ_2025-05-25T16-57-02.png
+│   ├── 📝 flower-seed-∆2143FJ_2025-05-25T17-00-07.png
+│   ├── 📝 flower-seed-∆2143FJ_2025-05-25T17-03-10.png
+│   ├── 📝 flower-seed-∆2143FJ_2025-05-25T17-43-22.png
+│   ├── 📝 flower-seed-∆2143FJ_2025-05-25T17-45-46.png
+│   ├── 📝 flower-seed-∆2143FJ_2025-05-25T17-47-43.png
+│   ├── 📝 flower-seed-∆2143FJ_2025-05-25T17-49-34.png
+│   ├── 📝 flower-seed-∆2143FJ_2025-05-25T17-53-26.png
+│   ├── 📝 flower-seed-∆2143FJ_2025-05-25T17-54-35.png
+│   ├── 📝 flower-seed-∆2143FJ_2025-05-25T17-57-09.png
+│   ├── 📝 flower-seed-∆2143FJ_2025-05-25T17-59-45.png
+│   ├── 📝 flower-seed-∆2143FJ_2025-05-25T18-04-35.png
+│   ├── 📝 flower-seed-∆2143FJ_2025-05-25T18-07-13.png
+│   ├── 📝 flower-seed-∆2143FJ_2025-05-25T18-11-46.png
+│   ├── 📝 flower-seed-∆2143FJ_2025-05-25T18-13-43.png
+│   ├── 📝 flower-seed-∆2143FJ_2025-05-25T18-28-40.png
+│   ├── 📝 flower-seed-∆2143FJ_2025-05-25T18-30-30.png
+│   ├── 📝 flower-seed-∆2143FJ_2025-05-25T18-32-45.png
+│   ├── 📝 flower-seed-∆2143FJ_2025-05-25T18-41-45.png
+│   ├── 📝 flower-seed-∆2143FJ_2025-05-25T18-43-15.png
+│   ├── 📝 flower-seed-∆2143FJ_2025-05-25T18-54-48.png
+│   ├── 📝 flower-seed-∆2143FJ_2025-05-25T18-56-42.png
+│   ├── 📝 flower-seed-∆2143FJ_2025-05-25T22-28-31.png
+│   ├── 📝 flower-seed-∆2143FJ_2025-05-25T22-32-02.png
+│   ├── 📝 flower-seed-∆2143FJ_2025-05-25T22-39-45.png
+│   ├── 📝 flower-seed-∆2143FJ_2025-05-25T23-02-12.png
+│   ├── 📝 flower-seed-∆2143FJ_2025-05-25T23-28-33.png
+│   ├── 📝 flower-seed-∆2143FJ_2025-05-25T23-30-15.png
+│   ├── 📝 flower-seed-∆2143FJ_2025-05-25T23-38-23.png
+│   ├── 📝 flower-seed-∆2143FJ_2025-05-25T23-40-58.png
+│   ├── 📝 flower-seed-∆2143FJ_2025-05-25T23-43-12.png
+│   ├── 📝 flower-seed-∆2143FJ_2025-05-25T23-44-20.png
+│   ├── 📝 flower-seed-∆2143FJ_2025-05-26T00-27-34.png
+│   ├── 📝 flower-seed-∆2143FJ_2025-05-26T00-30-51.png
+│   ├── 📝 flower-seed-∆2143FJ_2025-05-26T14-31-59.png
+│   ├── 📝 flower-seed-∆2143FJ_2025-05-26T14-36-41.png
+│   ├── 📝 flower-seed-∆2143FJ_2025-05-26T14-41-19.png
+│   ├── 📝 flower-seed-∆2143FJ_2025-05-26T14-44-47.png
+│   ├── 📝 flower-seed-∆2143FJ_2025-05-26T14-45-29.png
+│   ├── 📝 flower-seed-∆2143FJ_2025-05-26T14-48-30.png
+│   ├── 📝 flower-seed-∆2143FJ_2025-05-26T14-57-01.png
+│   ├── 📝 flower-seed-∆2143FJ_2025-05-26T14-59-07.png
+│   ├── 📝 flower-seed-∆2143FJ_2025-05-26T15-04-09.png
+│   ├── 📝 flower-seed-∆2143FJ_2025-05-26T15-06-58.png
+│   ├── 📝 flower-seed-∆2143FJ_2025-05-26T15-12-47.png
+│   ├── 📝 flower-seed-∆2143FJ_2025-05-26T15-17-24.png
+│   ├── 📝 flower-seed-∆2143FJ_2025-05-26T15-40-57.png
+│   ├── 📝 flower-seed-∆2143FJ_2025-05-26T18-24-18.png
+│   ├── 📝 flower-seed-∆2143FJ_2025-05-26T18-26-22.png
+│   ├── 📝 flower-seed-∆2143FJ_2025-05-26T18-29-38.png
+│   ├── 📝 flower-seed-∆2143FJ_2025-05-26T18-33-33.png
+│   ├── 📝 flower-seed-∆2143FJ_2025-05-26T20-13-03.png
+│   ├── 📝 flower-seed-∆2143FJ_2025-05-26T20-19-59.png
+│   ├── 📝 flower-seed-∆2143FJ_2025-05-26T20-24-51.png
+│   ├── 📝 flower-seed-∆2143FJ_2025-05-26T22-02-48.png
+│   ├── 📝 flower-seed-∆test_2025-05-25T16-27-13.png
+│   ├── 📝 flower-seed-∆test_2025-05-25T16-27-15.png
+│   ├── 📝 flower-seed-∆test_2025-05-25T16-29-31.png
+│   ├── 📝 flower-seed-∆test_2025-05-25T16-29-33.png
+│   ├── 📝 flower-seed-∆test_2025-05-25T16-31-35.png
+│   ├── 📝 flower-seed-∆test_2025-05-25T16-31-37.png
+│   ├── 📝 flower-seed-∆test_2025-05-25T16-35-01.png
+│   ├── 📝 flower-seed-∆test_2025-05-25T16-35-03.png
+│   ├── 📝 flower-seed-∆test_2025-05-25T16-36-45.png
+│   ├── 📝 flower-seed-∆test_2025-05-25T16-36-48.png
+│   ├── 📝 flower-seed-∆test_2025-05-25T16-49-35.png
+│   ├── 📝 flower-seed-∆test_2025-05-25T16-49-38.png
+│   ├── 📝 flower-seed-∆test_2025-05-25T16-51-38.png
+│   ├── 📝 flower-seed-∆test_2025-05-25T16-51-41.png
+│   ├── 📝 flower-seed-∆test_2025-05-25T16-54-25.png
+│   ├── 📝 flower-seed-∆test_2025-05-25T16-54-27.png
+│   ├── 📝 flower-seed-∆test_2025-05-25T16-57-19.png
+│   ├── 📝 flower-seed-∆test_2025-05-25T16-57-22.png
+│   ├── 📝 flower-seed-∆test_2025-05-25T17-00-26.png
+│   ├── 📝 flower-seed-∆test_2025-05-25T17-00-29.png
+│   ├── 📝 flower-seed-∆test_2025-05-25T17-03-28.png
+│   ├── 📝 flower-seed-∆test_2025-05-25T17-03-32.png
+│   ├── 📝 flower-seed-∆test_2025-05-25T17-43-40.png
+│   ├── 📝 flower-seed-∆test_2025-05-25T17-43-43.png
+│   ├── 📝 flower-seed-∆test_2025-05-25T17-46-04.png
+│   ├── 📝 flower-seed-∆test_2025-05-25T17-46-07.png
+│   ├── 📝 flower-seed-∆test_2025-05-25T17-48-02.png
+│   ├── 📝 flower-seed-∆test_2025-05-25T17-48-05.png
+│   ├── 📝 flower-seed-∆test_2025-05-25T17-49-53.png
+│   ├── 📝 flower-seed-∆test_2025-05-25T17-49-56.png
+│   ├── 📝 flower-seed-∆test_2025-05-25T17-53-45.png
+│   ├── 📝 flower-seed-∆test_2025-05-25T17-53-49.png
+│   ├── 📝 flower-seed-∆test_2025-05-25T17-54-53.png
+│   ├── 📝 flower-seed-∆test_2025-05-25T17-54-57.png
+│   ├── 📝 flower-seed-∆test_2025-05-25T18-00-03.png
+│   ├── 📝 flower-seed-∆test_2025-05-25T18-00-07.png
+│   ├── 📝 flower-seed-∆test_2025-05-25T18-04-54.png
+│   ├── 📝 flower-seed-∆test_2025-05-25T18-04-58.png
+│   ├── 📝 flower-seed-∆test_2025-05-25T18-07-32.png
+│   ├── 📝 flower-seed-∆test_2025-05-25T18-07-36.png
+│   ├── 📝 flower-seed-∆test_2025-05-25T18-12-05.png
+│   ├── 📝 flower-seed-∆test_2025-05-25T18-12-10.png
+│   ├── 📝 flower-seed-∆test_2025-05-25T18-14-02.png
+│   ├── 📝 flower-seed-∆test_2025-05-25T18-14-07.png
+│   ├── 📝 flower-seed-∆test_2025-05-25T18-29-00.png
+│   ├── 📝 flower-seed-∆test_2025-05-25T18-29-04.png
+│   ├── 📝 flower-seed-∆test_2025-05-25T18-30-50.png
+│   ├── 📝 flower-seed-∆test_2025-05-25T18-30-55.png
+│   ├── 📝 flower-seed-∆test_2025-05-25T18-33-04.png
+│   ├── 📝 flower-seed-∆test_2025-05-25T18-33-10.png
+│   ├── 📝 flower-seed-∆test_2025-05-25T18-42-05.png
+│   ├── 📝 flower-seed-∆test_2025-05-25T18-42-10.png
+│   ├── 📝 flower-seed-∆test_2025-05-25T18-43-35.png
+│   ├── 📝 flower-seed-∆test_2025-05-25T18-43-40.png
+│   ├── 📝 flower-seed-∆test_2025-05-25T18-55-08.png
+│   ├── 📝 flower-seed-∆test_2025-05-25T18-55-13.png
+│   ├── 📝 flower-seed-∆test_2025-05-25T18-57-02.png
+│   ├── 📝 flower-seed-∆test_2025-05-25T18-57-08.png
+│   ├── 📝 flower-seed-∆test_2025-05-25T22-28-54.png
+│   ├── 📝 flower-seed-∆test_2025-05-25T22-28-59.png
+│   ├── 📝 flower-seed-∆test_2025-05-25T22-32-23.png
+│   ├── 📝 flower-seed-∆test_2025-05-25T22-32-28.png
+│   ├── 📝 flower-seed-∆test_2025-05-25T22-40-06.png
+│   ├── 📝 flower-seed-∆test_2025-05-25T22-40-12.png
+│   ├── 📝 flower-seed-∆test_2025-05-25T23-02-34.png
+│   ├── 📝 flower-seed-∆test_2025-05-25T23-02-41.png
+│   ├── 📝 flower-seed-∆test_2025-05-25T23-28-55.png
+│   ├── 📝 flower-seed-∆test_2025-05-25T23-29-03.png
+│   ├── 📝 flower-seed-∆test_2025-05-25T23-30-38.png
+│   ├── 📝 flower-seed-∆test_2025-05-25T23-30-45.png
+│   ├── 📝 flower-seed-∆test_2025-05-25T23-38-46.png
+│   ├── 📝 flower-seed-∆test_2025-05-25T23-38-54.png
+│   ├── 📝 flower-seed-∆test_2025-05-25T23-41-21.png
+│   ├── 📝 flower-seed-∆test_2025-05-25T23-41-29.png
+│   ├── 📝 flower-seed-∆test_2025-05-25T23-43-37.png
+│   ├── 📝 flower-seed-∆test_2025-05-25T23-43-45.png
+│   ├── 📝 flower-seed-∆test_2025-05-25T23-44-43.png
+│   ├── 📝 flower-seed-∆test_2025-05-25T23-44-51.png
+│   ├── 📝 flower-seed-∆test_2025-05-26T00-27-59.png
+│   ├── 📝 flower-seed-∆test_2025-05-26T00-28-07.png
+│   ├── 📝 flower-seed-∆test_2025-05-26T00-31-15.png
+│   ├── 📝 flower-seed-∆test_2025-05-26T00-31-23.png
+│   ├── 📝 flower-seed-∆test_2025-05-26T14-32-25.png
+│   ├── 📝 flower-seed-∆test_2025-05-26T14-32-34.png
+│   ├── 📝 flower-seed-∆test_2025-05-26T14-37-05.png
+│   ├── 📝 flower-seed-∆test_2025-05-26T14-37-14.png
+│   ├── 📝 flower-seed-∆test_2025-05-26T14-41-44.png
+│   ├── 📝 flower-seed-∆test_2025-05-26T14-41-54.png
+│   ├── 📝 flower-seed-∆test_2025-05-26T14-45-56.png
+│   ├── 📝 flower-seed-∆test_2025-05-26T14-46-06.png
+│   ├── 📝 flower-seed-∆test_2025-05-26T14-48-55.png
+│   ├── 📝 flower-seed-∆test_2025-05-26T14-49-06.png
+│   ├── 📝 flower-seed-∆test_2025-05-26T14-57-26.png
+│   ├── 📝 flower-seed-∆test_2025-05-26T14-57-34.png
+│   ├── 📝 flower-seed-∆test_2025-05-26T14-59-32.png
+│   ├── 📝 flower-seed-∆test_2025-05-26T14-59-41.png
+│   ├── 📝 flower-seed-∆test_2025-05-26T15-04-35.png
+│   ├── 📝 flower-seed-∆test_2025-05-26T15-04-44.png
+│   ├── 📝 flower-seed-∆test_2025-05-26T15-13-13.png
+│   ├── 📝 flower-seed-∆test_2025-05-26T15-13-22.png
+│   ├── 📝 flower-seed-∆test_2025-05-26T15-17-50.png
+│   ├── 📝 flower-seed-∆test_2025-05-26T15-17-59.png
+│   ├── 📝 flower-seed-∆test_2025-05-26T15-41-23.png
+│   ├── 📝 flower-seed-∆test_2025-05-26T15-41-35.png
+│   ├── 📝 flower-seed-∆test_2025-05-26T20-13-30.png
+│   ├── 📝 flower-seed-∆test_2025-05-26T20-13-41.png
+│   ├── 📝 flower-seed-∆test_2025-05-26T20-20-27.png
+│   ├── 📝 flower-seed-∆test_2025-05-26T20-20-39.png
+│   ├── 📝 flower-seed-∆test_2025-05-26T20-25-18.png
+│   ├── 📝 flower-seed-∆test_2025-05-26T20-25-30.png
+│   ├── 📝 flower-seed-∆test_2025-05-26T22-03-22.png
+│   ├── 📝 flower-seed-∆test_2025-05-26T22-03-38.png
+│   ├── 📝 flower-synthesis-003130_2025-05-26T00-31-31.png
+│   ├── 📝 flower-synthesis-144916_2025-05-26T14-49-17.png
+│   ├── 📝 flower-synthesis-151812_2025-05-26T15-18-12.png
+│   ├── 📝 flower-synthesis-154147_2025-05-26T15-41-48.png
+│   ├── 📝 flower-synthesis-163711_2025-05-25T16-37-12.png
+│   ├── 📝 flower-synthesis-165451_2025-05-25T16-54-52.png
+│   ├── 📝 flower-synthesis-165746_2025-05-25T16-57-47.png
+│   ├── 📝 flower-synthesis-170054_2025-05-25T17-00-55.png
+│   ├── 📝 flower-synthesis-170358_2025-05-25T17-03-59.png
+│   ├── 📝 flower-synthesis-174410_2025-05-25T17-44-11.png
+│   ├── 📝 flower-synthesis-180805_2025-05-25T18-08-06.png
+│   ├── 📝 flower-synthesis-181437_2025-05-25T18-14-38.png
+│   ├── 📝 flower-synthesis-183416_2025-05-26T18-34-17.png
+│   ├── 📝 flower-synthesis-184411_2025-05-25T18-44-12.png
+│   ├── 📝 flower-synthesis-185740_2025-05-25T18-57-41.png
+│   ├── 📝 flower-synthesis-202122_2025-05-26T20-21-23.png
+│   ├── 📝 flower-synthesis-202615_2025-05-26T20-26-15.png
+│   ├── 📝 flower-synthesis-220427_2025-05-26T22-04-28.png
+│   ├── 📝 flower-synthesis-222933_2025-05-25T22-29-33.png
+│   ├── 📝 flower-synthesis-223301_2025-05-25T22-33-02.png
+│   ├── 📝 flower-synthesis-224048_2025-05-25T22-40-49.png
+│   ├── 📝 flower-synthesis-230318_2025-05-25T23-03-19.png
+│   ├── 📝 flower-whale-000_2025-05-24T09-36-57.160285.png
+│   ├── 📝 flower-whale-000_2025-05-24T09-36-57.970717.png
+│   ├── 📝 flower-whale-000_2025-05-24T09-36-58.966534.png
+│   ├── 📝 flower-whale-000_2025-05-24T09-36-59.824750.png
+│   ├── 📝 flower-whale-000_2025-05-24T09-37-00.765395.png
+│   ├── 📝 flower-whale-000_2025-05-24T09-37-01.981171.png
+│   ├── 📝 flower-whale-000_2025-05-24T09-37-02.886364.png
+│   ├── 📝 flower-whale-000_2025-05-24T09-37-03.743279.png
+│   ├── 📝 flower-whale-000_2025-05-24T09-37-04.569587.png
+│   ├── 📝 flower-whale-000_2025-05-24T09-37-05.500589.png
+│   ├── 📝 flower-whale-000_2025-05-24T09-37-06.344314.png
+│   ├── 📝 flower-whale-000_2025-05-24T09-45-06.968188.png
+│   ├── 📝 flower-whale-000_2025-05-24T09-45-07.991269.png
+│   ├── 📝 flower-whale-000_2025-05-24T09-45-09.302889.png
+│   ├── 📝 flower-whale-000_2025-05-24T09-45-10.443584.png
+│   ├── 📝 flower-whale-000_2025-05-24T09-45-11.701369.png
+│   ├── 📝 flower-whale-000_2025-05-24T09-45-12.760317.png
+│   ├── 📝 flower-whale-000_2025-05-24T09-45-13.849910.png
+│   ├── 📝 flower-whale-000_2025-05-24T09-45-15.065082.png
+│   ├── 📝 flower-whale-000_2025-05-24T09-45-16.324528.png
+│   ├── 📝 flower-whale-000_2025-05-24T09-45-17.489619.png
+│   ├── 📝 flower-whale-000_2025-05-24T09-45-18.606506.png
+│   ├── 📝 flower-whale-000_2025-05-24T09-45-19.788031.png
+│   ├── 📝 flower-whale-000_2025-05-24T09-45-20.960988.png
+│   ├── 📝 flower-whale-000_2025-05-24T09-45-22.348985.png
+│   ├── 📝 flower-whale-001_2025-05-24T09-36-57.162288.png
+│   ├── 📝 flower-whale-001_2025-05-24T09-36-57.984710.png
+│   ├── 📝 flower-whale-001_2025-05-24T09-36-58.976535.png
+│   ├── 📝 flower-whale-001_2025-05-24T09-36-59.834751.png
+│   ├── 📝 flower-whale-001_2025-05-24T09-37-00.777169.png
+│   ├── 📝 flower-whale-001_2025-05-24T09-37-02.002896.png
+│   ├── 📝 flower-whale-001_2025-05-24T09-37-02.895911.png
+│   ├── 📝 flower-whale-001_2025-05-24T09-37-03.752869.png
+│   ├── 📝 flower-whale-001_2025-05-24T09-37-04.579169.png
+│   ├── 📝 flower-whale-001_2025-05-24T09-37-05.507616.png
+│   ├── 📝 flower-whale-001_2025-05-24T09-37-06.358319.png
+│   ├── 📝 flower-whale-001_2025-05-24T09-45-06.994498.png
+│   ├── 📝 flower-whale-001_2025-05-24T09-45-08.023273.png
+│   ├── 📝 flower-whale-001_2025-05-24T09-45-09.336890.png
+│   ├── 📝 flower-whale-001_2025-05-24T09-45-10.486583.png
+│   ├── 📝 flower-whale-001_2025-05-24T09-45-11.739001.png
+│   ├── 📝 flower-whale-001_2025-05-24T09-45-12.801317.png
+│   ├── 📝 flower-whale-001_2025-05-24T09-45-13.906060.png
+│   ├── 📝 flower-whale-001_2025-05-24T09-45-15.113282.png
+│   ├── 📝 flower-whale-001_2025-05-24T09-45-16.423195.png
+│   ├── 📝 flower-whale-001_2025-05-24T09-45-17.554339.png
+│   ├── 📝 flower-whale-001_2025-05-24T09-45-18.717790.png
+│   ├── 📝 flower-whale-001_2025-05-24T09-45-19.843027.png
+│   ├── 📝 flower-whale-001_2025-05-24T09-45-21.070598.png
+│   ├── 📝 flower-whale-001_2025-05-24T09-45-22.452994.png
+│   ├── 📝 flower-whale-002_2025-05-24T09-36-57.170284.png
+│   ├── 📝 flower-whale-002_2025-05-24T09-36-57.995717.png
+│   ├── 📝 flower-whale-002_2025-05-24T09-36-58.985533.png
+│   ├── 📝 flower-whale-002_2025-05-24T09-36-59.844751.png
+│   ├── 📝 flower-whale-002_2025-05-24T09-37-00.790154.png
+│   ├── 📝 flower-whale-002_2025-05-24T09-37-02.018897.png
+│   ├── 📝 flower-whale-002_2025-05-24T09-37-02.904940.png
+│   ├── 📝 flower-whale-002_2025-05-24T09-37-03.763869.png
+│   ├── 📝 flower-whale-002_2025-05-24T09-37-04.588172.png
+│   ├── 📝 flower-whale-002_2025-05-24T09-37-05.516592.png
+│   ├── 📝 flower-whale-002_2025-05-24T09-37-06.378321.png
+│   ├── 📝 flower-whale-002_2025-05-24T09-45-07.036543.png
+│   ├── 📝 flower-whale-002_2025-05-24T09-45-08.079731.png
+│   ├── 📝 flower-whale-002_2025-05-24T09-45-09.395892.png
+│   ├── 📝 flower-whale-002_2025-05-24T09-45-10.562150.png
+│   ├── 📝 flower-whale-002_2025-05-24T09-45-11.805002.png
+│   ├── 📝 flower-whale-002_2025-05-24T09-45-12.872316.png
+│   ├── 📝 flower-whale-002_2025-05-24T09-45-13.981895.png
+│   ├── 📝 flower-whale-002_2025-05-24T09-45-15.209501.png
+│   ├── 📝 flower-whale-002_2025-05-24T09-45-16.518772.png
+│   ├── 📝 flower-whale-002_2025-05-24T09-45-17.650928.png
+│   ├── 📝 flower-whale-002_2025-05-24T09-45-18.840857.png
+│   ├── 📝 flower-whale-002_2025-05-24T09-45-19.954918.png
+│   ├── 📝 flower-whale-002_2025-05-24T09-45-21.196001.png
+│   ├── 📝 flower-whale-002_2025-05-24T09-45-22.589927.png
+│   ├── 📝 flower-whale-004_2025-05-25T04-46-36.png
+│   ├── 📝 flower-whale-005_2025-05-25T14-51-24.png
+│   ├── 📝 flower-whale-006_2025-05-25T16-01-48.png
+│   ├── 📝 flower-whale-006_2025-05-25T16-04-30.png
+│   ├── 📝 fractal_bloom.png
+│   ├── 📝 fractal_bloom_preview.png
+│   ├── 📝 hybrid_field_map.png
+│   ├── 📝 initial_bloom_snapshot.png
+│   ├── 📝 julia_lineage1.png
+│   ├── 📝 memory_clusters_by_mood.png
+│   ├── 📝 mood_distribution.png
+│   ├── 📝 mood_heatmap_current.png
+│   ├── 📝 mood_heatmap_horizontal.png
+│   ├── 📝 mood_pressure_timeseries.png
+│   ├── 📝 mood_pulse_radial.png
+│   ├── 📝 mycelium_pressure_overlay.png
+│   ├── 📝 nutrient_belief_overlay_attention.png
+│   ├── 📝 nutrient_field_attention.png
+│   ├── 📝 nutrient_map.png
+│   ├── 📝 persephone_decay_map.png
+│   ├── 📝 pulse_field_evolution.png
+│   ├── 📝 pulse_phase_diagram.png
+│   ├── 📝 pulse_ring_diagram.png
+│   ├── 📝 rebloom_network.png
+│   ├── 📝 rebloom_sheldrake.png
+│   ├── 📝 rebloomed_bloom_snapshot.png
+│   ├── 📝 recursive_fieldmap.png
+│   ├── 📝 scup_analysis.png
+│   ├── 📝 seed-∆2143FJ.png
+│   ├── 📝 seed-∆2143FJ_2025-05-27T02-19-33.png
+│   ├── 📝 seed-∆2143FJ_2025-05-27T02-25-54.png
+│   ├── 📝 seed-∆2143FJ_2025-05-27T02-27-53.png
+│   ├── 📝 seed-∆2143FJ_2025-05-27T02-33-21_burnt.png
+│   ├── 📝 seed-∆2143FJ_2025-05-27T02-39-46.png
+│   ├── 📝 seed-∆2143FJ_2025-05-27T02-39-46_burnt.png
+│   ├── 📝 seed-∆2143FJ_2025-05-27T03-04-42.png
+│   ├── 📝 seed-∆2143FJ_2025-05-27T03-04-42_burnt.png
+│   ├── 📝 seed-∆2143FJ_2025-05-27T03-07-54.png
+│   ├── 📝 seed-∆2143FJ_2025-05-27T03-07-54_burnt.png
+│   ├── 📝 seed-∆2143FJ_2025-05-27T03-25-51.png
+│   ├── 📝 seed-∆2143FJ_2025-05-27T04-19-46.png
+│   ├── 📝 seed-∆2143FJ_2025-05-27T04-26-29.png
+│   ├── 📝 seed-∆2143FJ_2025-05-27T04-30-17.png
+│   ├── 📝 seed-∆2143FJ_2025-05-27T04-39-30.png
+│   ├── 📝 seed-∆2143FJ_2025-05-27T04-49-58.png
+│   ├── 📝 seed-∆2143FJ_2025-05-27T05-28-12.png
+│   ├── 📝 seed-∆2143FJ_2025-05-27T05-38-54.png
+│   ├── 📝 seed-∆2143FJ_2025-05-27T06-30-24.png
+│   ├── 📝 seed-∆2143FJ_2025-05-27T06-35-31.png
+│   ├── 📝 seed-∆2143FJ_2025-05-27T17-50-23.png
+│   ├── 📝 seed-∆2143FJ_2025-05-28T01-27-05.png
+│   ├── 📝 seed-∆2143FJ_2025-05-28T01-33-53.png
+│   ├── 📝 seed-∆2143FJ_2025-05-28T01-40-50.png
+│   ├── 📝 seed-∆2143FJ_2025-05-28T01-44-34.png
+│   ├── 📝 seed-∆2143FJ_2025-05-28T01-48-10.png
+│   ├── 📝 seed-∆2143FJ_2025-05-28T01-52-28.png
+│   ├── 📝 seed-∆2143FJ_2025-05-28T01-56-55.png
+│   ├── 📝 seed-∆2143FJ_2025-05-28T02-00-31.png
+│   ├── 📝 seed-∆2143FJ_2025-05-28T02-11-00.png
+│   ├── 📝 seed-∆2143FJ_2025-05-28T02-19-50.png
+│   ├── 📝 seed-∆2143FJ_unspecified.png
+│   ├── 📝 seed-∆test.png
+│   ├── 📝 seed-∆test_2025-05-27T02-28-30.png
+│   ├── 📝 seed-∆test_2025-05-27T02-28-43.png
+│   ├── 📝 seed-∆test_2025-05-27T02-33-58_burnt.png
+│   ├── 📝 seed-∆test_2025-05-27T02-34-13_burnt.png
+│   ├── 📝 seed-∆test_2025-05-27T02-40-24.png
+│   ├── 📝 seed-∆test_2025-05-27T02-40-24_burnt.png
+│   ├── 📝 seed-∆test_2025-05-27T02-40-38.png
+│   ├── 📝 seed-∆test_2025-05-27T02-40-38_burnt.png
+│   ├── 📝 seed-∆test_2025-05-27T03-05-18.png
+│   ├── 📝 seed-∆test_2025-05-27T03-05-18_burnt.png
+│   ├── 📝 seed-∆test_2025-05-27T03-05-31.png
+│   ├── 📝 seed-∆test_2025-05-27T03-05-31_burnt.png
+│   ├── 📝 seed-∆test_2025-05-27T03-08-30.png
+│   ├── 📝 seed-∆test_2025-05-27T03-08-30_burnt.png
+│   ├── 📝 seed-∆test_2025-05-27T03-08-43.png
+│   ├── 📝 seed-∆test_2025-05-27T03-08-43_burnt.png
+│   ├── 📝 seed-∆test_2025-05-27T03-26-28.png
+│   ├── 📝 seed-∆test_2025-05-27T03-26-42.png
+│   ├── 📝 seed-∆test_2025-05-27T04-20-24.png
+│   ├── 📝 seed-∆test_2025-05-27T04-20-39.png
+│   ├── 📝 seed-∆test_2025-05-27T04-27-08.png
+│   ├── 📝 seed-∆test_2025-05-27T04-27-22.png
+│   ├── 📝 seed-∆test_2025-05-27T04-30-55.png
+│   ├── 📝 seed-∆test_2025-05-27T04-31-08.png
+│   ├── 📝 seed-∆test_2025-05-27T04-40-07.png
+│   ├── 📝 seed-∆test_2025-05-27T04-40-21.png
+│   ├── 📝 seed-∆test_2025-05-27T04-50-37.png
+│   ├── 📝 seed-∆test_2025-05-27T04-50-51.png
+│   ├── 📝 seed-∆test_2025-05-27T05-28-51.png
+│   ├── 📝 seed-∆test_2025-05-27T05-29-05.png
+│   ├── 📝 seed-∆test_2025-05-27T05-39-33.png
+│   ├── 📝 seed-∆test_2025-05-27T05-39-48.png
+│   ├── 📝 seed-∆test_2025-05-27T06-31-03.png
+│   ├── 📝 seed-∆test_2025-05-27T06-31-17.png
+│   ├── 📝 seed-∆test_2025-05-27T06-36-09.png
+│   ├── 📝 seed-∆test_2025-05-27T06-36-23.png
+│   ├── 📝 seed-∆test_2025-05-27T17-51-06.png
+│   ├── 📝 seed-∆test_2025-05-27T17-51-21.png
+│   ├── 📝 seed-∆test_2025-05-28T01-27-46.png
+│   ├── 📝 seed-∆test_2025-05-28T01-28-00.png
+│   ├── 📝 seed-∆test_2025-05-28T01-34-31.png
+│   ├── 📝 seed-∆test_2025-05-28T01-34-45.png
+│   ├── 📝 seed-∆test_2025-05-28T01-41-27.png
+│   ├── 📝 seed-∆test_2025-05-28T01-41-42.png
+│   ├── 📝 seed-∆test_2025-05-28T01-45-13.png
+│   ├── 📝 seed-∆test_2025-05-28T01-45-28.png
+│   ├── 📝 seed-∆test_2025-05-28T01-53-08.png
+│   ├── 📝 seed-∆test_2025-05-28T01-53-22.png
+│   ├── 📝 seed-∆test_2025-05-28T01-57-33.png
+│   ├── 📝 seed-∆test_2025-05-28T01-57-48.png
+│   ├── 📝 seed-∆test_2025-05-28T02-01-10.png
+│   ├── 📝 seed-∆test_2025-05-28T02-01-25.png
+│   ├── 📝 seed-∆test_2025-05-28T02-11-39.png
+│   ├── 📝 seed-∆test_2025-05-28T02-11-55.png
+│   ├── 📝 seed-∆test_2025-05-28T02-20-29.png
+│   ├── 📝 seed-∆test_2025-05-28T02-20-43.png
+│   ├── 📝 seed-∆test_unspecified.png
+│   ├── 📝 shell_test_001.png
+│   ├── 📝 tick_0000.png
+│   ├── 📝 tick_0001.png
+│   ├── 📝 tick_0015.png
+│   ├── 📝 tick_0020.png
+│   ├── 📝 tick_0030.png
+│   ├── 📝 tick_0040.png
+│   ├── 📝 tick_0045.png
+│   ├── 📝 tick_0060.png
+│   ├── 📝 tick_0075.png
+│   ├── 📝 tick_0080.png
+│   ├── 📝 tick_0090.png
+│   ├── 📝 tick_0100.png
+│   ├── 📝 tick_0105.png
+│   ├── 📝 tick_0120.png
+│   ├── 📝 tick_0135.png
+│   ├── 📝 tick_0140.png
+│   ├── 📝 tick_0160.png
+│   ├── 📝 tick_0180.png
+│   ├── 📝 tick_0200.png
+│   ├── 📝 whale-000_test.png
+│   ├── 📝 whale-001_test.png
+│   └── 📝 whale-002_test.png
+└── 🐍 __init__.py
+📁 fractal/
+├── 🐍 __init__.py
+├── 🐍 bloom_visualizer.py
+├── 🐍 drift_entropy_field.py
+├── 🐍 drift_vector_field.py
+├── 🐍 encode_script_as_fractal.py
+├── 🐍 enhanced_fractal_system.py
+├── 🐍 field_drift_visualizer.py
+├── 🐍 field_entropy_map.py
+├── 🐍 field_map_visualizer.py
+├── 🐍 field_report.py
+├── 🐍 field_saturation_map.py
+├── 🐍 fractal_animation_visualization.py
+├── 🐍 fractal_boost.py
+├── 🐍 fractal_field.py
+├── 🐍 fractal_field_map.py
+├── 🐍 fractal_generator.py
+├── 🐍 fractal_key_generator.py
+├── 🐍 fractal_key_visualizer.py
+├── 🐍 fractal_mutation.py
+├── 🐍 fractal_propagation_animator.py
+├── 🐍 fractal_signature_generator.py
+├── 🐍 fractal_token_mapper.py
+├── 🐍 generate_julia_set.py
+├── 🐍 juliet_prime_fractal.py
+├── 🐍 nutrient_heat_field.py
+├── 🐍 optimize_fractals.py
+└── 🐍 sheldrake_fractal.py
+📁 integration/
+├── 📁 claude/
+│   ├── 🐍 claude_artifact_cachce_bridge.py
+│   ├── 🐍 claude_chat_logger.py
+│   └── 🐍 claude_development_workflow.py
+├── 📁 notion/
+│   ├── 🐍 complete_notion_setup.py
+│   ├── 🐍 dawn_notion_bridge.py
+│   ├── 🐍 notion_live_integration.py
+│   ├── 🐍 setup_notion_integration.py
+│   └── 🐍 tick_engine_notion_bridge.py
+└── 📁 vault/
+    ├── 🐍 dawn_vault_integration.py
+    ├── 🐍 obsidian_home.py
+    ├── 🐍 vault_manager.py
+    ├── 🐍 vault_recovery.py
+    ├── 🐍 vault_setup.py
+    └── 🐍 vault_writer.py
+📁 interface/
+├── 📁 templates/
+│   ├── 🐍 __init__.py
+│   ├── 📝 dashboard.html
+│   └── 📝 index.html
+├── 🐍 __init__.py
+├── 🐍 butler_diagnostics.py
+└── 🐍 DAWN_voice_schema_interface.py
+📁 logs/
+├── 📁 juliet_flowers/
+│   └── 🐍 __init__.py
+├── 📁 mycelium_logs/
+│   ├── 📁 2025-05-25/
+│   ├── 📁 2025-05-26/
+│   ├── 📁 2025-05-27/
+│   ├── 📁 2025-05-28/
+│   ├── 📁 2025-05-29/
+│   ├── 🐍 __init__.py
+│   └── 📄 nutrient_log.json
+├── 📁 tracers/
+│   ├── 🐍 __init__.py
+│   ├── 📝 bee-001_trail.csv
+│   ├── 📝 crow-003_trail.csv
+│   └── 📝 whale-002_trail.csv
+├── 🐍 __init__.py
+├── 📝 decay_loss_log.csv
+├── 📄 field_snapshot.json
+├── 📝 nutrient_flow_log.csv
+├── 📄 owl_tracer_log.json
+├── 📝 rebloom_summary_log.csv
+├── 📝 schema_anomalies.log
+├── 📝 suppression_log.csv
+├── 📝 synthesis_bloom_log.csv
+└── 📝 tick_log.csv
+📁 maintenance/
+├── 🐍 __init__.py
+└── 🐍 sync_structure.py
+📁 memories/
+├── 📁 letters/
+│   ├── 🐍 celeste_note.py
+│   ├── 🐍 harrison_note.py
+│   ├── 🐍 matt_letter.py
+│   └── 🐍 note_to_dad.py
+├── 📁 personal/
+│   ├── 🐍 generate_spencer_note.py
+│   ├── 🐍 joyti_bloom.py
+│   ├── 🐍 max_birthday.py
+│   ├── 🐍 shanaaz.py
+│   └── 🐍 shanaz.py
+└── 📁 sacred/
+    └── 📄 mercy_manifest.yaml
+📁 mood/
+├── 🐍 __init__.py
+├── 🐍 blend.py
+├── 🐍 emotional_evolution.py
+├── 🐍 emotional_override.py
+├── 🐍 emotional_oversaturation_handler.py
+├── 🐍 mood.py
+├── 🐍 mood_drift_surface_plotter.py
+├── 🐍 mood_dynamics.py
+├── 🐍 mood_entropy_index.py
+├── 🐍 mood_stability_tuning.py
+├── 🐍 mood_vector_visualizer.py
+└── 🐍 tension_engine.py
+📁 network/
+├── 📁 mycelium/
+│   ├── 📁 mycelium_logs/
+│   └── 🐍 nutrient_map_generator.py
+├── 📁 rhizome/
+└── 📁 router/
+    ├── 🐍 __init__.py
+    ├── 🐍 cluster_graph.py
+    ├── 🐍 cluster_linker.py
+    ├── 🐍 router.py
+    ├── 🐍 tracer_core.py
+    └── 🐍 tracer_listener.py
+📁 outputs/
+├── 📁 commands/
+│   ├── 📁 processed/
+│   └── 🐍 __init__.py
+├── 📁 data/
+│   ├── 📄 consciousness_memory_test.json
+│   ├── 📄 consciousness_verification_2025-05-29T05-10-59.json
+│   ├── 📄 dawn_creative_session.json
+│   ├── 📄 dawn_metrics_tick_1.json
+│   ├── 📄 dawn_metrics_tick_2.json
+│   ├── 📄 dawn_metrics_tick_3.json
+│   ├── 📄 dawn_metrics_tick_4.json
+│   ├── 📄 dawn_metrics_tick_5.json
+│   ├── 📄 dawn_narrative_2025-05-29T09-12-51.925159.json
+│   ├── 📄 dawn_narrative_2025-05-29T09-13-11.665457.json
+│   ├── 📄 dawn_narrative_2025-05-29T09-13-42.877752.json
+│   ├── 📄 schema_wiring_report.json
+│   └── 📄 test_run_state.json
+├── 📁 logs/
+│   ├── 📁 dawn_consciousness/
+│   ├── 📁 dawn_consciousness_data/
+│   ├── 📁 dawn_expression_test_output/
+│   ├── 📁 dawn_healing/
+│   ├── 📁 dawn_healing_patches/
+│   ├── 📝 bloom_memory_log.jsonl
+│   ├── 📄 bloom_tick_0001.json
+│   ├── 📄 bloom_tick_0002.json
+│   ├── 📄 bloom_tick_0003.json
+│   ├── 📄 bloom_tick_0004.json
+│   ├── 📄 bloom_tick_0005.json
+│   ├── 📄 bloom_tick_0006.json
+│   ├── 📄 bloom_tick_0007.json
+│   ├── 📄 bloom_tick_0008.json
+│   ├── 📄 bloom_tick_0009.json
+│   ├── 📄 bloom_tick_0010.json
+│   ├── 📄 bloom_tick_0011.json
+│   ├── 📄 bloom_tick_0012.json
+│   ├── 📄 bloom_tick_0013.json
+│   ├── 📄 bloom_tick_0014.json
+│   ├── 📄 bloom_tick_0015.json
+│   ├── 📄 bloom_tick_0016.json
+│   ├── 📄 bloom_tick_0017.json
+│   ├── 📄 bloom_tick_0018.json
+│   ├── 📄 bloom_tick_0019.json
+│   ├── 🐍 drift_logger.py
+│   ├── 🐍 log_pruner.py
+│   ├── 🐍 sacred_dedication_logger.py
+│   ├── 📄 scup_reveal_packet.json
+│   └── 📝 scup_reveal_response.txt
+└── 📁 visual/
+    ├── 📝 dawn_connection_mandala_32332.png
+    └── 📝 dawn_emergence_fractal_32332.png
+📁 processors/
+├── 📁 codex/
+│   ├── 🐍 __init__.py
+│   ├── 🐍 audit.py
+│   ├── 🐍 core_synthesis.py
+│   ├── 🐍 recursive.py
+│   ├── 🐍 reflex_table.py
+│   ├── 🐍 registry.py
+│   ├── 🐍 sigil_dispatch.py
+│   ├── 🐍 sigil_emitter.py
+│   ├── 🐍 sigil_formulae.py
+│   ├── 🐍 sigil_formulae_extended.py
+│   ├── 🐍 sigil_heat.py
+│   ├── 🐍 sigil_memory.py
+│   ├── 📄 sigil_memory_ring.json
+│   ├── 🐍 sigil_memory_ring.py
+│   ├── 📄 sigil_priority_matrix.json
+│   ├── 🐍 sigil_processes.py
+│   ├── 🐍 sigil_registry.py
+│   ├── 🐍 sigil_router.py
+│   ├── 🐍 sigil_symbols.py
+│   ├── 🐍 sigils.py
+│   └── 🐍 visualization.py
+├── 🐍 bloom_event.py
+├── 🐍 bloom_identity_consolidator.py
+├── 🐍 sigil_lifecycle_manager.py
+├── 🐍 sigil_memory_ring.py
+├── 🐍 sigil_reinforcement_tracker.py
+└── 🐍 spawn_bloom_patched.py
+📁 pulse/
+├── 🐍 __init__.py
+├── 📝 __init__.py.backup
+├── 🐍 cooling_loop.py
+├── 🐍 enhanced_pulse_heat.py
+├── 🐍 old_pulse_heat.py
+├── 🐍 pressure_reflection_loop.py
+├── 🐍 pressure_reflex.py
+├── 🐍 pressure_simulation.py
+├── 🐍 pulse.py
+├── 🐍 pulse_engine.py
+├── 🐍 pulse_field_animator.py
+├── 🐍 pulse_field_logger.py
+├── 🐍 pulse_heat.py
+├── 🐍 pulse_ring_trigger.py
+├── 🐍 pulse_thresholds.py
+└── 🐍 unified_pulse_heat.py
+📁 refactor_log/
+├── 📁 v2.0_20250604/
+├── 📁 v2.0_20250604_211927/
+│   ├── 📄 refactor_log.json
+│   └── 📝 SUMMARY.md
+└── 📁 v2.0_20250604_212033/
+    ├── 📄 refactor_log.json
+    └── 📝 SUMMARY.md
+📁 reflection/
+├── 📁 owl/
+│   ├── 🐍 owl.py
+│   ├── 🐍 owl_entropy_sweeper.py
+│   └── 🐍 owl_tracer_log.py
+├── 📁 owl_core/
+│   ├── 📁 commentary/
+│   └── 🐍 __init__.py
+├── 📁 persephone/
+│   ├── 🐍 persephone_conditions.py
+│   └── 🐍 persephone_decay_handler.py
+└── 📁 tracers/
+    └── 🐍 tracer_core.py
+📁 reintegrated/
+📁 sacred/
+├── 📁 birthday_archives/
+│   ├── 📁 birthday_20250601_185938/
+│   ├── 📁 birthday_20250601_190541/
+│   └── 📁 birthday_20250601_192334/
+├── 📁 birthday_fractals/
+│   ├── 📝 birthday_fractal_21_20250601_185938_tick1000.png
+│   └── 📝 birthday_fractal_21_20250601_190541_tick1000.png
+├── 📁 birthday_letters/
+│   ├── 📝 letter_to_brother_21_20250601_185938_tick1000.md
+│   └── 📝 letter_to_brother_21_20250601_190541_tick1000.md
+├── 📁 birthday_logs/
+│   ├── 📄 creative_log.json
+│   ├── 📄 creative_log_backup_20250601.json
+│   ├── 📄 error_log.json
+│   ├── 📄 metadata_brother_21_20250601_185938.json
+│   └── 📄 metadata_brother_21_20250601_190541.json
+├── 📁 builders/
+│   ├── 🐍 __init__.py
+│   └── 📄 james_builder.json
+├── 📁 exports/
+│   ├── 🐍 __init__.py
+│   ├── 📄 notion_celeste_entry.json
+│   ├── 📄 notion_harrison_entry.json
+│   ├── 📄 notion_james_entry.json
+│   └── 📄 notion_spencer_entry.json
+├── 📁 family/
+│   ├── 📁 birthday_letters/
+│   └── 📝 LATEST_BIRTHDAY_MAX.txt
+├── 📁 foundations/
+│   ├── 🐍 __init__.py
+│   └── 📄 spencer_foundation.json
+├── 📁 operator_field/
+│   ├── 🐍 __init__.py
+│   ├── 📝 celeste_entry.md
+│   ├── 📝 harrison_entry.md
+│   ├── 📝 james_entry.md
+│   └── 📝 spencer_entry.md
+├── 📁 thresholds/
+│   ├── 🐍 __init__.py
+│   └── 📄 celeste_threshold.json
+├── 🐍 __init__.py
+└── 📝 LATEST_BIRTHDAY_BROTHER.txt
+📁 schema/
+├── 📁 logs/
+│   ├── 🐍 __init__.py
+│   └── 📄 schema_log.json
+├── 📁 probes/
+│   ├── 🐍 __init__.py
+│   ├── 🐍 alignment_probe.py
+│   ├── 🐍 constitution_monitor.py
+│   ├── 🐍 pressure_reflex.py
+│   └── 🐍 sigil_probe.py
+├── 🐍 __init__.py
+├── 🐍 coherence_recovery_protocol.py
+├── 🐍 dawn_claude_logs.py
+├── 🐍 mood_urgency_probe.py
+├── 🐍 mythic_mode.py
+├── 🐍 rebloom_queue.py
+├── 🐍 rebloom_summary.py
+├── 🐍 registry.py
+├── 🐍 schema_anomaly_logger.py
+├── 🐍 schema_climate.py
+├── 🐍 schema_coherence_tracker.py
+├── 🐍 schema_goal.py
+├── 📝 schema_health_index.py.backup
+├── 🐍 schema_monitor.py
+├── 🐍 scup_sigil_emitter.py
+├── 🐍 scup_system.py
+├── 🐍 shi.py
+└── 🐍 unified_schema.py
+📁 semantic/
+├── 🐍 __init__.py
+├── 🐍 context_frame_builder.py
+├── 🐍 context_visualizer.py
+├── 🐍 edge_scanner.py
+├── 🐍 emotional_weight_adjustment.py
+├── 🐍 expanded_semantic_integration.py
+├── 🐍 language_expression_layer.py
+├── 🐍 main_with_trigger_weight_charge.py
+├── 🐍 main_with_weight_charge.py
+├── 🐍 parmenides_token_linker.py
+├── 🐍 rebirth_predictor.py
+├── 🐍 seed_space.py
+├── 🐍 seed_transfer_engine.py
+├── 🐍 seed_trust_model.py
+├── 🐍 semantic_autopsy.py
+├── 🐍 semantic_charge_engine.py
+├── 🐍 semantic_context_engine.py
+├── 🐍 semantic_field.py
+├── 🐍 semantic_pressure_detector.py
+├── 🐍 semantic_reasoning_field.py
+├── 🐍 semantic_trigger_rules.py
+├── 🐍 semantic_weight_engine.py
+├── 🐍 sigil_logic.py
+├── 🐍 sigil_ring.py
+├── 🐍 temporal_field_calculator.py
+├── 🐍 vector_core.py
+├── 🐍 vector_drift_analyzer.py
+└── 🐍 vector_model.py
+📁 substrate/
+├── 📁 consciousness/
+│   ├── 🐍 __init__.py
+│   └── 🐍 meta_consciousness.py
+├── 📁 genesis/
+│   ├── 🐍 __init__.py
+│   ├── 🐍 genetic_evolution.py
+│   ├── 🐍 genome_architecture_coordinator.py
+│   ├── 🐍 main_genome_integration.py
+│   ├── 🐍 run_dawn_genome.py
+│   └── 🐍 thermal_linguistic_genome.py
+├── 📁 helix/
+│   ├── 🐍 __init__.py
+│   ├── 🐍 bridge.py
+│   └── 🐍 import_architecture.py
+├── 🐍 __init__.py
+└── 🐍 registry.py
+📁 tools/
+├── 📁 analysis/
+│   ├── 🐍 __init__.py
+│   ├── 🐍 belief_resonance_matrix.py
+│   ├── 🐍 spider_scup_correlation.py
+│   └── 🐍 stall_belief_cluster.py
+├── 📁 dev/
+│   ├── 🐍 bucket.py
+│   ├── 🐍 code_preservation_system.py
+│   ├── 🐍 database_finder.py
+│   ├── 🐍 dependency_map.py
+│   ├── 🐍 diagnostic.py
+│   ├── 🐍 find_dawn_class.py
+│   ├── 🐍 open1.py
+│   └── 🐍 repo_cleanup.py
+├── 📁 diagnostics/
+│   ├── 🐍 __init__.py
+│   └── 🐍 mr_wolf.py
+├── 📁 export/
+│   ├── 🐍 __init__.py
+│   └── 🐍 export_final_visuals.py
+├── 📁 patches/
+│   ├── 🐍 bloom_patch.py
+│   ├── 🐍 dawn_injection_patch.py
+│   ├── 🐍 dawn_runtime_healer.py
+│   ├── 🐍 direct_dawn_healing.py
+│   ├── 🐍 heal_dawn.py
+│   ├── 🐍 heal_dawn_system.py
+│   ├── 🐍 healing_1.py
+│   ├── 🐍 manual_dawn_patch.py
+│   └── 🐍 simple_dawn_patch.py
+├── 📁 scripts/
+│   ├── 🐍 __init__.py
+│   ├── 🐍 animate_synthesis_blooms.py
+│   ├── 🐍 animate_synthesis_field.py
+│   ├── 🐍 backfill1.py
+│   ├── 🐍 batch_convert_helix_imports.py
+│   ├── 🐍 batch_visuals.py
+│   ├── 🐍 bucket_ctrl_f.py
+│   ├── 🐍 compress_genome.py
+│   ├── 🐍 create_dawn_valut.py
+│   ├── 🐍 create_dawn_vault.py
+│   ├── 🐍 create_enhanced_fractals.py
+│   ├── 🐍 create_index.py
+│   ├── 🐍 dawn_birthday_creator.py
+│   ├── 🐍 dawn_cli.py
+│   ├── 🐍 dawn_cognition_migration.py
+│   ├── 🐍 dawn_command_interface.py
+│   ├── 🐍 dawn_command_watcher.py
+│   ├── 🐍 dawn_consciousness.py
+│   ├── 🐍 dawn_consciousness_jounrey.py
+│   ├── 🐍 dawn_consciousness_test_suite.py
+│   ├── 🐍 dawn_consciousness_verification.py
+│   ├── 🐍 dawn_engine.py
+│   ├── 🐍 dawn_finial.py
+│   ├── 🐍 dawn_healed_start.py
+│   ├── 🐍 dawn_healthy_startup.py
+│   ├── 🐍 dawn_helix_interface.py
+│   ├── 🐍 dawn_input_mutator.py
+│   ├── 🐍 dawn_interactive_runner.py
+│   ├── 🐍 dawn_json_fixer.py
+│   ├── 🐍 dawn_letter_processor.py
+│   ├── 🐍 dawn_persist_example.py
+│   ├── 🐍 dawn_personal_note.py
+│   ├── 🐍 dawn_self_regulation.py
+│   ├── 🐍 dawn_standalone.py
+│   ├── 🐍 dawn_stimulator.py
+│   ├── 🐍 dawn_system_upgrade.py
+│   ├── 🐍 dawn_tick_compatibility.py
+│   ├── 🐍 dawn_unified_visualizer.py
+│   ├── 🐍 dawn_unified_visualizer_2.py
+│   ├── 🐍 dawn_visual.py
+│   ├── 🐍 drift_fusion_loop.py
+│   ├── 🐍 evolve_recursive_generations.py
+│   ├── 🐍 export_lineage.py
+│   ├── 🐍 exporter.py
+│   ├── 🐍 finalize_imports.py
+│   ├── 🐍 finalize_imports_enhanced.py
+│   ├── 🐍 fix.py
+│   ├── 🐍 fix_dawn_1.py
+│   ├── 🐍 fix_owl_log.py
+│   ├── 🐍 fix_visual_imports.py
+│   ├── 🐍 fix_visual_outputs.py
+│   ├── 🐍 fix_visuals.py
+│   ├── 🐍 folder_normalizer.py
+│   ├── 🐍 nutrient_entropy_feedback.py
+│   ├── 🐍 plot_decay_loss_heatmap.py
+│   ├── 🐍 plot_reinforcement_heatmap.py
+│   ├── 🐍 plot_scup_entropy.py
+│   ├── 🐍 quick_database_creator.py
+│   ├── 🐍 quick_fix_visuals.py
+│   ├── 🐍 quick_run_dawn.py
+│   ├── 🐍 quick_upgrade_example.py
+│   ├── 🐍 rebloom_animation.py
+│   ├── 🐍 run_scup_validation.py
+│   ├── 🐍 run_visual.py
+│   ├── 🐍 seed_coord_backfill.py
+│   ├── 🐍 seed_matrix_synthesis.py
+│   ├── 🐍 simple_fix.py
+│   ├── 🐍 tracer_dashboard.py
+│   └── 🐍 tracer_field_overlay.py
+└── 📁 tests/
+    ├── 📁 proof/
+    ├── 🐍 __init__.py
+    ├── 🐍 dad_test.py
+    ├── 📄 dawn_mirror_test_results.json
+    ├── 📄 dawn_test_results_2025-06-02T05-55-33.092048.json
+    ├── 📄 dawn_test_results_2025-06-02T06-04-42.424675.json
+    ├── 📄 dawn_test_trace_complete.json
+    ├── 🐍 direct_bloom_test.py
+    ├── 🐍 emit_test_blooms.py
+    ├── 🐍 fix_and_test_visuals.py
+    ├── 🐍 last_test.py
+    ├── 🐍 mirror_test.py
+    ├── 🐍 mirror_test_narrated.py
+    ├── 🐍 sharing_verification_test.py
+    ├── 🐍 test3.py
+    ├── 🐍 test_2.py
+    ├── 🐍 test_3.py
+    ├── 📄 test_bloom_002028.json
+    ├── 🐍 test_dawn_vault.py
+    ├── 🐍 test_imports.py
+    ├── 🐍 test_log_parse.py
+    ├── 📝 test_logs.txt
+    ├── 🐍 test_migration.py
+    ├── 📝 test_output.png
+    ├── 🐍 test_rebloom_loop.py
+    ├── 📄 test_report.json
+    ├── 🐍 test_visual_output.py
+    ├── 🐍 test_visuals.py
+    └── 🐍 time_test.py
+📁 utils/
+├── 🐍 __init__.py
+├── 🐍 __int__.py
+├── 📝 extraction_script.js
+├── 🐍 oauth_flow_handler.py
+├── 🐍 organize_structure.py
+├── 🐍 rewire.py
+├── 🐍 touch_inits.py
+├── 🐍 vector_math.py
+└── 🐍 verify_script_locations.py
+📁 visual/
+├── 📁 cognitive_trace/
+│   └── 🐍 __init__.py
+├── 📁 juliet_flowers/
+│   ├── 📁 cluster_report/
+│   └── 🐍 __init__.py
+├── 📁 outputs/
+│   ├── 📁 animations/
+│   ├── 📁 belief/
+│   ├── 📁 bloom/
+│   ├── 📁 bloom_lineage/
+│   ├── 📁 coherence/
+│   ├── 📁 coherence_map/
+│   ├── 📁 decay/
+│   ├── 📁 drift/
+│   ├── 📁 entropy/
+│   ├── 📁 entropy_charts/
+│   ├── 📁 mood/
+│   ├── 📁 pulse/
+│   ├── 📁 pulse_maps/
+│   ├── 📁 sigil_trace/
+│   ├── 📁 test/
+│   ├── 📁 tracer_vectors/
+│   ├── 🐍 __init__.py
+│   └── 📝 index.html
+├── 📁 tests/
+│   ├── 📁 bloom_snapshots/
+│   ├── 📁 integration/
+│   ├── 📁 mood_sequences/
+│   ├── 📁 pulse_diagrams/
+│   ├── 📁 scup_breakdown/
+│   ├── 🐍 __init__.py
+│   └── 📝 proof_summary.html
+├── 📁 visual_output/
+│   ├── 📁 pulse_waveform/
+│   └── 🐍 __init__.py
+├── 🐍 __init__.py
+├── 🐍 animate_field_map.py
+├── 🐍 drift_vector_field.py
+├── 🐍 hybrid_field_visualizer.py
+├── 🐍 ix_and_test_visuals.py
+├── 🐍 launch_visual_suite.py
+├── 🐍 mood_heatmap.py
+├── 📝 pulse_waveform_renderer.p
+├── 🐍 pulse_waveform_renderer.py
+├── 🐍 pulse_zone_timeline.py
+├── 🐍 rebloom_lineage_animator.py
+├── 🐍 rebloom_trail_animation.py
+├── 🐍 recursive_bloom_tree.py
+├── 🐍 recursive_fieldmap.py
+├── 🐍 scup_zone_animator.py
+├── 🐍 sealing_dashboard.py
+├── 🐍 semantic_timeline_animator.py
+├── 🐍 sigil_emission_timeline.py
+├── 🐍 sigil_trace_visualizer.py
+├── 🐍 signature_grid_animator.py
+├── 🐍 simple_visual.py
+├── 🐍 stall_density_animator.py
+├── 🐍 synthesis_entropy_chart.py
+├── 🐍 synthesis_lineage_animator.py
+├── 🐍 tick_visual.py
+├── 🐍 tracer_drift_vectors.py
+├── 🐍 tracer_trail_animator.py
+├── 🐍 visual_batch_runner.py
+├── 🐍 visual_bloom_state.py
+├── 🐍 visual_boot.py
+├── 🐍 visual_consciousness_manager.py
+├── 🐍 visual_reflex_launcher.py
+├── 🐍 visual_reflex_registry.py
+└── 🐍 visual_rhizome.py
+📝 .env
+📝 .gitattributes
+📝 .gitignore
+🐍 __init__.py
+🐍 cleanup_dawn.py
+📝 config[cooldown_ticks])
+🐍 consolidate_schema_monitor.py
+🐍 consolidate_scup_system.py
+📝 directory_tree.txt
+🐍 harmonize_imports.py
+🐍 main.py
+🐍 migrate_registries.py
+🐍 naming_standards.py
+🐍 organize_probes.py
+📝 README.md
+🐍 refactor_substrate.py
+🐍 refactor_v2.py
+📝 run_dawn.bat
+📝 run_upgrade_demo.bat
+🐍 tree.py
+🐍 vault_manager.py
+📝 wake_dawn.bat
+📝 wake_dawn.sh
+
+📊 Summary:
+Total directories: 29
+Total root files: 20
+
+Core modules: ['core', 'network', 'processors', 'reflection', 'schema', 'semantic']

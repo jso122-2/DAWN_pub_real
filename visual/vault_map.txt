@@ -1,0 +1,73 @@
+.
+├── __init__.py
+├── animate_field_map.py
+├── cognitive_trace
+│   └── __init__.py
+├── drift_vector_field.py
+├── hybrid_field_visualizer.py
+├── ix_and_test_visuals.py
+├── juliet_flowers
+│   ├── __init__.py
+│   └── cluster_report
+├── launch_visual_suite.py
+├── mood_heatmap.py
+├── outputs
+│   ├── __init__.py
+│   ├── animations
+│   ├── belief
+│   ├── bloom
+│   ├── bloom_lineage
+│   ├── coherence
+│   ├── coherence_map
+│   ├── decay
+│   ├── drift
+│   ├── entropy
+│   ├── entropy_charts
+│   ├── index.html
+│   ├── mood
+│   ├── pulse
+│   ├── pulse_maps
+│   ├── sigil_trace
+│   ├── test
+│   └── tracer_vectors
+├── pulse_waveform_renderer.p
+├── pulse_waveform_renderer.py
+├── pulse_zone_timeline.py
+├── rebloom_lineage_animator.py
+├── rebloom_trail_animation.py
+├── recursive_bloom_tree.py
+├── recursive_fieldmap.py
+├── scup_zone_animator.py
+├── sealing_dashboard.py
+├── semantic_timeline_animator.py
+├── sigil_emission_timeline.py
+├── sigil_trace_visualizer.py
+├── signature_grid_animator.py
+├── simple_visual.py
+├── stall_density_animator.py
+├── synthesis_entropy_chart.py
+├── synthesis_lineage_animator.py
+├── tests
+│   ├── __init__.py
+│   ├── bloom_snapshots
+│   ├── integration
+│   ├── mood_sequences
+│   ├── proof_summary.html
+│   ├── pulse_diagrams
+│   └── scup_breakdown
+├── tick_visual.py
+├── tracer_drift_vectors.py
+├── tracer_trail_animator.py
+├── vault_map.txt
+├── visual_batch_runner.py
+├── visual_bloom_state.py
+├── visual_boot.py
+├── visual_consciousness_manager.py
+├── visual_output
+│   ├── __init__.py
+│   └── pulse_waveform
+├── visual_reflex_launcher.py
+├── visual_reflex_registry.py
+└── visual_rhizome.py
+
+29 directories, 42 files

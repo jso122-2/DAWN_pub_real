@@ -1,0 +1,71 @@
+# Pulse System Configuration
+
+# Thermal Settings
+thermal_baseline: 18.0
+thermal_ceiling: 85.0
+thermal_critical: 95.0
+thermal_decay_rate: 0.02
+thermal_memory_window: 100
+thermal_conductivity: 0.1
+thermal_cooling_rate: 0.05
+
+# Timing Settings
+tick_interval: 1.0
+tick_interval_min: 0.1
+tick_interval_max: 5.0
+tick_interval_adjustment: 0.95
+
+# Urgency and Pressure
+urgency_scale: 1.0
+pressure_decay_rate: 0.1
+pressure_memory_size: 50
+
+# Mood Weights
+mood_weights:
+  joy: 0.8
+  anger: 1.2
+  fear: 1.5
+  calm: 0.7
+  focus: 1.0
+  curiosity: 1.1
+  anxiety: 1.3
+  sadness: 1.4
+
+# Zone Thresholds
+zone_thresholds:
+  calm: 0.3
+  active: 0.7
+  surge: 0.9
+
+# Expression Settings
+expression:
+  momentum_decay: 0.95
+  readiness_threshold: 0.6
+  satisfaction_weight: 0.8
+  coherence_threshold: 0.7
+
+# Emergency Settings
+emergency:
+  recovery_cooldown: 300
+  max_recoveries: 3
+  cooling_factor: 0.3
+  reset_threshold: 3.0
+
+# Logging Settings
+logging:
+  enabled: true
+  level: INFO
+  file: logs/pulse_events.log
+  max_size: 10485760  # 10MB
+  backup_count: 5
+
+pulse_mode: "default"
+tick_frequency: 1.0
+scup_threshold: 0.5
+heat_capacity: 100.0
+stability_threshold: 0.7
+reflex_cooldowns:
+  synthesis: 50
+  entropy_scan: 25
+  emergency_suppression: 40
+  rebloom_queue: 30 

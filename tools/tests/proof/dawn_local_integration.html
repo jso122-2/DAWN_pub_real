@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DAWN Local Visual Integration</title>
+    <style>
+        body {
+            margin: 0;
+            background: #0a0a0a;
+            font-family: monospace;
+            color: #fff;
+        }
+        canvas {
+            display: block;
+            cursor: crosshair;
+        }
+        .info {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            background: rgba(0,0,0,0.8);
+            padding: 10px;
+            border: 1px solid #333;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="dawnCanvas"></canvas>
+    <div class="info">
+        Click to add blooms | Press SPACE to trigger chaos | R to reset
+    </div>
+
+    <script>
+        // Get canvas and context
+        const canvas = document.getElementById('dawnCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        // Set canvas size
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        
+        // Simple bloom storage
+        let blooms = [];
+        let connections = [];
+        let tickCount = 0;
+        
+        // Create a bloom
+        class Bloom {
+            constructor(x, y, id) {
+                this.x = x;
+                this.y = y;
+                this.id = id;
+                this.radius = 20;
+                this.heat = 0.5;
+                this.entropy = 0.3;
+                this.mood = 0;
+                this.age = 0;
+                this.rotation = 0;
+            }
+            
+            update() {
+                this.age++;
+                this.rotation += 0.02 * this.entropy;
+                this.radius = 20 + Math.sin(this.age * 0.05) * 5 * this.heat;
+            }
+            
+            draw(ctx) {
+                // Draw fractal branches
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.rotate(this.rotation);
+                
+                const branches = 3 + Math.floor(this.heat * 3);
+                for (let i = 0; i < branches; i++) {
+                    const angle = (i / branches) * Math.PI * 2;
+                    const length = this.radius * 1.5;
+                    
+                    ctx.beginPath();
+                    ctx.moveTo(0, 0);
+                    ctx.lineTo(
+                        Math.cos(angle) * length,
+                        Math.sin(angle) * length
+                    );
+                    
+                    const hue = (this.mood + 1) * 120;
+                    ctx.strokeStyle = `hsla(${hue}, 70%, 50%, 0.6)`;
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+                }
+                
+                ctx.restore();
+                
+                // Draw core
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                const hue = (this.mood + 1) * 120;
+                ctx.fillStyle = `hsla(${hue}, 60%, 40%, 0.8)`;
+                ctx.fill();
+                
+                // Draw glow if hot
+                if (this.heat > 0.7) {
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.radius * 1.5, 0, Math.PI * 2);
+                    ctx.strokeStyle = `hsla(${hue}, 80%, 60%, ${this.heat * 0.3})`;
+                    ctx.lineWidth = 3;
+                    ctx.stroke();
+                }
+            }
+        }
+        
+        // Animation loop
+        function animate() {
+            // Clear with trail effect
+            ctx.fillStyle = 'rgba(10, 10, 10, 0.1)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Update and draw connections
+            ctx.strokeStyle = 'rgba(100, 150, 255, 0.3)';
+            ctx.lineWidth = 1;
+            for (let conn of connections) {
+                const bloom1 = blooms[conn[0]];
+                const bloom2 = blooms[conn[1]];
+                if (bloom1 && bloom2) {
+                    ctx.beginPath();
+                    ctx.moveTo(bloom1.x, bloom1.y);
+                    ctx.lineTo(bloom2.x, bloom2.y);
+                    ctx.stroke();
+                }
+            }
+            
+            // Update and draw blooms
+            for (let bloom of blooms) {
+                bloom.update();
+                bloom.draw(ctx);
+            }
+            
+            tickCount++;
+            requestAnimationFrame(animate);
+        }
+        
+        // Add bloom on click
+        canvas.addEventListener('click', (e) => {
+            const bloom = new Bloom(e.clientX, e.clientY, blooms.length);
+            
+            // Connect to nearby blooms
+            for (let i = 0; i < blooms.length; i++) {
+                const other = blooms[i];
+                const dist = Math.sqrt(
+                    Math.pow(bloom.x - other.x, 2) + 
+                    Math.pow(bloom.y - other.y, 2)
+                );
+                if (dist < 150) {
+                    connections.push([i, blooms.length]);
+                }
+            }
+            
+            blooms.push(bloom);
+        });
+        
+        // Keyboard controls
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Space') {
+                // Trigger chaos - increase entropy
+                blooms.forEach(bloom => {
+                    bloom.entropy = Math.min(1, bloom.entropy + 0.3);
+                    bloom.heat = Math.min(1, bloom.heat + 0.2);
+                    bloom.mood = (Math.random() - 0.5) * 2;
+                });
+            } else if (e.code === 'KeyR') {
+                // Reset
+                blooms = [];
+                connections = [];
+            }
+        });
+        
+        // Window resize
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+        
+        // Create initial bloom
+        blooms.push(new Bloom(canvas.width/2, canvas.height/2, 0));
+        
+        // Start animation
+        animate();
+        
+        // === INTEGRATION WITH YOUR PYTHON TEST ===
+        // To connect this to your Python dawn_test_scaffold.py:
+        
+        // 1. Add this function to read JSON data from a file
+        async function loadTestData() {
+            try {
+                // This assumes your Python script outputs to test_output/test_report.json
+                const response = await fetch('test_output/test_report.json');
+                const data = await response.json();
+                
+                // Update blooms based on test data
+                data.metric_history.forEach((metric, index) => {
+                    if (blooms[index]) {
+                        blooms[index].entropy = metric.entropy;
+                        blooms[index].heat = 1 - metric.coherence;
+                        blooms[index].mood = (metric.entropy - 0.5) * 2;
+                    } else {
+                        // Create new bloom for this metric
+                        const x = 100 + (index * 50) % (canvas.width - 200);
+                        const y = 100 + Math.floor(index * 50 / (canvas.width - 200)) * 50;
+                        const bloom = new Bloom(x, y, index);
+                        bloom.entropy = metric.entropy;
+                        bloom.heat = 1 - metric.coherence;
+                        blooms.push(bloom);
+                    }
+                });
+                
+                console.log('Loaded test data:', data);
+            } catch (error) {
+                console.log('No test data found, using default visualization');
+            }
+        }
+        
+        // 2. For real-time updates, you could poll the file
+        setInterval(loadTestData, 1000); // Check every second
+        
+        // 3. Or manually trigger a load
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'KeyL') {
+                loadTestData();
+            }
+        });
+    </script>
+</body>
+</html>

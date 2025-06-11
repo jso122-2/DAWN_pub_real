@@ -1,0 +1,39 @@
+# Sigil Routing Configuration
+# Defines primary and fallback tracers per mood state
+# Each mood has:
+#   - primary: Main tracer to handle the mood
+#   - fallback: Secondary tracer if primary is unavailable
+#   - threshold: Minimum heat level required for routing
+#   - cooldown: Ticks to wait before allowing new routing
+
+routing_map:
+  calm:
+    primary: "Bee"
+    fallback: "Ant"
+    threshold: 0.7
+    cooldown: 8
+  anxious:
+    primary: "Owl"
+    fallback: "Spider"
+    threshold: 0.6
+    cooldown: 12
+  curious:
+    primary: "Bee"
+    fallback: "Whale"
+    threshold: 0.8
+    cooldown: 6
+  angry:
+    primary: "Crow"
+    fallback: "Spider"
+    threshold: 0.9
+    cooldown: 15
+  sad:
+    primary: "Owl"
+    fallback: "Whale"
+    threshold: 0.7
+    cooldown: 10
+  excited:
+    primary: "Bee"
+    fallback: "Ant"
+    threshold: 0.8
+    cooldown: 5 

@@ -1,0 +1,6 @@
+Operator present
+Schema drift
+Memory bloom
+Urgency spike
+Refactor needed
+Pulse unstable

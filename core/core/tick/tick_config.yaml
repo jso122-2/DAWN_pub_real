@@ -1,0 +1,21 @@
+log_level: INFO
+max_errors: 3
+subsystems:
+  alignment:
+    priority: 6
+  bloom:
+    priority: 7
+  entropy:
+    priority: 5
+  pulse:
+    priority: 1
+  schema:
+    priority: 2
+  thermal:
+    priority: 4
+  visual:
+    priority: 3
+tick_interval: 1.0
+tick_interval_max: 5.0
+tick_interval_min: 0.1
+tick_rate: 1.0

@@ -1,0 +1,56 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>DAWN Dashboard</title>
+  <style>
+    body { background: #111; color: #eee; font-family: Arial; padding: 20px; }
+    h1, h2 { color: #facc15; }
+    img { max-width: 100%; margin: 10px 0; border: 2px solid #333; }
+    .flex { display: flex; gap: 20px; flex-wrap: wrap; }
+    .block { flex: 1 1 300px; margin-bottom: 20px; }
+    iframe, pre { width: 100%; background: #222; color: #ccc; padding: 10px; border-radius: 4px; height: 160px; }
+  </style>
+</head>
+<body>
+  <h1>📡 DAWN Cognition Dashboard</h1>
+
+  <div class="block"><h2>🎞️ Semantic Timeline</h2>
+    <img src="/cluster_report/{{ timeline }}">
+  </div>
+
+  <div class="flex">
+    <div class="block"><h2>🌡️ Nutrient Trails</h2>
+      <img src="/cluster_report/{{ trailmap }}">
+    </div>
+    <div class="block"><h2>📈 Entropy Arc</h2>
+      <img src="/cluster_report/{{ entropyarc }}">
+    </div>
+    <div class="block"><h2>🧬 Memory Clusters</h2>
+      <img src="/cluster_report/{{ clusters }}">
+    </div>
+  </div>
+
+  <div class="block"><h2>🧭 Cognition Pressure Map</h2>
+    <img src="/cluster_report/{{ pressuremap }}">
+  </div>
+
+  <div class="block"><h2>🌐 Recursive Field Map</h2>
+    <img src="/cluster_report/{{ fieldmap }}">
+  </div>
+
+  <div class="block"><h2>🦉 Owl Commentary</h2>
+    {% for f in commentary %}
+      <h4>{{ f }}</h4>
+      <iframe src="/commentary/{{ f }}"></iframe>
+    {% endfor %}
+  </div>
+
+  <div class="block"><h2>🌸 Latest Fractals</h2>
+    {% for f in fractals %}
+      <img src="/fractals/{{ f }}">
+    {% endfor %}
+  </div>
+</body>
+</html>
