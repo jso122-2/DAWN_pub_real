@@ -31,10 +31,28 @@ def start_server():
     print("━" * 60)
     
     try:
-        # Import and run the main application
-        os.system("python main.py")
+        # Change to interface directory and run with uvicorn
+        interface_dir = Path(__file__).parent / "interface"
+        os.chdir(interface_dir)
+        
+        # Start with uvicorn
+        cmd = [
+            sys.executable, "-m", "uvicorn", 
+            "dawn_api:app", 
+            "--reload", 
+            "--host", "0.0.0.0", 
+            "--port", "8000"
+        ]
+        
+        print(f"🚀 Starting server with command: {' '.join(cmd)}")
+        print(f"📁 Working directory: {os.getcwd()}")
+        
+        # Run the server
+        subprocess.run(cmd, check=True)
     except KeyboardInterrupt:
         print("\n🛑 Server stopped by user")
+    except subprocess.CalledProcessError as e:
+        print(f"❌ Server exited with error code: {e.returncode}")
     except Exception as e:
         print(f"❌ Error starting server: {e}")
 
