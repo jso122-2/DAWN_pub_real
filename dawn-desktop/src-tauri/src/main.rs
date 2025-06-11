@@ -6,9 +6,9 @@
 
 use serde::{Deserialize, Serialize};
 use std::sync::{Arc, Mutex};
-use tauri::{Manager, State, Window};
+use tauri::{Manager, State};
 use tokio::sync::broadcast;
-use futures_util::{SinkExt, StreamExt};
+use futures_util::StreamExt;
 use tokio_tungstenite::{connect_async, tungstenite::protocol::Message};
 use std::time::Duration;
 
@@ -49,6 +49,40 @@ struct HealthResponse {
     booted: bool,
     running: bool,
     timestamp: f64,
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
+struct TickStatus {
+    tick_number: i64,
+    is_running: bool,
+    is_paused: bool,
+    interval_ms: u32,
+    uptime_seconds: f64,
+    total_ticks: i64,
+    avg_tick_duration_ms: f64,
+    last_tick_timestamp: Option<f64>,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+struct TickTiming {
+    interval_ms: u32,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+struct TickConfig {
+    interval_ms: u32,
+    auto_start: bool,
+    enable_logging: bool,
+    max_tick_duration_ms: u32,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+struct TickUpdate {
+    tick_number: i64,
+    timestamp: f64,
+    metrics: Metrics,
+    duration_ms: f64,
+    controller_state: String,
 }
 
 struct AppState {
@@ -182,8 +216,9 @@ async fn add_subsystem(
         .map_err(|e| format!("Failed to add subsystem: {}", e))?;
 
     if !response.status().is_success() {
+        let status = response.status();
         let error_text = response.text().await.unwrap_or_default();
-        return Err(format!("HTTP error {}: {}", response.status(), error_text));
+        return Err(format!("HTTP error {}: {}", status, error_text));
     }
 
     Ok("Subsystem added successfully".to_string())
@@ -206,8 +241,9 @@ async fn remove_subsystem(
         .map_err(|e| format!("Failed to remove subsystem: {}", e))?;
 
     if !response.status().is_success() {
+        let status = response.status();
         let error_text = response.text().await.unwrap_or_default();
-        return Err(format!("HTTP error {}: {}", response.status(), error_text));
+        return Err(format!("HTTP error {}: {}", status, error_text));
     }
 
     Ok("Subsystem removed successfully".to_string())
@@ -239,8 +275,9 @@ async fn set_alert_threshold(
         .map_err(|e| format!("Failed to set alert threshold: {}", e))?;
 
     if !response.status().is_success() {
+        let status = response.status();
         let error_text = response.text().await.unwrap_or_default();
-        return Err(format!("HTTP error {}: {}", response.status(), error_text));
+        return Err(format!("HTTP error {}: {}", status, error_text));
     }
 
     Ok("Alert threshold set successfully".to_string())
@@ -343,19 +380,30 @@ async fn subscribe_to_metrics(
                             Ok(Message::Text(text)) => {
                                 log::debug!("Received WebSocket message: {}", text);
                                 
-                                match serde_json::from_str::<Metrics>(&text) {
-                                    Ok(metrics) => {
-                                        // Emit to frontend
-                                        if let Err(e) = app_handle_clone.emit_all("metrics-update", &metrics) {
-                                            log::error!("Failed to emit metrics-update event: {}", e);
-                                        } else {
-                                            log::debug!("Emitted metrics update: SCUP={}, Entropy={}, Heat={}", 
-                                                       metrics.scup, metrics.entropy, metrics.heat);
-                                        }
+                                // Try parsing as TickUpdate first (new format), then fall back to Metrics (legacy)
+                                if let Ok(tick_update) = serde_json::from_str::<TickUpdate>(&text) {
+                                    // Emit enhanced tick update event
+                                    if let Err(e) = app_handle_clone.emit_all("tick-update", &tick_update) {
+                                        log::error!("Failed to emit tick-update event: {}", e);
+                                    } else {
+                                        log::debug!("Emitted tick update: tick={}, state={}, SCUP={}", 
+                                                   tick_update.tick_number, tick_update.controller_state, tick_update.metrics.scup);
                                     }
-                                    Err(e) => {
-                                        log::error!("Failed to parse metrics JSON: {}", e);
+                                    
+                                    // Also emit metrics-update for backward compatibility
+                                    if let Err(e) = app_handle_clone.emit_all("metrics-update", &tick_update.metrics) {
+                                        log::error!("Failed to emit metrics-update event: {}", e);
                                     }
+                                } else if let Ok(metrics) = serde_json::from_str::<Metrics>(&text) {
+                                    // Handle legacy metrics format
+                                    if let Err(e) = app_handle_clone.emit_all("metrics-update", &metrics) {
+                                        log::error!("Failed to emit metrics-update event: {}", e);
+                                    } else {
+                                        log::debug!("Emitted metrics update: SCUP={}, Entropy={}, Heat={}", 
+                                                   metrics.scup, metrics.entropy, metrics.heat);
+                                    }
+                                } else {
+                                    log::error!("Failed to parse WebSocket message as TickUpdate or Metrics: {}", text);
                                 }
                             }
                             Ok(Message::Close(_)) => {
@@ -407,6 +455,262 @@ async fn is_websocket_connected(state: State<'_, AppState>) -> Result<bool, Stri
     Ok(*connected)
 }
 
+// ========== TICK ENGINE CONTROL COMMANDS ==========
+
+#[tauri::command]
+async fn get_tick_status(state: State<'_, AppState>) -> Result<TickStatus, String> {
+    log::info!("Fetching tick engine status from Python backend");
+    
+    let url = format!("{}/tick/status", PYTHON_API_BASE);
+    let response = state
+        .http_client
+        .get(&url)
+        .timeout(Duration::from_secs(5))
+        .send()
+        .await
+        .map_err(|e| format!("Failed to fetch tick status: {}", e))?;
+
+    if !response.status().is_success() {
+        return Err(format!("HTTP error: {}", response.status()));
+    }
+
+    let tick_status: TickStatus = response
+        .json()
+        .await
+        .map_err(|e| format!("Failed to parse tick status JSON: {}", e))?;
+
+    log::info!("Successfully fetched tick status: running={}, paused={}, tick={}", 
+               tick_status.is_running, tick_status.is_paused, tick_status.tick_number);
+
+    Ok(tick_status)
+}
+
+#[tauri::command]
+async fn start_tick_engine(state: State<'_, AppState>) -> Result<String, String> {
+    log::info!("Starting tick engine via Python backend");
+    
+    let url = format!("{}/tick/start", PYTHON_API_BASE);
+    let response = state
+        .http_client
+        .post(&url)
+        .timeout(Duration::from_secs(5))
+        .send()
+        .await
+        .map_err(|e| format!("Failed to start tick engine: {}", e))?;
+
+    if !response.status().is_success() {
+        let status = response.status();
+        let error_text = response.text().await.unwrap_or_default();
+        return Err(format!("HTTP error {}: {}", status, error_text));
+    }
+
+    let result: serde_json::Value = response
+        .json()
+        .await
+        .map_err(|e| format!("Failed to parse response JSON: {}", e))?;
+
+    log::info!("Tick engine started successfully");
+    Ok(result.get("message").and_then(|v| v.as_str()).unwrap_or("Tick engine started").to_string())
+}
+
+#[tauri::command]
+async fn stop_tick_engine(state: State<'_, AppState>) -> Result<String, String> {
+    log::info!("Stopping tick engine via Python backend");
+    
+    let url = format!("{}/tick/stop", PYTHON_API_BASE);
+    let response = state
+        .http_client
+        .post(&url)
+        .timeout(Duration::from_secs(5))
+        .send()
+        .await
+        .map_err(|e| format!("Failed to stop tick engine: {}", e))?;
+
+    if !response.status().is_success() {
+        let status = response.status();
+        let error_text = response.text().await.unwrap_or_default();
+        return Err(format!("HTTP error {}: {}", status, error_text));
+    }
+
+    let result: serde_json::Value = response
+        .json()
+        .await
+        .map_err(|e| format!("Failed to parse response JSON: {}", e))?;
+
+    log::info!("Tick engine stopped successfully");
+    Ok(result.get("message").and_then(|v| v.as_str()).unwrap_or("Tick engine stopped").to_string())
+}
+
+#[tauri::command]
+async fn pause_tick_engine(state: State<'_, AppState>) -> Result<String, String> {
+    log::info!("Pausing tick engine via Python backend");
+    
+    let url = format!("{}/tick/pause", PYTHON_API_BASE);
+    let response = state
+        .http_client
+        .post(&url)
+        .timeout(Duration::from_secs(5))
+        .send()
+        .await
+        .map_err(|e| format!("Failed to pause tick engine: {}", e))?;
+
+    if !response.status().is_success() {
+        let status = response.status();
+        let error_text = response.text().await.unwrap_or_default();
+        return Err(format!("HTTP error {}: {}", status, error_text));
+    }
+
+    let result: serde_json::Value = response
+        .json()
+        .await
+        .map_err(|e| format!("Failed to parse response JSON: {}", e))?;
+
+    log::info!("Tick engine paused successfully");
+    Ok(result.get("message").and_then(|v| v.as_str()).unwrap_or("Tick engine paused").to_string())
+}
+
+#[tauri::command]
+async fn resume_tick_engine(state: State<'_, AppState>) -> Result<String, String> {
+    log::info!("Resuming tick engine via Python backend");
+    
+    let url = format!("{}/tick/resume", PYTHON_API_BASE);
+    let response = state
+        .http_client
+        .post(&url)
+        .timeout(Duration::from_secs(5))
+        .send()
+        .await
+        .map_err(|e| format!("Failed to resume tick engine: {}", e))?;
+
+    if !response.status().is_success() {
+        let status = response.status();
+        let error_text = response.text().await.unwrap_or_default();
+        return Err(format!("HTTP error {}: {}", status, error_text));
+    }
+
+    let result: serde_json::Value = response
+        .json()
+        .await
+        .map_err(|e| format!("Failed to parse response JSON: {}", e))?;
+
+    log::info!("Tick engine resumed successfully");
+    Ok(result.get("message").and_then(|v| v.as_str()).unwrap_or("Tick engine resumed").to_string())
+}
+
+#[tauri::command]
+async fn set_tick_timing(state: State<'_, AppState>, interval_ms: u32) -> Result<String, String> {
+    log::info!("Setting tick timing to {}ms via Python backend", interval_ms);
+    
+    let timing_data = TickTiming { interval_ms };
+    
+    let url = format!("{}/tick/timing", PYTHON_API_BASE);
+    let response = state
+        .http_client
+        .put(&url)
+        .json(&timing_data)
+        .timeout(Duration::from_secs(5))
+        .send()
+        .await
+        .map_err(|e| format!("Failed to set tick timing: {}", e))?;
+
+    if !response.status().is_success() {
+        let status = response.status();
+        let error_text = response.text().await.unwrap_or_default();
+        return Err(format!("HTTP error {}: {}", status, error_text));
+    }
+
+    let result: serde_json::Value = response
+        .json()
+        .await
+        .map_err(|e| format!("Failed to parse response JSON: {}", e))?;
+
+    log::info!("Tick timing set to {}ms successfully", interval_ms);
+    Ok(result.get("message").and_then(|v| v.as_str()).unwrap_or("Tick timing updated").to_string())
+}
+
+#[tauri::command]
+async fn execute_single_tick(state: State<'_, AppState>) -> Result<String, String> {
+    log::info!("Executing single tick via Python backend");
+    
+    let url = format!("{}/tick/step", PYTHON_API_BASE);
+    let response = state
+        .http_client
+        .post(&url)
+        .timeout(Duration::from_secs(5))
+        .send()
+        .await
+        .map_err(|e| format!("Failed to execute single tick: {}", e))?;
+
+    if !response.status().is_success() {
+        let status = response.status();
+        let error_text = response.text().await.unwrap_or_default();
+        return Err(format!("HTTP error {}: {}", status, error_text));
+    }
+
+    let result: serde_json::Value = response
+        .json()
+        .await
+        .map_err(|e| format!("Failed to parse response JSON: {}", e))?;
+
+    log::info!("Single tick executed successfully");
+    Ok(result.get("message").and_then(|v| v.as_str()).unwrap_or("Single tick executed").to_string())
+}
+
+#[tauri::command]
+async fn get_tick_config(state: State<'_, AppState>) -> Result<TickConfig, String> {
+    log::info!("Fetching tick engine configuration from Python backend");
+    
+    let url = format!("{}/tick/config", PYTHON_API_BASE);
+    let response = state
+        .http_client
+        .get(&url)
+        .timeout(Duration::from_secs(5))
+        .send()
+        .await
+        .map_err(|e| format!("Failed to fetch tick config: {}", e))?;
+
+    if !response.status().is_success() {
+        return Err(format!("HTTP error: {}", response.status()));
+    }
+
+    let tick_config: TickConfig = response
+        .json()
+        .await
+        .map_err(|e| format!("Failed to parse tick config JSON: {}", e))?;
+
+    log::info!("Successfully fetched tick configuration");
+    Ok(tick_config)
+}
+
+#[tauri::command]
+async fn update_tick_config(state: State<'_, AppState>, config: TickConfig) -> Result<String, String> {
+    log::info!("Updating tick engine configuration via Python backend");
+    
+    let url = format!("{}/tick/config", PYTHON_API_BASE);
+    let response = state
+        .http_client
+        .put(&url)
+        .json(&config)
+        .timeout(Duration::from_secs(5))
+        .send()
+        .await
+        .map_err(|e| format!("Failed to update tick config: {}", e))?;
+
+    if !response.status().is_success() {
+        let status = response.status();
+        let error_text = response.text().await.unwrap_or_default();
+        return Err(format!("HTTP error {}: {}", status, error_text));
+    }
+
+    let result: serde_json::Value = response
+        .json()
+        .await
+        .map_err(|e| format!("Failed to parse response JSON: {}", e))?;
+
+    log::info!("Tick configuration updated successfully");
+    Ok(result.get("message").and_then(|v| v.as_str()).unwrap_or("Configuration updated").to_string())
+}
+
 fn main() {
     // Initialize logging
     env_logger::init();
@@ -427,7 +731,17 @@ fn main() {
             get_alert_thresholds,
             check_backend_health,
             subscribe_to_metrics,
-            is_websocket_connected
+            is_websocket_connected,
+            // Tick Engine Control Commands
+            get_tick_status,
+            start_tick_engine,
+            stop_tick_engine,
+            pause_tick_engine,
+            resume_tick_engine,
+            set_tick_timing,
+            execute_single_tick,
+            get_tick_config,
+            update_tick_config
         ])
         .setup(|app| {
             let app_handle = app.handle();
