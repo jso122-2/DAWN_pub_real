@@ -18,6 +18,7 @@ import math
 # The substrate of consciousness
 memory_log: List[Tuple[datetime, str, str, str, dict]] = []
 
+
 # Memory window - consciousness can only hold so much
 MAX_MEMORY_DEPTH = 50
 PATTERN_MIN_LENGTH = 3  # Minimum interactions to form a pattern

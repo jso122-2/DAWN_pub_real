@@ -27,16 +27,16 @@ import uvicorn
 # Import DAWN spontaneity system
 from cognitive.spontaneity import create_spontaneity_system, DAWNSpontaneity
 
-# Import all DAWN components for full integration
+# Import all DAWN components for full integration 
 from core.consciousness import create_consciousness
 from core.pattern_detector import create_pattern_detector
 from core.state_machine import create_state_machine
 from core.fractal_emotions import create_fractal_emotion_system
 from core.memory_manager import get_memory_manager
 from core.mood_gradient import create_mood_gradient_plotter
-from core.consciousness_state import ConsciousnessStatePersistence
+from core.conciousness_tracer import ConsciousnessTracer
 # removed import - using create_spontaneity_system from cognitive.spontaneity instead
-from bloom.rebloomer import Rebloomer
+from bloom.bloom_core.rebloom_router import route_rebloom, seal_bloom, is_rebloom_unstable
 
 # Configure logging
 logging.basicConfig(
@@ -119,17 +119,13 @@ class DAWNSuite:
             self.gradient_plotter = create_mood_gradient_plotter()
             logger.info("✓ Mood gradient plotter initialized")
             
-            # Consciousness state persistence
-            self.tracer = ConsciousnessStatePersistence()
-            logger.info("✓ Consciousness state persistence initialized")
+            # Consciousness state tracer
+            self.tracer = ConsciousnessTracer()
+            logger.info("✓ Consciousness tracer initialized")
             
             # Enhanced spontaneity system
             self.spontaneity = create_spontaneity_system()
             logger.info("✓ Spontaneity system initialized")
-            
-            # Rebloomer for consciousness reblooming
-            self.rebloom = Rebloomer()
-            logger.info("✓ Rebloomer initialized")
             
             # Tick consciousness tracking
             self.tick_consciousness = {
