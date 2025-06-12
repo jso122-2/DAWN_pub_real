@@ -34,6 +34,15 @@ import eventBus, {
 } from './components/eventBus'
 import './App.css'
 
+// Development and Tauri detection
+const isDevelopment = import.meta.env.DEV;
+const isTauriApp = typeof window !== 'undefined' && window.__TAURI__ !== undefined;
+
+// Utility to check if running in Tauri
+const isTauri = () => {
+  return typeof window !== 'undefined' && window.__TAURI__ !== undefined;
+};
+
 function App() {
   console.log('🧠 DAWN Neural Monitor Loading...')
   
@@ -314,6 +323,11 @@ function App() {
       return;
     }
 
+    if (!isTauri()) {
+      console.log('Running in browser mode - Tauri features disabled');
+      return;
+    }
+
     // Monitor Python processes
     const monitorInterval = setInterval(async () => {
       try {
@@ -350,6 +364,24 @@ function App() {
       console.log('🧹 Process monitoring cleanup');
     };
   }, [connectionMode, processMonitoringEnabled]);
+
+  // Updated handleToggleComponent with Tauri check
+  const handleToggleComponent = async (componentName, enabled) => {
+    if (isTauriApp && componentName.includes('.py')) {
+      // Handle Python processes via Tauri
+      try {
+        await safeTauriInvoke('toggle_python_process', { name: componentName, enabled });
+      } catch (err) {
+        setAlert('Tauri process error: ' + err.message);
+      }
+    } else {
+      // Handle React components
+      setComponentVisibility(prev => ({
+        ...prev,
+        [componentName]: enabled
+      }));
+    }
+  };
 
   // Loading state
   if (isLoading) {
@@ -536,544 +568,551 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white flex">
-      {/* Main dashboard */}
-      <div className={`flex-1 p-6 transition-all duration-300 ${showChat ? 'mr-96' : ''}`}>
-        {/* Header */}
-        <header className="mb-8">
-          <div className="flex justify-between items-center">
-            <div>
-              <h1 className="text-5xl font-bold bg-gradient-to-r from-blue-400 via-purple-500 to-cyan-400 bg-clip-text text-transparent">
-                🧠 DAWN Neural Monitor
-              </h1>
-              <p className="text-gray-400 mt-2 text-lg">
-                Deep Adaptive Wisdom Network - Real-time Cognitive Monitoring
-              </p>
+    <>
+      {isDevelopment && !isTauriApp && (
+        <div className="bg-yellow-600 text-black text-center py-2 text-sm">
+          Running in Browser Mode - Tauri features disabled
+        </div>
+      )}
+      <div className="min-h-screen bg-gray-900 text-white flex">
+        {/* Main dashboard */}
+        <div className={`flex-1 p-6 transition-all duration-300 ${showChat ? 'mr-96' : ''}`}>
+          {/* Header */}
+          <header className="mb-8">
+            <div className="flex justify-between items-center">
+              <div>
+                <h1 className="text-5xl font-bold bg-gradient-to-r from-blue-400 via-purple-500 to-cyan-400 bg-clip-text text-transparent">
+                  🧠 DAWN Neural Monitor
+                </h1>
+                <p className="text-gray-400 mt-2 text-lg">
+                  Deep Adaptive Wisdom Network - Real-time Cognitive Monitoring
+                </p>
+              </div>
+              
+              <div className="flex items-center space-x-6">
+                {/* Tick Indicator */}
+                <TickIndicator 
+                  tickCount={metrics.tick_count} 
+                  isRunning={tickStatus.isRunning} 
+                  isPaused={tickStatus.isPaused}
+                  intervalMs={tickStatus.intervalMs}
+                  className="flex-shrink-0"
+                />
+                
+                {/* Live Data Test Button */}
+                <button
+                  onClick={handleTestLiveData}
+                  className="px-4 py-2 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 bg-yellow-600 hover:bg-yellow-700 text-white shadow-yellow-500/20 shadow-lg"
+                  title="Test live data updates"
+                >
+                  <span className="flex items-center space-x-2">
+                    <span>🧪</span>
+                    <span>Test Live Data</span>
+                  </span>
+                </button>
+
+                {/* Config Panel Toggle Button */}
+                <button
+                  onClick={() => setShowConfigPanel(!showConfigPanel)}
+                  className={`px-4 py-2 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 ${
+                    showConfigPanel 
+                      ? 'bg-purple-600 hover:bg-purple-700 text-white shadow-purple-500/20 shadow-lg' 
+                      : 'bg-gray-700 hover:bg-gray-600 text-gray-300 border border-gray-600'
+                  }`}
+                >
+                  <span className="flex items-center space-x-2">
+                    <span>⚙️</span>
+                    <span>{showConfigPanel ? 'Hide Config' : 'Configuration'}</span>
+                  </span>
+                </button>
+                
+                {/* Python Process Monitoring Toggle */}
+                <button
+                  onClick={() => handleToggleComponent('processMonitoringEnabled', !processMonitoringEnabled)}
+                  className={`px-4 py-2 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 ${
+                    processMonitoringEnabled 
+                      ? 'bg-green-600 hover:bg-green-700 text-white shadow-green-500/20 shadow-lg' 
+                      : 'bg-gray-700 hover:bg-gray-600 text-gray-300 border border-gray-600'
+                  }`}
+                  title={`${processMonitoringEnabled ? 'Disable' : 'Enable'} Python process monitoring`}
+                >
+                  <span className="flex items-center space-x-2">
+                    <span>🐍</span>
+                    <span>{processMonitoringEnabled ? 'Process Monitor ON' : 'Process Monitor OFF'}</span>
+                    {processStats.length > 0 && (
+                      <span className="bg-blue-500 text-white text-xs px-2 py-1 rounded-full">
+                        {processStats.length}
+                      </span>
+                    )}
+                  </span>
+                </button>
+
+                {/* Connection Status Indicator */}
+                <div className={`flex items-center space-x-3 px-6 py-3 rounded-xl border-2 transition-all duration-500 ${
+                  connectionMode === 'websocket' ? 'bg-green-900/30 border-green-400/50 text-green-300 shadow-green-400/20 shadow-lg' :
+                  connectionMode === 'tauri' ? 'bg-cyan-900/30 border-cyan-400/50 text-cyan-300 shadow-cyan-400/20 shadow-lg' :
+                  connectionMode === 'checking' ? 'bg-yellow-900/30 border-yellow-400/50 text-yellow-300 shadow-yellow-400/20 shadow-lg' :
+                  'bg-red-900/30 border-red-400/50 text-red-300'
+                }`}>
+                  <div className={`w-4 h-4 rounded-full transition-all duration-300 ${
+                    connectionMode === 'websocket' ? 'bg-green-400 animate-pulse shadow-green-400/50 shadow-lg' :
+                    connectionMode === 'tauri' ? 'bg-cyan-400 animate-pulse shadow-cyan-400/50 shadow-lg' :
+                    connectionMode === 'checking' ? 'bg-yellow-400 animate-ping' :
+                    'bg-red-400'
+                  }`} />
+                  <span className="font-semibold text-lg">
+                    {connectionMode === 'websocket' ? '🟢 WebSocket Connected' :
+                     connectionMode === 'tauri' ? '🦀 Tauri Connected' :
+                     connectionMode === 'checking' ? '🟡 Checking Connection...' :
+                     '🔴 Backend Offline'}
+                  </span>
+                  {connectionMode === 'tauri' && (
+                    <span className="text-xs opacity-75 ml-2">(Native Integration)</span>
+                  )}
+                  {connectionMode === 'websocket' && (
+                    <span className="text-xs opacity-75 ml-2">(HTTP + WebSocket)</span>
+                  )}
+                </div>
+              </div>
             </div>
             
-            <div className="flex items-center space-x-6">
-              {/* Tick Indicator */}
-              <TickIndicator 
-                tickCount={metrics.tick_count} 
-                isRunning={tickStatus.isRunning} 
-                isPaused={tickStatus.isPaused}
-                intervalMs={tickStatus.intervalMs}
-                className="flex-shrink-0"
-              />
-              
-              {/* Live Data Test Button */}
-              <button
-                onClick={handleTestLiveData}
-                className="px-4 py-2 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 bg-yellow-600 hover:bg-yellow-700 text-white shadow-yellow-500/20 shadow-lg"
-                title="Test live data updates"
-              >
-                <span className="flex items-center space-x-2">
-                  <span>🧪</span>
-                  <span>Test Live Data</span>
-                </span>
-              </button>
-
-              {/* Config Panel Toggle Button */}
-              <button
-                onClick={() => setShowConfigPanel(!showConfigPanel)}
-                className={`px-4 py-2 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 ${
-                  showConfigPanel 
-                    ? 'bg-purple-600 hover:bg-purple-700 text-white shadow-purple-500/20 shadow-lg' 
-                    : 'bg-gray-700 hover:bg-gray-600 text-gray-300 border border-gray-600'
-                }`}
-              >
-                <span className="flex items-center space-x-2">
-                  <span>⚙️</span>
-                  <span>{showConfigPanel ? 'Hide Config' : 'Configuration'}</span>
-                </span>
-              </button>
-              
-              {/* Python Process Monitoring Toggle */}
-              <button
-                onClick={() => setProcessMonitoringEnabled(!processMonitoringEnabled)}
-                className={`px-4 py-2 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 ${
-                  processMonitoringEnabled 
-                    ? 'bg-green-600 hover:bg-green-700 text-white shadow-green-500/20 shadow-lg' 
-                    : 'bg-gray-700 hover:bg-gray-600 text-gray-300 border border-gray-600'
-                }`}
-                title={`${processMonitoringEnabled ? 'Disable' : 'Enable'} Python process monitoring`}
-              >
-                <span className="flex items-center space-x-2">
-                  <span>🐍</span>
-                  <span>{processMonitoringEnabled ? 'Process Monitor ON' : 'Process Monitor OFF'}</span>
-                  {processStats.length > 0 && (
-                    <span className="bg-blue-500 text-white text-xs px-2 py-1 rounded-full">
-                      {processStats.length}
-                    </span>
-                  )}
-                </span>
-              </button>
-
-              {/* Connection Status Indicator */}
-              <div className={`flex items-center space-x-3 px-6 py-3 rounded-xl border-2 transition-all duration-500 ${
-                connectionMode === 'websocket' ? 'bg-green-900/30 border-green-400/50 text-green-300 shadow-green-400/20 shadow-lg' :
-                connectionMode === 'tauri' ? 'bg-cyan-900/30 border-cyan-400/50 text-cyan-300 shadow-cyan-400/20 shadow-lg' :
-                connectionMode === 'checking' ? 'bg-yellow-900/30 border-yellow-400/50 text-yellow-300 shadow-yellow-400/20 shadow-lg' :
-                'bg-red-900/30 border-red-400/50 text-red-300'
-              }`}>
-                <div className={`w-4 h-4 rounded-full transition-all duration-300 ${
-                  connectionMode === 'websocket' ? 'bg-green-400 animate-pulse shadow-green-400/50 shadow-lg' :
-                  connectionMode === 'tauri' ? 'bg-cyan-400 animate-pulse shadow-cyan-400/50 shadow-lg' :
-                  connectionMode === 'checking' ? 'bg-yellow-400 animate-ping' :
-                  'bg-red-400'
-                }`} />
-                <span className="font-semibold text-lg">
-                  {connectionMode === 'websocket' ? '🟢 WebSocket Connected' :
-                   connectionMode === 'tauri' ? '🦀 Tauri Connected' :
-                   connectionMode === 'checking' ? '🟡 Checking Connection...' :
-                   '🔴 Backend Offline'}
-                </span>
-                {connectionMode === 'tauri' && (
-                  <span className="text-xs opacity-75 ml-2">(Native Integration)</span>
-                )}
-                {connectionMode === 'websocket' && (
-                  <span className="text-xs opacity-75 ml-2">(HTTP + WebSocket)</span>
-                )}
-              </div>
-            </div>
-          </div>
-          
-          {/* Live Data Status */}
-          <div className="mt-4 p-4 bg-cyan-900/20 border border-cyan-400/30 rounded-xl backdrop-blur-sm">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-4">
-                <div className="flex items-center space-x-2">
-                  <div className="w-3 h-3 bg-cyan-400 rounded-full animate-pulse"></div>
-                  <span className="text-cyan-300 font-medium">Live Data Stream</span>
-                </div>
-                <div className="text-gray-400 text-sm">
-                  Updates: <span className="text-cyan-300 font-mono">{updateCount}</span>
-                </div>
-                {lastUpdateTime && (
-                  <div className="text-gray-400 text-sm">
-                    Last: <span className="text-cyan-300 font-mono">{lastUpdateTime}</span>
-                  </div>
-                )}
-              </div>
-              <div className="flex items-center space-x-2 text-sm">
-                <span className="text-gray-400">Tick:</span>
-                <span className="text-cyan-300 font-mono font-bold">#{metrics.tick_count.toLocaleString()}</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Python Process Stats Panel */}
-          {processMonitoringEnabled && processStats.length > 0 && (
-            <div className="mt-4 p-4 bg-purple-900/20 border border-purple-400/30 rounded-xl backdrop-blur-sm">
-              <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center space-x-2">
-                  <div className="w-3 h-3 bg-purple-400 rounded-full animate-pulse"></div>
-                  <span className="text-purple-300 font-medium">Python Processes</span>
-                  <span className="text-purple-200 text-sm">({processStats.length} active)</span>
-                </div>
-                <div className="text-gray-400 text-sm">
-                  Total Memory: <span className="text-purple-300 font-mono">
-                    {processStats.reduce((sum, p) => sum + p.memory_mb, 0).toFixed(1)} MB
-                  </span>
-                </div>
-              </div>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-                {processStats.map((process) => (
-                  <div key={process.pid} className="bg-gray-800/50 rounded-lg p-3 border border-gray-600/50">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-white font-medium text-sm truncate" title={process.script}>
-                        {process.script.replace('.py', '')}
-                      </span>
-                      <span className="text-gray-400 text-xs font-mono">PID: {process.pid}</span>
-                    </div>
-                    
-                    <div className="grid grid-cols-2 gap-2 text-xs">
-                      <div>
-                        <span className="text-gray-400">CPU:</span>
-                        <span className={`ml-1 font-bold ${
-                          process.cpu_percent > 20 ? 'text-yellow-400' : 'text-green-400'
-                        }`}>
-                          {process.cpu_percent.toFixed(1)}%
-                        </span>
-                      </div>
-                      <div>
-                        <span className="text-gray-400">Memory:</span>
-                        <span className="ml-1 font-bold text-blue-400">
-                          {process.memory_mb.toFixed(0)} MB
-                        </span>
-                      </div>
-                      <div>
-                        <span className="text-gray-400">Status:</span>
-                        <span className="ml-1 font-bold text-green-400">{process.status}</span>
-                      </div>
-                      <div>
-                        <span className="text-gray-400">Uptime:</span>
-                        <span className="ml-1 font-bold text-purple-400">
-                          {Math.floor(process.uptime_seconds / 60)}m
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Error Display */}
-          {connectionError && (
-            <div className={`mt-4 p-4 rounded-xl backdrop-blur-sm ${
-              connectionError.includes('successful') || connectionError.includes('Live data test')
-                ? 'bg-green-900/30 border border-green-500/50'
-                : 'bg-red-900/30 border border-red-500/50'
-            }`}>
+            {/* Live Data Status */}
+            <div className="mt-4 p-4 bg-cyan-900/20 border border-cyan-400/30 rounded-xl backdrop-blur-sm">
               <div className="flex items-center justify-between">
-                <p className={`flex items-center ${
-                  connectionError.includes('successful') || connectionError.includes('Live data test')
-                    ? 'text-green-300'
-                    : 'text-red-300'
-                }`}>
-                  <span className="mr-2">
-                    {connectionError.includes('successful') || connectionError.includes('Live data test') ? '✅' : '⚠️'}
-                  </span>
-                  {connectionError}
-                </p>
-                {!connectionError.includes('successful') && !connectionError.includes('Live data test') && (
-                  <button 
-                    onClick={() => window.location.reload()}
-                    className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm rounded-lg transition-colors"
-                  >
-                    🔄 Reconnect
-                  </button>
-                )}
-              </div>
-            </div>
-           )}
-         </header>
-
-        {/* Tab System */}
-        <div className="max-w-7xl mx-auto mb-8">
-          <TabSystem 
-            activeTab={activeTab} 
-            onTabChange={setActiveTab} 
-          />
-        </div>
-
-        {/* Comprehensive Tick Engine Control Panel */}
-        <div className="max-w-7xl mx-auto mb-8">
-          <TickControl 
-            tickStatus={tickStatus}
-            onTimingChange={(newInterval) => {
-              console.log(`⏱️ Tick timing changed to ${newInterval}ms`)
-              setTickStatus(prev => ({ ...prev, intervalMs: newInterval }))
-            }}
-            onStatusChange={(newStatus) => {
-              setTickStatus(prev => ({ ...prev, ...newStatus }))
-            }}
-          />
-        </div>
-
-        {/* Advanced Configuration Panel */}
-        {showConfigPanel && (
-          <div className="max-w-7xl mx-auto mb-8 transform transition-all duration-500 ease-out animate-in slide-in-from-top fade-in">
-            <ConfigPanel currentMetrics={metrics} />
-          </div>
-        )}
-
-        {/* Tab Content */}
-        {activeTab === 'neural' && (
-          <>
-            {/* Main Metrics Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 max-w-7xl mx-auto mb-8">
-              <MetricCard
-                title="SCUP"
-                value={metrics.scup}
-                colorScheme="blue"
-                icon="🧠"
-                subtitle="Cognitive Unity Potential"
-                description="Neural coherence measurement"
-              />
-              
-              <MetricCard
-                title="Entropy"
-                value={metrics.entropy}
-                colorScheme="green"
-                icon="🌀"
-                subtitle="System Disorder"
-                description="Information complexity index"
-              />
-              
-              <MetricCard
-                title="Heat"
-                value={metrics.heat}
-                colorScheme="orange"
-                icon="🔥"
-                subtitle="Processing Intensity"
-                description="Neural activity temperature"
-              />
-              
-              <MetricCard
-                title="Mood"
-                value={metrics.mood}
-                colorScheme="purple"
-                icon="💭"
-                subtitle="System State"
-                description="Current cognitive mode"
-              />
-            </div>
-
-            {/* Live Neural Activity Visualizer */}
-            {componentVisibility.NeuralActivityVisualizer && (
-              <div className="max-w-7xl mx-auto mb-8">
-                <div className="bg-gray-900 rounded-2xl border border-gray-700 p-6 shadow-lg">
-                  <NeuralActivityVisualizer
-                    brainwaveData={{
-                      delta: metrics.delta || [],
-                      theta: metrics.theta || [],
-                      alpha: metrics.alpha || [],
-                      beta: metrics.beta || [],
-                      gamma: metrics.gamma || []
-                    }}
-                    samplingInfo={{
-                      sampling: 1000,
-                      window: 5,
-                      fft: 512
-                    }}
-                  />
+                <div className="flex items-center space-x-4">
+                  <div className="flex items-center space-x-2">
+                    <div className="w-3 h-3 bg-cyan-400 rounded-full animate-pulse"></div>
+                    <span className="text-cyan-300 font-medium">Live Data Stream</span>
+                  </div>
+                  <div className="text-gray-400 text-sm">
+                    Updates: <span className="text-cyan-300 font-mono">{updateCount}</span>
+                  </div>
+                  {lastUpdateTime && (
+                    <div className="text-gray-400 text-sm">
+                      Last: <span className="text-cyan-300 font-mono">{lastUpdateTime}</span>
+                    </div>
+                  )}
+                </div>
+                <div className="flex items-center space-x-2 text-sm">
+                  <span className="text-gray-400">Tick:</span>
+                  <span className="text-cyan-300 font-mono font-bold">#{metrics.tick_count.toLocaleString()}</span>
                 </div>
               </div>
-            )}
+            </div>
 
-            {/* System Telemetry */}
-            <div className="max-w-7xl mx-auto mb-8">
-              <div className="bg-gray-800/60 backdrop-blur-sm rounded-2xl p-8 border border-gray-700/50 shadow-2xl">
-                <div className="flex justify-between items-center mb-6">
-                  <h3 className="text-2xl font-bold text-gray-200 flex items-center">
-                    <span className="mr-3">📊</span>
-                    Neural Telemetry Dashboard
-                  </h3>
-                  <div className="text-gray-400 font-mono text-lg">
-                    Tick #{metrics.tick_count.toLocaleString()}
+            {/* Python Process Stats Panel */}
+            {processMonitoringEnabled && processStats.length > 0 && (
+              <div className="mt-4 p-4 bg-purple-900/20 border border-purple-400/30 rounded-xl backdrop-blur-sm">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center space-x-2">
+                    <div className="w-3 h-3 bg-purple-400 rounded-full animate-pulse"></div>
+                    <span className="text-purple-300 font-medium">Python Processes</span>
+                    <span className="text-purple-200 text-sm">({processStats.length} active)</span>
+                  </div>
+                  <div className="text-gray-400 text-sm">
+                    Total Memory: <span className="text-purple-300 font-mono">
+                      {processStats.reduce((sum, p) => sum + p.memory_mb, 0).toFixed(1)} MB
+                    </span>
                   </div>
                 </div>
                 
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-                  <TelemetryItem 
-                    label="SCUP Level" 
-                    value={`${(metrics.scup * 100).toFixed(1)}%`}
-                    color="text-blue-400"
-                  />
-                  <TelemetryItem 
-                    label="Entropy Rate" 
-                    value={`${(metrics.entropy * 100).toFixed(1)}%`}
-                    color="text-green-400"
-                  />
-                  <TelemetryItem 
-                    label="Heat Index" 
-                    value={`${(metrics.heat * 100).toFixed(1)}%`}
-                    color="text-orange-400"
-                  />
-                  <TelemetryItem 
-                    label="Current Mood" 
-                    value={metrics.mood}
-                    color="text-purple-400"
-                  />
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                  {processStats.map((process) => (
+                    <div key={process.pid} className="bg-gray-800/50 rounded-lg p-3 border border-gray-600/50">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-white font-medium text-sm truncate" title={process.script}>
+                          {process.script.replace('.py', '')}
+                        </span>
+                        <span className="text-gray-400 text-xs font-mono">PID: {process.pid}</span>
+                      </div>
+                      
+                      <div className="grid grid-cols-2 gap-2 text-xs">
+                        <div>
+                          <span className="text-gray-400">CPU:</span>
+                          <span className={`ml-1 font-bold ${
+                            process.cpu_percent > 20 ? 'text-yellow-400' : 'text-green-400'
+                          }`}>
+                            {process.cpu_percent.toFixed(1)}%
+                          </span>
+                        </div>
+                        <div>
+                          <span className="text-gray-400">Memory:</span>
+                          <span className="ml-1 font-bold text-blue-400">
+                            {process.memory_mb.toFixed(0)} MB
+                          </span>
+                        </div>
+                        <div>
+                          <span className="text-gray-400">Status:</span>
+                          <span className="ml-1 font-bold text-green-400">{process.status}</span>
+                        </div>
+                        <div>
+                          <span className="text-gray-400">Uptime:</span>
+                          <span className="ml-1 font-bold text-purple-400">
+                            {Math.floor(process.uptime_seconds / 60)}m
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
+            )}
+
+            {/* Error Display */}
+            {connectionError && (
+              <div className={`mt-4 p-4 rounded-xl backdrop-blur-sm ${
+                connectionError.includes('successful') || connectionError.includes('Live data test')
+                  ? 'bg-green-900/30 border border-green-500/50'
+                  : 'bg-red-900/30 border border-red-500/50'
+              }`}>
+                <div className="flex items-center justify-between">
+                  <p className={`flex items-center ${
+                    connectionError.includes('successful') || connectionError.includes('Live data test')
+                      ? 'text-green-300'
+                      : 'text-red-300'
+                  }`}>
+                    <span className="mr-2">
+                      {connectionError.includes('successful') || connectionError.includes('Live data test') ? '✅' : '⚠️'}
+                    </span>
+                    {connectionError}
+                  </p>
+                  {!connectionError.includes('successful') && !connectionError.includes('Live data test') && (
+                    <button 
+                      onClick={() => window.location.reload()}
+                      className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm rounded-lg transition-colors"
+                    >
+                      🔄 Reconnect
+                    </button>
+                  )}
+                </div>
+              </div>
+             )}
+           </header>
+
+          {/* Tab System */}
+          <div className="max-w-7xl mx-auto mb-8">
+            <TabSystem 
+              activeTab={activeTab} 
+              onTabChange={setActiveTab} 
+            />
+          </div>
+
+          {/* Comprehensive Tick Engine Control Panel */}
+          <div className="max-w-7xl mx-auto mb-8">
+            <TickControl 
+              tickStatus={tickStatus}
+              onTimingChange={(newInterval) => {
+                console.log(`⏱️ Tick timing changed to ${newInterval}ms`)
+                setTickStatus(prev => ({ ...prev, intervalMs: newInterval }))
+              }}
+              onStatusChange={(newStatus) => {
+                setTickStatus(prev => ({ ...prev, ...newStatus }))
+              }}
+            />
+          </div>
+
+          {/* Advanced Configuration Panel */}
+          {showConfigPanel && (
+            <div className="max-w-7xl mx-auto mb-8 transform transition-all duration-500 ease-out animate-in slide-in-from-top fade-in">
+              <ConfigPanel currentMetrics={metrics} />
             </div>
+          )}
 
-            {/* Live Data Diagnostic Panel */}
-            {componentVisibility.EnhancedLiveDiagnostic && (
-              <div className="max-w-7xl mx-auto mb-8">
-                <EnhancedLiveDiagnostic 
-                  scupData={scupData}
-                  entropyData={entropyData}
-                  heatData={heatData}
-                  updateInterval={tickStatus.intervalMs || 1000}
-                  onPatternDetected={handlePatternDetected}
-                  onAnomalyDetected={handleAnomalyDetected}
+          {/* Tab Content */}
+          {activeTab === 'neural' && (
+            <>
+              {/* Main Metrics Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 max-w-7xl mx-auto mb-8">
+                <MetricCard
+                  title="SCUP"
+                  value={metrics.scup}
+                  colorScheme="blue"
+                  icon="🧠"
+                  subtitle="Cognitive Unity Potential"
+                  description="Neural coherence measurement"
+                />
+                
+                <MetricCard
+                  title="Entropy"
+                  value={metrics.entropy}
+                  colorScheme="green"
+                  icon="🌀"
+                  subtitle="System Disorder"
+                  description="Information complexity index"
+                />
+                
+                <MetricCard
+                  title="Heat"
+                  value={metrics.heat}
+                  colorScheme="orange"
+                  icon="🔥"
+                  subtitle="Processing Intensity"
+                  description="Neural activity temperature"
+                />
+                
+                <MetricCard
+                  title="Mood"
+                  value={metrics.mood}
+                  colorScheme="purple"
+                  icon="💭"
+                  subtitle="System State"
+                  description="Current cognitive mode"
                 />
               </div>
-            )}
 
-            {/* Network Flow Diagram */}
-            {componentVisibility.NetworkFlowDiagram && (
+              {/* Live Neural Activity Visualizer */}
+              {componentVisibility.NeuralActivityVisualizer && (
+                <div className="max-w-7xl mx-auto mb-8">
+                  <div className="bg-gray-900 rounded-2xl border border-gray-700 p-6 shadow-lg">
+                    <NeuralActivityVisualizer
+                      brainwaveData={{
+                        delta: metrics.delta || [],
+                        theta: metrics.theta || [],
+                        alpha: metrics.alpha || [],
+                        beta: metrics.beta || [],
+                        gamma: metrics.gamma || []
+                      }}
+                      samplingInfo={{
+                        sampling: 1000,
+                        window: 5,
+                        fft: 512
+                      }}
+                    />
+                  </div>
+                </div>
+              )}
+
+              {/* System Telemetry */}
               <div className="max-w-7xl mx-auto mb-8">
-                <NetworkFlowDiagram 
-                  scup={metrics.scup}
-                  entropy={metrics.entropy}
-                  heat={metrics.heat}
-                  mood={metrics.mood}
-                />
-              </div>
-            )}
-
-            {/* Cognitive Load Radar */}
-            {componentVisibility.CognitiveLoadRadar && (
-              <div className="max-w-7xl mx-auto mb-8">
-                <CognitiveLoadRadar />
-              </div>
-            )}
-
-            {/* Cognitive Performance Matrix */}
-            {componentVisibility.CognitivePerformanceMatrix && (
-              <div className="max-w-7xl mx-auto mb-8">
-                <CognitivePerformanceMatrix 
-                  intensity={metrics.scup * 100}
-                  symbolicLoad={metrics.entropy * 8}
-                  entropyRate={metrics.heat * 100}
-                  bufferDepth={metrics.tick_count % 1000}
-                />
-              </div>
-            )}
-
-            {/* Neural Timeline - Cognitive Timeline */}
-            <div className="max-w-7xl mx-auto mb-8">
-              <div className="bg-gray-900 rounded-2xl border border-gray-700 p-6 shadow-lg">
-                <h3 className="text-xl font-bold text-white mb-4 flex items-center">
-                  <span className="mr-2">🧠</span>
-                  Neural Cognition Timeline
-                </h3>
-                <div className="h-96 overflow-hidden rounded-xl">
-                  <div className="w-full h-full relative">
-                    <NeuralTimeline 
-                      scup={metrics.scup}
-                      entropy={metrics.entropy}
-                      heat={metrics.heat}
-                      mood={metrics.mood}
-                      tickCount={metrics.tick_count}
+                <div className="bg-gray-800/60 backdrop-blur-sm rounded-2xl p-8 border border-gray-700/50 shadow-2xl">
+                  <div className="flex justify-between items-center mb-6">
+                    <h3 className="text-2xl font-bold text-gray-200 flex items-center">
+                      <span className="mr-3">📊</span>
+                      Neural Telemetry Dashboard
+                    </h3>
+                    <div className="text-gray-400 font-mono text-lg">
+                      Tick #{metrics.tick_count.toLocaleString()}
+                    </div>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                    <TelemetryItem 
+                      label="SCUP Level" 
+                      value={`${(metrics.scup * 100).toFixed(1)}%`}
+                      color="text-blue-400"
+                    />
+                    <TelemetryItem 
+                      label="Entropy Rate" 
+                      value={`${(metrics.entropy * 100).toFixed(1)}%`}
+                      color="text-green-400"
+                    />
+                    <TelemetryItem 
+                      label="Heat Index" 
+                      value={`${(metrics.heat * 100).toFixed(1)}%`}
+                      color="text-orange-400"
+                    />
+                    <TelemetryItem 
+                      label="Current Mood" 
+                      value={metrics.mood}
+                      color="text-purple-400"
                     />
                   </div>
                 </div>
               </div>
-            </div>
 
-            {/* System Alerts & Anomalies Panel */}
-            {componentVisibility.AlertAnomalyPanel && (
+              {/* Live Data Diagnostic Panel */}
+              {componentVisibility.EnhancedLiveDiagnostic && (
+                <div className="max-w-7xl mx-auto mb-8">
+                  <EnhancedLiveDiagnostic 
+                    scupData={scupData}
+                    entropyData={entropyData}
+                    heatData={heatData}
+                    updateInterval={tickStatus.intervalMs || 1000}
+                    onPatternDetected={handlePatternDetected}
+                    onAnomalyDetected={handleAnomalyDetected}
+                  />
+                </div>
+              )}
+
+              {/* Network Flow Diagram */}
+              {componentVisibility.NetworkFlowDiagram && (
+                <div className="max-w-7xl mx-auto mb-8">
+                  <NetworkFlowDiagram 
+                    scup={metrics.scup}
+                    entropy={metrics.entropy}
+                    heat={metrics.heat}
+                    mood={metrics.mood}
+                  />
+                </div>
+              )}
+
+              {/* Cognitive Load Radar */}
+              {componentVisibility.CognitiveLoadRadar && (
+                <div className="max-w-7xl mx-auto mb-8">
+                  <CognitiveLoadRadar />
+                </div>
+              )}
+
+              {/* Cognitive Performance Matrix */}
+              {componentVisibility.CognitivePerformanceMatrix && (
+                <div className="max-w-7xl mx-auto mb-8">
+                  <CognitivePerformanceMatrix 
+                    intensity={metrics.scup * 100}
+                    symbolicLoad={metrics.entropy * 8}
+                    entropyRate={metrics.heat * 100}
+                    bufferDepth={metrics.tick_count % 1000}
+                  />
+                </div>
+              )}
+
+              {/* Neural Timeline - Cognitive Timeline */}
               <div className="max-w-7xl mx-auto mb-8">
-                <AlertAnomalyPanel />
+                <div className="bg-gray-900 rounded-2xl border border-gray-700 p-6 shadow-lg">
+                  <h3 className="text-xl font-bold text-white mb-4 flex items-center">
+                    <span className="mr-2">🧠</span>
+                    Neural Cognition Timeline
+                  </h3>
+                  <div className="h-96 overflow-hidden rounded-xl">
+                    <div className="w-full h-full relative">
+                      <NeuralTimeline 
+                        scup={metrics.scup}
+                        entropy={metrics.entropy}
+                        heat={metrics.heat}
+                        mood={metrics.mood}
+                        tickCount={metrics.tick_count}
+                      />
+                    </div>
+                  </div>
+                </div>
               </div>
-            )}
 
-            {/* Python Visual Integration */}
-            <div className="max-w-7xl mx-auto mb-8">
-              <PythonVisualIntegration 
-                activeProcesses={processStats.filter(p => p.status === 'running')} 
-              />
-            </div>
-          </>
-        )}
+              {/* System Alerts & Anomalies Panel */}
+              {componentVisibility.AlertAnomalyPanel && (
+                <div className="max-w-7xl mx-auto mb-8">
+                  <AlertAnomalyPanel />
+                </div>
+              )}
 
-        {activeTab === 'fractal' && (
-          <div className="max-w-7xl mx-auto mb-8">
-            <div className="bg-gray-900 rounded-2xl border border-gray-700 p-8 shadow-lg">
-              <h2 className="text-3xl font-bold text-white mb-6 flex items-center">
-                <span className="mr-3">🌀</span>
-                Fractal Analysis
-              </h2>
-              <div className="text-gray-400 text-lg">
-                <p className="mb-4">Fractal visualization and analysis tools will be implemented here.</p>
-                <p>This tab will contain fractal pattern recognition and visualization components.</p>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {activeTab === 'talk' && (
-          <div className="max-w-7xl mx-auto mb-8">
-            <TalkToDAWN currentMood={metrics.mood} />
-          </div>
-        )}
-
-        {activeTab === 'processes' && (
-          <>
-            {/* Process Timeline Visualizer */}
-            {componentVisibility.ProcessTimelineVisualizer && (
+              {/* Python Visual Integration */}
               <div className="max-w-7xl mx-auto mb-8">
-                <ProcessTimelineVisualizer />
+                <PythonVisualIntegration 
+                  activeProcesses={processStats.filter(p => p.status === 'running')} 
+                />
               </div>
-            )}
-            
+            </>
+          )}
+
+          {activeTab === 'fractal' && (
             <div className="max-w-7xl mx-auto mb-8">
               <div className="bg-gray-900 rounded-2xl border border-gray-700 p-8 shadow-lg">
                 <h2 className="text-3xl font-bold text-white mb-6 flex items-center">
-                  <span className="mr-3">⚙️</span>
-                  System Processes
+                  <span className="mr-3">🌀</span>
+                  Fractal Analysis
                 </h2>
                 <div className="text-gray-400 text-lg">
-                  <p className="mb-4">Detailed process monitoring and management tools.</p>
-                  <p>This tab shows system processes, performance metrics, and control interfaces.</p>
+                  <p className="mb-4">Fractal visualization and analysis tools will be implemented here.</p>
+                  <p>This tab will contain fractal pattern recognition and visualization components.</p>
                 </div>
               </div>
             </div>
-          </>
-        )}
+          )}
 
-        {/* Alert Banner */}
-        {alert && (
-          <div className={`fixed top-0 left-0 w-full z-50 py-3 px-6 text-center font-bold text-white transition-all duration-500 ${
-            alert.type === 'pattern' ? 'bg-green-600' : 'bg-red-600'
-          }`}>
-            {alert.message}
-          </div>
-        )}
-        
-        {/* Enhanced Status Indicator */}
-        <div className="fixed bottom-6 left-6 bg-gray-800/90 backdrop-blur-sm rounded-lg px-4 py-3 border border-gray-600 shadow-lg">
-          <div className="flex items-center space-x-4 text-sm">
-            <div className="flex items-center space-x-2">
-              <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-              <span className="text-gray-300">React Active</span>
+          {activeTab === 'talk' && (
+            <div className="max-w-7xl mx-auto mb-8">
+              <TalkToDAWN currentMood={metrics.mood} />
             </div>
-            {updateCount > 0 && (
-              <div className="flex items-center space-x-2">
-                <div className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse"></div>
-                <span className="text-cyan-300 font-mono">{updateCount} updates</span>
+          )}
+
+          {activeTab === 'processes' && (
+            <>
+              {/* Process Timeline Visualizer */}
+              {componentVisibility.ProcessTimelineVisualizer && (
+                <div className="max-w-7xl mx-auto mb-8">
+                  <ProcessTimelineVisualizer />
+                </div>
+              )}
+              
+              <div className="max-w-7xl mx-auto mb-8">
+                <div className="bg-gray-900 rounded-2xl border border-gray-700 p-8 shadow-lg">
+                  <h2 className="text-3xl font-bold text-white mb-6 flex items-center">
+                    <span className="mr-3">⚙️</span>
+                    System Processes
+                  </h2>
+                  <div className="text-gray-400 text-lg">
+                    <p className="mb-4">Detailed process monitoring and management tools.</p>
+                    <p>This tab shows system processes, performance metrics, and control interfaces.</p>
+                  </div>
+                </div>
               </div>
-            )}
-            <div className="flex items-center space-x-2">
-              <div className={`w-2 h-2 rounded-full ${
-                connectionMode === 'tauri' ? 'bg-cyan-400 animate-pulse' :
-                connectionMode === 'websocket' ? 'bg-green-400 animate-pulse' :
-                'bg-red-400'
-              }`}></div>
-              <span className="text-gray-300">{connectionMode}</span>
+            </>
+          )}
+
+          {/* Alert Banner */}
+          {alert && (
+            <div className={`fixed top-0 left-0 w-full z-50 py-3 px-6 text-center font-bold text-white transition-all duration-500 ${
+              alert.type === 'pattern' ? 'bg-green-600' : 'bg-red-600'
+            }`}>
+              {alert.message}
             </div>
-            {processMonitoringEnabled && (
+          )}
+          
+          {/* Enhanced Status Indicator */}
+          <div className="fixed bottom-6 left-6 bg-gray-800/90 backdrop-blur-sm rounded-lg px-4 py-3 border border-gray-600 shadow-lg">
+            <div className="flex items-center space-x-4 text-sm">
+              <div className="flex items-center space-x-2">
+                <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                <span className="text-gray-300">React Active</span>
+              </div>
+              {updateCount > 0 && (
+                <div className="flex items-center space-x-2">
+                  <div className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse"></div>
+                  <span className="text-cyan-300 font-mono">{updateCount} updates</span>
+                </div>
+              )}
               <div className="flex items-center space-x-2">
                 <div className={`w-2 h-2 rounded-full ${
-                  processStats.length > 0 ? 'bg-purple-400 animate-pulse' : 'bg-gray-500'
+                  connectionMode === 'tauri' ? 'bg-cyan-400 animate-pulse' :
+                  connectionMode === 'websocket' ? 'bg-green-400 animate-pulse' :
+                  'bg-red-400'
                 }`}></div>
-                <span className="text-gray-300">🐍 {processStats.length} processes</span>
+                <span className="text-gray-300">{connectionMode}</span>
               </div>
-            )}
+              {processMonitoringEnabled && (
+                <div className="flex items-center space-x-2">
+                  <div className={`w-2 h-2 rounded-full ${
+                    processStats.length > 0 ? 'bg-purple-400 animate-pulse' : 'bg-gray-500'
+                  }`}></div>
+                  <span className="text-gray-300">🐍 {processStats.length} processes</span>
+                </div>
+              )}
+            </div>
           </div>
         </div>
+
+        {/* Chat sidebar */}
+        <div className={`fixed right-0 top-0 h-full w-96 bg-gray-800 shadow-xl transform transition-transform duration-300 ease-in-out z-50 ${
+          showChat ? 'translate-x-0' : 'translate-x-full'
+        }`}>
+          <ChatInterface currentMood={metrics.mood} />
+        </div>
+        
+        {/* Chat toggle button */}
+        <button
+          onClick={() => setShowChat(!showChat)}
+          className={`fixed bottom-6 right-6 w-14 h-14 rounded-full shadow-lg flex items-center justify-center transition-all duration-300 z-40 ${
+            showChat 
+              ? 'bg-purple-600 hover:bg-purple-700 shadow-purple-500/30' 
+              : 'bg-blue-600 hover:bg-blue-700 shadow-blue-500/30'
+          } hover:scale-110 active:scale-95`}
+        >
+          <span className="text-xl">
+            {showChat ? '✕' : '💬'}
+          </span>
+        </button>
+
+
       </div>
-
-      {/* Chat sidebar */}
-      <div className={`fixed right-0 top-0 h-full w-96 bg-gray-800 shadow-xl transform transition-transform duration-300 ease-in-out z-50 ${
-        showChat ? 'translate-x-0' : 'translate-x-full'
-      }`}>
-        <ChatInterface currentMood={metrics.mood} />
-      </div>
-      
-      {/* Chat toggle button */}
-      <button
-        onClick={() => setShowChat(!showChat)}
-        className={`fixed bottom-6 right-6 w-14 h-14 rounded-full shadow-lg flex items-center justify-center transition-all duration-300 z-40 ${
-          showChat 
-            ? 'bg-purple-600 hover:bg-purple-700 shadow-purple-500/30' 
-            : 'bg-blue-600 hover:bg-blue-700 shadow-blue-500/30'
-        } hover:scale-110 active:scale-95`}
-      >
-        <span className="text-xl">
-          {showChat ? '✕' : '💬'}
-        </span>
-      </button>
-
-
-    </div>
+    </>
   )
 }
 

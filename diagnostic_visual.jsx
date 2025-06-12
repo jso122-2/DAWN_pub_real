@@ -12,7 +12,7 @@ const EnhancedLiveDiagnostic = () => {
     anomalies: []
   });
   
-  const [dataStreams] = useState({
+  const [dataStreams, setDataStreams] = useState({
     scup: { 
       frequency: new Array(64).fill(0),
       amplitude: new Array(128).fill(0),
@@ -29,6 +29,32 @@ const EnhancedLiveDiagnostic = () => {
       phase: Math.PI / 2
     }
   });
+  
+  // Update data streams
+  useEffect(() => {
+    const updateInterval = setInterval(() => {
+      // Update frequency data
+      setDataStreams(prev => ({
+        scup: {
+          ...prev.scup,
+          frequency: generateFrequencyData(8, 4),
+          phase: prev.scup.phase + 0.05
+        },
+        entropy: {
+          ...prev.entropy,
+          frequency: generateFrequencyData(12, 5),
+          phase: prev.entropy.phase + 0.05
+        },
+        heat: {
+          ...prev.heat,
+          frequency: generateFrequencyData(6, 3),
+          phase: prev.heat.phase + 0.05
+        }
+      }));
+    }, 100);
+    
+    return () => clearInterval(updateInterval);
+  }, []);
   
   // Generate FFT-like data
   const generateFrequencyData = (baseFreq, harmonics) => {
@@ -207,18 +233,11 @@ const EnhancedLiveDiagnostic = () => {
     ctx.fillText('Phase Correlation', centerX, 30);
   };
   
-  // Animation loop
+  // Animation loop with proper rendering
   useEffect(() => {
+    let animationId;
+    
     const animate = () => {
-      // Update data
-      Object.keys(dataStreams).forEach(stream => {
-        dataStreams[stream].frequency = generateFrequencyData(
-          Math.floor(Math.random() * 10) + 5,
-          Math.floor(Math.random() * 5) + 3
-        );
-        dataStreams[stream].phase += 0.05;
-      });
-      
       // Draw active view
       if (activeView === 'spectrogram' && spectrogramCanvasRef.current) {
         const ctx = spectrogramCanvasRef.current.getContext('2d');
@@ -231,15 +250,19 @@ const EnhancedLiveDiagnostic = () => {
         drawCorrelation(ctx, correlationCanvasRef.current.width, correlationCanvasRef.current.height);
       }
       
-      animationRef.current = requestAnimationFrame(animate);
+      animationId = requestAnimationFrame(animate);
     };
     
-    animate();
+    // Start animation after component mounts
+    const timeoutId = setTimeout(() => {
+      animate();
+    }, 100);
     
     return () => {
-      if (animationRef.current) {
-        cancelAnimationFrame(animationRef.current);
+      if (animationId) {
+        cancelAnimationFrame(animationId);
       }
+      clearTimeout(timeoutId);
     };
   }, [activeView]);
   
@@ -275,7 +298,7 @@ const EnhancedLiveDiagnostic = () => {
   }, []);
   
   return (
-    <div className="bg-gray-900 rounded-lg p-6 border border-gray-700">
+    <div className="dawn-panel cognitive-breathing p-6">
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-xl font-bold text-white flex items-center">
           <span className="w-3 h-3 bg-green-500 rounded-full mr-2 animate-pulse"></span>
@@ -284,30 +307,24 @@ const EnhancedLiveDiagnostic = () => {
         <div className="flex space-x-2">
           <button
             onClick={() => setActiveView('spectrogram')}
-            className={`px-3 py-1 rounded text-sm ${
-              activeView === 'spectrogram' 
-                ? 'bg-blue-600 text-white' 
-                : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+            className={`dawn-button text-sm ${
+              activeView === 'spectrogram' ? 'primary' : ''
             }`}
           >
             Spectrogram
           </button>
           <button
             onClick={() => setActiveView('waterfall')}
-            className={`px-3 py-1 rounded text-sm ${
-              activeView === 'waterfall' 
-                ? 'bg-blue-600 text-white' 
-                : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+            className={`dawn-button text-sm ${
+              activeView === 'waterfall' ? 'primary' : ''
             }`}
           >
             Waterfall
           </button>
           <button
             onClick={() => setActiveView('correlation')}
-            className={`px-3 py-1 rounded text-sm ${
-              activeView === 'correlation' 
-                ? 'bg-blue-600 text-white' 
-                : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+            className={`dawn-button text-sm ${
+              activeView === 'correlation' ? 'primary' : ''
             }`}
           >
             Correlation
@@ -315,36 +332,39 @@ const EnhancedLiveDiagnostic = () => {
         </div>
       </div>
       
-      <div className="relative">
+      <div className="relative dendritic-bg rounded-lg overflow-hidden neural-glow">
         <canvas 
           ref={spectrogramCanvasRef}
           width={800} 
           height={300}
-          className={`w-full rounded bg-gray-950 ${activeView !== 'spectrogram' ? 'hidden' : ''}`}
+          className={`w-full rounded ${activeView !== 'spectrogram' ? 'hidden' : ''}`}
+          style={{ background: 'rgba(10, 15, 27, 0.8)' }}
         />
         <canvas 
           ref={waterfallCanvasRef}
           width={800} 
           height={300}
-          className={`w-full rounded bg-gray-950 ${activeView !== 'waterfall' ? 'hidden' : ''}`}
+          className={`w-full rounded ${activeView !== 'waterfall' ? 'hidden' : ''}`}
+          style={{ background: 'rgba(10, 15, 27, 0.8)' }}
         />
         <canvas 
           ref={correlationCanvasRef}
           width={800} 
           height={300}
-          className={`w-full rounded bg-gray-950 ${activeView !== 'correlation' ? 'hidden' : ''}`}
+          className={`w-full rounded ${activeView !== 'correlation' ? 'hidden' : ''}`}
+          style={{ background: 'rgba(10, 15, 27, 0.8)' }}
         />
       </div>
       
       <div className="mt-4 grid grid-cols-2 gap-4">
-        <div className="bg-gray-800 rounded p-3">
+        <div className="dawn-panel p-3">
           <h4 className="text-sm font-bold text-white mb-2">Pattern Detection</h4>
           <div className="space-y-1 max-h-32 overflow-y-auto">
             {patterns.detected.length === 0 ? (
               <p className="text-xs text-gray-500">Monitoring...</p>
             ) : (
               patterns.detected.map((pattern, idx) => (
-                <div key={idx} className="text-xs">
+                <div key={idx} className="text-xs neural-impulse">
                   <span className="text-green-400">{pattern.type}</span>
                   <span className="text-gray-500 ml-2">{pattern.confidence}%</span>
                   <span className="text-gray-600 float-right">{pattern.timestamp}</span>
@@ -354,7 +374,7 @@ const EnhancedLiveDiagnostic = () => {
           </div>
         </div>
         
-        <div className="bg-gray-800 rounded p-3">
+        <div className="dawn-panel p-3">
           <h4 className="text-sm font-bold text-white mb-2">Anomaly Detection</h4>
           <div className="space-y-1 max-h-32 overflow-y-auto">
             {patterns.anomalies.length === 0 ? (

@@ -1,0 +1,112 @@
+/* Iosevka Term Font Family */
+@font-face {
+  font-family: 'Iosevka Term';
+  src: url('/fonts/iosevka-term-regular.ttc') format('truetype-collection'),
+       url('/fonts/iosevka-term-regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Iosevka Term';
+  src: url('/fonts/iosevka-term-bold.ttc') format('truetype-collection'),
+       url('/fonts/iosevka-term-bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Iosevka Term';
+  src: url('/fonts/iosevka-term-italic.ttc') format('truetype-collection'),
+       url('/fonts/iosevka-term-italic.ttf') format('truetype');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* JetBrains Mono Font Family */
+@font-face {
+  font-family: 'JetBrains Mono';
+  src: url('/fonts/JetBrainsMono-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'JetBrains Mono';
+  src: url('/fonts/JetBrainsMono-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'JetBrains Mono';
+  src: url('/fonts/JetBrainsMono-Italic.ttf') format('truetype');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'JetBrains Mono';
+  src: url('/fonts/JetBrainsMono-Medium.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Fantasque Sans Mono Font Family */
+@font-face {
+  font-family: 'Fantasque Sans Mono';
+  src: url('/fonts/FantasqueSansMono-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Fantasque Sans Mono';
+  src: url('/fonts/FantasqueSansMono-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Fantasque Sans Mono';
+  src: url('/fonts/FantasqueSansMono-Italic.ttf') format('truetype');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* Font feature settings for better rendering */
+.font-dawn {
+  font-variant-ligatures: contextual;
+  font-feature-settings: 
+    "calt" 1,  /* Contextual alternates */
+    "liga" 1,  /* Standard ligatures */
+    "zero" 1,  /* Slashed zero */
+    "ss01" 1,  /* Stylistic set 1 */
+    "ss02" 1;  /* Stylistic set 2 */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* Specific adjustments for each font */
+.font-iosevka {
+  letter-spacing: 0.02em;
+}
+
+.font-jetbrains {
+  letter-spacing: 0;
+}
+
+.font-fantasque {
+  letter-spacing: 0.01em;
+} 

@@ -309,9 +309,13 @@ const EnhancedLiveDiagnostic = ({ scupData, entropyData, heatData, updateInterva
       { a: 'heat', b: 'scup', color: '#f59e0b' }
     ];
     
-    pairs.forEach(pair => {
-      const phaseA = [scup, entropy, heat][pair.a.charCodeAt(0) - 's'.charCodeAt(0)].phase;
-      const phaseB = [scup, entropy, heat][pair.b.charCodeAt(0) - 's'.charCodeAt(0)].phase;
+    pairs.forEach((pair, idx) => {
+      const dataA = pair.a === 'scup' ? scup : pair.a === 'entropy' ? entropy : heat;
+      const dataB = pair.b === 'scup' ? scup : pair.b === 'entropy' ? entropy : heat;
+      
+      // Calculate phase from data (simple sum-based approach)
+      const phaseA = dataA.reduce((sum, val, i) => sum + val * i, 0) / dataA.length;
+      const phaseB = dataB.reduce((sum, val, i) => sum + val * i, 0) / dataB.length;
       const correlation = Math.cos(phaseA - phaseB);
       
       const x = centerX + correlation * radius * 0.8;

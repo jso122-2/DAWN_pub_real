@@ -1,25 +1,32 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { invoke } from '@tauri-apps/api/tauri';
 
+const isTauri = typeof window !== 'undefined' && typeof window.__TAURI_IPC__ === 'function';
+
+function addDebugLog(channel, message, extra) {
+  if (typeof setDebugInfo === 'function') {
+    setDebugInfo(prev => ({
+      ...prev,
+      logs: [
+        ...(prev.logs || []),
+        { channel, message, extra, timestamp: new Date().toISOString() }
+      ].slice(-100)
+    }));
+  } else {
+    // fallback: log to console
+    console.log(`[${channel}]`, message, extra || '');
+  }
+}
+
 const PythonVisualIntegration = ({ activeProcesses }) => {
+  const [showDebugPanel, setShowDebugPanel] = useState(false);
   const [videoStream, setVideoStream] = useState(null);
   const [detectionResults, setDetectionResults] = useState([]);
   const [depthMap, setDepthMap] = useState(null);
   const [pointCloud, setPointCloud] = useState(null);
   const [connectionStatus, setConnectionStatus] = useState('disconnected');
   const [streamUrl, setStreamUrl] = useState('');
-  
-  // Debug state
-  const [debugInfo, setDebugInfo] = useState({
-    backendHealth: null,
-    lastError: null,
-    connectionAttempts: 0,
-    wsEvents: [],
-    httpTests: [],
-    corsStatus: 'unknown',
-    ngrokStatus: 'unknown'
-  });
-  const [showDebugPanel, setShowDebugPanel] = useState(false);
+  const [debugInfo, setDebugInfo] = useState('');
   
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
@@ -38,50 +45,81 @@ const PythonVisualIntegration = ({ activeProcesses }) => {
     }
   }, [activeProcesses]);
 
-  // WebSocket connection for real-time data
+  // Initial connection tests
+  useEffect(() => {
+    testBackendConnection();
+  }, []);
+
+  // WebSocket connection for real-time data with enhanced debugging
   useEffect(() => {
     const connectWebSocket = () => {
       const wsUrl = window.location.hostname === 'localhost'
-        ? 'ws://localhost:8081/cv-stream'
-        : `wss://${window.location.hostname}/cv-stream`;
+        ? 'ws://localhost:8081/socketio/'  // Updated for SocketIO
+        : `wss://${window.location.hostname}/socketio/`;
+
+      addDebugLog('ws', `Attempting WebSocket connection to: ${wsUrl}`);
+      setDebugInfo(prev => ({ 
+        ...prev, 
+        connectionAttempts: prev.connectionAttempts + 1 
+      }));
 
       try {
         wsRef.current = new WebSocket(wsUrl);
         
         wsRef.current.onopen = () => {
           setConnectionStatus('connected');
-          console.log('Connected to Python CV backend');
+          addDebugLog('ws', '✅ WebSocket connected successfully');
         };
 
         wsRef.current.onmessage = (event) => {
+          addDebugLog('ws', '📨 WebSocket message received', { 
+            size: event.data.length,
+            preview: event.data.substring(0, 100) 
+          });
+          
           try {
             const data = JSON.parse(event.data);
             handleIncomingData(data);
           } catch (error) {
-            console.error('Failed to parse WebSocket data:', error);
+            addDebugLog('ws', '❌ Failed to parse WebSocket data', error.message);
           }
         };
 
         wsRef.current.onerror = (error) => {
-          console.error('WebSocket error:', error);
+          addDebugLog('ws', '❌ WebSocket error occurred', error);
           setConnectionStatus('error');
         };
 
-        wsRef.current.onclose = () => {
+        wsRef.current.onclose = (event) => {
+          addDebugLog('ws', `🔌 WebSocket closed`, { 
+            code: event.code, 
+            reason: event.reason,
+            wasClean: event.wasClean 
+          });
           setConnectionStatus('disconnected');
-          // Reconnect after 3 seconds
-          setTimeout(connectWebSocket, 3000);
+          
+          // Reconnect after 5 seconds with attempt limiting
+          setTimeout(() => {
+            if (debugInfo.connectionAttempts < 5) {
+              addDebugLog('ws', '🔄 Attempting to reconnect...');
+              connectWebSocket();
+            } else {
+              addDebugLog('ws', '❌ Max reconnection attempts reached');
+            }
+          }, 5000);
         };
       } catch (error) {
-        console.error('Failed to create WebSocket:', error);
+        addDebugLog('ws', '❌ Failed to create WebSocket', error.message);
         setConnectionStatus('error');
       }
     };
 
-    connectWebSocket();
+    // Delay initial connection to allow backend to start
+    setTimeout(connectWebSocket, 1000);
 
     return () => {
       if (wsRef.current) {
+        addDebugLog('ws', 'Closing WebSocket connection');
         wsRef.current.close();
       }
     };
@@ -171,13 +209,52 @@ const PythonVisualIntegration = ({ activeProcesses }) => {
     }
   };
 
-  // Control Python processes via Tauri
+  // Control Python processes via Tauri with debugging
   const sendCommand = async (command, params = {}) => {
+    addDebugLog('http', `Sending command: ${command}`, params);
+    
+    if (isTauri) {
+      try {
+        const result = await invoke('send_cv_command', { command, params });
+        addDebugLog('http', `✅ Command success: ${command}`, result);
+        return result;
+      } catch (error) {
+        addDebugLog('http', `❌ Command failed: ${command}`, error.message);
+        throw error;
+      }
+    } else {
+      // fallback: log to console
+      console.log(`[${command}]`, params);
+      return null;
+    }
+  };
+
+  // Debug panel helpers
+  const runDiagnostics = async () => {
+    addDebugLog('http', '🔍 Running full diagnostics...');
+    await testBackendConnection();
+    await testNgrokTunnels();
+  };
+
+  const clearDebugLogs = () => {
+    setDebugInfo(prev => ({
+      ...prev,
+      wsEvents: [],
+      httpTests: [],
+      lastError: null
+    }));
+  };
+
+  // Define testBackendConnection
+  const testBackendConnection = async () => {
     try {
-      const result = await invoke('send_cv_command', { command, params });
-      console.log('Command result:', result);
+      const response = await fetch('http://localhost:8081/health');
+      const data = await response.json();
+      console.log('Backend health:', data);
+      setDebugInfo('Backend connected');
     } catch (error) {
-      console.error('Failed to send command:', error);
+      console.error('Backend connection error:', error);
+      setDebugInfo('Backend disconnected');
     }
   };
 
@@ -199,6 +276,16 @@ const PythonVisualIntegration = ({ activeProcesses }) => {
                connectionStatus === 'error' ? 'Connection Error' : 'Connecting...'}
             </span>
           </div>
+          
+          {/* Debug Toggle */}
+          <button
+            onClick={() => setShowDebugPanel(!showDebugPanel)}
+            className={`px-3 py-1 rounded text-xs font-mono ${
+              showDebugPanel ? 'bg-yellow-600 text-white' : 'bg-gray-700 text-gray-300'
+            } hover:bg-yellow-500 transition-colors`}
+          >
+            DEBUG
+          </button>
         </div>
       </div>
 
@@ -274,6 +361,135 @@ const PythonVisualIntegration = ({ activeProcesses }) => {
           Capture Frame
         </button>
       </div>
+
+      {/* Debug Panel */}
+      {showDebugPanel && (
+        <div className="mt-4 bg-gray-800 rounded-lg p-4 border border-yellow-500">
+          <div className="flex items-center justify-between mb-4">
+            <h4 className="text-sm font-bold text-yellow-400 font-mono">🔍 CV Debug Panel</h4>
+            <div className="flex space-x-2">
+              <button
+                onClick={runDiagnostics}
+                className="px-2 py-1 bg-blue-600 text-white rounded text-xs hover:bg-blue-700"
+              >
+                Run Diagnostics
+              </button>
+              <button
+                onClick={clearDebugLogs}
+                className="px-2 py-1 bg-red-600 text-white rounded text-xs hover:bg-red-700"
+              >
+                Clear Logs
+              </button>
+            </div>
+          </div>
+
+          {/* Connection Status */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+            <div className="bg-gray-900 rounded p-3">
+              <h5 className="text-xs font-bold text-white mb-2">Backend Health</h5>
+              <div className="text-xs text-gray-300">
+                {debugInfo.backendHealth ? (
+                  <div>
+                    <div className="text-green-400">✅ Status: {debugInfo.backendHealth.status}</div>
+                    <div>Camera: {debugInfo.backendHealth.camera_available ? '✅' : '❌'}</div>
+                    <div>FPS: {debugInfo.backendHealth.fps || 'N/A'}</div>
+                  </div>
+                ) : (
+                  <div className="text-red-400">❌ No health data</div>
+                )}
+              </div>
+            </div>
+
+            <div className="bg-gray-900 rounded p-3">
+              <h5 className="text-xs font-bold text-white mb-2">Network Status</h5>
+              <div className="text-xs text-gray-300">
+                <div>CORS: <span className={`${
+                  debugInfo.corsStatus === 'working' ? 'text-green-400' : 
+                  debugInfo.corsStatus === 'blocked' ? 'text-red-400' : 'text-yellow-400'
+                }`}>{debugInfo.corsStatus}</span></div>
+                <div>ngrok: <span className={`${
+                  debugInfo.ngrokStatus === 'active' ? 'text-green-400' : 'text-red-400'
+                }`}>{debugInfo.ngrokStatus}</span></div>
+                <div>WS Attempts: {debugInfo.connectionAttempts}</div>
+              </div>
+            </div>
+
+            <div className="bg-gray-900 rounded p-3">
+              <h5 className="text-xs font-bold text-white mb-2">URLs</h5>
+              <div className="text-xs text-gray-300 font-mono">
+                <div>Stream: <span className="text-blue-400">{streamUrl}</span></div>
+                <div>Host: {window.location.hostname}</div>
+                <div>Protocol: {window.location.protocol}</div>
+              </div>
+            </div>
+          </div>
+
+          {/* Error Display */}
+          {debugInfo.lastError && (
+            <div className="mb-4 p-3 bg-red-900 border border-red-500 rounded">
+              <h5 className="text-xs font-bold text-red-400 mb-1">Last Error:</h5>
+              <div className="text-xs text-red-300 font-mono">{debugInfo.lastError}</div>
+            </div>
+          )}
+
+          {/* Debug Logs */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* HTTP Tests */}
+            <div className="bg-gray-900 rounded p-3">
+              <h5 className="text-xs font-bold text-white mb-2">HTTP Tests ({debugInfo.httpTests.length})</h5>
+              <div className="max-h-32 overflow-y-auto text-xs font-mono">
+                {debugInfo.httpTests.slice(-5).map((log, idx) => (
+                  <div key={idx} className="mb-1">
+                    <span className="text-gray-500">{log.timestamp}</span>
+                    <span className={`ml-2 ${
+                      log.message.includes('✅') ? 'text-green-400' : 
+                      log.message.includes('❌') ? 'text-red-400' : 'text-yellow-400'
+                    }`}>{log.message}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* WebSocket Events */}
+            <div className="bg-gray-900 rounded p-3">
+              <h5 className="text-xs font-bold text-white mb-2">WebSocket Events ({debugInfo.wsEvents.length})</h5>
+              <div className="max-h-32 overflow-y-auto text-xs font-mono">
+                {debugInfo.wsEvents.slice(-5).map((log, idx) => (
+                  <div key={idx} className="mb-1">
+                    <span className="text-gray-500">{log.timestamp}</span>
+                    <span className={`ml-2 ${
+                      log.message.includes('✅') ? 'text-green-400' : 
+                      log.message.includes('❌') ? 'text-red-400' : 'text-blue-400'
+                    }`}>{log.message}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Quick Actions */}
+          <div className="mt-4 flex flex-wrap gap-2">
+            <button
+              onClick={() => window.open('http://localhost:4040', '_blank')}
+              className="px-2 py-1 bg-purple-600 text-white rounded text-xs hover:bg-purple-700"
+            >
+              Open ngrok Dashboard
+            </button>
+            <button
+              onClick={() => window.open('http://localhost:8081/health', '_blank')}
+              className="px-2 py-1 bg-green-600 text-white rounded text-xs hover:bg-green-700"
+            >
+              Test Backend Health
+            </button>
+            <button
+              onClick={() => console.log('Debug Info:', debugInfo)}
+              className="px-2 py-1 bg-gray-600 text-white rounded text-xs hover:bg-gray-700"
+            >
+              Log Debug to Console
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Status Information */}
       <div className="mt-4 grid grid-cols-3 gap-4 text-xs">

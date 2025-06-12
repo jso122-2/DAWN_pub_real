@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react'
 import { invoke } from '@tauri-apps/api/tauri'
 import { listen } from '@tauri-apps/api/event'
 
+const isTauri = typeof window !== 'undefined' && typeof window.__TAURI_IPC__ === 'function';
+
 export default function TickControl({ onTimingChange, className = "" }) {
   const [tickStatus, setTickStatus] = useState({
     tick_number: 0,
@@ -24,10 +26,12 @@ export default function TickControl({ onTimingChange, className = "" }) {
     const fetchTickStatus = async () => {
       try {
         console.log('🔄 Fetching initial tick status...')
-        const status = await invoke('get_tick_status')
-        setTickStatus(status)
-        setIntervalInput(status.interval_ms)
-        console.log('✅ Tick status loaded:', status)
+        if (isTauri) {
+          const status = await invoke('get_tick_status')
+          setTickStatus(status)
+          setIntervalInput(status.interval_ms)
+          console.log('✅ Tick status loaded:', status)
+        }
       } catch (err) {
         console.error('❌ Failed to fetch tick status:', err)
         setError(`Failed to load tick status: ${err}`)
@@ -42,28 +46,32 @@ export default function TickControl({ onTimingChange, className = "" }) {
     const setupListeners = async () => {
       try {
         // Listen for tick updates from WebSocket
-        const unlistenTick = await listen('tick-update', (event) => {
-          console.log('📨 Tick update received:', event.payload)
-          if (event.payload && event.payload.tick_number !== undefined) {
-            setTickStatus(prev => ({
-              ...prev,
-              tick_number: event.payload.tick_number,
-              last_tick_timestamp: event.payload.timestamp
-            }))
-            setLastUpdate(Date.now())
-          }
-        })
+        if (isTauri) {
+          const unlistenTick = await listen('tick-update', (event) => {
+            console.log('📨 Tick update received:', event.payload)
+            if (event.payload && event.payload.tick_number !== undefined) {
+              setTickStatus(prev => ({
+                ...prev,
+                tick_number: event.payload.tick_number,
+                last_tick_timestamp: event.payload.timestamp
+              }))
+              setLastUpdate(Date.now())
+            }
+          })
+        }
 
         // Listen for metrics updates (fallback)
-        const unlistenMetrics = await listen('metrics-update', (event) => {
-          if (event.payload && event.payload.tick_count !== undefined) {
-            setTickStatus(prev => ({
-              ...prev,
-              tick_number: event.payload.tick_count
-            }))
-            setLastUpdate(Date.now())
-          }
-        })
+        if (isTauri) {
+          const unlistenMetrics = await listen('metrics-update', (event) => {
+            if (event.payload && event.payload.tick_count !== undefined) {
+              setTickStatus(prev => ({
+                ...prev,
+                tick_number: event.payload.tick_count
+              }))
+              setLastUpdate(Date.now())
+            }
+          })
+        }
 
         return [unlistenTick, unlistenMetrics]
       } catch (err) {
@@ -81,8 +89,10 @@ export default function TickControl({ onTimingChange, className = "" }) {
     // Periodic status refresh
     const statusInterval = setInterval(async () => {
       try {
-        const status = await invoke('get_tick_status')
-        setTickStatus(status)
+        if (isTauri) {
+          const status = await invoke('get_tick_status')
+          setTickStatus(status)
+        }
       } catch (err) {
         console.warn('⚠️ Failed to refresh tick status:', err)
       }
@@ -97,7 +107,9 @@ export default function TickControl({ onTimingChange, className = "" }) {
     setError(null)
     try {
       console.log('🚀 Starting tick engine...')
-      await invoke('start_tick_engine')
+      if (isTauri) {
+        await invoke('start_tick_engine')
+      }
       const status = await invoke('get_tick_status')
       setTickStatus(status)
       console.log('✅ Tick engine started')
@@ -114,7 +126,9 @@ export default function TickControl({ onTimingChange, className = "" }) {
     setError(null)
     try {
       console.log('🛑 Stopping tick engine...')
-      await invoke('stop_tick_engine')
+      if (isTauri) {
+        await invoke('stop_tick_engine')
+      }
       const status = await invoke('get_tick_status')
       setTickStatus(status)
       console.log('✅ Tick engine stopped')
@@ -131,7 +145,9 @@ export default function TickControl({ onTimingChange, className = "" }) {
     setError(null)
     try {
       console.log('⏸️ Pausing tick engine...')
-      await invoke('pause_tick_engine')
+      if (isTauri) {
+        await invoke('pause_tick_engine')
+      }
       const status = await invoke('get_tick_status')
       setTickStatus(status)
       console.log('✅ Tick engine paused')
@@ -148,7 +164,9 @@ export default function TickControl({ onTimingChange, className = "" }) {
     setError(null)
     try {
       console.log('▶️ Resuming tick engine...')
-      await invoke('resume_tick_engine')
+      if (isTauri) {
+        await invoke('resume_tick_engine')
+      }
       const status = await invoke('get_tick_status')
       setTickStatus(status)
       console.log('✅ Tick engine resumed')
@@ -165,7 +183,9 @@ export default function TickControl({ onTimingChange, className = "" }) {
     setError(null)
     try {
       console.log('👆 Executing single tick...')
-      await invoke('execute_single_tick')
+      if (isTauri) {
+        await invoke('execute_single_tick')
+      }
       const status = await invoke('get_tick_status')
       setTickStatus(status)
       console.log('✅ Single tick executed')
@@ -182,7 +202,9 @@ export default function TickControl({ onTimingChange, className = "" }) {
     setError(null)
     try {
       console.log(`⏱️ Setting tick timing to ${intervalInput}ms...`)
-      await invoke('set_tick_timing', { intervalMs: parseInt(intervalInput) })
+      if (isTauri) {
+        await invoke('set_tick_timing', { intervalMs: parseInt(intervalInput) })
+      }
       const status = await invoke('get_tick_status')
       setTickStatus(status)
       if (onTimingChange) {
@@ -412,7 +434,7 @@ export default function TickControl({ onTimingChange, className = "" }) {
         </div>
       )}
 
-      <style jsx>{`
+      <style>{`
         .slider::-webkit-slider-thumb {
           appearance: none;
           height: 20px;

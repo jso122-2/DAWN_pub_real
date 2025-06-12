@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
+import OrganicPanelSystem from './OrganicPanelSystem';
 
 // Hook for WebSocket connection to consciousness data
 const useConsciousnessData = () => {
@@ -585,66 +586,157 @@ const HealthOrb = ({ data }) => {
   );
 };
 
+// Hologram shader text effect
+function HologramShaderText({ children, className = '', ...props }) {
+  return (
+    <span
+      className={`text-glow font-dawn drop-shadow-[0_0_8px_#00ffff] drop-shadow-[0_0_16px_#ff00ff] drop-shadow-[0_0_32px_#ffaa00] ${className}`}
+      style={{
+        filter: 'blur(0.5px) contrast(1.2)',
+        letterSpacing: '0.02em',
+        WebkitTextStroke: '0.5px #00ffff',
+      }}
+      {...props}
+    >
+      {children}
+    </span>
+  );
+}
+
+// Animated gradient mesh background
+function AnimatedGradientMesh() {
+  const canvasRef = useRef(null);
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    let running = true;
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+    canvas.width = w;
+    canvas.height = h;
+    // Mesh points
+    const points = Array.from({ length: 8 }, () => ({
+      x: Math.random() * w,
+      y: Math.random() * h,
+      dx: (Math.random() - 0.5) * 0.5,
+      dy: (Math.random() - 0.5) * 0.5,
+      color: [
+        ['#00ffff', '#ff00ff', '#ffaa00'][Math.floor(Math.random() * 3)],
+        Math.random() * 0.7 + 0.3
+      ]
+    }));
+    function draw() {
+      ctx.clearRect(0, 0, w, h);
+      for (let i = 0; i < points.length; i++) {
+        const p = points[i];
+        // Animate
+        p.x += p.dx;
+        p.y += p.dy;
+        if (p.x < 0 || p.x > w) p.dx *= -1;
+        if (p.y < 0 || p.y > h) p.dy *= -1;
+        // Draw radial gradient
+        const grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, w * 0.5);
+        grad.addColorStop(0, `${p.color[0]}${Math.floor(p.color[1]*255).toString(16)}`);
+        grad.addColorStop(1, 'transparent');
+        ctx.globalAlpha = 0.5;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, w * 0.5, 0, Math.PI * 2);
+        ctx.fillStyle = grad;
+        ctx.fill();
+      }
+      if (running) requestAnimationFrame(draw);
+    }
+    draw();
+    return () => { running = false; };
+  }, []);
+  return <canvas ref={canvasRef} style={{ position: 'fixed', left: 0, top: 0, width: '100vw', height: '100vh', zIndex: 0, pointerEvents: 'none' }} />;
+}
+
+// Blur layers for depth
+function BlurLayers() {
+  return (
+    <>
+      <div style={{ position: 'fixed', left: 0, top: 0, width: '100vw', height: '100vh', zIndex: 2, pointerEvents: 'none', backdropFilter: 'blur(8px) brightness(1.1)', opacity: 0.12 }} />
+      <div style={{ position: 'fixed', left: 0, top: 0, width: '100vw', height: '100vh', zIndex: 3, pointerEvents: 'none', backdropFilter: 'blur(24px) brightness(1.2)', opacity: 0.08 }} />
+    </>
+  );
+}
+
 // Main Central Visualization Component
 const CentralVisualization = () => {
   const { data, connected } = useConsciousnessData();
+  const [organicMode, setOrganicMode] = useState(false);
 
   return (
-    <div className="relative h-full bg-gray-800 rounded-lg p-4 overflow-hidden">
-      {/* Connection Status Indicator */}
-      <div className="absolute top-2 right-2 z-10">
-        <div className={`w-3 h-3 rounded-full ${connected ? 'bg-green-500' : 'bg-red-500'}`}>
-          {connected && (
-            <div className="w-3 h-3 rounded-full bg-green-500 animate-ping"></div>
+    <div className="relative h-full w-full min-h-screen min-w-screen overflow-hidden" style={{ background: 'transparent', fontFamily: 'dawn, monospace' }}>
+      {/* Animated mesh background */}
+      <AnimatedGradientMesh />
+      {/* Blur layers for depth */}
+      <BlurLayers />
+      {/* Scanline and static overlays */}
+      <div className="scanlines" />
+      <div className="static-noise" />
+      <button
+        className="absolute top-2 left-2 z-20 px-4 py-2 rounded-lg font-bold text-white bg-gradient-to-r from-dawn-cyan to-dawn-magenta shadow-dawn-glow hover:scale-105 transition-all text-glow font-dawn"
+        onClick={() => setOrganicMode(m => !m)}
+      >
+        {organicMode ? 'Switch to Classic' : 'Switch to Organic'}
+      </button>
+      {organicMode ? (
+        <OrganicPanelSystem
+          renderPanel={panel => (
+            <HologramShaderText>{panel.label}</HologramShaderText>
           )}
-        </div>
-      </div>
-
-      {/* Background Grid */}
-      <div className="absolute inset-0 opacity-10">
-        <svg className="w-full h-full">
-          <defs>
-            <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
-              <path d="M 20 0 L 0 0 0 20" fill="none" stroke="currentColor" strokeWidth="1"/>
-            </pattern>
-          </defs>
-          <rect width="100%" height="100%" fill="url(#grid)" />
-        </svg>
-      </div>
-
-      {/* Visualization Components */}
-      <MoodGradientDisplay data={data} />
-      <TickRhythmOverlay data={data} />
-      <PatternWeb data={data} />
-      <HealthOrb data={data} />
-
-      {/* Status Panel */}
-      <div className="absolute bottom-4 right-4 bg-gray-900 rounded-lg p-3 min-w-48">
-        <h3 className="text-white text-sm font-semibold mb-2">DAWN Status</h3>
-        <div className="space-y-1 text-xs">
-          <div className="flex justify-between">
-            <span className="text-gray-400">Emotion:</span>
-            <span className="text-white">{data.emotion}</span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-gray-400">Intensity:</span>
-            <span className="text-white">{(data.intensity * 100).toFixed(0)}%</span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-gray-400">Tick Rate:</span>
-            <span className="text-white">{data.tickRate.toFixed(2)}x</span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-gray-400">Patterns:</span>
-            <span className="text-white">{data.patterns.length}</span>
-          </div>
-          {data.anomalies.length > 0 && (
-            <div className="mt-2 p-2 bg-red-900 rounded text-red-200 text-xs">
-              {data.anomalies.length} anomal{data.anomalies.length === 1 ? 'y' : 'ies'} detected
+        />
+      ) : (
+        <React.Fragment>
+          {/* Connection Status Indicator */}
+          <div className="absolute top-2 right-2 z-10">
+            <div className={`w-3 h-3 rounded-full ${connected ? 'bg-dawn-cyan' : 'bg-dawn-amber'} shadow-dawn-glow`}>
+              {connected && (
+                <div className="w-3 h-3 rounded-full bg-dawn-cyan animate-ping"></div>
+              )}
             </div>
-          )}
-        </div>
-      </div>
+          </div>
+
+          {/* Visualization Components */}
+          <div className="absolute inset-0 pointer-events-none">
+            <MoodGradientDisplay data={data} />
+            <TickRhythmOverlay data={data} />
+            <PatternWeb data={data} />
+            <HealthOrb data={data} />
+          </div>
+
+          {/* Status Panel */}
+          <div className="absolute bottom-4 right-4 bg-[#0a0a0aee] rounded-lg p-3 min-w-48 shadow-dawn-glow border border-dawn-cyan/30">
+            <h3 className="text-dawn-cyan text-sm font-semibold mb-2 text-glow font-dawn">DAWN Status</h3>
+            <div className="space-y-1 text-xs">
+              <div className="flex justify-between">
+                <span className="text-dawn-magenta">Emotion:</span>
+                <HologramShaderText>{data.emotion}</HologramShaderText>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-dawn-magenta">Intensity:</span>
+                <HologramShaderText>{(data.intensity * 100).toFixed(0)}%</HologramShaderText>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-dawn-magenta">Tick Rate:</span>
+                <HologramShaderText>{data.tickRate.toFixed(2)}x</HologramShaderText>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-dawn-magenta">Patterns:</span>
+                <HologramShaderText>{data.patterns.length}</HologramShaderText>
+              </div>
+              {data.anomalies.length > 0 && (
+                <div className="mt-2 p-2 bg-dawn-amber/20 rounded text-dawn-amber text-xs text-glow font-dawn shadow-holo-glow">
+                  {data.anomalies.length} anomal{data.anomalies.length === 1 ? 'y' : 'ies'} detected
+                </div>
+              )}
+            </div>
+          </div>
+        </React.Fragment>
+      )}
     </div>
   );
 };
