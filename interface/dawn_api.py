@@ -34,7 +34,7 @@ from core.state_machine import create_state_machine
 from core.fractal_emotions import create_fractal_emotion_system
 from core.memory_manager import get_memory_manager
 from core.mood_gradient import create_mood_gradient_plotter
-from core.conciousness_tracer import ConsciousnessTracer
+from core.consciousness_tracer import ConsciousnessTracer
 # removed import - using create_spontaneity_system from cognitive.spontaneity instead
 from bloom.bloom_core.rebloom_router import route_rebloom, seal_bloom, is_rebloom_unstable
 

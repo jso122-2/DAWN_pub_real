@@ -1,5 +1,3 @@
-// DAWN Fractal Brain Visualization System
-// Real-time recursive cognitive architecture renderer
 
 class DAWNVisualCortex {
     constructor(canvas, config = {}) {

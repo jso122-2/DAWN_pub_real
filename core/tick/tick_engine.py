@@ -15,6 +15,7 @@ import psutil
 import yaml
 import threading
 from pathlib import Path
+import random
 
 # Configure logging
 logging.basicConfig(
@@ -102,6 +103,14 @@ class TickEngine:
         self._subsystems_lock = threading.Lock()
         
         logger.info("Initialized TickEngine")
+        
+        try:
+            from visual.timeline import event_collector
+            _timeline_event = getattr(event_collector, '_timeline_event', None)
+            _queue_timeline_event = getattr(event_collector, '_queue_timeline_event', None)
+        except ImportError:
+            _timeline_event = None
+            _queue_timeline_event = None
     
     def _load_config(self) -> dict:
         """Load or create default configuration."""
@@ -289,6 +298,50 @@ class TickEngine:
         
         # Update thermal state
         await self._update_thermal_state(delta)
+        
+        # --- TIMELINE: Emit pulse event for each tick ---
+        if _timeline_event and _queue_timeline_event:
+            try:
+                pattern = random.choice(['α', 'β', 'γ', 'θ', 'δ'])
+                pulse_evt = _timeline_event('pulse', pattern, {'tick': self._state.tick_count, 'pattern': pattern})
+                _queue_timeline_event(pulse_evt)
+            except Exception:
+                pass
+        
+        # --- TIMELINE: Performance monitoring and flux event ---
+        tick_duration = time.time() - start_time
+        queue_depth = len(self._state.event_queue)
+        max_queue = self._state.event_queue.maxlen or 1000
+        cognitive_load = min(100, int((queue_depth / max_queue) * 100))
+        try:
+            cpu = self._state.performance_metrics.get('cpu_usage', 0.0)
+            mem = self._state.performance_metrics.get('memory_usage', 0.0)
+        except Exception:
+            cpu = 0.0
+            mem = 0.0
+        if _timeline_event and _queue_timeline_event:
+            try:
+                flux_evt = _timeline_event('flux', f'{cognitive_load}%', {
+                    'tick_duration_ms': int(tick_duration * 1000),
+                    'queue_depth': queue_depth,
+                    'cognitive_load': cognitive_load,
+                    'cpu': cpu,
+                    'mem': mem
+                })
+                _queue_timeline_event(flux_evt)
+            except Exception:
+                pass
+        
+        # --- TIMELINE: Fault event for failures ---
+        if self._state.error_count > 0 and _timeline_event and _queue_timeline_event:
+            try:
+                fault_evt = _timeline_event('fault', 'TICK_ERROR', {
+                    'error_count': self._state.error_count,
+                    'tick': self._state.tick_count
+                })
+                _queue_timeline_event(fault_evt)
+            except Exception:
+                pass
         
         # Emit tick event
         await self._emit_event("tick", {

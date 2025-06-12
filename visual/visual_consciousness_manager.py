@@ -161,6 +161,15 @@ class VisualConsciousnessManager:
         
         # === LOW PRIORITY (Detailed Analysis) ===
         self.register_process(VisualProcess(
+            name="neural_timeline",
+            module_path="visual.timeline.timeline_server",
+            priority=VisualPriority.LOW,
+            mode=VisualMode.PERIODIC,
+            target_fps=1.0,
+            data_requirements=[]
+        ))
+        
+        self.register_process(VisualProcess(
             name="synthesis_lineage_animator",
             module_path="visual.synthesis_lineage_animator",
             priority=VisualPriority.LOW,

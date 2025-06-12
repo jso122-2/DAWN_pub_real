@@ -18,6 +18,7 @@ import traceback
 import hashlib
 import numpy as np
 from bloom.bloom_core.rebloom_router import route_rebloom, seal_bloom, is_rebloom_unstable
+from core.event_bus import event_bus
 
 # Trace event types
 class TraceEventType(Enum):
@@ -104,7 +105,8 @@ class ConsciousnessTracer:
                  buffer_size: int = 10000,
                  persist_interval: int = 60,
                  trace_dir: Optional[Path] = None,
-                 level: TraceLevel = TraceLevel.INFO):
+                 level: TraceLevel = TraceLevel.INFO,
+                 timeline_events_enabled: bool = False):
         """
         Initialize the consciousness tracer
         
@@ -113,11 +115,13 @@ class ConsciousnessTracer:
             persist_interval: Seconds between automatic persistence
             trace_dir: Directory for trace files
             level: Minimum trace level to record
+            timeline_events_enabled: Whether to enable timeline event emission
         """
         self.buffer_size = buffer_size
         self.persist_interval = persist_interval
         self.trace_dir = trace_dir or Path("logs/consciousness_traces")
         self.level = level
+        self.timeline_events_enabled = timeline_events_enabled
         
         # Event buffer
         self.events = deque(maxlen=buffer_size)
@@ -281,6 +285,23 @@ class ConsciousnessTracer:
         
         self.state_history.append(self.current_state)
         
+        # Timeline event emission
+        if self.timeline_events_enabled:
+            event = {
+                'id': correlation_id,
+                'type': 'mode_shift',
+                'timestamp': int(time.time() * 1000),
+                'label': to_state.upper(),
+                'duration': 100,
+                'data': {
+                    'from': from_state,
+                    'to': to_state,
+                    'trigger': trigger,
+                    'coherence': dimensions.get('coherence', 0.0)
+                }
+            }
+            event_bus.emit('timeline_event', event)
+        
         return correlation_id
     
     def trace_dimension_update(self,
@@ -310,6 +331,22 @@ class ConsciousnessTracer:
         # Update metrics
         self.metrics["dimensions"][dimension] = new_value
         
+        # Timeline event emission for flux
+        if self.timeline_events_enabled and dimension == 'neural_load':
+            event = {
+                'id': f'flux_{int(time.time() * 1000)}',
+                'type': 'flux',
+                'timestamp': int(time.time() * 1000),
+                'label': f'{int(new_value)}%',
+                'duration': 100,
+                'data': {
+                    'channel': dimension,
+                    'intensity': int(new_value),
+                    'coherence': self.current_state.coherence if self.current_state else 0.0
+                }
+            }
+            event_bus.emit('timeline_event', event)
+        
         # Check for anomalies
         if dimension in self._anomaly_thresholds:
             threshold = self._anomaly_thresholds[dimension]
@@ -326,6 +363,24 @@ class ConsciousnessTracer:
                     level=TraceLevel.WARNING,
                     tags={"anomaly", dimension}
                 )
+        
+        # Fault event emission on anomaly
+        if self.timeline_events_enabled and dimension in self._anomaly_thresholds:
+            threshold = self._anomaly_thresholds[dimension]
+            if abs(percent_change) > threshold:
+                event = {
+                    'id': f'fault_{int(time.time() * 1000)}',
+                    'type': 'fault',
+                    'timestamp': int(time.time() * 1000),
+                    'label': 'OVERFLOW' if percent_change > 0 else 'FRAGMENT',
+                    'duration': 100,
+                    'data': {
+                        'severity': 'high',
+                        'recovery': 1000,
+                        'coherence': self.current_state.coherence if self.current_state else 0.0
+                    }
+                }
+                event_bus.emit('timeline_event', event)
     
     def trace_pattern(self,
                      pattern_name: str,
@@ -350,6 +405,23 @@ class ConsciousnessTracer:
         
         if self.current_state:
             self.current_state.active_patterns.append(pattern_name)
+        
+        # Timeline event emission for pulse
+        if self.timeline_events_enabled:
+            event = {
+                'id': f'pulse_{int(time.time() * 1000)}',
+                'type': 'pulse',
+                'timestamp': int(time.time() * 1000),
+                'label': pattern_name,
+                'duration': 100,
+                'data': {
+                    'pattern': pattern_name,
+                    'frequency': data.get('frequency', 0.0) if data else 0.0,
+                    'intensity': data.get('intensity', 0.0) if data else 0.0,
+                    'coherence': self.current_state.coherence if self.current_state else 0.0
+                }
+            }
+            event_bus.emit('timeline_event', event)
     
     def complete_transition(self, success: bool = True, error: Optional[str] = None) -> None:
         """Complete the active state transition"""

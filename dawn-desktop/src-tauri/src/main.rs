@@ -1,4 +1,3 @@
-
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(
     all(not(debug_assertions), target_os = "windows"),
@@ -51,6 +50,8 @@ use futures_util::StreamExt;
 use tokio_tungstenite::{connect_async, tungstenite::protocol::Message};
 use std::time::Duration;
 use chrono;
+use std::process::{Command, Child};
+use std::collections::HashMap;
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 struct Metrics {
@@ -284,6 +285,7 @@ struct AppState {
     http_client: reqwest::Client,
     metrics_sender: broadcast::Sender<Metrics>,
     websocket_connected: Arc<Mutex<bool>>,
+    python_processes: Arc<Mutex<HashMap<String, u32>>>, // script name -> PID
 }
 
 const PYTHON_API_BASE: &str = "http://127.0.0.1:8000";
@@ -306,6 +308,7 @@ impl AppState {
             http_client,
             metrics_sender,
             websocket_connected: Arc::new(Mutex::new(false)),
+            python_processes: Arc::new(Mutex::new(HashMap::new())),
         }
     }
 }
@@ -1522,6 +1525,383 @@ async fn inject_consciousness_pattern(
     Ok(format!("Successfully injected {} pattern with strength {:.3}", pattern_type, strength))
 }
 
+// ========== PYTHON PROCESS CONTROL COMMANDS ==========
+
+#[tauri::command]
+async fn start_python_process(
+    state: State<'_, AppState>,
+    script: String,
+    params: serde_json::Value,
+    modules: Vec<serde_json::Value>
+) -> Result<String, String> {
+    log::info!("🐍 Starting Python process: {}", script);
+    
+    // Determine Python executable based on platform
+    let python_path = if cfg!(target_os = "windows") {
+        "python"
+    } else {
+        "python3"
+    };
+    
+    let script_path = format!("./computer_vision/{}", script);
+    
+    // Convert params to command line arguments
+    let args = serde_json::to_string(&params).unwrap_or_default();
+    
+    // Build command with arguments
+    let mut cmd = Command::new(python_path);
+    cmd.arg(&script_path);
+    
+    if !args.is_empty() && args != "null" {
+        cmd.arg("--params").arg(args);
+    }
+    
+    // Add modules if provided
+    if !modules.is_empty() {
+        let modules_json = serde_json::to_string(&modules).unwrap_or_default();
+        cmd.arg("--modules").arg(modules_json);
+    }
+    
+    // Spawn the process
+    match cmd.spawn() {
+        Ok(child) => {
+            let pid = child.id();
+            
+            // Store the PID in our process tracker
+            {
+                let mut processes = state.python_processes.lock().unwrap();
+                processes.insert(script.clone(), pid);
+            }
+            
+            log::info!("✅ Started Python process {} with PID: {}", script, pid);
+            Ok(format!("Started {} with PID: {}", script, pid))
+        }
+        Err(e) => {
+            log::error!("❌ Failed to start Python process {}: {}", script, e);
+            Err(format!("Failed to start {}: {}", script, e))
+        }
+    }
+}
+
+#[tauri::command]
+async fn stop_python_process(
+    state: State<'_, AppState>,
+    script: String
+) -> Result<String, String> {
+    log::info!("🛑 Stopping Python process: {}", script);
+    
+    // Get the PID from our tracker
+    let pid = {
+        let mut processes = state.python_processes.lock().unwrap();
+        processes.remove(&script)
+    };
+    
+    match pid {
+        Some(process_id) => {
+            // Try to kill the process
+            let result = if cfg!(target_os = "windows") {
+                // Windows: use taskkill
+                Command::new("taskkill")
+                    .args(["/PID", &process_id.to_string(), "/F"])
+                    .output()
+            } else {
+                // Unix-like: use kill
+                Command::new("kill")
+                    .args(["-TERM", &process_id.to_string()])
+                    .output()
+            };
+            
+            match result {
+                Ok(output) => {
+                    if output.status.success() {
+                        log::info!("✅ Successfully stopped Python process {} (PID: {})", script, process_id);
+                        Ok(format!("Stopped {} (PID: {})", script, process_id))
+                    } else {
+                        let stderr = String::from_utf8_lossy(&output.stderr);
+                        log::warn!("⚠️ Kill command failed for {}: {}", script, stderr);
+                        // Process might already be dead, consider it successful
+                        Ok(format!("Process {} may already be stopped", script))
+                    }
+                }
+                Err(e) => {
+                    log::error!("❌ Failed to execute kill command for {}: {}", script, e);
+                    Err(format!("Failed to stop {}: {}", script, e))
+                }
+            }
+        }
+        None => {
+            log::warn!("⚠️ No PID found for Python process: {}", script);
+            Err(format!("No running process found for {}", script))
+        }
+    }
+}
+
+#[tauri::command]
+async fn get_python_processes(
+    state: State<'_, AppState>
+) -> Result<HashMap<String, u32>, String> {
+    log::debug!("📋 Getting list of Python processes");
+    
+    let processes = state.python_processes.lock().unwrap();
+    Ok(processes.clone())
+}
+
+#[tauri::command]
+async fn check_python_process_status(
+    state: State<'_, AppState>,
+    script: String
+) -> Result<bool, String> {
+    log::debug!("🔍 Checking status of Python process: {}", script);
+    
+    let processes = state.python_processes.lock().unwrap();
+    
+    if let Some(&pid) = processes.get(&script) {
+        // Check if process is still running
+        let is_running = if cfg!(target_os = "windows") {
+            // Windows: use tasklist
+            match Command::new("tasklist")
+                .args(["/FI", &format!("PID eq {}", pid)])
+                .output()
+            {
+                Ok(output) => {
+                    let output_str = String::from_utf8_lossy(&output.stdout);
+                    output_str.contains(&pid.to_string())
+                }
+                Err(_) => false,
+            }
+        } else {
+            // Unix-like: use kill -0
+            match Command::new("kill")
+                .args(["-0", &pid.to_string()])
+                .output()
+            {
+                Ok(output) => output.status.success(),
+                Err(_) => false,
+            }
+        };
+        
+        if !is_running {
+            // Process is dead, remove from tracker
+            drop(processes);
+            let mut processes_mut = state.python_processes.lock().unwrap();
+            processes_mut.remove(&script);
+            log::info!("🪦 Python process {} (PID: {}) is no longer running, removed from tracker", script, pid);
+        }
+        
+        Ok(is_running)
+    } else {
+        Ok(false) // No PID means not running
+    }
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
+struct ProcessStats {
+    script: String,
+    pid: u32,
+    cpu_percent: f64,
+    memory_mb: f64,
+    status: String,
+    uptime_seconds: u64,
+}
+
+#[tauri::command]
+async fn send_cv_command(command: String, params: serde_json::Value) -> Result<String, String> {
+    log::info!("Sending CV command: {} with params: {}", command, params);
+    
+    let client = reqwest::Client::builder()
+        .timeout(Duration::from_secs(10))
+        .build()
+        .map_err(|e| format!("Failed to create HTTP client: {}", e))?;
+    
+    let url = "http://localhost:8081/cv_command";
+    let payload = serde_json::json!({
+        "command": command,
+        "params": params
+    });
+    
+    let response = client
+        .post(url)
+        .json(&payload)
+        .send()
+        .await
+        .map_err(|e| format!("Failed to send CV command: {}", e))?;
+    
+    if !response.status().is_success() {
+        return Err(format!("CV server error: {}", response.status()));
+    }
+    
+    let body = response
+        .text()
+        .await
+        .map_err(|e| format!("Failed to read CV response: {}", e))?;
+    
+    log::info!("CV command response: {}", body);
+    Ok(body)
+}
+
+#[tauri::command]
+async fn get_process_stats(
+    state: State<'_, AppState>
+) -> Result<Vec<ProcessStats>, String> {
+    log::debug!("📊 Getting process statistics");
+    
+    let processes = state.python_processes.lock().unwrap().clone();
+    let mut stats = Vec::new();
+    
+    for (script, pid) in processes {
+        // Get process stats based on platform
+        let process_stats = if cfg!(target_os = "windows") {
+            get_windows_process_stats(pid, &script).await
+        } else {
+            get_unix_process_stats(pid, &script).await
+        };
+        
+        match process_stats {
+            Ok(stat) => stats.push(stat),
+            Err(e) => {
+                log::warn!("⚠️ Failed to get stats for {} (PID: {}): {}", script, pid, e);
+                // Remove dead processes from tracker
+                let mut processes_mut = state.python_processes.lock().unwrap();
+                processes_mut.remove(&script);
+            }
+        }
+    }
+    
+    Ok(stats)
+}
+
+async fn get_windows_process_stats(pid: u32, script: &str) -> Result<ProcessStats, String> {
+    // Use Windows wmic to get CPU and memory info
+    let output = Command::new("wmic")
+        .args([
+            "process",
+            "where",
+            &format!("ProcessId={}", pid),
+            "get",
+            "ProcessId,PageFileUsage,CreationDate",
+            "/format:csv"
+        ])
+        .output()
+        .map_err(|e| format!("Failed to execute wmic: {}", e))?;
+    
+    if !output.status.success() {
+        return Err("Process not found".to_string());
+    }
+    
+    let output_str = String::from_utf8_lossy(&output.stdout);
+    let lines: Vec<&str> = output_str.lines().collect();
+    
+    // Parse CSV output (skip header)
+    if lines.len() < 2 {
+        return Err("No process data found".to_string());
+    }
+    
+    // Parse the process data line
+    let data_line = lines.iter()
+        .find(|line| line.contains(&pid.to_string()))
+        .ok_or("Process data not found")?;
+    
+    let fields: Vec<&str> = data_line.split(',').collect();
+    
+    // Extract memory usage (PageFileUsage is in KB)
+    let memory_mb = if fields.len() > 2 {
+        fields[2].trim().parse::<f64>().unwrap_or(0.0) / 1024.0 // Convert KB to MB
+    } else {
+        0.0
+    };
+    
+    // For Windows, getting accurate CPU% requires more complex APIs
+    // For now, we'll use a simple estimation or return 0
+    let cpu_percent = 0.0; // TODO: Implement proper CPU monitoring
+    
+    Ok(ProcessStats {
+        script: script.to_string(),
+        pid,
+        cpu_percent,
+        memory_mb,
+        status: "running".to_string(),
+        uptime_seconds: 0, // TODO: Calculate from CreationDate
+    })
+}
+
+async fn get_unix_process_stats(pid: u32, script: &str) -> Result<ProcessStats, String> {
+    // Use ps command to get process info
+    let output = Command::new("ps")
+        .args(["-p", &pid.to_string(), "-o", "pid,pcpu,rss,etime,stat", "--no-headers"])
+        .output()
+        .map_err(|e| format!("Failed to execute ps: {}", e))?;
+    
+    if !output.status.success() {
+        return Err("Process not found".to_string());
+    }
+    
+    let output_str = String::from_utf8_lossy(&output.stdout);
+    let line = output_str.trim();
+    
+    if line.is_empty() {
+        return Err("Process not found".to_string());
+    }
+    
+    // Parse ps output: PID %CPU RSS ETIME STAT
+    let fields: Vec<&str> = line.split_whitespace().collect();
+    
+    if fields.len() < 5 {
+        return Err("Invalid ps output format".to_string());
+    }
+    
+    let cpu_percent = fields[1].parse::<f64>().unwrap_or(0.0);
+    let memory_kb = fields[2].parse::<f64>().unwrap_or(0.0);
+    let memory_mb = memory_kb / 1024.0; // Convert KB to MB
+    let status = fields[4].to_string();
+    
+    // Parse uptime from ETIME format (e.g., "01:23:45" or "5-01:23:45")
+    let uptime_seconds = parse_etime(fields[3]).unwrap_or(0);
+    
+    Ok(ProcessStats {
+        script: script.to_string(),
+        pid,
+        cpu_percent,
+        memory_mb,
+        status,
+        uptime_seconds,
+    })
+}
+
+fn parse_etime(etime: &str) -> Option<u64> {
+    // Parse ETIME format: [[DD-]HH:]MM:SS
+    let parts: Vec<&str> = etime.split(':').collect();
+    
+    match parts.len() {
+        2 => {
+            // MM:SS format
+            let minutes = parts[0].parse::<u64>().ok()?;
+            let seconds = parts[1].parse::<u64>().ok()?;
+            Some(minutes * 60 + seconds)
+        }
+        3 => {
+            // HH:MM:SS format (or DD-HH:MM:SS)
+            let first_part = parts[0];
+            let (hours, days) = if first_part.contains('-') {
+                let day_parts: Vec<&str> = first_part.split('-').collect();
+                if day_parts.len() == 2 {
+                    let days = day_parts[0].parse::<u64>().unwrap_or(0);
+                    let hours = day_parts[1].parse::<u64>().unwrap_or(0);
+                    (hours, days)
+                } else {
+                    (first_part.parse::<u64>().unwrap_or(0), 0)
+                }
+            } else {
+                (first_part.parse::<u64>().unwrap_or(0), 0)
+            };
+            
+            let minutes = parts[1].parse::<u64>().ok()?;
+            let seconds = parts[2].parse::<u64>().ok()?;
+            Some(days * 24 * 3600 + hours * 3600 + minutes * 60 + seconds)
+        }
+        _ => None,
+    }
+}
+
 // ========== HELPER FUNCTIONS FOR ADVANCED CONSCIOUSNESS ==========
 
 fn generate_sigil_visual(emotion: &str, intensity: f64, density: f64) -> String {
@@ -1860,6 +2240,14 @@ fn main() {
             get_rebloom_priority,
             get_enhanced_dawn_thoughts,
             inject_consciousness_pattern,
+            // Python Process Control Commands
+            start_python_process,
+            stop_python_process,
+            get_python_processes,
+            check_python_process_status,
+            get_process_stats,
+            // Computer Vision Commands
+            send_cv_command,
             // Testing Commands
             test_force_metrics_update
         ])

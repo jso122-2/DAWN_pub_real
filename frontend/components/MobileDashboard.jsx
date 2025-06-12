@@ -15,6 +15,7 @@ import {
 } from '@heroicons/react/24/solid';
 import useDashboardStore, { selectMetrics, selectConsciousness } from './dashboardState';
 import TalkToDAWN from './TalkToDAWN';
+import CognitiveLoadRadar from '../../components/CognitiveLoadRadar';
 
 // Mini gauge component for mobile
 const MiniGauge = ({ label, value, color = 'blue', icon }) => {
@@ -158,9 +159,10 @@ const MetricsPanel = () => {
           />
         </div>
       </div>
-      
       <MobileHealthOrb metrics={metrics} emotion={emotion} intensity={intensity} />
-      
+      <div className="w-full md:w-1/2 mx-auto">
+        <CognitiveLoadRadar />
+      </div>
       <div className="space-y-3">
         <MiniGauge label="SCUP" value={metrics.scup} color="green" icon="🧠" />
         <MiniGauge label="Entropy" value={metrics.entropy} color="purple" icon="🌀" />
