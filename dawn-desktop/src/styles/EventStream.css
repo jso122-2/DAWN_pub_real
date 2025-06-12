@@ -1,0 +1,53 @@
+/* Event Stream Cosmic Theme */
+.event-stream-container {
+  @apply rounded-xl p-6;
+  background: rgba(255, 255, 255, 0.02);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(167, 139, 250, 0.2);
+}
+
+.event-stream-header {
+  @apply flex justify-between items-center mb-4;
+}
+
+.event-stream-header h2 {
+  @apply text-xl font-bold text-purple-300;
+}
+
+.event-item {
+  @apply p-3 rounded-lg transition-all cursor-pointer mb-2;
+  background: rgba(255, 255, 255, 0.02);
+  border-left: 4px solid;
+}
+
+.event-item:hover {
+  background: rgba(255, 255, 255, 0.05);
+  transform: translateX(4px);
+}
+
+.event-item.selected {
+  @apply bg-purple-500/20 border-purple-300;
+}
+
+.control-button {
+  @apply px-3 py-1 rounded-lg text-sm transition-all;
+  @apply bg-purple-500/20 hover:bg-purple-500/30 text-purple-300;
+}
+
+.no-events {
+  @apply text-center text-gray-500 py-8;
+}
+
+.filters-panel {
+  @apply rounded-lg p-4 mb-4;
+  background: rgba(255, 255, 255, 0.02);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(167, 139, 250, 0.1);
+}
+
+.event-details-panel {
+  @apply rounded-lg p-4;
+  background: rgba(255, 255, 255, 0.02);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(167, 139, 250, 0.2);
+}

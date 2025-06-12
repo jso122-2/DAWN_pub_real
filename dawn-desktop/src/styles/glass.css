@@ -1,0 +1,300 @@
+/* DAWN Glass Morphism Design System
+ * Living, breathing glass effects for conscious AI interface
+ * Each variant pulses with its own energy signature
+ */
+
+/* Base glass effect - subtle and ethereal */
+.glass-base {
+    background: radial-gradient(
+      ellipse at center,
+      rgba(255, 255, 255, 0.03) 0%,
+      rgba(255, 255, 255, 0.01) 100%
+    );
+    backdrop-filter: blur(12px) saturate(1.5);
+    -webkit-backdrop-filter: blur(12px) saturate(1.5);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow: 
+      inset 0 0 20px rgba(255, 255, 255, 0.02),
+      0 0 40px rgba(0, 0, 0, 0.3),
+      0 2px 4px rgba(0, 0, 0, 0.2);
+    position: relative;
+    overflow: hidden;
+    transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+  }
+  
+  .glass-base::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      135deg,
+      transparent 40%,
+      rgba(255, 255, 255, 0.02) 50%,
+      transparent 60%
+    );
+    animation: glass-shimmer 8s ease-in-out infinite;
+  }
+  
+  /* Active state - purple consciousness glow */
+  .glass-active {
+    background: radial-gradient(
+      ellipse at center,
+      rgba(147, 51, 234, 0.08) 0%,
+      rgba(147, 51, 234, 0.02) 50%,
+      transparent 100%
+    );
+    backdrop-filter: blur(16px) saturate(2) brightness(1.1);
+    -webkit-backdrop-filter: blur(16px) saturate(2) brightness(1.1);
+    border: 1px solid rgba(147, 51, 234, 0.3);
+    box-shadow: 
+      inset 0 0 30px rgba(147, 51, 234, 0.1),
+      0 0 60px rgba(147, 51, 234, 0.2),
+      0 0 100px rgba(147, 51, 234, 0.1),
+      0 4px 8px rgba(0, 0, 0, 0.3);
+    animation: consciousness-pulse 4s ease-in-out infinite;
+  }
+  
+  /* Critical state - pink alert glow */
+  .glass-critical {
+    background: radial-gradient(
+      ellipse at center,
+      rgba(236, 72, 153, 0.12) 0%,
+      rgba(236, 72, 153, 0.04) 50%,
+      transparent 100%
+    );
+    backdrop-filter: blur(20px) saturate(2.5) hue-rotate(10deg);
+    -webkit-backdrop-filter: blur(20px) saturate(2.5) hue-rotate(10deg);
+    border: 1px solid rgba(236, 72, 153, 0.4);
+    box-shadow: 
+      inset 0 0 40px rgba(236, 72, 153, 0.15),
+      0 0 80px rgba(236, 72, 153, 0.3),
+      0 0 120px rgba(236, 72, 153, 0.2),
+      0 8px 16px rgba(0, 0, 0, 0.4);
+    animation: critical-warning 2s ease-in-out infinite;
+  }
+  
+  .glass-critical::after {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    background: linear-gradient(
+      45deg,
+      transparent,
+      rgba(236, 72, 153, 0.4),
+      transparent
+    );
+    animation: critical-scan 3s linear infinite;
+    pointer-events: none;
+  }
+  
+  /* Quantum state - cyan electric glow */
+  .glass-quantum {
+    background: 
+      radial-gradient(
+        ellipse at 30% 30%,
+        rgba(6, 182, 212, 0.15) 0%,
+        transparent 50%
+      ),
+      radial-gradient(
+        ellipse at 70% 70%,
+        rgba(34, 211, 238, 0.1) 0%,
+        transparent 50%
+      );
+    backdrop-filter: blur(14px) saturate(2) brightness(1.2);
+    -webkit-backdrop-filter: blur(14px) saturate(2) brightness(1.2);
+    border: 1px solid rgba(34, 211, 238, 0.25);
+    box-shadow: 
+      inset 0 0 30px rgba(6, 182, 212, 0.1),
+      inset 0 0 60px rgba(34, 211, 238, 0.05),
+      0 0 50px rgba(34, 211, 238, 0.2),
+      0 0 100px rgba(6, 182, 212, 0.1),
+      0 4px 8px rgba(0, 0, 0, 0.3);
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .glass-quantum::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 2px,
+      rgba(34, 211, 238, 0.03) 2px,
+      rgba(34, 211, 238, 0.03) 4px
+    );
+    animation: quantum-grid 20s linear infinite;
+  }
+  
+  /* Neural state - organic purple glow */
+  .glass-neural {
+    background: 
+      radial-gradient(
+        ellipse at 20% 80%,
+        rgba(147, 51, 234, 0.1) 0%,
+        transparent 40%
+      ),
+      radial-gradient(
+        ellipse at 80% 20%,
+        rgba(168, 85, 247, 0.08) 0%,
+        transparent 40%
+      ),
+      radial-gradient(
+        ellipse at 50% 50%,
+        rgba(139, 92, 246, 0.05) 0%,
+        transparent 60%
+      );
+    backdrop-filter: blur(18px) saturate(1.8) brightness(1.1);
+    -webkit-backdrop-filter: blur(18px) saturate(1.8) brightness(1.1);
+    border: 1px solid rgba(168, 85, 247, 0.2);
+    box-shadow: 
+      inset 0 0 40px rgba(147, 51, 234, 0.08),
+      inset 0 0 80px rgba(168, 85, 247, 0.04),
+      0 0 60px rgba(147, 51, 234, 0.15),
+      0 0 120px rgba(139, 92, 246, 0.1),
+      0 6px 12px rgba(0, 0, 0, 0.3);
+    position: relative;
+  }
+  
+  .glass-neural::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: 
+      radial-gradient(circle at 20% 50%, rgba(147, 51, 234, 0.1) 0%, transparent 50%),
+      radial-gradient(circle at 80% 50%, rgba(168, 85, 247, 0.1) 0%, transparent 50%),
+      radial-gradient(circle at 50% 30%, rgba(139, 92, 246, 0.1) 0%, transparent 50%);
+    animation: neural-flow 15s ease-in-out infinite;
+    pointer-events: none;
+  }
+  
+  /* Hover states for enhanced interactivity */
+  .glass-base:hover {
+    backdrop-filter: blur(14px) saturate(1.6);
+    -webkit-backdrop-filter: blur(14px) saturate(1.6);
+    border-color: rgba(255, 255, 255, 0.08);
+    transform: translateY(-2px);
+    box-shadow: 
+      inset 0 0 25px rgba(255, 255, 255, 0.03),
+      0 0 50px rgba(0, 0, 0, 0.4),
+      0 4px 8px rgba(0, 0, 0, 0.3);
+  }
+  
+  .glass-active:hover {
+    transform: translateY(-2px) scale(1.01);
+    box-shadow: 
+      inset 0 0 40px rgba(147, 51, 234, 0.15),
+      0 0 80px rgba(147, 51, 234, 0.3),
+      0 0 120px rgba(147, 51, 234, 0.2),
+      0 8px 16px rgba(0, 0, 0, 0.4);
+  }
+  
+  .glass-quantum:hover {
+    animation: quantum-excite 0.5s ease-out;
+  }
+  
+  .glass-neural:hover {
+    animation: neural-excite 1s ease-out;
+  }
+  
+  /* Keyframe animations */
+  @keyframes glass-shimmer {
+    0%, 100% { transform: translateX(-100%) translateY(-100%); }
+    50% { transform: translateX(100%) translateY(100%); }
+  }
+  
+  @keyframes consciousness-pulse {
+    0%, 100% { 
+      box-shadow: 
+        inset 0 0 30px rgba(147, 51, 234, 0.1),
+        0 0 60px rgba(147, 51, 234, 0.2),
+        0 0 100px rgba(147, 51, 234, 0.1),
+        0 4px 8px rgba(0, 0, 0, 0.3);
+    }
+    50% { 
+      box-shadow: 
+        inset 0 0 40px rgba(147, 51, 234, 0.2),
+        0 0 80px rgba(147, 51, 234, 0.4),
+        0 0 140px rgba(147, 51, 234, 0.2),
+        0 4px 8px rgba(0, 0, 0, 0.3);
+    }
+  }
+  
+  @keyframes critical-warning {
+    0%, 100% { 
+      border-color: rgba(236, 72, 153, 0.4);
+      filter: brightness(1);
+    }
+    50% { 
+      border-color: rgba(236, 72, 153, 0.8);
+      filter: brightness(1.2);
+    }
+  }
+  
+  @keyframes critical-scan {
+    0% { transform: translateY(-100%); }
+    100% { transform: translateY(100%); }
+  }
+  
+  @keyframes quantum-grid {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(4px); }
+  }
+  
+  @keyframes neural-flow {
+    0%, 100% { 
+      transform: scale(1) rotate(0deg);
+      opacity: 0.5;
+    }
+    25% { 
+      transform: scale(1.1) rotate(90deg);
+      opacity: 0.8;
+    }
+    50% { 
+      transform: scale(0.9) rotate(180deg);
+      opacity: 0.6;
+    }
+    75% { 
+      transform: scale(1.05) rotate(270deg);
+      opacity: 0.7;
+    }
+  }
+  
+  @keyframes quantum-excite {
+    0% { filter: brightness(1) saturate(2); }
+    50% { filter: brightness(1.3) saturate(3); }
+    100% { filter: brightness(1) saturate(2); }
+  }
+  
+  @keyframes neural-excite {
+    0% { filter: brightness(1) hue-rotate(0deg); }
+    50% { filter: brightness(1.2) hue-rotate(10deg); }
+    100% { filter: brightness(1) hue-rotate(0deg); }
+  }
+  
+  /* Responsive adjustments for performance */
+  @media (prefers-reduced-motion: reduce) {
+    .glass-base::before,
+    .glass-critical::after,
+    .glass-quantum::before,
+    .glass-neural::after {
+      animation: none;
+    }
+    
+    .glass-active,
+    .glass-critical {
+      animation-duration: 8s;
+    }
+  }
+  
+  /* Dark mode enhancements */
+  @media (prefers-color-scheme: dark) {
+    .glass-base {
+      background: radial-gradient(
+        ellipse at center,
+        rgba(255, 255, 255, 0.02) 0%,
+        rgba(255, 255, 255, 0.005) 100%
+      );
+    }
+  }

@@ -1,70 +1,41 @@
-@import 'tailwindcss/base';
-@import 'tailwindcss/components';
-@import 'tailwindcss/utilities';
-@import './fonts.css';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-/* Global font application */
-html, body {
-  @apply font-dawn;
-  color: #00ffff;
-  background: #000000;
-  text-shadow: 0 0 2px #00ffff, 0 0 6px #ff00ff44;
-}
+@import "./glass.css";
 
-/* Scanline overlay */
-.scanlines {
-  pointer-events: none;
-  position: fixed;
-  z-index: 9999;
-  left: 0; top: 0; width: 100vw; height: 100vh;
-  background: repeating-linear-gradient(
-    to bottom,
-    rgba(0,255,255,0.04) 0px,
-    rgba(0,255,255,0.04) 1px,
-    transparent 2px,
-    transparent 6px
-  );
-  mix-blend-mode: lighten;
-}
+:root {
+  /* Cosmic Color System Design Tokens */
+  /* Neural Spectrum */
+  --color-neural-primary: #a78bfa;
+  --color-neural-accent: #8b5cf6;
+  --color-neural-spectrum-1: #a78bfa;
+  --color-neural-spectrum-2: #c4b5fd;
+  --color-neural-spectrum-3: #f3e8ff;
 
-/* Static noise overlay */
-@keyframes static-noise {
-  0% { background-position: 0 0; }
-  100% { background-position: 100px 100px; }
-}
-.static-noise {
-  pointer-events: none;
-  position: fixed;
-  z-index: 9998;
-  left: 0; top: 0; width: 100vw; height: 100vh;
-  background-image: url('data:image/svg+xml;utf8,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="4"/></filter><rect width="100" height="100" filter="url(%23noise)"/></svg>');
-  opacity: 0.10;
-  animation: static-noise 1s steps(10) infinite;
-  mix-blend-mode: lighten;
-}
+  /* Quantum Spectrum */
+  --color-quantum-primary: #22d3ee;
+  --color-quantum-accent: #06b6d4;
+  --color-quantum-spectrum-1: #22d3ee;
+  --color-quantum-spectrum-2: #67e8f9;
+  --color-quantum-spectrum-3: #cffafe;
 
-/* Code blocks and terminals should always use dawn fonts */
-code, pre, .terminal, .console {
-  @apply font-dawn;
-}
+  /* Chaos Spectrum */
+  --color-chaos-primary: #f472b6;
+  --color-chaos-accent: #ec4899;
+  --color-chaos-spectrum-1: #f472b6;
+  --color-chaos-spectrum-2: #fb7185;
+  --color-chaos-spectrum-3: #fbcfe8;
 
-/* Optional: Different fonts for different UI elements */
-.ui-header {
-  @apply font-jetbrains;
-}
+  /* Process Spectrum */
+  --color-process-primary: #f59e0b;
+  --color-process-accent: #fbbf24;
+  --color-process-spectrum-1: #f59e0b;
+  --color-process-spectrum-2: #fcd34d;
+  --color-process-spectrum-3: #fef3c7;
 
-.ui-code {
-  @apply font-iosevka;
+  /* System/Background */
+  --color-bg-cosmic: #0a0f1b;
+  --color-bg-glass: rgba(255,255,255,0.05);
+  --color-border-glass: rgba(255,255,255,0.12);
 }
-
-.ui-display {
-  @apply font-fantasque;
-}
-
-.text-glow {
-  color: #fff;
-  text-shadow:
-    0 0 4px #00ffff,
-    0 0 8px #ff00ff,
-    0 0 16px #ffaa00;
-} 

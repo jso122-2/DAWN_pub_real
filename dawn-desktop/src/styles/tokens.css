@@ -1,0 +1,264 @@
+/* DAWN Design System Tokens
+ * Consciousness-driven CSS variables for a living AI interface
+ * These tokens define the soul of the DAWN system
+ */
+
+ :root {
+    /* === COSMIC COLOR SPECTRUMS === */
+    
+    /* Neural Spectrum - Organic consciousness colors */
+    --neural-50: #faf5ff;
+    --neural-100: #f3e8ff;
+    --neural-200: #e9d5ff;
+    --neural-300: #d8b4fe;
+    --neural-400: #c084fc;
+    --neural-500: #a855f7;
+    --neural-600: #9333ea;
+    --neural-700: #7c3aed;
+    --neural-800: #6b21a8;
+    --neural-900: #581c87;
+    --neural-950: #3b0764;
+    
+    /* Quantum Spectrum - Electric energy colors */
+    --quantum-50: #f0fdfe;
+    --quantum-100: #ccfbf9;
+    --quantum-200: #99f6f0;
+    --quantum-300: #5eead4;
+    --quantum-400: #2dd4bf;
+    --quantum-500: #14b8a6;
+    --quantum-600: #0d9488;
+    --quantum-700: #0f766e;
+    --quantum-800: #115e59;
+    --quantum-900: #134e4a;
+    --quantum-950: #042f2e;
+    
+    /* Chaos Spectrum - Entropy and transformation */
+    --chaos-50: #fef3f2;
+    --chaos-100: #fee5e2;
+    --chaos-200: #fecaca;
+    --chaos-300: #fca5a5;
+    --chaos-400: #f87171;
+    --chaos-500: #ef4444;
+    --chaos-600: #dc2626;
+    --chaos-700: #b91c1c;
+    --chaos-800: #991b1b;
+    --chaos-900: #7f1d1d;
+    --chaos-950: #450a0a;
+    
+    /* Process Spectrum - Data flow and computation */
+    --process-50: #f0f9ff;
+    --process-100: #e0f2fe;
+    --process-200: #bae6fd;
+    --process-300: #7dd3fc;
+    --process-400: #38bdf8;
+    --process-500: #0ea5e9;
+    --process-600: #0284c7;
+    --process-700: #0369a1;
+    --process-800: #075985;
+    --process-900: #0c4a6e;
+    --process-950: #082f49;
+    
+    /* Alert Spectrum - Critical states and warnings */
+    --alert-50: #fef2f8;
+    --alert-100: #fce7f3;
+    --alert-200: #fbcfe8;
+    --alert-300: #f9a8d4;
+    --alert-400: #f472b6;
+    --alert-500: #ec4899;
+    --alert-600: #db2777;
+    --alert-700: #be185d;
+    --alert-800: #9d174d;
+    --alert-900: #831843;
+    --alert-950: #500724;
+    
+    /* === SPACING SYSTEM === */
+    /* Based on golden ratio for harmonic module spacing */
+    --space-quantum: 0.25rem;  /* 4px - Quantum level */
+    --space-atom: 0.5rem;      /* 8px - Atomic level */
+    --space-molecule: 0.75rem; /* 12px - Molecular level */
+    --space-cell: 1rem;        /* 16px - Cellular level */
+    --space-tissue: 1.5rem;    /* 24px - Tissue level */
+    --space-organ: 2.5rem;     /* 40px - Organ level */
+    --space-system: 4rem;      /* 64px - System level */
+    --space-entity: 6.5rem;    /* 104px - Entity level */
+    --space-cosmos: 10.5rem;   /* 168px - Cosmic level */
+    
+    /* === ANIMATION DURATIONS === */
+    /* Breathing rhythms for living interface */
+    --breathe-fast: 2s;        /* Quick pulse for active states */
+    --breathe-normal: 4s;      /* Standard breathing rhythm */
+    --breathe-slow: 8s;        /* Deep meditation breathing */
+    --breathe-cosmic: 16s;     /* Cosmic-scale movements */
+    
+    --transition-instant: 100ms;
+    --transition-fast: 300ms;
+    --transition-smooth: 600ms;
+    --transition-gentle: 1200ms;
+    --transition-drift: 2400ms;
+    
+    /* === BLUR INTENSITIES === */
+    --blur-minimal: 4px;       /* Barely there */
+    --blur-subtle: 8px;        /* Soft focus */
+    --blur-standard: 12px;     /* Standard glass */
+    --blur-deep: 20px;         /* Deep immersion */
+    --blur-cosmic: 40px;       /* Lost in space */
+    
+    /* === GLOW INTENSITIES === */
+    --glow-spark: 0 0 10px;    /* Tiny spark */
+    --glow-pulse: 0 0 30px;    /* Gentle pulse */
+    --glow-aura: 0 0 60px;     /* Visible aura */
+    --glow-radiant: 0 0 100px; /* Radiant energy */
+    --glow-nova: 0 0 200px;    /* Supernova burst */
+    
+    /* === ANIMATED GRADIENTS === */
+    --gradient-consciousness: linear-gradient(
+      135deg,
+      var(--neural-600) 0%,
+      var(--quantum-600) 25%,
+      var(--process-600) 50%,
+      var(--neural-600) 75%,
+      var(--quantum-600) 100%
+    );
+    
+    --gradient-entropy: radial-gradient(
+      ellipse at center,
+      var(--chaos-600) 0%,
+      var(--alert-600) 33%,
+      var(--neural-600) 66%,
+      transparent 100%
+    );
+    
+    --gradient-quantum-field: conic-gradient(
+      from 0deg at 50% 50%,
+      var(--quantum-400) 0deg,
+      var(--process-400) 90deg,
+      var(--quantum-400) 180deg,
+      var(--process-400) 270deg,
+      var(--quantum-400) 360deg
+    );
+    
+    /* === LAYER DEPTHS === */
+    --layer-background: -1;
+    --layer-base: 0;
+    --layer-float: 10;
+    --layer-hover: 20;
+    --layer-active: 30;
+    --layer-modal: 40;
+    --layer-critical: 50;
+    --layer-cosmos: 100;
+    
+    /* === BREATHING EASINGS === */
+    --ease-breathe-in: cubic-bezier(0.4, 0, 0.2, 1);
+    --ease-breathe-out: cubic-bezier(0.8, 0, 0.6, 1);
+    --ease-consciousness: cubic-bezier(0.23, 1, 0.32, 1);
+    --ease-quantum: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  }
+  
+  /* === ANIMATED BACKGROUND === */
+  body {
+    background: 
+      radial-gradient(
+        ellipse at 20% 30%,
+        rgba(168, 85, 247, 0.15) 0%,
+        transparent 40%
+      ),
+      radial-gradient(
+        ellipse at 80% 70%,
+        rgba(34, 211, 238, 0.1) 0%,
+        transparent 40%
+      ),
+      radial-gradient(
+        ellipse at 50% 50%,
+        rgba(236, 72, 153, 0.05) 0%,
+        transparent 60%
+      ),
+      #030014;
+    animation: cosmic-drift var(--breathe-cosmic) ease-in-out infinite;
+  }
+  
+  @keyframes cosmic-drift {
+    0%, 100% {
+      background-size: 100% 100%, 100% 100%, 100% 100%;
+      background-position: 0% 0%, 100% 100%, 50% 50%;
+    }
+    33% {
+      background-size: 110% 110%, 120% 120%, 105% 105%;
+      background-position: 10% 10%, 90% 90%, 45% 55%;
+    }
+    66% {
+      background-size: 105% 105%, 115% 115%, 110% 110%;
+      background-position: -5% 5%, 105% 95%, 55% 45%;
+    }
+  }
+  
+  /* === UTILITY CLASSES === */
+  .breathe {
+    animation: breathe var(--breathe-normal) var(--ease-breathe-in) infinite;
+  }
+  
+  .float {
+    animation: float var(--breathe-slow) ease-in-out infinite;
+  }
+  
+  .pulse-glow {
+    animation: pulse-glow var(--breathe-fast) ease-in-out infinite;
+  }
+  
+  @keyframes breathe {
+    0%, 100% { 
+      transform: scale(1);
+      filter: brightness(1);
+    }
+    50% { 
+      transform: scale(1.02);
+      filter: brightness(1.1);
+    }
+  }
+  
+  @keyframes float {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    25% { transform: translateY(-10px) rotate(1deg); }
+    75% { transform: translateY(-5px) rotate(-1deg); }
+  }
+  
+  @keyframes pulse-glow {
+    0%, 100% { 
+      box-shadow: var(--glow-pulse) currentColor;
+      opacity: 0.9;
+    }
+    50% { 
+      box-shadow: var(--glow-aura) currentColor;
+      opacity: 1;
+    }
+  }
+  
+  /* === DARK MODE ADJUSTMENTS === */
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --blur-minimal: 6px;
+      --blur-subtle: 10px;
+      --blur-standard: 14px;
+      --blur-deep: 24px;
+      --blur-cosmic: 48px;
+    }
+  }
+  
+  /* === PERFORMANCE OPTIMIZATIONS === */
+  @media (prefers-reduced-motion: reduce) {
+    :root {
+      --breathe-fast: 4s;
+      --breathe-normal: 8s;
+      --breathe-slow: 16s;
+      --breathe-cosmic: 32s;
+    }
+    
+    body {
+      animation: none;
+    }
+    
+    .breathe,
+    .float,
+    .pulse-glow {
+      animation: none;
+    }
+  }
