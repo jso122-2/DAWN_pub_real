@@ -389,7 +389,7 @@ function App() {
       <div className="min-h-screen bg-gray-900 text-white flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-400 mx-auto mb-4"></div>
-          <h2 className="text-2xl font-bold mb-2">🧠 DAWN Neural Monitor</h2>
+          <h2 className="text-2xl font-bold mb-2 text-glow font-dawn tracking-wider">🧠 DAWN Neural Monitor</h2>
           <p className="text-gray-400">Initializing connection...</p>
         </div>
       </div>
@@ -399,9 +399,9 @@ function App() {
   // Backend offline state
   if (!backendOnline) {
     return (
-      <div className="min-h-screen bg-gray-900 text-white p-8">
+      <div className="min-h-screen glass-dark animate-breathe text-white p-8">
         <div className="max-w-4xl mx-auto">
-          <div className="bg-red-900/50 border border-red-500 rounded-xl p-8 backdrop-blur-sm">
+          <div className="bg-red-900/50 glass border-0 shadow-glow-sm rounded-xl p-8 backdrop-blur-sm hover:shadow-glow-md transition-all duration-300">
             <h2 className="text-3xl font-bold mb-4 flex items-center">
               <span className="mr-3">⚠️</span>
               Backend Offline
@@ -412,7 +412,7 @@ function App() {
               <p className="text-gray-300">The DAWN Neural System backend is not responding.</p>
             </div>
 
-            <div className="bg-gray-800/80 rounded-lg p-6 mb-6">
+            <div className="glass-dark animate-breathe rounded-lg p-6 mb-6 hover:shadow-glow-md transition-all duration-300">
               <h3 className="text-lg font-semibold mb-3 flex items-center">
                 <span className="mr-2">⚡</span>
                 Quick Fix Instructions
@@ -454,7 +454,7 @@ function App() {
             <div className="flex space-x-4">
               <button 
                 onClick={() => window.location.reload()}
-                className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors duration-200 flex items-center space-x-2"
+                className="px-6 py-3 bg-gradient-to-r from-dawn-neural-300 to-dawn-neural-400 hover:shadow-glow-lg hover:bg-blue-700 text-white font-medium rounded-lg transition-colors duration-200 flex items-center space-x-2"
               >
                 <span>🔄</span>
                 <span>Retry Connection</span>
@@ -462,7 +462,7 @@ function App() {
               
               <button 
                 onClick={checkBackend}
-                className="px-6 py-3 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-colors duration-200 flex items-center space-x-2"
+                className="px-6 py-3 bg-gradient-to-r from-dawn-neural-300 to-dawn-neural-400 hover:shadow-glow-lg hover:bg-blue-700 text-white font-medium rounded-lg transition-colors duration-200 flex items-center space-x-2"
               >
                 <span>🏥</span>
                 <span>Health Check</span>
@@ -576,12 +576,12 @@ function App() {
       )}
       <div className="min-h-screen bg-gray-900 text-white flex">
         {/* Main dashboard */}
-        <div className={`flex-1 p-6 transition-all duration-300 ${showChat ? 'mr-96' : ''}`}>
+        <div className={`relative bg-dawn-void/80 backdrop-blur-sm flex-1 p-6 transition-all duration-300 ${showChat ? 'mr-96' : ''}`}>
           {/* Header */}
           <header className="mb-8">
             <div className="flex justify-between items-center">
               <div>
-                <h1 className="text-5xl font-bold bg-gradient-to-r from-blue-400 via-purple-500 to-cyan-400 bg-clip-text text-transparent">
+                <h1 className="text-5xl font-bold bg-gradient-to-r from-blue-400 via-purple-500 to-cyan-400 bg-clip-text text-transparent text-glow font-dawn tracking-wider">
                   🧠 DAWN Neural Monitor
                 </h1>
                 <p className="text-gray-400 mt-2 text-lg">
@@ -1109,8 +1109,6 @@ function App() {
             {showChat ? '✕' : '💬'}
           </span>
         </button>
-
-
       </div>
     </>
   )

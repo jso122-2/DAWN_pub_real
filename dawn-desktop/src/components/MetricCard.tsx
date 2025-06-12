@@ -105,7 +105,7 @@ export default function MetricCard({
       ${isConnected ? `shadow-lg ${colors.shadow}` : 'opacity-60 grayscale'}
     `}>
       <div className="flex items-center justify-between mb-2">
-        <h3 className="text-sm text-gray-400 uppercase tracking-wider font-medium">
+        <h3 className="text-sm text-gray-400 uppercase tracking-wider font-bold text-glow font-dawn tracking-wider">
           {icon} {title}
         </h3>
         <div className="flex items-center space-x-1">

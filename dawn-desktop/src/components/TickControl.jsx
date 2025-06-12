@@ -251,7 +251,7 @@ export default function TickControl({ onTimingChange, className = "" }) {
   }
 
   return (
-    <div className={`bg-gray-800/50 backdrop-blur-lg rounded-2xl p-6 border border-gray-700/50 shadow-2xl ${className}`}>
+    <div className={`glass border-0 shadow-glow-sm ${className} hover:shadow-glow-md transition-all duration-300`}>
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center space-x-3">
@@ -289,28 +289,28 @@ export default function TickControl({ onTimingChange, className = "" }) {
 
       {/* Status Display */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-        <div className="bg-gray-900/30 rounded-lg p-4 border border-gray-600/30">
+        <div className="bg-dawn-panel/40 backdrop-blur-xl rounded-lg p-4 border border-gray-600/30 hover:shadow-glow-md transition-all duration-300">
           <div className="text-gray-400 text-xs mb-1">Tick Count</div>
           <div className={`text-xl font-bold font-mono transition-all duration-300 ${getStateColor()}`}>
             #{tickStatus.tick_number.toLocaleString()}
           </div>
         </div>
         
-        <div className="bg-gray-900/30 rounded-lg p-4 border border-gray-600/30">
+        <div className="bg-dawn-panel/40 backdrop-blur-xl rounded-lg p-4 border border-gray-600/30 hover:shadow-glow-md transition-all duration-300">
           <div className="text-gray-400 text-xs mb-1">Interval</div>
           <div className="text-xl font-bold font-mono text-blue-400">
             {tickStatus.interval_ms}ms
           </div>
         </div>
         
-        <div className="bg-gray-900/30 rounded-lg p-4 border border-gray-600/30">
+        <div className="bg-dawn-panel/40 backdrop-blur-xl rounded-lg p-4 border border-gray-600/30 hover:shadow-glow-md transition-all duration-300">
           <div className="text-gray-400 text-xs mb-1">Rate</div>
           <div className="text-xl font-bold font-mono text-purple-400">
             {getTicksPerSecond()} Hz
           </div>
         </div>
         
-        <div className="bg-gray-900/30 rounded-lg p-4 border border-gray-600/30">
+        <div className="bg-dawn-panel/40 backdrop-blur-xl rounded-lg p-4 border border-gray-600/30 hover:shadow-glow-md transition-all duration-300">
           <div className="text-gray-400 text-xs mb-1">Uptime</div>
           <div className="text-xl font-bold font-mono text-cyan-400">
             {formatUptime(tickStatus.uptime_seconds)}
@@ -350,7 +350,7 @@ export default function TickControl({ onTimingChange, className = "" }) {
         <button
           onClick={handleStep}
           disabled={tickStatus.is_running || isLoading}
-          className="px-4 py-3 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 shadow-blue-500/20 shadow-lg"
+          className="px-4 py-3 bg-gradient-to-r from-dawn-neural-300 to-dawn-neural-400 hover:shadow-glow-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 shadow-blue-500/20 shadow-lg"
         >
           {isLoading ? '⏳' : '👆 Step'}
         </button>
@@ -373,7 +373,7 @@ export default function TickControl({ onTimingChange, className = "" }) {
       </div>
 
       {/* Timing Control */}
-      <div className="bg-gray-900/30 rounded-lg p-4 border border-gray-600/30">
+      <div className="bg-dawn-panel/40 backdrop-blur-xl rounded-lg p-4 border border-gray-600/30 hover:shadow-glow-md transition-all duration-300">
         <h4 className="text-gray-300 font-semibold mb-3 flex items-center">
           <span className="mr-2">⏱️</span>
           Timing Control
@@ -408,13 +408,13 @@ export default function TickControl({ onTimingChange, className = "" }) {
               max="5000"
               value={intervalInput}
               onChange={(e) => setIntervalInput(parseInt(e.target.value) || 10)}
-              className="flex-1 px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="flex-1 px-3 py-2 bg-dawn-surface/50 focus:shadow-glow-sm focus:border-dawn-glow-teal text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="Interval (ms)"
             />
             <button
               onClick={handleTimingChange}
               disabled={isLoading || intervalInput === tickStatus.interval_ms}
-              className="px-6 py-2 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-lg font-semibold transition-all duration-300 transform hover:scale-105"
+              className="px-6 py-2 bg-gradient-to-r from-dawn-neural-300 to-dawn-neural-400 hover:shadow-glow-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-lg font-semibold transition-all duration-300 transform hover:scale-105"
             >
               Apply
             </button>

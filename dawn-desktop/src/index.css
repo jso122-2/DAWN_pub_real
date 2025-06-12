@@ -2,6 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Add custom font imports */
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap');
+
+/* Global body styles */
+body {
+  @apply bg-dawn-void text-gray-100 font-dawn;
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -17,6 +25,7 @@
 @layer base {
   body {
     @apply bg-background text-foreground;
+    font-family: 'font-dawn';
   }
 }
 

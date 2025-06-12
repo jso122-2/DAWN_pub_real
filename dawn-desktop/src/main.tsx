@@ -6,10 +6,12 @@ import EntropyRingHUD from './components/overlays/EntropyRingHUD'
 import ModulationConsole from './components/controls/ModulationConsole'
 import LiveMemoryScroll from './components/logs/LiveMemoryScroll'
 import NeuralProcessMap from './components/cortex/NeuralProcessMap'
+import '@fontsource/jetbrains-mono/400.css';
+import '@fontsource/iosevka/400.css';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <div className="min-h-screen bg-gray-950 text-white relative font-sans dark">
+    <div className="min-h-screen bg-gradient-astral text-white relative font-sans dark">
       {/* DAWN Overlays */}
       <EntropyRingHUD />
       <ModulationConsole />

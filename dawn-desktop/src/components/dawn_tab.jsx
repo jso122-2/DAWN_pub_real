@@ -19,7 +19,7 @@ const TabSystem = ({ activeTab, onTabChange }) => {
               className={`
                 flex items-center space-x-2 px-4 py-2 rounded-t-lg transition-all duration-200
                 ${activeTab === tab.id 
-                  ? 'bg-gray-800 text-white border-t border-l border-r border-gray-600' 
+                  ? 'bg-gray-800 text-white border-t border-l border-r border-gray-600 border-b-2 border-dawn-glow-teal shadow-glow-sm' 
                   : 'bg-gray-950 text-gray-400 hover:bg-gray-800 hover:text-white'
                 }
               `}

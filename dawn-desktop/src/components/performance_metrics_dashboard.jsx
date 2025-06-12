@@ -74,7 +74,7 @@ const PerformanceMetricsDashboard = () => {
           />
         </svg>
         <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <div className="text-2xl font-bold text-white">{value.toFixed(1)}%</div>
+          <div className="text-2xl font-bold text-white text-dawn-glow-teal animate-pulse-glow">{value.toFixed(1)}%</div>
           <div className="text-xs text-gray-400 text-center">{label}</div>
         </div>
       </div>
@@ -235,7 +235,7 @@ const PerformanceMetricsDashboard = () => {
   
   return (
     <>
-      <div className="bg-gray-900 rounded-lg p-6 border border-gray-700">
+      <div className="bg-gray-900 rounded-lg p-6 border border-gray-700 animate-float">
         <div className="flex items-center justify-between mb-6">
           <h3 className="text-xl font-bold text-white flex items-center">
             <span className="w-3 h-3 bg-purple-500 rounded-full mr-2 animate-pulse"></span>
@@ -268,9 +268,7 @@ const PerformanceMetricsDashboard = () => {
               volatility={calculateVolatility(metrics.symbolicLoad.history)}
             />
             <StatusIndicator status={loadStatus} />
-            <span className="text-xs text-gray-500 mt-1">
-              {metrics.symbolicLoad.current.toFixed(1)} / {metrics.symbolicLoad.total} units
-            </span>
+            <span className="text-sm font-bold text-white text-dawn-glow-teal animate-pulse-glow">{metrics.symbolicLoad.current.toFixed(1)} / {metrics.symbolicLoad.total} units</span>
           </div>
           
           <div className="flex flex-col items-center">
@@ -282,7 +280,7 @@ const PerformanceMetricsDashboard = () => {
               volatility={calculateVolatility(metrics.entropy.history)}
             />
             <StatusIndicator status={entropyStatus} />
-            <span className="text-xs text-gray-500 mt-1">{metrics.entropy.rate.toFixed(1)}%</span>
+            <span className="text-sm font-bold text-white text-dawn-glow-teal animate-pulse-glow">{metrics.entropy.rate.toFixed(1)}%</span>
           </div>
           
           <div className="flex flex-col items-center">
@@ -294,40 +292,40 @@ const PerformanceMetricsDashboard = () => {
               volatility={calculateVolatility(metrics.buffer.history)}
             />
             <StatusIndicator status={bufferStatus} />
-            <span className="text-xs text-gray-500 mt-1">{metrics.buffer.depth} threads</span>
+            <span className="text-sm font-bold text-white text-dawn-glow-teal animate-pulse-glow">{metrics.buffer.depth} threads</span>
           </div>
         </div>
         
         {/* Neural Activity Trends */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-          <div className="bg-gray-800 rounded p-4 border border-gray-700">
+          <div className="bg-gray-800 rounded p-4 border border-gray-700 animate-float">
             <div className="flex justify-between items-center mb-2">
               <span className="text-sm text-gray-400">Intensity Waves</span>
-              <span className="text-sm font-bold text-white">{metrics.intensity.current.toFixed(1)}%</span>
+              <span className="text-sm font-bold text-white text-dawn-glow-teal animate-pulse-glow">{metrics.intensity.current.toFixed(1)}%</span>
             </div>
             <Sparkline data={metrics.intensity.history} color="#ec4899" />
           </div>
           
-          <div className="bg-gray-800 rounded p-4 border border-gray-700">
+          <div className="bg-gray-800 rounded p-4 border border-gray-700 animate-float">
             <div className="flex justify-between items-center mb-2">
               <span className="text-sm text-gray-400">Symbolic Density</span>
-              <span className="text-sm font-bold text-white">{metrics.symbolicLoad.current.toFixed(1)} units</span>
+              <span className="text-sm font-bold text-white text-dawn-glow-teal animate-pulse-glow">{metrics.symbolicLoad.current.toFixed(1)} units</span>
             </div>
             <Sparkline data={metrics.symbolicLoad.history} color="#3b82f6" />
           </div>
           
-          <div className="bg-gray-800 rounded p-4 border border-gray-700">
+          <div className="bg-gray-800 rounded p-4 border border-gray-700 animate-float">
             <div className="flex justify-between items-center mb-2">
               <span className="text-sm text-gray-400">Entropy Field</span>
-              <span className="text-sm font-bold text-white">{metrics.entropy.rate.toFixed(1)}%</span>
+              <span className="text-sm font-bold text-white text-dawn-glow-teal animate-pulse-glow">{metrics.entropy.rate.toFixed(1)}%</span>
             </div>
             <Sparkline data={metrics.entropy.history} color="#10b981" />
           </div>
           
-          <div className="bg-gray-800 rounded p-4 border border-gray-700">
+          <div className="bg-gray-800 rounded p-4 border border-gray-700 animate-float">
             <div className="flex justify-between items-center mb-2">
               <span className="text-sm text-gray-400">Buffer Depth</span>
-              <span className="text-sm font-bold text-white">{metrics.buffer.depth}</span>
+              <span className="text-sm font-bold text-white text-dawn-glow-teal animate-pulse-glow">{metrics.buffer.depth}</span>
             </div>
             <Sparkline data={metrics.buffer.history} color="#f59e0b" />
           </div>

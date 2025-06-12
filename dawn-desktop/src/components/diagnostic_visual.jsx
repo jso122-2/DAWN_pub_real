@@ -275,7 +275,7 @@ const EnhancedLiveDiagnostic = () => {
   }, []);
   
   return (
-    <div className="bg-gray-900 rounded-lg p-6 border border-gray-700">
+    <div className="glass border-0 shadow-glow-sm rounded-lg p-6 hover:shadow-glow-md transition-all duration-300">
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-xl font-bold text-white flex items-center">
           <span className="w-3 h-3 bg-green-500 rounded-full mr-2 animate-pulse"></span>
@@ -337,7 +337,7 @@ const EnhancedLiveDiagnostic = () => {
       </div>
       
       <div className="mt-4 grid grid-cols-2 gap-4">
-        <div className="bg-gray-800 rounded p-3">
+        <div className="glass-dark animate-breathe rounded p-3 hover:shadow-glow-md transition-all duration-300">
           <h4 className="text-sm font-bold text-white mb-2">Pattern Detection</h4>
           <div className="space-y-1 max-h-32 overflow-y-auto">
             {patterns.detected.length === 0 ? (
@@ -354,7 +354,7 @@ const EnhancedLiveDiagnostic = () => {
           </div>
         </div>
         
-        <div className="bg-gray-800 rounded p-3">
+        <div className="glass-dark animate-breathe rounded p-3 hover:shadow-glow-md transition-all duration-300">
           <h4 className="text-sm font-bold text-white mb-2">Anomaly Detection</h4>
           <div className="space-y-1 max-h-32 overflow-y-auto">
             {patterns.anomalies.length === 0 ? (

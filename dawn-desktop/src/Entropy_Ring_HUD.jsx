@@ -1,24 +1,23 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Activity, Zap, AlertTriangle, Terminal } from 'lucide-react';
-import { useEntropyState } from '../../hooks/useEntropyState';
+import { useEntropyState } from './hooks/useEntropyState';
 
-const EntropyRingHUD: React.FC = () => {
+const EntropyRingHUD = () => {
   const { systemEntropy, subprocesses } = useEntropyState();
-  const [coherence, setCoherence] = useState<number>(78);
-  const [isHovered, setIsHovered] = useState<boolean>(false);
-  const [showTracer, setShowTracer] = useState<boolean>(false);
-  const [pulseIntensity, setPulseIntensity] = useState<number>(0);
-  const svgRef = useRef<SVGSVGElement | null>(null);
-  const [entropy, setEntropy] = useState(80);
+  const [coherence, setCoherence] = useState(78);
+  const [isHovered, setIsHovered] = useState(false);
+  const [showTracer, setShowTracer] = useState(false);
+  const [pulseIntensity, setPulseIntensity] = useState(0);
+  const svgRef = useRef(null);
 
   // Calculate ring colors based on entropy
-  const getEntropyColor = (value: number) => {
+  const getEntropyColor = (value) => {
     if (value < 30) return '#14b8a6'; // stable - teal
     if (value < 70) return '#f59e0b'; // flux - amber
     return '#ef4444'; // critical - red
   };
 
-  const getCoherenceColor = (value: number) => {
+  const getCoherenceColor = (value) => {
     if (value > 70) return '#00ffcc'; // high coherence
     if (value > 40) return '#9945ff'; // medium
     return '#ff0080'; // low coherence
@@ -43,7 +42,9 @@ const EntropyRingHUD: React.FC = () => {
     <div className="fixed top-20 right-8 z-50">
       {/* Main Ring Container */}
       <div
-        className="relative transition-all duration-500 opacity-100 scale-100"
+        className={`relative transition-all duration-500 ${
+          isHovered || systemEntropy > 75 ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none'
+        }`}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => systemEntropy <= 75 && setIsHovered(false)}
       >
@@ -210,4 +211,4 @@ const EntropyRingHUD: React.FC = () => {
   );
 };
 
-export default EntropyRingHUD; 
+export default EntropyRingHUD;

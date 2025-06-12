@@ -114,7 +114,7 @@ const EntropyGauge = ({ value, history = [], thresholds = [0.3, 0.7] }) => {
   };
 
   return (
-    <div className="bg-gray-800 rounded-lg p-6 shadow-lg">
+    <div className="bg-gray-800 rounded-lg p-6 shadow-lg animate-float">
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-lg font-semibold text-white">🌀 Entropy</h3>
         <SparkLine data={history} />
@@ -129,9 +129,7 @@ const EntropyGauge = ({ value, history = [], thresholds = [0.3, 0.7] }) => {
         />
         
         <div className="text-center">
-          <div className="text-3xl font-bold text-white mb-1">
-            {displayValue.toFixed(3)}
-          </div>
+          <div className="text-3xl font-bold text-white text-dawn-glow-teal animate-pulse-glow mb-1">{displayValue.toFixed(3)}</div>
           <div className={`text-sm px-2 py-1 rounded ${
             displayValue < 0.3 ? 'text-blue-400 bg-blue-400/20' :
             displayValue < 0.7 ? 'text-yellow-400 bg-yellow-400/20' :
@@ -198,7 +196,7 @@ const HeatGauge = ({ value, history = [] }) => {
   }, []);
 
   return (
-    <div className="bg-gray-800 rounded-lg p-6 shadow-lg">
+    <div className="bg-gray-800 rounded-lg p-6 shadow-lg animate-float">
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-lg font-semibold text-white">🌡️ Heat</h3>
         <div className="text-xs text-gray-400">
@@ -261,9 +259,7 @@ const HeatGauge = ({ value, history = [] }) => {
         
         {/* Value display */}
         <div className="ml-6 flex flex-col justify-center">
-          <div className="text-3xl font-bold text-white mb-1">
-            {displayValue.toFixed(3)}
-          </div>
+          <div className="text-3xl font-bold text-white text-dawn-glow-teal animate-pulse-glow mb-1">{displayValue.toFixed(3)}</div>
           <div className="text-sm text-gray-400">
             {Math.round(displayValue * 100)}°
           </div>
@@ -308,7 +304,7 @@ const SCUPGauge = ({ value, history = [] }) => {
   }, [displayValue]);
 
   return (
-    <div className="bg-gray-800 rounded-lg p-6 shadow-lg">
+    <div className="bg-gray-800 rounded-lg p-6 shadow-lg animate-float">
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-lg font-semibold text-white">🔄 SCUP</h3>
         <div className={`text-xs px-2 py-1 rounded ${
@@ -349,9 +345,7 @@ const SCUPGauge = ({ value, history = [] }) => {
         </div>
         
         <div className="text-center">
-          <div className="text-3xl font-bold text-white mb-1">
-            {displayValue.toFixed(3)}
-          </div>
+          <div className="text-3xl font-bold text-white text-dawn-glow-teal animate-pulse-glow mb-1">{displayValue.toFixed(3)}</div>
           <div className="text-sm text-gray-400">
             Synchronization
           </div>
@@ -388,7 +382,7 @@ const TickRateGauge = ({ value, history = [] }) => {
   const bpm = Math.round(displayValue * 120); // Convert to BPM scale
 
   return (
-    <div className="bg-gray-800 rounded-lg p-6 shadow-lg">
+    <div className="bg-gray-800 rounded-lg p-6 shadow-lg animate-float">
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-lg font-semibold text-white">⏱️ Tick Rate</h3>
         <div className={`text-xs px-2 py-1 rounded ${
@@ -423,9 +417,7 @@ const TickRateGauge = ({ value, history = [] }) => {
         </div>
         
         <div className="text-center">
-          <div className="text-3xl font-bold text-white mb-1">
-            {displayValue.toFixed(3)}
-          </div>
+          <div className="text-3xl font-bold text-white text-dawn-glow-teal animate-pulse-glow mb-1">{displayValue.toFixed(3)}</div>
           <div className="text-sm text-gray-400">
             Rate
           </div>
@@ -444,7 +436,7 @@ const CompositeMetrics = ({ scup, entropy, heat, tickRate }) => {
 
   return (
     <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-      <div className="bg-gray-800 rounded-lg p-4 shadow-lg">
+      <div className="bg-gray-800 rounded-lg p-4 shadow-lg animate-float">
         <div className="flex items-center justify-between mb-2">
           <h4 className="text-sm font-medium text-gray-300">⚡ System Load</h4>
           <div className={`w-2 h-2 rounded-full ${
@@ -468,7 +460,7 @@ const CompositeMetrics = ({ scup, entropy, heat, tickRate }) => {
         </div>
       </div>
 
-      <div className="bg-gray-800 rounded-lg p-4 shadow-lg">
+      <div className="bg-gray-800 rounded-lg p-4 shadow-lg animate-float">
         <div className="flex items-center justify-between mb-2">
           <h4 className="text-sm font-medium text-gray-300">🏛️ Stability</h4>
           <div className={`w-2 h-2 rounded-full ${
@@ -485,7 +477,7 @@ const CompositeMetrics = ({ scup, entropy, heat, tickRate }) => {
         </div>
       </div>
 
-      <div className="bg-gray-800 rounded-lg p-4 shadow-lg">
+      <div className="bg-gray-800 rounded-lg p-4 shadow-lg animate-float">
         <div className="flex items-center justify-between mb-2">
           <h4 className="text-sm font-medium text-gray-300">🔗 Coherence</h4>
           <div className={`w-2 h-2 rounded-full ${
@@ -504,7 +496,7 @@ const CompositeMetrics = ({ scup, entropy, heat, tickRate }) => {
 
       <div className={`bg-gray-800 rounded-lg p-4 shadow-lg transition-all duration-300 ${
         pressureWarning ? 'ring-2 ring-red-400 bg-red-900/20' : ''
-      }`}>
+      } animate-float`}>
         <div className="flex items-center justify-between mb-2">
           <h4 className="text-sm font-medium text-gray-300">⚠️ Pressure</h4>
           <div className={`w-2 h-2 rounded-full ${

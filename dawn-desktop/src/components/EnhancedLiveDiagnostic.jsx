@@ -349,7 +349,7 @@ const EnhancedLiveDiagnostic = ({ scupData, entropyData, heatData, updateInterva
   };
   
   return (
-    <div className="bg-gray-900 rounded-lg p-6 border border-gray-700 relative">
+    <div className="glass border-0 shadow-glow-sm rounded-lg p-6 relative hover:shadow-glow-md transition-all duration-300">
       {/* FPS Counter */}
       <div className="absolute top-2 right-4 text-xs text-cyan-300 bg-gray-800/80 px-2 py-1 rounded shadow">
         FPS: {fps}
@@ -415,7 +415,7 @@ const EnhancedLiveDiagnostic = ({ scupData, entropyData, heatData, updateInterva
       </div>
       
       <div className="mt-4 grid grid-cols-2 gap-4">
-        <div className="bg-gray-800 rounded p-3">
+        <div className="glass-dark animate-breathe rounded p-3 hover:shadow-glow-md transition-all duration-300">
           <h4 className="text-sm font-bold text-white mb-2">Pattern Detection</h4>
           <div className="space-y-1 max-h-32 overflow-y-auto">
             {patterns.detected.length === 0 ? (
@@ -432,7 +432,7 @@ const EnhancedLiveDiagnostic = ({ scupData, entropyData, heatData, updateInterva
           </div>
         </div>
         
-        <div className="bg-gray-800 rounded p-3">
+        <div className="glass-dark animate-breathe rounded p-3 hover:shadow-glow-md transition-all duration-300">
           <h4 className="text-sm font-bold text-white mb-2">Anomaly Detection</h4>
           <div className="space-y-1 max-h-32 overflow-y-auto">
             {patterns.anomalies.length === 0 ? (

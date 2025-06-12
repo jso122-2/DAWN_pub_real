@@ -390,7 +390,7 @@ export default function TalkToDAWN({
             onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
             placeholder={isConnected ? "Type a message..." : "Connecting to DAWN..."}
             disabled={!isConnected}
-            className="flex-1 bg-gray-800 text-white px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+            className="flex-1 bg-dawn-surface/50 focus:shadow-glow-sm focus:border-dawn-glow-teal"
           />
           
           <button
@@ -404,7 +404,7 @@ export default function TalkToDAWN({
           <button
             onClick={sendMessage}
             disabled={!isConnected || !inputValue.trim()}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-4 py-2 bg-gradient-to-r from-dawn-neural-300 to-dawn-neural-400 hover:shadow-glow-lg text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Send
           </button>

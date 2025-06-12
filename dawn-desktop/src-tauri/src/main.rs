@@ -1157,10 +1157,11 @@ async fn get_sigil_state(state: State<'_, AppState>) -> Result<SigilStateRespons
         .map_err(|e| format!("Failed to parse consciousness JSON: {}", e))?;
 
     // Extract sigil information from consciousness response
+    let default_value = serde_json::Value::Object(serde_json::Map::new());
     let sigils_data = consciousness_data
         .get("consciousness")
         .and_then(|c| c.get("emotional_sigils"))
-        .unwrap_or(&serde_json::Value::Object(serde_json::Map::new()));
+        .unwrap_or(&default_value);
 
     let mut sigils = Vec::new();
     let mut total_intensity = 0.0;
@@ -1198,10 +1199,11 @@ async fn get_sigil_state(state: State<'_, AppState>) -> Result<SigilStateRespons
         .unwrap_or("unknown")
         .to_string();
 
+    let active_count = sigils.len() as u32;
     let response = SigilStateResponse {
         sigils,
         total_intensity,
-        active_count: sigils.len() as u32,
+        active_count,
         timestamp: chrono::Utc::now().to_rfc3339(),
         current_emotion_state: current_state,
     };
@@ -2316,8 +2318,9 @@ fn main() {
             
             // Start periodic sigil monitoring for change detection
             let app_handle_sigil = app_handle.clone();
-            let state_sigil = app_handle.state::<AppState>();
+            let app_handle_sigil_clone = app_handle_sigil.clone();
             tauri::async_runtime::spawn(async move {
+                let state_sigil = app_handle_sigil_clone.state::<AppState>();
                 let mut last_sigil_state: Option<SigilStateResponse> = None;
                 
                 loop {

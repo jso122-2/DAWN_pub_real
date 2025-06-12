@@ -12,7 +12,7 @@ const TilingConfigUI: React.FC = () => {
   } = useTilingAwareUI();
 
   return (
-    <div className="fixed bottom-4 right-4 bg-gray-900/90 backdrop-blur-xl rounded-lg p-4 shadow-2xl border border-gray-700/50 min-w-[300px]">
+    <div className="fixed bottom-4 right-4 glass-dark animate-breathe rounded-lg p-4 shadow-glow-sm border-0 min-w-[300px] hover:shadow-glow-md transition-all duration-300">
       <h3 className="text-lg font-semibold text-gray-100 mb-4">Tiling Mode Configuration</h3>
       
       <div className="space-y-3">

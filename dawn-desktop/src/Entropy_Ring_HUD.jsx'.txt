@@ -1,24 +1,57 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Activity, Zap, AlertTriangle, Terminal } from 'lucide-react';
-import { useEntropyState } from '../../hooks/useEntropyState';
 
-const EntropyRingHUD: React.FC = () => {
-  const { systemEntropy, subprocesses } = useEntropyState();
-  const [coherence, setCoherence] = useState<number>(78);
-  const [isHovered, setIsHovered] = useState<boolean>(false);
-  const [showTracer, setShowTracer] = useState<boolean>(false);
-  const [pulseIntensity, setPulseIntensity] = useState<number>(0);
-  const svgRef = useRef<SVGSVGElement | null>(null);
-  const [entropy, setEntropy] = useState(80);
+// Mock subprocess data - replace with real data stream
+const generateSubprocessData = () => ({
+  pid: Math.floor(Math.random() * 10000),
+  name: ['claude-api', 'cursor-sync', 'neural-proc', 'memory-scan'][Math.floor(Math.random() * 4)],
+  cpu: Math.random() * 100,
+  memory: Math.random() * 1024,
+  status: ['active', 'idle', 'pending'][Math.floor(Math.random() * 3)],
+  entropy: Math.random() * 100
+});
+
+const EntropyRingHUD = () => {
+  const [entropy, setEntropy] = useState(45);
+  const [coherence, setCoherence] = useState(78);
+  const [isHovered, setIsHovered] = useState(false);
+  const [showTracer, setShowTracer] = useState(false);
+  const [subprocesses, setSubprocesses] = useState([]);
+  const [pulseIntensity, setPulseIntensity] = useState(0);
+  const svgRef = useRef(null);
+
+  // Simulate entropy fluctuations
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setEntropy(prev => {
+        const change = (Math.random() - 0.5) * 10;
+        return Math.max(0, Math.min(100, prev + change));
+      });
+      setCoherence(prev => {
+        const change = (Math.random() - 0.5) * 5;
+        return Math.max(0, Math.min(100, prev + change));
+      });
+      
+      // Update subprocesses
+      if (Math.random() > 0.7) {
+        setSubprocesses(prev => {
+          const newProc = generateSubprocessData();
+          return [...prev.slice(-4), newProc];
+        });
+      }
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   // Calculate ring colors based on entropy
-  const getEntropyColor = (value: number) => {
+  const getEntropyColor = (value) => {
     if (value < 30) return '#14b8a6'; // stable - teal
     if (value < 70) return '#f59e0b'; // flux - amber
     return '#ef4444'; // critical - red
   };
 
-  const getCoherenceColor = (value: number) => {
+  const getCoherenceColor = (value) => {
     if (value > 70) return '#00ffcc'; // high coherence
     if (value > 40) return '#9945ff'; // medium
     return '#ff0080'; // low coherence
@@ -26,13 +59,13 @@ const EntropyRingHUD: React.FC = () => {
 
   // Auto-show when entropy is high
   useEffect(() => {
-    if (systemEntropy > 75) {
+    if (entropy > 75) {
       setIsHovered(true);
-      setPulseIntensity(Math.min((systemEntropy - 75) / 25, 1));
+      setPulseIntensity(Math.min((entropy - 75) / 25, 1));
     } else if (!isHovered) {
       setTimeout(() => setIsHovered(false), 3000);
     }
-  }, [systemEntropy]);
+  }, [entropy]);
 
   const radius = 80;
   const strokeWidth = 8;
@@ -43,9 +76,11 @@ const EntropyRingHUD: React.FC = () => {
     <div className="fixed top-20 right-8 z-50">
       {/* Main Ring Container */}
       <div
-        className="relative transition-all duration-500 opacity-100 scale-100"
+        className={`relative transition-all duration-500 ${
+          isHovered || entropy > 75 ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none'
+        }`}
         onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => systemEntropy <= 75 && setIsHovered(false)}
+        onMouseLeave={() => entropy <= 75 && setIsHovered(false)}
       >
         {/* SVG Ring */}
         <svg
@@ -53,17 +88,17 @@ const EntropyRingHUD: React.FC = () => {
           height={radius * 2}
           width={radius * 2}
           className="transform -rotate-90 animate-entropy-spin"
-          style={{ animationDuration: `${20 + systemEntropy / 5}s` }}
+          style={{ animationDuration: `${20 + entropy / 5}s` }}
         >
           {/* Outer Glow */}
           <circle
-            stroke={getEntropyColor(systemEntropy)}
+            stroke={getEntropyColor(entropy)}
             fill="transparent"
             strokeWidth={strokeWidth + 4}
             strokeDasharray={circumference + ' ' + circumference}
             style={{
-              strokeDashoffset: circumference - (systemEntropy / 100) * circumference,
-              filter: `drop-shadow(0 0 ${10 + pulseIntensity * 20}px ${getEntropyColor(systemEntropy)})`,
+              strokeDashoffset: circumference - (entropy / 100) * circumference,
+              filter: `drop-shadow(0 0 ${10 + pulseIntensity * 20}px ${getEntropyColor(entropy)})`,
               opacity: 0.3 + pulseIntensity * 0.7,
               transition: 'all 0.5s ease-out'
             }}
@@ -91,7 +126,7 @@ const EntropyRingHUD: React.FC = () => {
           {/* Pulse Ring */}
           {pulseIntensity > 0 && (
             <circle
-              stroke={getEntropyColor(systemEntropy)}
+              stroke={getEntropyColor(entropy)}
               fill="transparent"
               strokeWidth={2}
               r={normalizedRadius + 10}
@@ -109,7 +144,7 @@ const EntropyRingHUD: React.FC = () => {
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="text-center">
             <div className="text-2xl font-bold text-dawn-glow-teal text-glow">
-              {systemEntropy.toFixed(0)}%
+              {entropy.toFixed(0)}%
             </div>
             <div className="text-xs text-gray-400">entropy</div>
           </div>
@@ -117,9 +152,9 @@ const EntropyRingHUD: React.FC = () => {
 
         {/* Status Icons */}
         <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 flex gap-2">
-          {systemEntropy > 30 && <Activity className="w-4 h-4 text-dawn-glow-amber animate-pulse" />}
-          {systemEntropy > 60 && <Zap className="w-4 h-4 text-dawn-glow-pink animate-pulse" />}
-          {systemEntropy > 80 && <AlertTriangle className="w-4 h-4 text-red-500 animate-bounce" />}
+          {entropy > 30 && <Activity className="w-4 h-4 text-dawn-glow-amber animate-pulse" />}
+          {entropy > 60 && <Zap className="w-4 h-4 text-dawn-glow-pink animate-pulse" />}
+          {entropy > 80 && <AlertTriangle className="w-4 h-4 text-red-500 animate-bounce" />}
         </div>
 
         {/* Tracer Toggle */}
@@ -210,4 +245,4 @@ const EntropyRingHUD: React.FC = () => {
   );
 };
 
-export default EntropyRingHUD; 
+export default EntropyRingHUD;

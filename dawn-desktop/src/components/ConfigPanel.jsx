@@ -246,7 +246,7 @@ export default function ConfigPanel({ className = "", currentMetrics = {} }) {
   }
 
   return (
-    <div className={`bg-gray-800/50 backdrop-blur-lg rounded-2xl border border-gray-700/50 shadow-2xl ${className}`}>
+    <div className={`glass border-0 shadow-glow-sm ${className} hover:shadow-glow-md transition-all duration-300`}>
       {/* Header */}
       <div className="p-6 border-b border-gray-700/50">
         <h2 className="text-2xl font-bold text-gray-200 flex items-center">
@@ -277,7 +277,7 @@ export default function ConfigPanel({ className = "", currentMetrics = {} }) {
 
       <div className="p-6 space-y-6">
         {/* 1. Subsystem Management */}
-        <div className="bg-gray-900/30 rounded-lg border border-gray-600/30">
+        <div className="bg-gray-900/30 rounded-lg border border-gray-600/30 hover:shadow-glow-md transition-all duration-300">
           <button
             onClick={() => toggleSection('subsystems')}
             className="w-full p-4 text-left flex items-center justify-between hover:bg-gray-700/20 transition-colors"
@@ -294,7 +294,7 @@ export default function ConfigPanel({ className = "", currentMetrics = {} }) {
           {expandedSections.subsystems && (
             <div className="p-4 border-t border-gray-600/30">
               {/* Add New Subsystem */}
-              <div className="mb-6 p-4 bg-gray-800/30 rounded-lg border border-gray-600/20">
+              <div className="mb-6 p-4 bg-dawn-panel/40 backdrop-blur-xl rounded-lg border border-gray-600/20 hover:shadow-glow-md transition-all duration-300">
                 <h4 className="text-md font-medium text-gray-300 mb-3">Add New Subsystem</h4>
                 <div className="space-y-3">
                   <input
@@ -314,7 +314,7 @@ export default function ConfigPanel({ className = "", currentMetrics = {} }) {
                   <button
                     onClick={addSubsystem}
                     disabled={isLoading || !newSubsystemName.trim()}
-                    className="px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-lg font-medium transition-colors"
+                    className="px-4 py-2 bg-gradient-to-r from-dawn-neural-300 to-dawn-neural-400 hover:shadow-glow-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-lg font-medium transition-colors"
                   >
                     {isLoading ? '⏳ Adding...' : '➕ Add Subsystem'}
                   </button>
@@ -388,7 +388,7 @@ export default function ConfigPanel({ className = "", currentMetrics = {} }) {
         </div>
 
         {/* 2. Metric Thresholds */}
-        <div className="bg-gray-900/30 rounded-lg border border-gray-600/30">
+        <div className="bg-gray-900/30 rounded-lg border border-gray-600/30 hover:shadow-glow-md transition-all duration-300">
           <button
             onClick={() => toggleSection('thresholds')}
             className="w-full p-4 text-left flex items-center justify-between hover:bg-gray-700/20 transition-colors"
@@ -405,7 +405,7 @@ export default function ConfigPanel({ className = "", currentMetrics = {} }) {
           {expandedSections.thresholds && (
             <div className="p-4 border-t border-gray-600/30">
               {Object.entries(thresholds).map(([metric, threshold]) => (
-                <div key={metric} className="mb-6 p-4 bg-gray-800/30 rounded-lg border border-gray-600/20">
+                <div key={metric} className="mb-6 p-4 bg-dawn-panel/40 backdrop-blur-xl rounded-lg border border-gray-600/20 hover:shadow-glow-md transition-all duration-300">
                   <div className="flex items-center justify-between mb-4">
                     <div>
                       <h4 className="text-md font-medium text-gray-200 capitalize">
@@ -498,7 +498,7 @@ export default function ConfigPanel({ className = "", currentMetrics = {} }) {
               <button
                 onClick={saveThresholds}
                 disabled={isLoading}
-                className="w-full px-4 py-3 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white rounded-lg font-medium transition-colors"
+                className="w-full px-4 py-3 bg-gradient-to-r from-dawn-neural-300 to-dawn-neural-400 hover:shadow-glow-lg hover:bg-blue-700 disabled:opacity-50 text-white rounded-lg font-medium transition-colors"
               >
                 {isLoading ? '⏳ Saving...' : '💾 Save Thresholds'}
               </button>
@@ -507,7 +507,7 @@ export default function ConfigPanel({ className = "", currentMetrics = {} }) {
         </div>
 
         {/* 3. Neural Network Configuration */}
-        <div className="bg-gray-900/30 rounded-lg border border-gray-600/30">
+        <div className="bg-gray-900/30 rounded-lg border border-gray-600/30 hover:shadow-glow-md transition-all duration-300">
           <button
             onClick={() => toggleSection('neural')}
             className="w-full p-4 text-left flex items-center justify-between hover:bg-gray-700/20 transition-colors"
@@ -629,7 +629,7 @@ export default function ConfigPanel({ className = "", currentMetrics = {} }) {
                 <button
                   onClick={saveNeuralConfig}
                   disabled={isLoading}
-                  className="flex-1 px-4 py-3 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white rounded-lg font-medium transition-colors"
+                  className="flex-1 px-4 py-3 bg-gradient-to-r from-dawn-neural-300 to-dawn-neural-400 hover:shadow-glow-lg hover:bg-blue-700 disabled:opacity-50 text-white rounded-lg font-medium transition-colors"
                 >
                   {isLoading ? '⏳ Saving...' : '💾 Save Configuration'}
                 </button>
@@ -637,7 +637,7 @@ export default function ConfigPanel({ className = "", currentMetrics = {} }) {
                 <button
                   onClick={resetNeuralWeights}
                   disabled={isLoading}
-                  className="flex-1 px-4 py-3 bg-red-600 hover:bg-red-700 disabled:opacity-50 text-white rounded-lg font-medium transition-colors"
+                  className="flex-1 px-4 py-3 bg-red-600/80 hover:bg-red-600 text-white rounded-lg font-medium transition-colors"
                 >
                   {isLoading ? '⏳ Resetting...' : '🔄 Reset Weights'}
                 </button>
@@ -647,7 +647,7 @@ export default function ConfigPanel({ className = "", currentMetrics = {} }) {
         </div>
 
         {/* 4. Data Recording */}
-        <div className="bg-gray-900/30 rounded-lg border border-gray-600/30">
+        <div className="bg-gray-900/30 rounded-lg border border-gray-600/30 hover:shadow-glow-md transition-all duration-300">
           <button
             onClick={() => toggleSection('recording')}
             className="w-full p-4 text-left flex items-center justify-between hover:bg-gray-700/20 transition-colors"
@@ -748,7 +748,7 @@ export default function ConfigPanel({ className = "", currentMetrics = {} }) {
                   <button
                     onClick={saveRecordingConfig}
                     disabled={isLoading}
-                    className="px-4 py-3 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white rounded-lg font-medium transition-colors"
+                    className="px-4 py-3 bg-gradient-to-r from-dawn-neural-300 to-dawn-neural-400 hover:shadow-glow-lg hover:bg-blue-700 disabled:opacity-50 text-white rounded-lg font-medium transition-colors"
                   >
                     {isLoading ? '⏳ Saving...' : '💾 Save Config'}
                   </button>

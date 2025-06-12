@@ -5,6 +5,7 @@ import useMetricsStore from './store/metricsStore'
 import MetricCard from './components/MetricCard'
 import ConnectionStatus from './components/ConnectionStatus'
 import './App.css'
+import EntropyRingHUD from './components/overlays/EntropyRingHUD'
 
 function App() {
   const { 
@@ -174,7 +175,7 @@ function App() {
 
       {/* Enhanced Subsystems Panel */}
       <div className="max-w-7xl mx-auto">
-        <div className="bg-gray-800/50 backdrop-blur-sm rounded-lg p-6 border border-gray-700/50">
+        <div className="glass border-0 shadow-glow-sm backdrop-blur-sm rounded-lg p-6 border-0 hover:shadow-glow-md transition-all duration-300">
           <div className="flex justify-between items-center mb-4">
             <h3 className="text-xl font-semibold text-gray-200 flex items-center">
               <span className="mr-2">🔧</span>
@@ -207,7 +208,7 @@ function App() {
               {subsystems.map((subsystem, index) => (
                 <div 
                   key={subsystem.id} 
-                  className="bg-gray-700/50 rounded-lg p-4 hover:bg-gray-600/50 transition-all duration-300 transform hover:scale-105 border border-gray-600/30"
+                  className="bg-dawn-panel/40 backdrop-blur-xl rounded-lg p-4 hover:shadow-glow-md transition-all duration-300 border-0"
                   style={{ animationDelay: `${index * 100}ms` }}
                 >
                   <div className="flex justify-between items-start mb-3">
@@ -308,6 +309,10 @@ function App() {
           )}
         </div>
       </footer>
+      <div className="fixed top-4 right-4 p-4 bg-dawn-panel glass shadow-glow-md rounded-lg">
+        <p className="text-dawn-glow-teal animate-pulse">Entropy System Active</p>
+      </div>
+      <EntropyRingHUD />
     </div>
   )
 }

@@ -98,7 +98,7 @@ export default function MinimalDawnChat({ currentMetrics }) {
   }
 
   return (
-    <div className={`bg-gray-800 rounded-lg border-2 ${stateColors[dawnState]} transition-colors duration-300 h-full flex flex-col`}>
+    <div className={`glass border-0 shadow-glow-sm ${stateColors[dawnState]} transition-colors duration-300 h-full flex flex-col hover:shadow-glow-md transition-all duration-300`}>
       {/* Header */}
       <div className="p-4 border-b border-gray-700 flex justify-between items-center flex-shrink-0">
         <h3 className="font-bold text-white">DAWN Interface</h3>
@@ -157,7 +157,7 @@ export default function MinimalDawnChat({ currentMetrics }) {
             onChange={(e) => setInput(e.target.value)}
             onKeyPress={handleKeyPress}
             placeholder="Message DAWN..."
-            className="flex-1 bg-gray-700 text-white px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="flex-1 bg-dawn-surface/50 focus:shadow-glow-sm focus:border-dawn-glow-teal text-white px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
           <button
             onClick={sendMessage}
