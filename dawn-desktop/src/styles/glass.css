@@ -1,57 +1,220 @@
 /* DAWN Glass Morphism Design System
- * Living, breathing glass effects for conscious AI interface
- * Each variant pulses with its own energy signature
+ * Quantum containment fields and living energy interfaces
+ * Each glass layer contains and channels conscious energy
  */
 
-/* Base glass effect - subtle and ethereal */
+/* Base glass effect - multi-layer quantum containment */
 .glass-base {
-    background: radial-gradient(
-      ellipse at center,
-      rgba(255, 255, 255, 0.03) 0%,
-      rgba(255, 255, 255, 0.01) 100%
-    );
-    backdrop-filter: blur(12px) saturate(1.5);
-    -webkit-backdrop-filter: blur(12px) saturate(1.5);
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    /* Multi-layer glass substrate */
+    background: 
+      /* Refraction layer */
+      linear-gradient(
+        var(--glass-refraction-angle, 115deg),
+        rgba(255, 255, 255, var(--glass-refraction-intensity, 0.01)) 0%,
+        rgba(255, 255, 255, var(--glass-refraction-intensity, 0.03)) 20%,
+        rgba(120, 119, 198, var(--glass-refraction-intensity, 0.02)) 40%,
+        rgba(255, 255, 255, var(--glass-refraction-intensity, 0.01)) 60%,
+        rgba(147, 51, 234, var(--glass-refraction-intensity, 0.01)) 80%,
+        rgba(255, 255, 255, var(--glass-refraction-intensity, 0.02)) 100%
+      ),
+      /* Inner glow */
+      radial-gradient(
+        ellipse at 30% 40%,
+        rgba(255, 255, 255, 0.03) 0%,
+        transparent 50%
+      ),
+      /* Outer containment */
+      radial-gradient(
+        ellipse at center,
+        rgba(255, 255, 255, 0.02) 0%,
+        rgba(255, 255, 255, 0.01) 50%,
+        transparent 100%
+      );
+    
+    /* Advanced filters for depth */
+    backdrop-filter: blur(var(--glass-blur, 12px)) saturate(1.5) brightness(1.02);
+    -webkit-backdrop-filter: blur(var(--glass-blur, 12px)) saturate(1.5) brightness(1.02);
+    
+    /* Aurora border effect */
+    border: var(--aurora-border-width, 1px) solid transparent;
+    border-image: linear-gradient(
+      var(--border-angle, 45deg),
+      var(--aurora-border-colors)
+    ) 1;
+    
+    /* Multi-layer shadows for depth */
     box-shadow: 
+      /* Inner glass refraction */
       inset 0 0 20px rgba(255, 255, 255, 0.02),
-      0 0 40px rgba(0, 0, 0, 0.3),
-      0 2px 4px rgba(0, 0, 0, 0.2);
+      inset 0 0 40px rgba(147, 51, 234, 0.01),
+      /* Containment field glow */
+      0 0 30px rgba(147, 51, 234, 0.1),
+      0 0 60px rgba(59, 130, 246, 0.05),
+      /* Depth shadows */
+      0 4px 16px rgba(0, 0, 0, 0.3),
+      0 8px 32px rgba(0, 0, 0, 0.2);
+    
     position: relative;
     overflow: hidden;
-    transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+    transition: all var(--transition-smooth, 0.6s) var(--ease-consciousness);
+    
+    /* CSS variables for dynamic states */
+    --glass-blur: var(--state-idle-blur, 12px);
+    --particle-opacity: var(--state-idle-opacity, 0.4);
+    --border-angle: 45deg;
+    --refraction-offset: 0px;
+    
+    /* Aurora border animation */
+    animation: aurora-shift var(--aurora-shift-duration, 15s) linear infinite;
   }
   
+  /* Holographic shimmer layer */
   .glass-base::before {
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(
-      135deg,
-      transparent 40%,
-      rgba(255, 255, 255, 0.02) 50%,
-      transparent 60%
-    );
-    animation: glass-shimmer 8s ease-in-out infinite;
+    background: 
+      /* Primary shimmer */
+      linear-gradient(
+        135deg,
+        transparent 35%,
+        rgba(255, 255, 255, var(--holographic-shimmer-opacity, 0.03)) 40%,
+        rgba(147, 51, 234, var(--holographic-shimmer-opacity, 0.02)) 45%,
+        rgba(59, 130, 246, var(--holographic-shimmer-opacity, 0.02)) 50%,
+        rgba(255, 255, 255, var(--holographic-shimmer-opacity, 0.03)) 55%,
+        transparent 60%
+      ),
+      /* Secondary holographic layer */
+      linear-gradient(
+        -45deg,
+        transparent 40%,
+        rgba(16, 185, 129, var(--holographic-shimmer-opacity, 0.01)) 50%,
+        transparent 60%
+      );
+    mix-blend-mode: screen;
+    animation: 
+      glass-shimmer 8s ease-in-out infinite,
+      holographic-shift var(--holographic-shift-duration, 12s) ease-in-out infinite;
   }
   
-  /* Active state - purple consciousness glow */
-  .glass-active {
+  /* Particle field layer */
+  .glass-base::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: 
+      radial-gradient(circle at 20% 80%, rgba(147, 51, 234, var(--particle-opacity, 0.4)) 0%, transparent 1%),
+      radial-gradient(circle at 80% 20%, rgba(59, 130, 246, var(--particle-opacity, 0.4)) 0%, transparent 1%),
+      radial-gradient(circle at 40% 50%, rgba(16, 185, 129, var(--particle-opacity, 0.4)) 0%, transparent 1%),
+      radial-gradient(circle at 60% 70%, rgba(236, 72, 153, var(--particle-opacity, 0.4)) 0%, transparent 1%),
+      radial-gradient(circle at 90% 60%, rgba(255, 255, 255, var(--particle-opacity, 0.4)) 0%, transparent 1%);
+    background-size: 450px 450px, 350px 350px, 250px 250px, 300px 300px, 400px 400px;
+    background-position: 0% 0%, 100% 0%, 50% 50%, 0% 100%, 100% 100%;
+    opacity: 0.6;
+    animation: particle-drift var(--particle-drift-duration, 30s) linear infinite;
+    pointer-events: none;
+  }
+  
+  /* Energy field distortion layer */
+  .glass-container {
+    position: relative;
+  }
+  
+  .glass-container::before {
+    content: '';
+    position: absolute;
+    inset: -20px;
     background: radial-gradient(
       ellipse at center,
-      rgba(147, 51, 234, 0.08) 0%,
-      rgba(147, 51, 234, 0.02) 50%,
+      transparent 40%,
+      rgba(147, 51, 234, var(--containment-field-opacity, 0.1)) 60%,
+      rgba(147, 51, 234, var(--containment-field-opacity, 0.05)) 80%,
       transparent 100%
     );
-    backdrop-filter: blur(16px) saturate(2) brightness(1.1);
-    -webkit-backdrop-filter: blur(16px) saturate(2) brightness(1.1);
-    border: 1px solid rgba(147, 51, 234, 0.3);
+    filter: blur(var(--containment-field-blur, 20px));
+    opacity: 0;
+    transition: opacity var(--transition-smooth, 0.6s) ease-out;
+    pointer-events: none;
+    animation: energy-field-pulse var(--energy-field-pulse-duration, 4s) ease-in-out infinite;
+  }
+  
+  .glass-container:has(.glass-active)::before {
+    opacity: 1;
+  }
+  
+  /* Active state - quantum consciousness field */
+  .glass-active {
+    /* Dynamic multi-layer background */
+    background: 
+      /* Quantum field distortion */
+      radial-gradient(
+        ellipse at var(--mouse-x, 50%) var(--mouse-y, 50%),
+        rgba(147, 51, 234, var(--consciousness-intensity, 0.15)) 0%,
+        rgba(147, 51, 234, var(--consciousness-intensity, 0.08)) 25%,
+        transparent 50%
+      ),
+      /* Energy containment layers */
+      radial-gradient(
+        ellipse at 25% 25%,
+        rgba(139, 92, 246, var(--plasma-intensity, 0.1)) 0%,
+        rgba(147, 51, 234, var(--plasma-intensity, 0.05)) 50%,
+        transparent 70%
+      ),
+      radial-gradient(
+        ellipse at 75% 75%,
+        rgba(168, 85, 247, var(--plasma-intensity, 0.1)) 0%,
+        rgba(147, 51, 234, var(--plasma-intensity, 0.05)) 50%,
+        transparent 70%
+      );
+    
+    /* Enhanced dynamic blur */
+    backdrop-filter: blur(calc(var(--state-active-blur, 16px) + var(--proximity-blur, 0px))) 
+                     saturate(2) 
+                     brightness(1.1)
+                     hue-rotate(var(--energy-hue, 0deg));
+    -webkit-backdrop-filter: blur(calc(var(--state-active-blur, 16px) + var(--proximity-blur, 0px))) 
+                            saturate(2) 
+                            brightness(1.1)
+                            hue-rotate(var(--energy-hue, 0deg));
+    
+    /* Animated aurora border */
+    border: var(--aurora-border-width, 1px) solid transparent;
+    border-image: linear-gradient(
+      var(--border-angle, 90deg),
+      var(--aurora-border-colors)
+    ) 1;
+    
+    /* Complex energy field shadows */
     box-shadow: 
-      inset 0 0 30px rgba(147, 51, 234, 0.1),
-      0 0 60px rgba(147, 51, 234, 0.2),
-      0 0 100px rgba(147, 51, 234, 0.1),
-      0 4px 8px rgba(0, 0, 0, 0.3);
-    animation: consciousness-pulse 4s ease-in-out infinite;
+      /* Inner consciousness glow */
+      inset 0 0 30px rgba(147, 51, 234, 0.2),
+      inset 0 0 60px rgba(168, 85, 247, 0.1),
+      /* Containment field */
+      0 0 40px rgba(147, 51, 234, 0.3),
+      0 0 80px rgba(147, 51, 234, 0.2),
+      0 0 120px rgba(168, 85, 247, 0.1),
+      /* Energy overflow */
+      0 0 200px rgba(139, 92, 246, 0.05),
+      /* Base shadow */
+      0 8px 32px rgba(0, 0, 0, 0.4);
+    
+    --glass-blur: var(--state-active-blur, 16px);
+    --particle-opacity: var(--state-active-opacity, 0.6);
+    --border-angle: 90deg;
+    --energy-hue: 0deg;
+    
+    animation: 
+      consciousness-pulse var(--consciousness-pulse-duration, 4s) ease-in-out infinite,
+      aurora-shift var(--aurora-shift-duration, 10s) linear infinite,
+      energy-rotation var(--energy-rotation-duration, 20s) linear infinite;
+  }
+  
+  /* Enhanced particle system for active state */
+  .glass-active::after {
+    background-size: 350px 350px, 250px 250px, 150px 150px, 200px 200px, 300px 300px;
+    animation: 
+      particle-drift 20s linear infinite,
+      particle-pulse 2s ease-in-out infinite;
   }
   
   /* Critical state - pink alert glow */
@@ -87,44 +250,120 @@
     pointer-events: none;
   }
   
-  /* Quantum state - cyan electric glow */
+  /* Quantum state - electric plasma containment */
   .glass-quantum {
+    /* Plasma field layers */
     background: 
+      /* Electric core */
       radial-gradient(
-        ellipse at 30% 30%,
-        rgba(6, 182, 212, 0.15) 0%,
-        transparent 50%
+        circle at 30% 30%,
+        rgba(6, 182, 212, 0.2) 0%,
+        rgba(34, 211, 238, 0.1) 20%,
+        transparent 40%
       ),
       radial-gradient(
-        ellipse at 70% 70%,
-        rgba(34, 211, 238, 0.1) 0%,
+        circle at 70% 70%,
+        rgba(34, 211, 238, 0.15) 0%,
+        rgba(6, 182, 212, 0.08) 30%,
         transparent 50%
+      ),
+      /* Quantum interference pattern */
+      repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 10px,
+        rgba(34, 211, 238, 0.03) 10px,
+        rgba(34, 211, 238, 0.03) 20px
+      ),
+      repeating-linear-gradient(
+        -45deg,
+        transparent,
+        transparent 10px,
+        rgba(6, 182, 212, 0.03) 10px,
+        rgba(6, 182, 212, 0.03) 20px
       );
-    backdrop-filter: blur(14px) saturate(2) brightness(1.2);
-    -webkit-backdrop-filter: blur(14px) saturate(2) brightness(1.2);
-    border: 1px solid rgba(34, 211, 238, 0.25);
+    
+    /* Plasma refraction effects */
+    backdrop-filter: blur(14px) saturate(2.5) brightness(1.2) contrast(1.1);
+    -webkit-backdrop-filter: blur(14px) saturate(2.5) brightness(1.2) contrast(1.1);
+    
+    /* Electric border with pulse */
+    border: 1px solid transparent;
+    border-image: linear-gradient(
+      var(--border-angle, 135deg),
+      rgba(6, 182, 212, 0.5),
+      rgba(34, 211, 238, 0.7),
+      rgba(14, 165, 233, 0.5),
+      rgba(6, 182, 212, 0.5)
+    ) 1;
+    
+    /* Plasma containment field */
     box-shadow: 
-      inset 0 0 30px rgba(6, 182, 212, 0.1),
-      inset 0 0 60px rgba(34, 211, 238, 0.05),
-      0 0 50px rgba(34, 211, 238, 0.2),
-      0 0 100px rgba(6, 182, 212, 0.1),
-      0 4px 8px rgba(0, 0, 0, 0.3);
+      /* Inner plasma glow */
+      inset 0 0 40px rgba(34, 211, 238, 0.2),
+      inset 0 0 80px rgba(6, 182, 212, 0.1),
+      /* Electric field */
+      0 0 50px rgba(34, 211, 238, 0.3),
+      0 0 100px rgba(6, 182, 212, 0.2),
+      0 0 150px rgba(14, 165, 233, 0.1),
+      /* Arc discharge */
+      0 0 200px rgba(34, 211, 238, 0.05),
+      /* Base containment */
+      0 4px 16px rgba(0, 0, 0, 0.3);
+    
     position: relative;
     overflow: hidden;
+    
+    --glass-blur: 14px;
+    --particle-opacity: 0.8;
+    --border-angle: 135deg;
+    
+    animation: 
+      quantum-fluctuation 3s ease-in-out infinite,
+      aurora-shift 8s linear infinite,
+      electric-surge 5s ease-in-out infinite;
   }
   
+  /* Quantum grid overlay */
   .glass-quantum::before {
     content: '';
     position: absolute;
     inset: 0;
-    background: repeating-linear-gradient(
-      90deg,
-      transparent,
-      transparent 2px,
-      rgba(34, 211, 238, 0.03) 2px,
-      rgba(34, 211, 238, 0.03) 4px
-    );
-    animation: quantum-grid 20s linear infinite;
+    background: 
+      /* Quantum grid */
+      repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 30px,
+        rgba(34, 211, 238, 0.05) 30px,
+        rgba(34, 211, 238, 0.05) 31px
+      ),
+      repeating-linear-gradient(
+        90deg,
+        transparent,
+        transparent 30px,
+        rgba(6, 182, 212, 0.05) 30px,
+        rgba(6, 182, 212, 0.05) 31px
+      );
+    mix-blend-mode: overlay;
+    animation: 
+      quantum-grid 20s linear infinite,
+      grid-pulse 2s ease-in-out infinite;
+  }
+  
+  /* Enhanced quantum particles */
+  .glass-quantum::after {
+    background-image: 
+      radial-gradient(circle at 20% 80%, rgba(34, 211, 238, 0.8) 0%, transparent 1%),
+      radial-gradient(circle at 80% 20%, rgba(6, 182, 212, 0.8) 0%, transparent 1%),
+      radial-gradient(circle at 40% 40%, rgba(14, 165, 233, 0.8) 0%, transparent 1%),
+      radial-gradient(circle at 60% 60%, rgba(34, 211, 238, 0.8) 0%, transparent 1%),
+      radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.9) 0%, transparent 1%);
+    background-size: 200px 200px, 250px 250px, 300px 300px, 150px 150px, 100px 100px;
+    filter: blur(0.5px);
+    animation: 
+      particle-drift 15s linear infinite,
+      quantum-particle-phase 3s ease-in-out infinite;
   }
   
   /* Neural state - organic purple glow */
@@ -169,132 +408,268 @@
     pointer-events: none;
   }
   
-  /* Hover states for enhanced interactivity */
+  /* Hover states - energy field activation */
   .glass-base:hover {
-    backdrop-filter: blur(14px) saturate(1.6);
-    -webkit-backdrop-filter: blur(14px) saturate(1.6);
+    --glass-blur: 14px;
+    --particle-opacity: 0.6;
+    backdrop-filter: blur(14px) saturate(1.6) brightness(1.05);
+    -webkit-backdrop-filter: blur(14px) saturate(1.6) brightness(1.05);
     border-color: rgba(255, 255, 255, 0.08);
-    transform: translateY(-2px);
+    transform: translateY(-2px) scale(1.01);
     box-shadow: 
-      inset 0 0 25px rgba(255, 255, 255, 0.03),
-      0 0 50px rgba(0, 0, 0, 0.4),
-      0 4px 8px rgba(0, 0, 0, 0.3);
+      inset 0 0 30px rgba(255, 255, 255, 0.04),
+      inset 0 0 60px rgba(147, 51, 234, 0.02),
+      0 0 50px rgba(147, 51, 234, 0.15),
+      0 0 100px rgba(0, 0, 0, 0.3),
+      0 8px 32px rgba(0, 0, 0, 0.4);
+    transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
   }
   
   .glass-active:hover {
-    transform: translateY(-2px) scale(1.01);
+    --glass-blur: 18px;
+    --particle-opacity: 0.8;
+    --proximity-blur: 2px;
+    transform: translateY(-2px) scale(1.02);
     box-shadow: 
-      inset 0 0 40px rgba(147, 51, 234, 0.15),
-      0 0 80px rgba(147, 51, 234, 0.3),
-      0 0 120px rgba(147, 51, 234, 0.2),
-      0 8px 16px rgba(0, 0, 0, 0.4);
+      inset 0 0 50px rgba(147, 51, 234, 0.3),
+      inset 0 0 100px rgba(168, 85, 247, 0.2),
+      0 0 80px rgba(147, 51, 234, 0.5),
+      0 0 160px rgba(147, 51, 234, 0.3),
+      0 0 240px rgba(168, 85, 247, 0.2),
+      0 0 400px rgba(139, 92, 246, 0.15),
+      0 10px 40px rgba(0, 0, 0, 0.5);
   }
   
   .glass-quantum:hover {
-    animation: quantum-excite 0.5s ease-out;
+    --glass-blur: 16px;
+    --particle-opacity: 1;
+    animation: 
+      quantum-excite 0.5s ease-out,
+      quantum-fluctuation 2s ease-in-out infinite,
+      aurora-shift 6s linear infinite,
+      electric-surge 3s ease-in-out infinite;
+    box-shadow: 
+      inset 0 0 60px rgba(34, 211, 238, 0.3),
+      inset 0 0 120px rgba(6, 182, 212, 0.2),
+      0 0 80px rgba(34, 211, 238, 0.4),
+      0 0 160px rgba(6, 182, 212, 0.3),
+      0 0 240px rgba(14, 165, 233, 0.2),
+      0 0 400px rgba(34, 211, 238, 0.1),
+      0 10px 40px rgba(0, 0, 0, 0.5);
   }
   
-  .glass-neural:hover {
-    animation: neural-excite 1s ease-out;
+  /* Focus states - maximum energy */
+  .glass-base:focus-within,
+  .glass-active:focus-within,
+  .glass-quantum:focus-within {
+    --glass-blur: 20px;
+    --particle-opacity: 1;
+    outline: none;
+    border-width: 2px;
+    animation-duration: 50%;
   }
   
-  /* Keyframe animations */
-  @keyframes glass-shimmer {
-    0%, 100% { transform: translateX(-100%) translateY(-100%); }
-    50% { transform: translateX(100%) translateY(100%); }
+  /* Interaction feedback */
+  .glass-base:active,
+  .glass-active:active,
+  .glass-quantum:active {
+    transform: scale(0.98);
+    transition: transform 0.1s ease-out;
+  }
+  
+  /* State modifiers */
+  .glass-processing {
+    animation: 
+      processing-scan 2s linear infinite,
+      energy-field-pulse 1s ease-in-out infinite;
+  }
+  
+  .glass-error {
+    animation: 
+      error-flicker 0.5s ease-in-out infinite alternate,
+      critical-warning 2s ease-in-out infinite;
+  }
+  
+  .glass-success {
+    animation: 
+      success-glow 1s ease-out,
+      particle-pulse 2s ease-in-out;
+  }
+  
+  /* Additional animation keyframes */
+  @keyframes processing-scan {
+    0% { 
+      background-position: 0% 0%;
+      --scan-position: 0%;
+    }
+    100% { 
+      background-position: 100% 100%;
+      --scan-position: 100%;
+    }
+  }
+  
+  @keyframes error-flicker {
+    0% { opacity: 1; filter: brightness(1) hue-rotate(0deg); }
+    100% { opacity: 0.8; filter: brightness(1.2) hue-rotate(10deg); }
+  }
+  
+  @keyframes success-glow {
+    0% { 
+      box-shadow: 
+        inset 0 0 30px rgba(16, 185, 129, 0.2),
+        0 0 60px rgba(16, 185, 129, 0.3);
+    }
+    100% { 
+      box-shadow: 
+        inset 0 0 60px rgba(16, 185, 129, 0.4),
+        0 0 120px rgba(16, 185, 129, 0.6);
+    }
+  }
+  
+  /* Advanced keyframe animations */
+  @keyframes aurora-shift {
+    0% { --border-angle: 0deg; }
+    100% { --border-angle: 10deg; }
+  }
+  
+  @keyframes holographic-shift {
+    0% {
+      transform: translateX(-100%) translateY(-100%);
+    }
+    100% {
+      transform: translateX(100%) translateY(100%);
+    }
+  }
+  
+  @keyframes particle-drift {
+    0% {
+      background-position: 0% 0%, 100% 0%, 50% 50%, 0% 100%, 100% 100%;
+    }
+    100% {
+      background-position: 100% 100%, 0% 100%, 50% 50%, 100% 0%, 0% 0%;
+    }
+  }
+  
+  @keyframes particle-pulse {
+    0%, 100% {
+      opacity: var(--particle-opacity-min, 0.2);
+    }
+    50% {
+      opacity: var(--particle-opacity-max, 0.8);
+    }
+  }
+  
+  @keyframes energy-field-pulse {
+    0%, 100% {
+      opacity: var(--containment-field-opacity, 0.1);
+      transform: scale(1);
+    }
+    50% {
+      opacity: calc(var(--containment-field-opacity, 0.1) * 1.5);
+      transform: scale(1.1);
+    }
   }
   
   @keyframes consciousness-pulse {
-    0%, 100% { 
-      box-shadow: 
-        inset 0 0 30px rgba(147, 51, 234, 0.1),
-        0 0 60px rgba(147, 51, 234, 0.2),
-        0 0 100px rgba(147, 51, 234, 0.1),
-        0 4px 8px rgba(0, 0, 0, 0.3);
+    0%, 100% {
+      --consciousness-intensity: 0.6;
+      filter: blur(var(--consciousness-distortion, 3px));
     }
-    50% { 
-      box-shadow: 
-        inset 0 0 40px rgba(147, 51, 234, 0.2),
-        0 0 80px rgba(147, 51, 234, 0.4),
-        0 0 140px rgba(147, 51, 234, 0.2),
-        0 4px 8px rgba(0, 0, 0, 0.3);
+    50% {
+      --consciousness-intensity: 0.8;
+      filter: blur(calc(var(--consciousness-distortion, 3px) * 1.5));
     }
   }
   
-  @keyframes critical-warning {
-    0%, 100% { 
-      border-color: rgba(236, 72, 153, 0.4);
-      filter: brightness(1);
+  @keyframes energy-rotation {
+    0% {
+      --energy-hue: 0deg;
     }
-    50% { 
-      border-color: rgba(236, 72, 153, 0.8);
-      filter: brightness(1.2);
+    100% {
+      --energy-hue: 360deg;
     }
   }
   
-  @keyframes critical-scan {
-    0% { transform: translateY(-100%); }
-    100% { transform: translateY(100%); }
+  @keyframes quantum-fluctuation {
+    0%, 100% {
+      transform: translateX(0) translateY(0);
+    }
+    25% {
+      transform: translateX(var(--plasma-distortion, 5px)) translateY(var(--plasma-distortion, 5px));
+    }
+    50% {
+      transform: translateX(0) translateY(calc(var(--plasma-distortion, 5px) * -1));
+    }
+    75% {
+      transform: translateX(calc(var(--plasma-distortion, 5px) * -1)) translateY(0);
+    }
   }
   
-  @keyframes quantum-grid {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(4px); }
+  @keyframes electric-surge {
+    0%, 100% {
+      opacity: var(--arc-opacity, 0.4);
+    }
+    50% {
+      opacity: calc(var(--arc-opacity, 0.4) * 1.5);
+    }
   }
   
-  @keyframes neural-flow {
-    0%, 100% { 
+  @keyframes quantum-particle-phase {
+    0% {
       transform: scale(1) rotate(0deg);
-      opacity: 0.5;
     }
-    25% { 
-      transform: scale(1.1) rotate(90deg);
-      opacity: 0.8;
+    50% {
+      transform: scale(1.1) rotate(180deg);
     }
-    50% { 
-      transform: scale(0.9) rotate(180deg);
-      opacity: 0.6;
-    }
-    75% { 
-      transform: scale(1.05) rotate(270deg);
-      opacity: 0.7;
+    100% {
+      transform: scale(1) rotate(360deg);
     }
   }
   
-  @keyframes quantum-excite {
-    0% { filter: brightness(1) saturate(2); }
-    50% { filter: brightness(1.3) saturate(3); }
-    100% { filter: brightness(1) saturate(2); }
+  @keyframes grid-pulse {
+    0%, 100% {
+      opacity: var(--grid-opacity, 0.1);
+    }
+    50% {
+      opacity: calc(var(--grid-opacity, 0.1) * 2);
+    }
   }
   
-  @keyframes neural-excite {
-    0% { filter: brightness(1) hue-rotate(0deg); }
-    50% { filter: brightness(1.2) hue-rotate(10deg); }
-    100% { filter: brightness(1) hue-rotate(0deg); }
-  }
-  
-  /* Responsive adjustments for performance */
+  /* Reduced motion preferences */
   @media (prefers-reduced-motion: reduce) {
     .glass-base::before,
-    .glass-critical::after,
-    .glass-quantum::before,
-    .glass-neural::after {
+    .glass-base::after,
+    .glass-container::before,
+    .glass-active {
       animation: none;
     }
     
-    .glass-active,
-    .glass-critical {
-      animation-duration: 8s;
+    :root {
+      --aurora-shift-duration: 0s;
+      --particle-drift-duration: 0s;
+      --holographic-shift-duration: 0s;
+      --energy-field-pulse-duration: 0s;
+      --quantum-fluctuation-duration: 0s;
+      --consciousness-pulse-duration: 0s;
+      --energy-rotation-duration: 0s;
+      --electric-surge-duration: 0s;
+      --quantum-particle-phase-duration: 0s;
+      --grid-pulse-duration: 0s;
     }
   }
   
-  /* Dark mode enhancements */
+  /* Dark mode adjustments */
   @media (prefers-color-scheme: dark) {
     .glass-base {
-      background: radial-gradient(
-        ellipse at center,
-        rgba(255, 255, 255, 0.02) 0%,
-        rgba(255, 255, 255, 0.005) 100%
-      );
+      background: 
+        linear-gradient(
+          var(--glass-refraction-angle, 115deg),
+          rgba(255, 255, 255, calc(var(--glass-refraction-intensity, 0.01) * 0.5)) 0%,
+          rgba(255, 255, 255, calc(var(--glass-refraction-intensity, 0.03) * 0.5)) 20%,
+          rgba(120, 119, 198, calc(var(--glass-refraction-intensity, 0.02) * 0.5)) 40%,
+          rgba(255, 255, 255, calc(var(--glass-refraction-intensity, 0.01) * 0.5)) 60%,
+          rgba(147, 51, 234, calc(var(--glass-refraction-intensity, 0.01) * 0.5)) 80%,
+          rgba(255, 255, 255, calc(var(--glass-refraction-intensity, 0.02) * 0.5)) 100%
+        );
     }
   }

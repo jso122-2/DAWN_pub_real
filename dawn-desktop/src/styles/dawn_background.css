@@ -1,0 +1,289 @@
+/* DAWN Deep Space Background System
+ * Multi-layered star field with parallax effects
+ * Nebula clouds and atmospheric depth
+ */
+
+/* Base space background */
+.dawn-space {
+  position: fixed;
+  inset: 0;
+  background: #000000;
+  overflow: hidden;
+  z-index: -10;
+}
+
+/* Multi-layer star field */
+.star-field {
+  position: absolute;
+  inset: 0;
+  
+  /* Layer 1: Distant stars (small, dim) */
+  background-image: 
+    radial-gradient(1px 1px at 20% 30%, white, transparent),
+    radial-gradient(1px 1px at 40% 70%, white, transparent),
+    radial-gradient(1px 1px at 60% 20%, white, transparent),
+    radial-gradient(1px 1px at 80% 50%, white, transparent),
+    radial-gradient(1px 1px at 10% 80%, white, transparent);
+  background-size: 250px 250px;
+  background-position: 0 0, 100px 50px, 200px 150px, 50px 100px, 150px 200px;
+  opacity: 0.4;
+  animation: star-drift-slow 200s linear infinite;
+}
+
+.star-field::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  
+  /* Layer 2: Medium stars */
+  background-image: 
+    radial-gradient(2px 2px at 25% 35%, rgba(255, 255, 255, 0.9), transparent),
+    radial-gradient(2px 2px at 50% 60%, rgba(255, 255, 255, 0.9), transparent),
+    radial-gradient(2px 2px at 75% 25%, rgba(255, 255, 255, 0.9), transparent),
+    radial-gradient(1.5px 1.5px at 15% 65%, rgba(255, 255, 255, 0.8), transparent),
+    radial-gradient(1.5px 1.5px at 85% 85%, rgba(255, 255, 255, 0.8), transparent);
+  background-size: 350px 350px;
+  background-position: 0 0, 175px 100px, 100px 200px, 275px 50px, 50px 150px;
+  opacity: 0.6;
+  animation: star-drift-medium 150s linear infinite;
+}
+
+.star-field::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  
+  /* Layer 3: Near stars (large, bright) */
+  background-image: 
+    radial-gradient(3px 3px at 30% 40%, white, transparent),
+    radial-gradient(2.5px 2.5px at 70% 80%, rgba(255, 255, 255, 0.95), transparent),
+    radial-gradient(3px 3px at 50% 20%, white, transparent),
+    radial-gradient(2px 2px at 90% 60%, rgba(255, 255, 255, 0.9), transparent);
+  background-size: 500px 500px;
+  background-position: 0 0, 250px 150px, 150px 300px, 400px 100px;
+  opacity: 0.8;
+  animation: star-drift-fast 100s linear infinite;
+}
+
+/* Nebula effects */
+.nebula-layer {
+  position: absolute;
+  inset: 0;
+  opacity: 0.3;
+  mix-blend-mode: screen;
+  
+  background: 
+    /* Purple nebula */
+    radial-gradient(
+      ellipse at 20% 30%,
+      rgba(168, 85, 247, 0.3) 0%,
+      transparent 40%
+    ),
+    /* Cyan nebula */
+    radial-gradient(
+      ellipse at 80% 70%,
+      rgba(6, 182, 212, 0.2) 0%,
+      transparent 50%
+    ),
+    /* Pink nebula */
+    radial-gradient(
+      ellipse at 50% 10%,
+      rgba(236, 72, 153, 0.2) 0%,
+      transparent 40%
+    ),
+    /* Green nebula */
+    radial-gradient(
+      ellipse at 90% 40%,
+      rgba(34, 197, 94, 0.1) 0%,
+      transparent 30%
+    );
+  
+  animation: nebula-drift 300s ease-in-out infinite;
+}
+
+/* Depth fog for atmospheric perspective */
+.depth-fog {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  
+  /* Edge fog */
+  background: 
+    /* Top edge */
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.8) 0%, transparent 20%),
+    /* Bottom edge */
+    linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, transparent 20%),
+    /* Left edge */
+    linear-gradient(to right, rgba(0, 0, 0, 0.6) 0%, transparent 15%),
+    /* Right edge */
+    linear-gradient(to left, rgba(0, 0, 0, 0.6) 0%, transparent 15%),
+    /* Corner vignette */
+    radial-gradient(
+      ellipse at center,
+      transparent 50%,
+      rgba(0, 0, 0, 0.4) 100%
+    );
+}
+
+/* Pulsing grid overlay */
+.consciousness-grid {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.05;
+  
+  background-image: 
+    linear-gradient(rgba(168, 85, 247, 0.2) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(168, 85, 247, 0.2) 1px, transparent 1px);
+  background-size: 100px 100px;
+  
+  animation: grid-pulse 4s ease-in-out infinite;
+}
+
+/* DAWN Logo Glow */
+.dawn-logo {
+  position: fixed;
+  top: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+  
+  font-size: 3rem;
+  font-weight: 900;
+  letter-spacing: 0.5rem;
+  color: white;
+  text-shadow: 
+    0 0 20px rgba(168, 85, 247, 0.8),
+    0 0 40px rgba(168, 85, 247, 0.6),
+    0 0 60px rgba(168, 85, 247, 0.4);
+  
+  animation: logo-breathe 4s ease-in-out infinite;
+}
+
+/* Audio visualization bars (optional) */
+.audio-visualizer {
+  position: fixed;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 4px;
+  z-index: 50;
+  opacity: 0.3;
+}
+
+.audio-bar {
+  width: 3px;
+  height: 20px;
+  background: linear-gradient(to top, 
+    rgba(168, 85, 247, 0.8),
+    rgba(6, 182, 212, 0.8)
+  );
+  border-radius: 2px;
+  transform-origin: bottom;
+  animation: audio-pulse 1s ease-in-out infinite;
+}
+
+.audio-bar:nth-child(1) { animation-delay: 0s; }
+.audio-bar:nth-child(2) { animation-delay: 0.1s; }
+.audio-bar:nth-child(3) { animation-delay: 0.2s; }
+.audio-bar:nth-child(4) { animation-delay: 0.3s; }
+.audio-bar:nth-child(5) { animation-delay: 0.4s; }
+.audio-bar:nth-child(6) { animation-delay: 0.3s; }
+.audio-bar:nth-child(7) { animation-delay: 0.2s; }
+.audio-bar:nth-child(8) { animation-delay: 0.1s; }
+
+/* Keyframe animations */
+@keyframes star-drift-slow {
+  0% { background-position: 0 0, 100px 50px, 200px 150px, 50px 100px, 150px 200px; }
+  100% { background-position: 250px 250px, 350px 300px, 450px 400px, 300px 350px, 400px 450px; }
+}
+
+@keyframes star-drift-medium {
+  0% { background-position: 0 0, 175px 100px, 100px 200px, 275px 50px, 50px 150px; }
+  100% { background-position: -350px -350px, -175px -250px, -250px -150px, -75px -300px, -300px -200px; }
+}
+
+@keyframes star-drift-fast {
+  0% { background-position: 0 0, 250px 150px, 150px 300px, 400px 100px; }
+  100% { background-position: -500px -500px, -250px -350px, -350px -200px, -100px -400px; }
+}
+
+@keyframes nebula-drift {
+  0%, 100% {
+    transform: scale(1) rotate(0deg);
+    filter: hue-rotate(0deg);
+  }
+  25% {
+    transform: scale(1.1) rotate(5deg);
+    filter: hue-rotate(10deg);
+  }
+  50% {
+    transform: scale(1.05) rotate(-3deg);
+    filter: hue-rotate(-5deg);
+  }
+  75% {
+    transform: scale(0.95) rotate(2deg);
+    filter: hue-rotate(5deg);
+  }
+}
+
+@keyframes grid-pulse {
+  0%, 100% {
+    opacity: 0.05;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.1;
+    transform: scale(1.01);
+  }
+}
+
+@keyframes logo-breathe {
+  0%, 100% {
+    opacity: 0.9;
+    transform: translateX(-50%) scale(1);
+    filter: brightness(1);
+  }
+  50% {
+    opacity: 1;
+    transform: translateX(-50%) scale(1.05);
+    filter: brightness(1.2);
+  }
+}
+
+@keyframes audio-pulse {
+  0%, 100% {
+    transform: scaleY(0.5);
+  }
+  50% {
+    transform: scaleY(1);
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .dawn-logo {
+    font-size: 2rem;
+    letter-spacing: 0.3rem;
+  }
+  
+  .consciousness-grid {
+    background-size: 50px 50px;
+  }
+}
+
+/* Performance optimization */
+@media (prefers-reduced-motion: reduce) {
+  .star-field,
+  .star-field::before,
+  .star-field::after,
+  .nebula-layer,
+  .consciousness-grid {
+    animation: none !important;
+  }
+  
+  .dawn-logo {
+    animation: logo-breathe 8s ease-in-out infinite;
+  }
+}

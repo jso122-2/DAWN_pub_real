@@ -1,12 +1,12 @@
 import { motion, useMotionValue, useTransform } from 'framer-motion';
-import { ReactNode, useState, useRef, useEffect } from 'react';
+import React, { ReactNode, useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { useCosmicStore } from '../../store/cosmicStore';
 import eventBus, { emitEvent } from '../../lib/eventBus';
 
 interface ModuleConfig {
   id: string;
   title: string;
-  category: 'neural' | 'quantum' | 'process' | 'timeline' | 'monitor';
+  category: 'neural' | 'quantum' | 'process' | 'timeline' | 'monitor' | 'diagnostic';
   size: 'sm' | 'md' | 'lg' | 'xl' | 'fluid';
   glowColor?: string;
   breathingSpeed?: number;
@@ -22,7 +22,26 @@ interface ModuleContainerProps {
   connections?: string[]; // IDs of connected modules
 }
 
-export const ModuleContainer: React.FC<ModuleContainerProps> = ({
+// Simple throttle util
+function throttle<T extends (...args: any[]) => void>(fn: T, wait: number): T {
+  let last = 0;
+  let timeout: any;
+  return function(this: any, ...args: any[]) {
+    const now = Date.now();
+    if (now - last >= wait) {
+      last = now;
+      fn.apply(this, args);
+    } else {
+      clearTimeout(timeout);
+      timeout = setTimeout(() => {
+        last = Date.now();
+        fn.apply(this, args);
+      }, wait - (now - last));
+    }
+  } as T;
+}
+
+const ModuleContainerComponent: React.FC<ModuleContainerProps> = React.memo(({
   config,
   children,
   onClose,
@@ -31,13 +50,15 @@ export const ModuleContainer: React.FC<ModuleContainerProps> = ({
 }) => {
   const [isMinimized, setIsMinimized] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
+  const [isOffscreen, setIsOffscreen] = useState(false);
   const dragRef = useRef<HTMLDivElement>(null);
-  
+  const observerRef = useRef<IntersectionObserver | null>(null);
+
   // Get glow intensity from store based on system state
   const { entropy, neuralActivity } = useCosmicStore();
   const glowIntensity = (entropy + neuralActivity) / 2;
 
-  const breathingVariants = {
+  const breathingVariants = useMemo(() => ({
     calm: {
       scale: [1, 1.02, 1],
       opacity: [0.8, 1, 0.8],
@@ -46,21 +67,20 @@ export const ModuleContainer: React.FC<ModuleContainerProps> = ({
       scale: [1, 1.03, 1],
       opacity: [0.7, 1, 0.7],
     }
-  };
+  }), []);
 
-  const floatingVariants = {
+  const floatingVariants = useMemo(() => ({
     float: {
-      y: [0, -10, 0],
-      x: [0, 5, -5, 0],
+      y: [0, -2, 0],
       transition: {
-        duration: 6,
+        duration: 8,
         repeat: Infinity,
         ease: "easeInOut"
       }
     }
-  };
+  }), []);
 
-  const getSizeClasses = () => {
+  const getSizeClasses = useCallback(() => {
     const sizes = {
       sm: 'w-64 h-48',
       md: 'w-96 h-64',
@@ -69,9 +89,9 @@ export const ModuleContainer: React.FC<ModuleContainerProps> = ({
       fluid: 'w-full h-full'
     };
     return sizes[config.size] || sizes.md;
-  };
+  }, [config.size]);
 
-  const getCategoryStyles = () => {
+  const getCategoryStyles = useCallback(() => {
     const styles = {
       neural: {
         border: 'border-purple-500/20',
@@ -97,15 +117,42 @@ export const ModuleContainer: React.FC<ModuleContainerProps> = ({
         border: 'border-amber-500/20',
         glow: 'shadow-[0_0_30px_rgba(245,158,11,0.3)]',
         header: 'bg-gradient-to-r from-amber-500/20 to-amber-600/20'
+      },
+      diagnostic: {
+        border: 'border-pink-500/20',
+        glow: 'shadow-[0_0_30px_rgba(244,114,182,0.3)]',
+        header: 'bg-gradient-to-r from-pink-500/20 to-pink-600/20'
       }
     };
     return styles[config.category] || styles.neural;
-  };
+  }, [config.category]);
 
   const style = getCategoryStyles();
 
+  // Throttled event handlers
+  const handleDragStart = useCallback(throttle(() => {
+    setIsDragging(true);
+    emitModuleEvent('drag', { dragging: true });
+  }, 60), [config.id]);
+
+  const handleDragEnd = useCallback(throttle(() => {
+    setIsDragging(false);
+    emitModuleEvent('drag', { dragging: false });
+  }, 60), [config.id]);
+
+  const handleMinimize = useCallback(() => {
+    setIsMinimized(!isMinimized);
+    onMinimize?.();
+    emitModuleEvent('minimize', { minimized: !isMinimized });
+  }, [isMinimized, onMinimize, config.id]);
+
+  const handleClose = useCallback(() => {
+    onClose?.();
+    emitModuleEvent('close');
+  }, [onClose, config.id]);
+
   // Emit custom events for module interactions
-  const emitModuleEvent = (action: 'drag' | 'minimize' | 'close', extra?: any) => {
+  const emitModuleEvent = useCallback((action: 'drag' | 'minimize' | 'close', extra?: any) => {
     eventBus.dispatchEvent(
       new CustomEvent('module-interaction', {
         detail: {
@@ -115,7 +162,21 @@ export const ModuleContainer: React.FC<ModuleContainerProps> = ({
         },
       })
     );
-  };
+  }, [config.id]);
+
+  // Intersection observer for offscreen detection
+  useEffect(() => {
+    if (!dragRef.current) return;
+    if (observerRef.current) observerRef.current.disconnect();
+    observerRef.current = new window.IntersectionObserver(
+      ([entry]) => {
+        setIsOffscreen(!entry.isIntersecting);
+      },
+      { root: null, threshold: 0.01 }
+    );
+    observerRef.current.observe(dragRef.current);
+    return () => observerRef.current?.disconnect();
+  }, []);
 
   return (
     <motion.div
@@ -132,18 +193,17 @@ export const ModuleContainer: React.FC<ModuleContainerProps> = ({
         ${config.draggable ? 'cursor-move' : ''}
         ${isDragging ? 'z-50' : 'z-10'}
         transition-all duration-300
+        ${isOffscreen ? 'offscreen' : ''}
       `}
+      style={{
+        opacity: glowIntensity * 0.3 + 0.7,
+        contain: 'layout paint style',
+      }}
       drag={config.draggable}
       dragMomentum={false}
       dragElastic={0.1}
-      onDragStart={() => {
-        setIsDragging(true);
-        emitModuleEvent('drag', { dragging: true });
-      }}
-      onDragEnd={() => {
-        setIsDragging(false);
-        emitModuleEvent('drag', { dragging: false });
-      }}
+      onDragStart={handleDragStart}
+      onDragEnd={handleDragEnd}
       animate={breathingVariants.calm}
       variants={floatingVariants}
       whileHover={{ scale: 1.02 }}
@@ -151,9 +211,6 @@ export const ModuleContainer: React.FC<ModuleContainerProps> = ({
         duration: config.breathingSpeed || 4,
         repeat: Infinity,
         repeatType: "reverse"
-      }}
-      style={{
-        opacity: glowIntensity * 0.3 + 0.7
       }}
     >
       {/* Module Header */}
@@ -169,11 +226,7 @@ export const ModuleContainer: React.FC<ModuleContainerProps> = ({
         <div className="flex gap-2">
           {config.minimizable && (
             <button
-              onClick={() => {
-                setIsMinimized(!isMinimized);
-                onMinimize?.();
-                emitModuleEvent('minimize', { minimized: !isMinimized });
-              }}
+              onClick={handleMinimize}
               className="w-5 h-5 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center"
             >
               <span className="text-xs">−</span>
@@ -181,10 +234,7 @@ export const ModuleContainer: React.FC<ModuleContainerProps> = ({
           )}
           {onClose && (
             <button
-              onClick={() => {
-                onClose();
-                emitModuleEvent('close');
-              }}
+              onClick={handleClose}
               className="w-5 h-5 rounded-full bg-white/10 hover:bg-red-500/50 flex items-center justify-center"
             >
               <span className="text-xs">×</span>
@@ -206,4 +256,6 @@ export const ModuleContainer: React.FC<ModuleContainerProps> = ({
       )}
     </motion.div>
   );
-};
+});
+
+export const ModuleContainer = ModuleContainerComponent;

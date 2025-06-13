@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-@import "./glass.css";
+@import "./glass-tokens.css";
 
 :root {
   /* Cosmic Color System Design Tokens */
@@ -38,4 +38,19 @@
   --color-bg-cosmic: #0a0f1b;
   --color-bg-glass: rgba(255,255,255,0.05);
   --color-border-glass: rgba(255,255,255,0.12);
+}
+
+/* Disable all rotations when no-rotations class is present */
+.no-rotations * {
+  animation: none !important;
+  transform: none !important;
+  transition: none !important;
+}
+
+.no-rotations [style*="rotate"] {
+  transform: none !important;
+}
+
+.no-rotations [style*="rotation"] {
+  transform: none !important;
 }

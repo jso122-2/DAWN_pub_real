@@ -111,8 +111,9 @@
     --glow-nova: 0 0 200px;    /* Supernova burst */
     
     /* === ANIMATED GRADIENTS === */
+    /* Living gradients that shift and breathe */
     --gradient-consciousness: linear-gradient(
-      135deg,
+      var(--gradient-angle, 135deg),
       var(--neural-600) 0%,
       var(--quantum-600) 25%,
       var(--process-600) 50%,
@@ -120,22 +121,67 @@
       var(--quantum-600) 100%
     );
     
+    --gradient-aurora: conic-gradient(
+      from var(--aurora-angle, 0deg) at 50% 50%,
+      var(--neural-400),
+      var(--quantum-400),
+      var(--process-400),
+      var(--alert-400),
+      var(--neural-400)
+    );
+    
+    --gradient-plasma: radial-gradient(
+      ellipse at var(--plasma-x, 50%) var(--plasma-y, 50%),
+      var(--quantum-500) 0%,
+      var(--quantum-600) 20%,
+      var(--process-500) 40%,
+      var(--neural-500) 60%,
+      transparent 100%
+    );
+    
     --gradient-entropy: radial-gradient(
-      ellipse at center,
+      circle at var(--entropy-x, 50%) var(--entropy-y, 50%),
       var(--chaos-600) 0%,
       var(--alert-600) 33%,
       var(--neural-600) 66%,
       transparent 100%
     );
     
-    --gradient-quantum-field: conic-gradient(
-      from 0deg at 50% 50%,
+    --gradient-quantum-field: repeating-conic-gradient(
+      from var(--quantum-angle, 0deg) at 50% 50%,
       var(--quantum-400) 0deg,
-      var(--process-400) 90deg,
-      var(--quantum-400) 180deg,
-      var(--process-400) 270deg,
-      var(--quantum-400) 360deg
+      var(--process-400) 30deg,
+      var(--quantum-400) 60deg
     );
+    
+    /* Energy field colors with smooth transitions */
+    --energy-idle: color-mix(in srgb, var(--neural-500) 30%, transparent);
+    --energy-active: color-mix(in srgb, var(--neural-400) 60%, var(--quantum-400) 40%);
+    --energy-processing: color-mix(in srgb, var(--quantum-400) 70%, var(--process-400) 30%);
+    --energy-critical: color-mix(in srgb, var(--alert-400) 80%, var(--chaos-400) 20%);
+    
+    /* === PARTICLE SYSTEM VARIABLES === */
+    --particle-size-min: 1px;
+    --particle-size-max: 3px;
+    --particle-count: 50;
+    --particle-speed: 30s;
+    --particle-opacity-min: 0.2;
+    --particle-opacity-max: 0.8;
+    --particle-blur: 0.5px;
+    
+    /* === GLOW PULSE VARIABLES === */
+    --glow-pulse-duration: 4s;
+    --glow-pulse-scale: 1.2;
+    --glow-pulse-opacity: 0.8;
+    --glow-spread-min: 20px;
+    --glow-spread-max: 200px;
+    
+    /* === ENERGY FIELD PROPERTIES === */
+    --field-distortion-amount: 5px;
+    --field-fluctuation-speed: 3s;
+    --field-boundary-blur: 20px;
+    --field-core-intensity: 0.8;
+    --field-edge-falloff: 0.1;
     
     /* === LAYER DEPTHS === */
     --layer-background: -1;
@@ -152,11 +198,124 @@
     --ease-breathe-out: cubic-bezier(0.8, 0, 0.6, 1);
     --ease-consciousness: cubic-bezier(0.23, 1, 0.32, 1);
     --ease-quantum: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    
+    /* === ADVANCED GLASS EFFECTS === */
+    --glass-refraction-intensity: 0.8;
+    --glass-refraction-speed: 20s;
+    --glass-refraction-angle: 45deg;
+    --glass-refraction-blur: 2px;
+    
+    /* Aurora border properties */
+    --aurora-border-width: 1px;
+    --aurora-border-opacity: 0.3;
+    --aurora-border-speed: 15s;
+    --aurora-border-colors: rgba(147, 51, 234, 0.3), rgba(59, 130, 246, 0.2), rgba(16, 185, 129, 0.2), rgba(236, 72, 153, 0.3);
+    
+    /* Holographic effects */
+    --holographic-shimmer-opacity: 0.03;
+    --holographic-scan-speed: 8s;
+    --holographic-interference: 0.5;
+    --holographic-depth: 2px;
+    
+    /* Energy containment fields */
+    --containment-field-radius: 100%;
+    --containment-field-blur: 20px;
+    --containment-field-opacity: 0.1;
+    --containment-field-speed: 4s;
+    
+    /* Plasma field effects */
+    --plasma-intensity: 0.8;
+    --plasma-speed: 10s;
+    --plasma-distortion: 5px;
+    --plasma-colors: var(--quantum-400), var(--process-400), var(--neural-400);
+    
+    /* Electric arc containment */
+    --arc-thickness: 1px;
+    --arc-opacity: 0.4;
+    --arc-speed: 2s;
+    --arc-colors: var(--quantum-500), var(--process-500);
+    
+    /* Consciousness field distortions */
+    --consciousness-distortion: 3px;
+    --consciousness-speed: 8s;
+    --consciousness-intensity: 0.6;
+    --consciousness-colors: var(--neural-500), var(--quantum-500);
+    
+    /* Grid overlay properties */
+    --grid-size: 20px;
+    --grid-opacity: 0.1;
+    --grid-color: var(--quantum-400);
+    --grid-speed: 20s;
+    
+    /* === ANIMATION TIMINGS === */
+    --aurora-shift-duration: 15s;
+    --particle-drift-duration: 30s;
+    --holographic-shift-duration: 12s;
+    --energy-field-pulse-duration: 4s;
+    --quantum-fluctuation-duration: 8s;
+    --consciousness-pulse-duration: 4s;
+    --energy-rotation-duration: 20s;
+    --electric-surge-duration: 2s;
+    --quantum-particle-phase-duration: 10s;
+    --grid-pulse-duration: 5s;
+    
+    /* === RESPONSIVE STATES === */
+    --state-idle-opacity: 0.4;
+    --state-active-opacity: 0.6;
+    --state-processing-opacity: 0.8;
+    --state-error-opacity: 0.9;
+    
+    --state-idle-blur: 12px;
+    --state-active-blur: 16px;
+    --state-processing-blur: 20px;
+    --state-error-blur: 24px;
+    
+    /* === INTERACTION RESPONSES === */
+    --hover-scale: 1.02;
+    --hover-blur-increase: 4px;
+    --hover-glow-increase: 20px;
+    --hover-transition: 0.3s;
+    
+    --focus-scale: 1.03;
+    --focus-blur-increase: 6px;
+    --focus-glow-increase: 30px;
+    --focus-transition: 0.4s;
+    
+    --active-scale: 1.04;
+    --active-blur-increase: 8px;
+    --active-glow-increase: 40px;
+    --active-transition: 0.5s;
   }
   
   /* === ANIMATED BACKGROUND === */
   body {
+    /* Multi-layer energy field background */
     background: 
+      /* Particle field layer */
+      radial-gradient(
+        circle at 10% 20%,
+        rgba(168, 85, 247, 0.15) 0%,
+        transparent 2%
+      ),
+      radial-gradient(
+        circle at 80% 80%,
+        rgba(34, 211, 238, 0.1) 0%,
+        transparent 2%
+      ),
+      radial-gradient(
+        circle at 50% 50%,
+        rgba(236, 72, 153, 0.05) 0%,
+        transparent 2%
+      ),
+      /* Aurora layer */
+      linear-gradient(
+        var(--aurora-angle, 0deg),
+        rgba(147, 51, 234, 0.05) 0%,
+        rgba(59, 130, 246, 0.03) 33%,
+        rgba(16, 185, 129, 0.03) 66%,
+        transparent 100%
+      ),
+      /* Energy field gradients */
       radial-gradient(
         ellipse at 20% 30%,
         rgba(168, 85, 247, 0.15) 0%,
@@ -172,63 +331,212 @@
         rgba(236, 72, 153, 0.05) 0%,
         transparent 60%
       ),
+      /* Base cosmos */
       #030014;
-    animation: cosmic-drift var(--breathe-cosmic) ease-in-out infinite;
+    
+    /* Animated CSS variables */
+    --gradient-angle: 135deg;
+    --aurora-angle: 0deg;
+    --plasma-x: 50%;
+    --plasma-y: 50%;
+    --entropy-x: 50%;
+    --entropy-y: 50%;
+    --quantum-angle: 0deg;
+    
+    animation: 
+      cosmic-drift var(--breathe-cosmic) ease-in-out infinite,
+      aurora-rotation 30s linear infinite,
+      gradient-shift 20s ease-in-out infinite;
   }
   
-  @keyframes cosmic-drift {
-    0%, 100% {
-      background-size: 100% 100%, 100% 100%, 100% 100%;
-      background-position: 0% 0%, 100% 100%, 50% 50%;
+  /* New keyframe animations for living effects */
+  @keyframes aurora-rotation {
+    0% { --aurora-angle: 0deg; }
+    100% { --aurora-angle: 10deg; } /* Reduced from full rotation to just 10 degrees */
+  }
+  
+  @keyframes gradient-shift {
+    0%, 100% { 
+      --gradient-angle: 135deg;
+      --quantum-angle: 0deg;
     }
-    33% {
-      background-size: 110% 110%, 120% 120%, 105% 105%;
-      background-position: 10% 10%, 90% 90%, 45% 55%;
+    25% { 
+      --gradient-angle: 225deg;
+      --quantum-angle: 90deg;
     }
-    66% {
-      background-size: 105% 105%, 115% 115%, 110% 110%;
-      background-position: -5% 5%, 105% 95%, 55% 45%;
+    50% { 
+      --gradient-angle: 315deg;
+      --quantum-angle: 180deg;
+    }
+    75% { 
+      --gradient-angle: 45deg;
+      --quantum-angle: 270deg;
+    }
+  }
+  
+  @keyframes plasma-movement {
+    0%, 100% { 
+      --plasma-x: 50%;
+      --plasma-y: 50%;
+      --entropy-x: 50%;
+      --entropy-y: 50%;
+    }
+    25% { 
+      --plasma-x: 30%;
+      --plasma-y: 70%;
+      --entropy-x: 70%;
+      --entropy-y: 30%;
+    }
+    50% { 
+      --plasma-x: 70%;
+      --plasma-y: 70%;
+      --entropy-x: 30%;
+      --entropy-y: 30%;
+    }
+    75% { 
+      --plasma-x: 30%;
+      --plasma-y: 30%;
+      --entropy-x: 70%;
+      --entropy-y: 70%;
+    }
+  }
+  
+  @keyframes glow-pulse {
+    0%, 100% { 
+      filter: brightness(1);
+      transform: scale(1);
+    }
+    50% { 
+      filter: brightness(var(--glow-pulse-opacity));
+      transform: scale(var(--glow-pulse-scale));
+    }
+  }
+  
+  @keyframes energy-flow {
+    0% {
+      background-position: 0% 0%, 100% 100%, 50% 50%, 0% 0%, 0% 100%, 100% 0%, 50% 50%;
+    }
+    100% {
+      background-position: 100% 100%, 0% 0%, 50% 50%, 360deg, 100% 0%, 0% 100%, 50% 50%;
     }
   }
   
   /* === UTILITY CLASSES === */
+  /* Living glass containers */
+  .glass-container {
+    position: relative;
+    --mouse-x: 50%;
+    --mouse-y: 50%;
+  }
+  
+  /* Breathing with energy */
   .breathe {
-    animation: breathe var(--breathe-normal) var(--ease-breathe-in) infinite;
+    animation: 
+      breathe var(--breathe-normal) var(--ease-breathe-in) infinite,
+      glow-pulse var(--glow-pulse-duration) ease-in-out infinite;
   }
   
+  /* Floating with particles */
   .float {
-    animation: float var(--breathe-slow) ease-in-out infinite;
+    animation: 
+      float var(--breathe-slow) ease-in-out infinite,
+      plasma-movement 20s ease-in-out infinite;
   }
   
+  /* Pulse glow with energy field */
   .pulse-glow {
-    animation: pulse-glow var(--breathe-fast) ease-in-out infinite;
+    animation: 
+      pulse-glow var(--breathe-fast) ease-in-out infinite,
+      energy-flow 15s linear infinite;
   }
   
-  @keyframes breathe {
-    0%, 100% { 
-      transform: scale(1);
-      filter: brightness(1);
+  /* Particle system utility */
+  .particles {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .particles::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: 
+      radial-gradient(circle, var(--neural-400) var(--particle-size-min), transparent var(--particle-size-min)),
+      radial-gradient(circle, var(--quantum-400) var(--particle-size-min), transparent var(--particle-size-min)),
+      radial-gradient(circle, var(--process-400) var(--particle-size-max), transparent var(--particle-size-max));
+    background-size: 3% 3%, 2% 2%, 4% 4%;
+    background-position: 0% 0%, 50% 50%, 100% 100%;
+    filter: blur(var(--particle-blur));
+    opacity: var(--particle-opacity-max);
+    animation: particle-system var(--particle-speed) linear infinite;
+    pointer-events: none;
+  }
+  
+  /* Energy field utility */
+  .energy-field {
+    position: relative;
+  }
+  
+  .energy-field::before {
+    content: '';
+    position: absolute;
+    inset: calc(var(--field-distortion-amount) * -2);
+    background: radial-gradient(
+      circle at center,
+      var(--energy-active) 0%,
+      transparent 70%
+    );
+    filter: blur(var(--field-boundary-blur));
+    opacity: var(--field-core-intensity);
+    animation: 
+      energy-field-fluctuation var(--field-fluctuation-speed) ease-in-out infinite,
+      plasma-movement 15s ease-in-out infinite;
+    pointer-events: none;
+    z-index: -1;
+  }
+  
+  /* Holographic surface */
+  .holographic {
+    position: relative;
+    background: linear-gradient(
+      45deg,
+      transparent 30%,
+      var(--neural-400) 35%,
+      var(--quantum-400) 40%,
+      var(--process-400) 45%,
+      transparent 50%
+    );
+    background-size: 200% 200%;
+    animation: holographic-scan 3s linear infinite;
+    mix-blend-mode: overlay;
+  }
+  
+  @keyframes particle-system {
+    0% {
+      transform: translate(0, 0) rotate(0deg);
     }
-    50% { 
-      transform: scale(1.02);
-      filter: brightness(1.1);
+    100% {
+      transform: translate(-100%, -100%) rotate(360deg);
     }
   }
   
-  @keyframes float {
-    0%, 100% { transform: translateY(0) rotate(0deg); }
-    25% { transform: translateY(-10px) rotate(1deg); }
-    75% { transform: translateY(-5px) rotate(-1deg); }
+  @keyframes energy-field-fluctuation {
+    0%, 100% {
+      transform: scale(1) rotate(0deg);
+      filter: blur(var(--field-boundary-blur));
+    }
+    50% {
+      transform: scale(1.1) rotate(180deg);
+      filter: blur(calc(var(--field-boundary-blur) * 1.5));
+    }
   }
   
-  @keyframes pulse-glow {
-    0%, 100% { 
-      box-shadow: var(--glow-pulse) currentColor;
-      opacity: 0.9;
+  @keyframes holographic-scan {
+    0% {
+      background-position: 200% 200%;
     }
-    50% { 
-      box-shadow: var(--glow-aura) currentColor;
-      opacity: 1;
+    100% {
+      background-position: -200% -200%;
     }
   }
   

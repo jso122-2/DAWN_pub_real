@@ -1,0 +1,212 @@
+/* DAWN Deep Space Background System
+ * Multi-layered star field with parallax effects
+ * Nebula clouds and atmospheric depth
+ */
+
+/* Base space background */
+.dawn-space {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: radial-gradient(ellipse at center, #000015 0%, #000000 100%);
+  overflow: hidden;
+  z-index: 0;
+}
+
+/* Three-layer star field with parallax */
+.star-field {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.star-field::before,
+.star-field::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    radial-gradient(2px 2px at 20px 30px, #eee, transparent),
+    radial-gradient(2px 2px at 40px 70px, rgba(255,255,255,0.8), transparent),
+    radial-gradient(1px 1px at 90px 40px, rgba(255,255,255,0.6), transparent),
+    radial-gradient(1px 1px at 130px 80px, rgba(255,255,255,0.4), transparent),
+    radial-gradient(2px 2px at 160px 30px, rgba(255,255,255,0.9), transparent);
+  background-repeat: repeat;
+  background-size: 200px 100px;
+  animation: drift-stars 120s linear infinite;
+}
+
+.star-field::before {
+  background-size: 250px 150px;
+  animation: drift-stars 180s linear infinite reverse;
+  opacity: 0.7;
+}
+
+/* Nebula clouds */
+.nebula-layer {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: 
+    radial-gradient(ellipse at 20% 50%, rgba(168, 85, 247, 0.1) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 20%, rgba(6, 182, 212, 0.08) 0%, transparent 50%),
+    radial-gradient(ellipse at 40% 80%, rgba(236, 72, 153, 0.06) 0%, transparent 50%);
+  animation: nebula-drift 200s ease-in-out infinite alternate;
+}
+
+/* Depth fog at screen edges */
+.depth-fog {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: 
+    linear-gradient(to right, rgba(0,0,0,0.8) 0%, transparent 15%, transparent 85%, rgba(0,0,0,0.8) 100%),
+    linear-gradient(to bottom, rgba(0,0,0,0.6) 0%, transparent 15%, transparent 85%, rgba(0,0,0,0.6) 100%);
+  pointer-events: none;
+}
+
+/* Consciousness grid */
+.consciousness-grid {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    linear-gradient(rgba(168, 85, 247, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(168, 85, 247, 0.03) 1px, transparent 1px);
+  background-size: 50px 50px;
+  animation: grid-pulse 4s ease-in-out infinite;
+}
+
+/* DAWN Logo styles */
+.dawn-logo {
+  position: fixed;
+  top: 60px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 4rem;
+  font-weight: 100;
+  letter-spacing: 0.5em;
+  background: linear-gradient(45deg, #a855f7, #06b6d4, #a855f7);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 0 30px rgba(168, 85, 247, 0.5);
+  z-index: 20;
+}
+
+/* Audio visualizer */
+.audio-visualizer {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 4px;
+  align-items: flex-end;
+  height: 60px;
+  z-index: 20;
+}
+
+.audio-bar {
+  width: 8px;
+  background: linear-gradient(to top, #a855f7, #06b6d4);
+  border-radius: 4px 4px 0 0;
+  animation: audio-pulse 0.5s ease-in-out infinite alternate;
+  box-shadow: 0 0 10px rgba(168, 85, 247, 0.5);
+}
+
+.audio-bar:nth-child(1) { animation-delay: 0s; height: 20%; }
+.audio-bar:nth-child(2) { animation-delay: 0.1s; height: 60%; }
+.audio-bar:nth-child(3) { animation-delay: 0.2s; height: 40%; }
+.audio-bar:nth-child(4) { animation-delay: 0.3s; height: 80%; }
+.audio-bar:nth-child(5) { animation-delay: 0.4s; height: 30%; }
+.audio-bar:nth-child(6) { animation-delay: 0.5s; height: 70%; }
+.audio-bar:nth-child(7) { animation-delay: 0.6s; height: 50%; }
+.audio-bar:nth-child(8) { animation-delay: 0.7s; height: 90%; }
+
+/* Animations */
+@keyframes drift-stars {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-200px);
+  }
+}
+
+@keyframes nebula-drift {
+  0% {
+    transform: translateX(0) rotate(0deg);
+    filter: hue-rotate(0deg);
+  }
+  50% {
+    transform: translateX(30px) rotate(0.5deg);
+    filter: hue-rotate(30deg);
+  }
+  100% {
+    transform: translateX(0) rotate(0deg);
+    filter: hue-rotate(0deg);
+  }
+}
+
+@keyframes grid-pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
+}
+
+@keyframes audio-pulse {
+  0% {
+    height: 10%;
+    box-shadow: 0 0 5px rgba(168, 85, 247, 0.3);
+  }
+  100% {
+    height: 100%;
+    box-shadow: 0 0 20px rgba(168, 85, 247, 0.8);
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .dawn-logo {
+    font-size: 2.5rem;
+    letter-spacing: 0.3em;
+  }
+  
+  .audio-visualizer {
+    height: 40px;
+  }
+  
+  .audio-bar {
+    width: 6px;
+  }
+}
+
+/* When rotations are disabled */
+.no-rotations * {
+  animation-play-state: paused !important;
+}
+
+/* Deep space consciousness styles */
+.app-container {
+  background: #000000;
+  min-height: 100vh;
+  position: relative;
+}
+
+.glass-neural {
+  background: rgba(168, 85, 247, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(168, 85, 247, 0.2);
+  box-shadow: 
+    0 0 20px rgba(168, 85, 247, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+} 

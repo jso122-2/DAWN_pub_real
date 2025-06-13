@@ -1,0 +1,702 @@
+import { EventEmitter } from '@/lib/EventEmitter';
+
+// ===== Data Types =====
+
+export interface TickData {
+  tick_number: number;
+  scup: number;
+  entropy: number;
+  mood: string;
+  timestamp: number;
+  signals: Record<string, any>;
+}
+
+export interface PythonProcess {
+  id: string;
+  script: string;
+  status: 'running' | 'completed' | 'error';
+  output: string[];
+  started_at: number;
+  tick_started: number;
+  args?: Record<string, any>;
+  pid?: number;
+  exit_code?: number;
+  error?: string;
+}
+
+export interface PythonScript {
+  name: string;
+  path: string;
+  description: string;
+  category: string;
+  parameters: Array<{
+    name: string;
+    type: 'string' | 'number' | 'boolean' | 'array' | 'object';
+    required: boolean;
+    default?: any;
+    description?: string;
+  }>;
+}
+
+export interface ProcessExecuteRequest {
+  script: string;
+  args?: Record<string, any>;
+  priority?: number;
+  timeout?: number;
+}
+
+export interface ProcessExecuteResponse {
+  process_id: string;
+  message: string;
+  tick_started: number;
+}
+
+export interface ProcessOutputChunk {
+  type: 'stdout' | 'stderr' | 'system';
+  content: string;
+  timestamp: number;
+  process_id: string;
+}
+
+export interface ConsciousnessState {
+  level: number; // 0-1
+  mood: string;
+  awareness: number;
+  coherence: number;
+  timestamp: number;
+  active_processes: number;
+  memory_usage: number;
+}
+
+export interface ApiError {
+  detail: string;
+  status_code: number;
+  timestamp: number;
+}
+
+// ===== WebSocket Message Types =====
+
+export interface WSTickMessage {
+  type: 'tick';
+  data: TickData;
+}
+
+export interface WSPythonMessage {
+  type: 'output' | 'status' | 'error';
+  data: ProcessOutputChunk | { status: PythonProcess['status'] } | { error: string };
+}
+
+export interface WSConsciousnessMessage {
+  type: 'update';
+  data: ConsciousnessState;
+}
+
+// ===== API Client Configuration =====
+
+export interface DAWNApiConfig {
+  baseUrl: string;
+  wsUrl: string;
+  apiKey?: string;
+  timeout?: number;
+  reconnectAttempts?: number;
+  reconnectDelay?: number;
+}
+
+// ===== Enhanced Features =====
+
+export interface ConnectionHealth {
+  isConnected: boolean;
+  latency: number;
+  lastPing: number;
+  reconnectAttempts: number;
+  wsConnections: number;
+}
+
+export interface BatchExecuteRequest {
+  requests: ProcessExecuteRequest[];
+  sequential?: boolean;
+  onProgress?: (completed: number, total: number) => void;
+}
+
+export interface BatchExecuteResponse {
+  batchId: string;
+  processes: ProcessExecuteResponse[];
+  failedRequests: Array<{ index: number; error: string }>;
+}
+
+// ===== Main API Client Class =====
+
+export class DAWNApiClient {
+  private config: Required<DAWNApiConfig>;
+  private emitter: EventEmitter;
+  private wsConnections: Map<string, WebSocket>;
+  private reconnectTimers: Map<string, NodeJS.Timer>;
+  private isConnected: boolean;
+  private healthMetrics: ConnectionHealth;
+  private requestCache: Map<string, { data: any; timestamp: number }>;
+  private pingInterval: NodeJS.Timer | null = null;
+
+  constructor(config: DAWNApiConfig) {
+    this.config = {
+      baseUrl: config.baseUrl || 'http://localhost:8000',
+      wsUrl: config.wsUrl || 'ws://localhost:8000',
+      apiKey: config.apiKey || '',
+      timeout: config.timeout || 30000,
+      reconnectAttempts: config.reconnectAttempts || 5,
+      reconnectDelay: config.reconnectDelay || 1000
+    };
+    
+    this.emitter = new EventEmitter();
+    this.wsConnections = new Map();
+    this.reconnectTimers = new Map();
+    this.isConnected = false;
+    
+    this.healthMetrics = {
+      isConnected: false,
+      latency: 0,
+      lastPing: 0,
+      reconnectAttempts: 0,
+      wsConnections: 0
+    };
+    
+    this.requestCache = new Map();
+    this.startHealthMonitoring();
+  }
+
+  // ===== HTTP Methods =====
+
+  /**
+   * Execute a Python script
+   */
+  async executePythonScript(request: ProcessExecuteRequest): Promise<ProcessExecuteResponse> {
+    const response = await this.post<ProcessExecuteResponse>('/api/python/execute', request);
+    
+    // Automatically connect to process WebSocket
+    this.connectPythonWebSocket(response.process_id);
+    
+    return response;
+  }
+
+  /**
+   * Get process status
+   */
+  async getProcessStatus(processId: string): Promise<PythonProcess> {
+    return this.get<PythonProcess>(`/api/python/status/${processId}`);
+  }
+
+  /**
+   * List available Python scripts
+   */
+  async listAvailableScripts(): Promise<PythonScript[]> {
+    return this.get<PythonScript[]>('/api/python/list');
+  }
+
+  /**
+   * Kill a running process
+   */
+  async killProcess(processId: string): Promise<{ message: string }> {
+    const response = await this.delete<{ message: string }>(`/api/python/kill/${processId}`);
+    
+    // Close WebSocket connection
+    this.closePythonWebSocket(processId);
+    
+    return response;
+  }
+
+  /**
+   * Get process output history
+   */
+  async getProcessOutput(processId: string): Promise<string[]> {
+    const process = await this.getProcessStatus(processId);
+    return process.output;
+  }
+
+  /**
+   * Get current consciousness state
+   */
+  async getConsciousnessState(): Promise<ConsciousnessState> {
+    return this.get<ConsciousnessState>('/api/consciousness/state');
+  }
+
+  /**
+   * Get system health status
+   */
+  async getHealthStatus(): Promise<{ status: string; timestamp: number }> {
+    return this.get<{ status: string; timestamp: number }>('/health');
+  }
+
+  // ===== Enhanced HTTP Methods =====
+
+  /**
+   * Execute multiple Python scripts in batch
+   */
+  async executeBatch(request: BatchExecuteRequest): Promise<BatchExecuteResponse> {
+    const batchId = `batch-${Date.now()}`;
+    const processes: ProcessExecuteResponse[] = [];
+    const failedRequests: Array<{ index: number; error: string }> = [];
+
+    if (request.sequential) {
+      // Execute one by one
+      for (let i = 0; i < request.requests.length; i++) {
+        try {
+          const result = await this.executePythonScript(request.requests[i]);
+          processes.push(result);
+          request.onProgress?.(i + 1, request.requests.length);
+        } catch (error) {
+          failedRequests.push({ 
+            index: i, 
+            error: error instanceof Error ? error.message : 'Unknown error' 
+          });
+        }
+      }
+    } else {
+      // Execute in parallel
+      const promises = request.requests.map((req, index) => 
+        this.executePythonScript(req).catch(error => ({ 
+          index, 
+          error: error instanceof Error ? error.message : 'Unknown error' 
+        }))
+      );
+      
+      const results = await Promise.allSettled(promises);
+      results.forEach((result, index) => {
+        if (result.status === 'fulfilled') {
+          if ('process_id' in result.value) {
+            processes.push(result.value as ProcessExecuteResponse);
+          } else {
+            failedRequests.push(result.value as { index: number; error: string });
+          }
+        } else {
+          failedRequests.push({ index, error: result.reason?.message || 'Unknown error' });
+        }
+      });
+      
+      request.onProgress?.(request.requests.length, request.requests.length);
+    }
+
+    return { batchId, processes, failedRequests };
+  }
+
+  /**
+   * Get cached response or fetch new data
+   */
+  async getCached<T>(endpoint: string, ttl: number = 30000): Promise<T> {
+    const cached = this.requestCache.get(endpoint);
+    const now = Date.now();
+    
+    if (cached && (now - cached.timestamp) < ttl) {
+      return cached.data;
+    }
+    
+    const data = await this.get<T>(endpoint);
+    this.requestCache.set(endpoint, { data, timestamp: now });
+    return data;
+  }
+
+  /**
+   * Stream process output with backpressure handling
+   */
+  async streamProcessOutput(processId: string): Promise<ReadableStream<ProcessOutputChunk>> {
+    return new ReadableStream({
+      start: (controller) => {
+        const handleOutput = (data: { processId: string; chunk: ProcessOutputChunk }) => {
+          if (data.processId === processId) {
+            controller.enqueue(data.chunk);
+          }
+        };
+
+        const handleComplete = (data: { processId: string }) => {
+          if (data.processId === processId) {
+            controller.close();
+            this.off('python:output', handleOutput);
+            this.off('python:status', handleComplete);
+          }
+        };
+
+        this.on('python:output', handleOutput);
+        this.on('python:status', handleComplete);
+        
+        this.connectPythonWebSocket(processId);
+      },
+      
+      cancel: () => {
+        this.closePythonWebSocket(processId);
+      }
+    });
+  }
+
+  /**
+   * Get connection health metrics
+   */
+  getHealthMetrics(): ConnectionHealth {
+    return { ...this.healthMetrics };
+  }
+
+  /**
+   * Manually trigger connection health check
+   */
+  async checkHealth(): Promise<boolean> {
+    try {
+      const start = Date.now();
+      await this.get('/health');
+      this.healthMetrics.latency = Date.now() - start;
+      this.healthMetrics.lastPing = Date.now();
+      this.healthMetrics.isConnected = true;
+      return true;
+    } catch (error) {
+      this.healthMetrics.isConnected = false;
+      return false;
+    }
+  }
+
+  // ===== WebSocket Methods =====
+
+  /**
+   * Connect to tick loop WebSocket
+   */
+  connectTickWebSocket(): void {
+    this.connectWebSocket('tick', '/ws/tick', (message) => {
+      const data = message as WSTickMessage;
+      this.emitter.emit('tick:update', data.data);
+    });
+  }
+
+  /**
+   * Connect to Python process output WebSocket
+   */
+  connectPythonWebSocket(processId: string): void {
+    const wsId = `python-${processId}`;
+    this.connectWebSocket(wsId, `/ws/python/${processId}`, (message) => {
+      const data = message as WSPythonMessage;
+      
+      switch (data.type) {
+        case 'output':
+          this.emitter.emit('python:output', {
+            processId,
+            chunk: data.data as ProcessOutputChunk
+          });
+          break;
+        
+        case 'status':
+          this.emitter.emit('python:status', {
+            processId,
+            status: (data.data as any).status
+          });
+          break;
+        
+        case 'error':
+          this.emitter.emit('python:error', {
+            processId,
+            error: (data.data as any).error
+          });
+          break;
+      }
+    });
+  }
+
+  /**
+   * Connect to consciousness state WebSocket
+   */
+  connectConsciousnessWebSocket(): void {
+    this.connectWebSocket('consciousness', '/ws/consciousness', (message) => {
+      const data = message as WSConsciousnessMessage;
+      this.emitter.emit('consciousness:update', data.data);
+    });
+  }
+
+  /**
+   * Close Python process WebSocket
+   */
+  closePythonWebSocket(processId: string): void {
+    const wsId = `python-${processId}`;
+    this.closeWebSocket(wsId);
+  }
+
+  /**
+   * Disconnect all WebSockets
+   */
+  disconnectAll(): void {
+    this.wsConnections.forEach((ws, id) => {
+      this.closeWebSocket(id);
+    });
+    
+    this.stopHealthMonitoring();
+    this.requestCache.clear();
+    this.emitter.removeAllListeners();
+  }
+
+  // ===== Event Methods =====
+
+  /**
+   * Subscribe to events
+   */
+  on(event: string, handler: (...args: any[]) => void): void {
+    this.emitter.on(event, handler);
+  }
+
+  /**
+   * Unsubscribe from events
+   */
+  off(event: string, handler: (...args: any[]) => void): void {
+    this.emitter.off(event, handler);
+  }
+
+  /**
+   * Subscribe to event once
+   */
+  once(event: string, handler: (...args: any[]) => void): void {
+    this.emitter.once(event, handler);
+  }
+
+  // ===== Private HTTP Methods =====
+
+  private async get<T>(path: string): Promise<T> {
+    return this.request<T>('GET', path);
+  }
+
+  private async post<T>(path: string, data?: any): Promise<T> {
+    return this.request<T>('POST', path, data);
+  }
+
+  private async delete<T>(path: string): Promise<T> {
+    return this.request<T>('DELETE', path);
+  }
+
+  private async request<T>(
+    method: string,
+    path: string,
+    data?: any
+  ): Promise<T> {
+    const url = `${this.config.baseUrl}${path}`;
+    const headers: HeadersInit = {
+      'Content-Type': 'application/json'
+    };
+    
+    if (this.config.apiKey) {
+      headers['Authorization'] = `Bearer ${this.config.apiKey}`;
+    }
+
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), this.config.timeout);
+
+    try {
+      const response = await fetch(url, {
+        method,
+        headers,
+        body: data ? JSON.stringify(data) : undefined,
+        signal: controller.signal
+      });
+
+      clearTimeout(timeout);
+
+      if (!response.ok) {
+        const error: ApiError = await response.json().catch(() => ({
+          detail: `HTTP error ${response.status}`,
+          status_code: response.status,
+          timestamp: Date.now()
+        }));
+        
+        throw new ApiClientError(error.detail, error.status_code);
+      }
+
+      return response.json();
+    } catch (error) {
+      clearTimeout(timeout);
+      
+      if (error instanceof ApiClientError) {
+        throw error;
+      }
+      
+      if (error instanceof Error) {
+        if (error.name === 'AbortError') {
+          throw new ApiClientError('Request timeout', 408);
+        }
+        throw new ApiClientError(error.message, 0);
+      }
+      
+      throw new ApiClientError('Unknown error', 0);
+    }
+  }
+
+  // ===== Private WebSocket Methods =====
+
+  /**
+   * Connect with retry logic and health monitoring
+   */
+  private connectWebSocket(
+    id: string,
+    path: string,
+    onMessage: (data: any) => void
+  ): void {
+    // Close existing connection if any
+    this.closeWebSocket(id);
+    
+    const url = `${this.config.wsUrl}${path}`;
+    const ws = new WebSocket(url);
+    let reconnectCount = 0;
+
+    ws.onopen = () => {
+      console.log(`[DAWNApiClient] WebSocket connected: ${id}`);
+      this.isConnected = true;
+      this.healthMetrics.wsConnections++;
+      reconnectCount = 0;
+      this.emitter.emit('ws:connected', { id, path });
+    };
+
+    ws.onmessage = (event) => {
+      try {
+        const message = JSON.parse(event.data);
+        onMessage(message);
+      } catch (error) {
+        console.error(`[DAWNApiClient] Failed to parse WebSocket message:`, error);
+        this.emitter.emit('ws:error', { id, error });
+      }
+    };
+
+    ws.onerror = (error) => {
+      console.error(`[DAWNApiClient] WebSocket error:`, error);
+      this.emitter.emit('ws:error', { id, error });
+    };
+
+    ws.onclose = (event) => {
+      console.log(`[DAWNApiClient] WebSocket closed: ${id}`);
+      this.healthMetrics.wsConnections = Math.max(0, this.healthMetrics.wsConnections - 1);
+      this.isConnected = this.healthMetrics.wsConnections > 0;
+      this.emitter.emit('ws:disconnected', { id, code: event.code, reason: event.reason });
+      
+      // Enhanced reconnection with exponential backoff
+      if (reconnectCount < this.config.reconnectAttempts) {
+        reconnectCount++;
+        const delay = this.config.reconnectDelay * Math.pow(2, reconnectCount - 1);
+        
+        console.log(`[DAWNApiClient] Reconnecting ${id} in ${delay}ms (attempt ${reconnectCount})`);
+        
+        const timer = setTimeout(() => {
+          this.connectWebSocket(id, path, onMessage);
+        }, delay);
+        
+        this.reconnectTimers.set(id, timer);
+      } else {
+        this.emitter.emit('ws:max-reconnects-reached', { id });
+      }
+    };
+
+    this.wsConnections.set(id, ws);
+  }
+
+  private closeWebSocket(id: string): void {
+    // Clear reconnect timer
+    const timer = this.reconnectTimers.get(id);
+    if (timer) {
+      clearTimeout(timer);
+      this.reconnectTimers.delete(id);
+    }
+    
+    // Close WebSocket
+    const ws = this.wsConnections.get(id);
+    if (ws) {
+      ws.close();
+      this.wsConnections.delete(id);
+    }
+  }
+
+  // ===== Health Monitoring =====
+
+  private startHealthMonitoring(): void {
+    this.pingInterval = setInterval(async () => {
+      await this.checkHealth();
+    }, 30000); // Check every 30 seconds
+  }
+
+  private stopHealthMonitoring(): void {
+    if (this.pingInterval) {
+      clearInterval(this.pingInterval);
+      this.pingInterval = null;
+    }
+  }
+}
+
+// ===== Error Class =====
+
+export class ApiClientError extends Error {
+  constructor(
+    message: string,
+    public statusCode: number
+  ) {
+    super(message);
+    this.name = 'ApiClientError';
+  }
+}
+
+// ===== Singleton Instance =====
+
+let clientInstance: DAWNApiClient | null = null;
+
+/**
+ * Get or create DAWNApiClient instance
+ */
+export function getDAWNApiClient(config?: DAWNApiConfig): DAWNApiClient {
+  if (!clientInstance) {
+    clientInstance = new DAWNApiClient(config || {
+      baseUrl: process.env.REACT_APP_API_URL || 'http://localhost:8000',
+      wsUrl: process.env.REACT_APP_WS_URL || 'ws://localhost:8000'
+    });
+  }
+  return clientInstance;
+}
+
+// ===== Enhanced React Hook =====
+
+import { useEffect, useState } from 'react';
+
+/**
+ * React hook for using DAWN API client
+ */
+export function useDAWNApi() {
+  const [client] = useState(() => getDAWNApiClient());
+  const [isConnected, setIsConnected] = useState(false);
+  const [healthMetrics, setHealthMetrics] = useState<ConnectionHealth>({
+    isConnected: false,
+    latency: 0,
+    lastPing: 0,
+    reconnectAttempts: 0,
+    wsConnections: 0
+  });
+  
+  useEffect(() => {
+    const updateHealth = () => {
+      setHealthMetrics(client.getHealthMetrics());
+      setIsConnected(client.getHealthMetrics().isConnected);
+    };
+
+    const handleConnected = () => updateHealth();
+    const handleDisconnected = () => updateHealth();
+    
+    client.on('ws:connected', handleConnected);
+    client.on('ws:disconnected', handleDisconnected);
+    
+    // Connect to main WebSockets
+    client.connectTickWebSocket();
+    client.connectConsciousnessWebSocket();
+    
+    // Start health monitoring
+    const healthInterval = setInterval(updateHealth, 5000);
+    
+    return () => {
+      client.off('ws:connected', handleConnected);
+      client.off('ws:disconnected', handleDisconnected);
+      clearInterval(healthInterval);
+    };
+  }, [client]);
+  
+  return { 
+    client, 
+    isConnected, 
+    healthMetrics,
+    
+    // Helper methods
+    executeBatch: (request: BatchExecuteRequest) => client.executeBatch(request),
+    streamOutput: (processId: string) => client.streamProcessOutput(processId),
+    checkHealth: () => client.checkHealth()
+  };
+}
