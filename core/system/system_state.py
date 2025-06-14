@@ -1,5 +1,5 @@
 from helix_import_architecture import helix_import
-pulse_heat = helix_import("pulse_heat")
+from substrate import pulse_heat
 from owl.owl_auditor import OwlAuditor
 from mycelium.nutrient_utils import get_nutrient_heat
 

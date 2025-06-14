@@ -1,11 +1,13 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Routes, Route, useLocation } from 'react-router-dom'
+import { Routes, Route } from 'react-router-dom'
 import { Sparkles, Cpu, Activity, Heart, Zap } from 'lucide-react'
 import { AnimationProvider } from './contexts/AnimationContext'
-import { ConsciousnessProvider } from './components/system/ConsciousnessProvider'
+import { ConsciousnessProvider } from './contexts/ConsciousnessContext'
 import { ModuleOrchestra } from './components/ModuleOrchestra'
 import { TestModule } from './components/modules/TestModule'
+import { Navigation } from './components/navigation/Navigation'
+import { RouterTest } from './components/router/RouterTest'
 import DAWNDemo from './components/DAWNDemo'
 import { QuantumInterface } from './components/QuantumInterface'
 import { NeuralDashboard } from './components/NeuralDashboard'
@@ -13,9 +15,10 @@ import { SystemDashboard } from './components/SystemDashboard'
 import ModuleDemo from './pages/ModuleDemo'
 import GlassErrorBoundary from './components/GlassErrorBoundary'
 import { DeepSpaceBackground } from './components/DeepSpaceBackground'
+import { useRouter } from './providers/RouterProvider'
 
 export default function App() {
-  const location = useLocation()
+  const { currentPath, transitionState } = useRouter()
   const [consciousness, setConsciousness] = useState({
     level: 50,
     quantum: 'coherent' as const,
@@ -56,24 +59,22 @@ export default function App() {
   return (
     <div className="relative min-h-screen overflow-hidden bg-black">
       <GlassErrorBoundary>
-        <ConsciousnessProvider
-          initialConsciousness={{
-            consciousnessLevel: consciousness.level,
-            quantumState: consciousness.quantum,
-            mood: consciousness.mood,
-            neuralActivity: consciousness.neural,
-            entropyLevel: consciousness.entropy
-          }}
-        >
+        <ConsciousnessProvider>
           <AnimationProvider>
             {/* Cosmic Background */}
             <DeepSpaceBackground />
             
+            {/* Navigation */}
+            <Navigation />
+            
+            {/* Router Test Component - Shows routing is working */}
+            <RouterTest />
+            
             {/* Global consciousness state indicator */}
             <motion.div 
-              className="fixed top-4 left-4 z-50 glass-base p-3 rounded-lg"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
+              className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 glass-base p-3 rounded-lg"
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 1 }}
             >
               <div className="flex items-center gap-3 text-sm">
@@ -104,6 +105,14 @@ export default function App() {
                   <span className="text-white/70">Entropy:</span>
                   <span className="text-white font-mono">{(consciousness.entropy * 100).toFixed(0)}%</span>
                 </div>
+                
+                <div className="text-white/50">|</div>
+                
+                <div className="flex items-center gap-2">
+                  <Activity className="w-4 h-4 text-amber-400" />
+                  <span className="text-white/70">Route:</span>
+                  <span className="text-white font-mono">{currentPath}</span>
+                </div>
               </div>
             </motion.div>
             
@@ -126,6 +135,30 @@ export default function App() {
               </Routes>
             </main>
             
+            {/* Route Transition Status */}
+            <AnimatePresence>
+              {transitionState !== 'idle' && (
+                <motion.div
+                  className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 glass-base p-4 rounded-lg"
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.9 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <div className="flex items-center gap-3">
+                    <motion.div
+                      className="w-4 h-4 border-2 border-cyan-400 border-t-transparent rounded-full"
+                      animate={{ rotate: 360 }}
+                      transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                    />
+                    <span className="text-white/70 text-sm">
+                      {transitionState === 'entering' ? 'Loading...' : 'Transitioning...'}
+                    </span>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+            
             {/* Consciousness Debug Panel (development only) */}
             {process.env.NODE_ENV === 'development' && (
               <motion.div
@@ -136,20 +169,20 @@ export default function App() {
               >
                 <h3 className="text-white font-semibold mb-2 flex items-center gap-2">
                   <Cpu className="w-4 h-4" />
-                  Consciousness Debug
+                  Router Debug
                 </h3>
                 <div className="space-y-2 text-xs">
                   <div className="flex justify-between">
+                    <span className="text-white/70">Path:</span>
+                    <span className="text-cyan-400 font-mono">{currentPath}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-white/70">State:</span>
+                    <span className="text-purple-400 font-mono">{transitionState}</span>
+                  </div>
+                  <div className="flex justify-between">
                     <span className="text-white/70">Level:</span>
                     <span className="text-white font-mono">{consciousness.level.toFixed(1)}%</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-white/70">Quantum:</span>
-                    <span className="text-purple-400 font-mono">{consciousness.quantum}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-white/70">Mood:</span>
-                    <span className="text-cyan-400 font-mono">{consciousness.mood}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-white/70">Neural:</span>

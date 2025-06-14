@@ -18,7 +18,7 @@ if substrate_path not in sys.path:
     sys.path.append(substrate_path)
 
 try:
-    from helix.helix_import_architecture import helix_import
+    from substrate.helix.helix_import_fix import helix_import
 except ImportError:
     print("No existing HelixBridge found, using custom implementation")
     async def helix_import(module_name: str) -> Any:

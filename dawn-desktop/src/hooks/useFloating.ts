@@ -1,8 +1,9 @@
 // Add performance monitoring
 const PERFORMANCE_MODE = (import.meta as any).env?.VITE_PERFORMANCE_MODE === 'true'
 
-import { useEffect, useRef, useMemo } from 'react'
+import { useEffect, useRef, useMemo, useState } from 'react'
 import { useAnimation, useMotionValue } from 'framer-motion'
+import { useAnimationFrame } from './useAnimationFrame'
 
 export type FloatingPreset = 'gentle' | 'active' | 'orbital' | 'magnetic'
 
@@ -14,51 +15,31 @@ export interface UseFloatingOptions {
 }
 
 interface FloatingConfig {
-  amplitude: { x: number; y: number }
-  frequency: number
-  rotationAmount: number
-  magneticStrength: number
-  orbitalRadius: number
-  mouseInfluence: number
-  dampening: number
+  amplitude: number
+  speed: number
+  pattern: 'lissajous' | 'orbital' | 'random' | 'magnetic'
 }
 
 const FLOATING_PRESETS: Record<FloatingPreset, FloatingConfig> = {
   gentle: {
-    amplitude: { x: 10, y: 15 },
-    frequency: 0.0005,
-    rotationAmount: 2,
-    magneticStrength: 50,
-    orbitalRadius: 0,
-    mouseInfluence: 0.1,
-    dampening: 0.95
+    amplitude: 10,
+    speed: 0.0005,
+    pattern: 'lissajous'
   },
   active: {
-    amplitude: { x: 20, y: 25 },
-    frequency: 0.001,
-    rotationAmount: 5,
-    magneticStrength: 80,
-    orbitalRadius: 0,
-    mouseInfluence: 0.2,
-    dampening: 0.9
+    amplitude: 20,
+    speed: 0.001,
+    pattern: 'lissajous'
   },
   orbital: {
-    amplitude: { x: 5, y: 5 },
-    frequency: 0.0003,
-    rotationAmount: 360,
-    magneticStrength: 30,
-    orbitalRadius: 150,
-    mouseInfluence: 0.05,
-    dampening: 0.98
+    amplitude: 5,
+    speed: 0.0003,
+    pattern: 'orbital'
   },
   magnetic: {
-    amplitude: { x: 15, y: 20 },
-    frequency: 0.0008,
-    rotationAmount: 3,
-    magneticStrength: 120,
-    orbitalRadius: 0,
-    mouseInfluence: 0.3,
-    dampening: 0.85
+    amplitude: 15,
+    speed: 0.0008,
+    pattern: 'magnetic'
   }
 }
 
@@ -84,48 +65,61 @@ export function useFloating(options: UseFloatingOptions = {}) {
   const config = useMemo(() => {
     const base = { ...FLOATING_PRESETS[preset], ...customConfig }
     if (intensity > 0) {
-      base.amplitude.x = base.amplitude.x * (1 + intensity)
-      base.amplitude.y = base.amplitude.y * (1 + intensity)
-      base.frequency = base.frequency * (1 + intensity * 0.5)
-      base.rotationAmount = base.rotationAmount * (1 + intensity)
+      base.amplitude = base.amplitude * (1 + intensity)
+      base.speed = base.speed * (1 + intensity * 0.5)
     }
     return base
   }, [preset, intensity, customConfig])
 
-  // Animation loop
-  useEffect(() => {
+  useAnimationFrame((time: number) => {
     if (disabled) return
-    let running = true
-    let start = performance.now()
-    const animate = async () => {
-      while (running) {
-        const now = performance.now()
-        const t = (now - start)
-        const fx = Math.sin(t * config.frequency) * config.amplitude.x
-        const fy = Math.cos(t * config.frequency * 0.7) * config.amplitude.y
-        const rot = Math.sin(t * config.frequency * 0.5) * config.rotationAmount
-        x.set(fx)
-        y.set(fy)
-        rotate.set(rot)
-        await controls.start({
-          x: fx,
-          y: fy,
-          rotate: rot,
-          transition: { duration: 0.1, ease: 'linear' }
-        })
-        await new Promise(r => setTimeout(r, 16))
-      }
+    const t = time * 0.001 * config.speed
+    
+    let x = 0, y = 0, rotate = 0
+    
+    switch (config.pattern) {
+      case 'lissajous':
+        x = config.amplitude * Math.sin(t * 1.3)
+        y = config.amplitude * Math.sin(t * 2.1)
+        rotate = Math.sin(t * 0.5) * 5
+        break
+        
+      case 'orbital':
+        x = config.amplitude * Math.cos(t)
+        y = config.amplitude * Math.sin(t)
+        rotate = t * 10 % 360
+        break
+        
+      case 'random':
+        x = config.amplitude * (Math.sin(t * 1.3) + Math.sin(t * 2.7) * 0.5)
+        y = config.amplitude * (Math.sin(t * 2.1) + Math.sin(t * 3.2) * 0.5)
+        rotate = Math.sin(t * 0.7) * 10
+        break
+        
+      case 'magnetic':
+        x = config.amplitude * Math.sin(t) * Math.cos(t * 0.7)
+        y = config.amplitude * Math.cos(t) * Math.sin(t * 0.7)
+        rotate = Math.sin(t * 0.3) * 3
+        break
     }
-    animate()
-    return () => { running = false }
-  }, [controls, config, disabled, x, y, rotate])
+    
+    x.set(x)
+    y.set(y)
+    rotate.set(rotate)
+    controls.start({
+      x: x,
+      y: y,
+      rotate: rotate,
+      transition: { duration: 0.1, ease: 'linear' }
+    })
+  })
 
   // Variants for framer-motion
   const variants = useMemo(() => ({
     float: {
-      x: [0, config.amplitude.x, 0, -config.amplitude.x, 0],
-      y: [0, config.amplitude.y, 0, -config.amplitude.y, 0],
-      rotate: [0, config.rotationAmount, 0, -config.rotationAmount, 0],
+      x: [0, config.amplitude, 0, -config.amplitude, 0],
+      y: [0, config.amplitude, 0, -config.amplitude, 0],
+      rotate: [0, 5, 0, -5, 0],
       transition: {
         duration: 8 / (1 + intensity),
         repeat: Infinity,

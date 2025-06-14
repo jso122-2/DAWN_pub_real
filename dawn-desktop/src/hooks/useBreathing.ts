@@ -1,5 +1,6 @@
 import { useAnimation } from 'framer-motion'
 import { useEffect, useMemo } from 'react'
+import { useAnimationFrame } from './useAnimationFrame'
 
 export type BreathingState = 'idle' | 'active' | 'processing' | 'error'
 
@@ -10,66 +11,47 @@ const breathingGroups = new Map<string, {
   intensity: number
 }>()
 
-export const useBreathing = (
-  intensity: number = 0.5,
-  state: BreathingState = 'idle'
-) => {
-  const controls = useAnimation()
+interface BreathingConfig {
+  intensity: number;      // 0-1
+  baseRate: number;       // ms per cycle
+  variance?: number;      // 0-1 irregularity
+}
+
+export function useBreathing(config: BreathingConfig) {
+  const { intensity, baseRate, variance = 0 } = config;
   
-  const variants = useMemo(() => ({
-    idle: {
-      scale: [1, 1.02, 1],
-      opacity: [0.95, 1, 0.95],
+  const animate = useMemo(() => {
+    return {
+      animate: {
+        scale: [
+          1 - (0.02 * intensity),
+          1 + (0.02 * intensity),
+          1 - (0.02 * intensity),
+        ],
+      },
       transition: {
-        duration: 4,
+        duration: baseRate / 1000,
         repeat: Infinity,
-        ease: "easeInOut"
-      }
-    },
-    active: {
-      scale: [1, 1.03, 1],
-      opacity: [0.9, 1, 0.9],
-      filter: ['brightness(1)', 'brightness(1.2)', 'brightness(1)'],
-      transition: {
-        duration: 2,
-        repeat: Infinity,
-        ease: "easeInOut"
-      }
-    },
-    processing: {
-      scale: [1, 1.04, 1.02, 1],
-      opacity: [0.8, 1, 0.95, 0.8],
-      filter: ['brightness(1)', 'brightness(1.3)', 'brightness(1.1)', 'brightness(1)'],
-      transition: {
-        duration: 1.5,
-        repeat: Infinity,
-        ease: "easeInOut"
-      }
-    },
-    error: {
-      scale: [1, 1.05, 1],
-      opacity: [0.7, 1, 0.7],
-      filter: ['brightness(1)', 'brightness(1.4)', 'brightness(1)'],
-      transition: {
-        duration: 1,
-        repeat: Infinity,
-        ease: "easeInOut"
-      }
-    }
-  }), [intensity])
+        ease: "easeInOut",
+        times: [0, 0.5, 1],
+      },
+    };
+  }, [intensity, baseRate]);
+
+  return animate;
+}
+
+export const useBreathingSync = (moduleId: string, groupId: string) => {
+  const group = breathingGroups.get(groupId)
+  const state = group?.state || 'idle'
+  const intensity = group?.intensity || 0.5
   
-  useEffect(() => {
-    controls.start(state)
-  }, [controls, state])
-  
-  return {
-    controls,
-    variants,
-    motionProps: {
-      animate: controls,
-      variants
-    }
-  }
+  return useBreathing({ intensity, baseRate: 1000 })
+}
+
+export const syncBreathingGroup = (groupId: string) => {
+  // Stub implementation
+  console.log(`Syncing breathing group: ${groupId}`)
 }
 
 // Breathing group management
@@ -91,17 +73,4 @@ export const addToBreathingGroup = (groupId: string, moduleId: string) => {
   if (group) {
     group.modules.add(moduleId)
   }
-}
-
-export const useBreathingSync = (moduleId: string, groupId: string) => {
-  const group = breathingGroups.get(groupId)
-  const state = group?.state || 'idle'
-  const intensity = group?.intensity || 0.5
-  
-  return useBreathing(intensity, state)
-}
-
-export const syncBreathingGroup = (groupId: string) => {
-  // Stub implementation
-  console.log(`Syncing breathing group: ${groupId}`)
 }

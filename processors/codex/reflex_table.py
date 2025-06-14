@@ -1,5 +1,5 @@
 from helix_import_architecture import helix_import
-pulse_heat = helix_import("pulse_heat")
+from substrate import pulse_heat
 """
 DAWN Symbolic Reflex Table - Ethical Nervous System
 Maps sigils, mood states, and schema thresholds to conscious decision-making.

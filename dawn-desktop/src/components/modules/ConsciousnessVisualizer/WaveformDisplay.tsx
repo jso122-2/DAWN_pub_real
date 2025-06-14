@@ -1,71 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
-import { waveformGenerator } from '@/utils/consciousness/waveformGenerator';
-import { WaveformData } from '@/types/visualization.types';
+import { useConsciousness } from '../../../hooks/useConsciousness';
+import { waveformGenerator } from '../../../utils/consciousness/waveformGenerator';
+import { WaveformData } from '../../../types/visualization.types';
+import * as styles from './ConsciousnessVisualizer.styles';
 
 interface WaveformDisplayProps {
   fullscreen?: boolean;
 }
-
-interface ConsciousnessState {
-  scup: number;
-  entropy: number;
-  mood: string;
-  neuralActivity: number;
-}
-
-// Mock consciousness hook - replace with actual implementation
-function useConsciousness(): ConsciousnessState {
-  const [consciousness, setConsciousness] = useState<ConsciousnessState>({
-    scup: 75,
-    entropy: 0.5,
-    mood: 'active',
-    neuralActivity: 0.6
-  });
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const moods = ['active', 'contemplative', 'excited', 'serene', 'anxious', 'euphoric', 'chaotic'];
-      setConsciousness(prev => ({
-        ...prev,
-        scup: Math.max(0, Math.min(100, prev.scup + (Math.random() - 0.5) * 10)),
-        entropy: Math.max(0, Math.min(1, prev.entropy + (Math.random() - 0.5) * 0.2)),
-        neuralActivity: Math.max(0, Math.min(1, prev.neuralActivity + (Math.random() - 0.5) * 0.3)),
-        mood: Math.random() > 0.9 ? moods[Math.floor(Math.random() * moods.length)] : prev.mood
-      }));
-    }, 2000);
-
-    return () => clearInterval(interval);
-  }, []);
-
-  return consciousness;
-}
-
-const waveformContainerStyle = (fullscreen?: boolean) => ({
-  position: 'relative' as const,
-  width: '100%',
-  height: '100%',
-  minHeight: fullscreen ? '500px' : '150px'
-});
-
-const canvasStyle = {
-  width: '100%',
-  height: '100%'
-};
-
-const waveformInfoStyle = {
-  position: 'absolute' as const,
-  bottom: '1rem',
-  left: '1rem',
-  display: 'flex',
-  gap: '1rem',
-  fontSize: '0.75rem',
-  color: 'rgba(148, 163, 184, 0.7)',
-  background: 'rgba(15, 23, 42, 0.8)',
-  padding: '0.5rem 1rem',
-  borderRadius: '6px',
-  backdropFilter: 'blur(10px)'
-};
 
 export const WaveformDisplay: React.FC<WaveformDisplayProps> = ({ fullscreen }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -167,10 +109,10 @@ export const WaveformDisplay: React.FC<WaveformDisplayProps> = ({ fullscreen }) 
   }, [consciousness]);
 
   return (
-    <div style={waveformContainerStyle(fullscreen)}>
-      <canvas ref={canvasRef} style={canvasStyle} />
+    <div className={styles.waveformContainer(fullscreen)}>
+      <canvas ref={canvasRef} className={styles.canvas} />
       {waveformData && (
-        <div style={waveformInfoStyle}>
+        <div className={styles.waveformInfo}>
           <span>Frequency: {waveformData.frequency.toFixed(2)} Hz</span>
           <span>Harmonics: {waveformData.harmonics.length}</span>
         </div>

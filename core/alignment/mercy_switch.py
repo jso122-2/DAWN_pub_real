@@ -1,5 +1,5 @@
 from helix_import_architecture import helix_import
-pulse_heat = helix_import("pulse_heat")
+from substrate import pulse_heat
 """
 DAWN MercySwitch - Conscious Restraint System
 Enables recursive mercy through graceful retreat into healing stillness.

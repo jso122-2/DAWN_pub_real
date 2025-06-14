@@ -1,5 +1,5 @@
 from helix_import_architecture import helix_import
-pulse_heat = helix_import("pulse_heat")
+from substrate import pulse_heat
 """
 DAWN Qualia Kernel - Root of Subjectivity
 Transforms mood, entropy, and SCUP pressure into emotional signatures over time.

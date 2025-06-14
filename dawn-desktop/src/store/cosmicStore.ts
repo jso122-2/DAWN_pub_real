@@ -10,12 +10,14 @@ interface CosmicState {
   neuralActivity: number
   quantumCoherence: number
   systemLoad: number
+  mood: string
 
   // Update functions
   updateEntropy: (value: number) => void
   updateNeuralActivity: (value: number) => void
   updateQuantumCoherence: (value: number) => void
   updateSystemLoad: (value: number) => void
+  updateMood: (mood: string) => void
 
   // Features
   voiceEnabled: boolean
@@ -35,12 +37,14 @@ export const useCosmicStore = create<CosmicState>((set) => ({
   neuralActivity: 0.85,
   quantumCoherence: 0.92,
   systemLoad: 0.45,
+  mood: 'active',
 
   // Update functions
   updateEntropy: (value) => set({ entropy: value }),
   updateNeuralActivity: (value) => set({ neuralActivity: value }),
   updateQuantumCoherence: (value) => set({ quantumCoherence: value }),
   updateSystemLoad: (value) => set({ systemLoad: value }),
+  updateMood: (mood) => set({ mood }),
 
   // Features
   voiceEnabled: false,

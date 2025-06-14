@@ -1,66 +1,10 @@
 import React, { useRef, useEffect } from 'react';
+import { useConsciousness } from '../../../hooks/useConsciousness';
+import * as styles from './ConsciousnessVisualizer.styles';
 
 interface NeuralMapProps {
   fullscreen?: boolean;
 }
-
-interface ConsciousnessState {
-  scup: number;
-  entropy: number;
-  mood: string;
-  neuralActivity: number;
-}
-
-// Mock consciousness hook - replace with actual implementation
-function useConsciousness(): ConsciousnessState {
-  const [consciousness, setConsciousness] = React.useState<ConsciousnessState>({
-    scup: 75,
-    entropy: 0.5,
-    mood: 'active',
-    neuralActivity: 0.6
-  });
-
-  React.useEffect(() => {
-    const interval = setInterval(() => {
-      setConsciousness(prev => ({
-        ...prev,
-        scup: Math.max(0, Math.min(100, prev.scup + (Math.random() - 0.5) * 10)),
-        entropy: Math.max(0, Math.min(1, prev.entropy + (Math.random() - 0.5) * 0.2)),
-        neuralActivity: Math.max(0, Math.min(1, prev.neuralActivity + (Math.random() - 0.5) * 0.3))
-      }));
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, []);
-
-  return consciousness;
-}
-
-const particleContainerStyle = (fullscreen?: boolean) => ({
-  position: 'relative' as const,
-  width: '100%',
-  height: '100%',
-  minHeight: fullscreen ? '500px' : '150px'
-});
-
-const canvasStyle = {
-  width: '100%',
-  height: '100%'
-};
-
-const particleInfoStyle = {
-  position: 'absolute' as const,
-  bottom: '1rem',
-  right: '1rem',
-  display: 'flex',
-  gap: '1rem',
-  fontSize: '0.75rem',
-  color: 'rgba(148, 163, 184, 0.7)',
-  background: 'rgba(15, 23, 42, 0.8)',
-  padding: '0.5rem 1rem',
-  borderRadius: '6px',
-  backdropFilter: 'blur(10px)'
-};
 
 export const NeuralMap: React.FC<NeuralMapProps> = ({ fullscreen }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -188,9 +132,9 @@ export const NeuralMap: React.FC<NeuralMapProps> = ({ fullscreen }) => {
   }, [consciousness]);
 
   return (
-    <div style={particleContainerStyle(fullscreen)}>
-      <canvas ref={canvasRef} style={canvasStyle} />
-      <div style={particleInfoStyle}>
+    <div className={styles.particleContainer(fullscreen)}>
+      <canvas ref={canvasRef} className={styles.canvas} />
+      <div className={styles.particleInfo}>
         <span>Neural Activity: {(consciousness.neuralActivity * 100).toFixed(1)}%</span>
       </div>
     </div>

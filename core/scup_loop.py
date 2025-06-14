@@ -1,5 +1,5 @@
 from helix_import_architecture import helix_import
-pulse_heat = helix_import("pulse_heat")
+from substrate import pulse_heat
 # File Path: /src/core/scup_loop.py
 # 🧬 GENETIC HELIX PAIR: schema_health_index.py ↔ scup_loop.py
 # COMPLEX: Schema Coherence Under Pressure (SCUP) Management

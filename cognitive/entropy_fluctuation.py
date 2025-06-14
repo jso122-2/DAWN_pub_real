@@ -1,5 +1,5 @@
 from helix_import_architecture import helix_import
-pulse_heat = helix_import("pulse_heat")
+from substrate import pulse_heat
 # File Path: /src/core/entropy_fluctuation.py  
 # 🧬 GENETIC HELIX PAIR: entropy_fluctuation.py ↔ schema_decay_handler.py
 # COMPLEX: Entropy Management & Cognitive Decay Prevention

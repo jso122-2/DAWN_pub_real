@@ -1,0 +1,51 @@
+# DAWN Tick Engine Configuration
+
+engine:
+  tick_rate: 10.0  # Hz (ticks per second)
+  buffer_size: 1000  # Number of ticks to keep in history
+  enable_owl: true  # Enable Owl strategic module
+
+consciousness:
+  initial_scup: 50.0
+  initial_entropy: 0.5
+  initial_mood: "contemplative"
+
+modules:
+  neural:
+    enabled: true
+    base_firing_rate: 60  # Hz
+    variability: 0.2
+  
+  quantum:
+    enabled: true
+    base_coherence: 0.7
+    decoherence_rate: 0.01
+  
+  memory:
+    enabled: true
+    capacity: 1000
+    decay_rate: 0.001
+
+owl:
+  enabled: true
+  observation_window: 1000
+  analysis_interval: 50  # Analyze every N ticks
+  planning_horizons:
+    near: 100
+    medium: 1000
+    far: 10000
+
+api:
+  cors_origins:
+    - "http://localhost:5173"
+    - "http://localhost:3000"
+    - "http://127.0.0.1:5173"
+    - "http://127.0.0.1:3000"
+  max_connections: 100
+  heartbeat_interval: 30  # seconds
+
+logging:
+  level: "INFO"
+  file: "dawn_tick_engine.log"
+  max_size: "10MB"
+  backup_count: 5 

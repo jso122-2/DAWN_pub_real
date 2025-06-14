@@ -1,5 +1,5 @@
-from helix.helix_import_architecture import helix_import
-pulse_heat = helix_import("pulse_heat")
+from substrate.helix.helix_import_fix import helix_import
+from substrate import pulse_heat
 # /cognitive/alignment_probe.py
 
 import math
@@ -26,7 +26,7 @@ try:
 except ImportError:
     # If that fails, try helix import
     try:
-        pulse_heat = helix_import("pulse_heat")
+        from substrate import pulse_heat
         if pulse_heat:
             pulse = getattr(pulse_heat, 'pulse', None)
         else:

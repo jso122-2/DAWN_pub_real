@@ -1,5 +1,5 @@
 from helix_import_architecture import helix_import
-pulse_heat = helix_import("pulse_heat")
+from substrate import pulse_heat
 # File Path: /src/core/alignment_probe.py
 # 🧬 GENETIC HELIX PAIR: alignment_probe.py ↔ visual_consciousness.py  
 # COMPLEX: Alignment Integration & Visual Consciousness Binding

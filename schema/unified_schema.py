@@ -18,7 +18,7 @@ from statistics import mean
 # Try to import pulse via helix, fallback to direct import
 try:
     from helix_import_architecture import helix_import
-    pulse_heat = helix_import("pulse_heat")
+    from substrate import pulse_heat
 except ImportError:
     from pulse.pulse_heat import PulseHeat
     pulse_heat = PulseHeat()

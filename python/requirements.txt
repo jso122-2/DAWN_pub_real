@@ -1,0 +1,16 @@
+fastapi>=0.104.1
+uvicorn[standard]>=0.24.0
+websockets>=11.0.3
+numpy>=1.24.3
+pydantic>=2.5.0
+python-multipart>=0.0.6
+pyyaml>=6.0.1
+asyncio
+dataclasses
+collections
+datetime
+logging
+json
+typing
+pathlib
+enum 

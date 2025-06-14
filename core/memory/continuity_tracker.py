@@ -1,5 +1,5 @@
 from helix_import_architecture import helix_import
-pulse_heat = helix_import("pulse_heat")
+from substrate import pulse_heat
 """
 DAWN Continuity Tracker
 Detects whether DAWN instance is continuous and maintains persistent identity.

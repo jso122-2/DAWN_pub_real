@@ -1,35 +1,10 @@
 import React, { useRef, useEffect } from 'react';
-import { useParticleSystem } from '@/hooks/useParticleSystem';
+import { useParticleSystem } from '../../../hooks/useParticleSystem';
+import * as styles from './ConsciousnessVisualizer.styles';
 
 interface ParticleFieldProps {
   fullscreen?: boolean;
 }
-
-const particleContainerStyle = (fullscreen?: boolean) => ({
-  position: 'relative' as const,
-  width: '100%',
-  height: '100%',
-  minHeight: fullscreen ? '500px' : '150px'
-});
-
-const canvasStyle = {
-  width: '100%',
-  height: '100%'
-};
-
-const particleInfoStyle = {
-  position: 'absolute' as const,
-  bottom: '1rem',
-  right: '1rem',
-  display: 'flex',
-  gap: '1rem',
-  fontSize: '0.75rem',
-  color: 'rgba(148, 163, 184, 0.7)',
-  background: 'rgba(15, 23, 42, 0.8)',
-  padding: '0.5rem 1rem',
-  borderRadius: '6px',
-  backdropFilter: 'blur(10px)'
-};
 
 export const ParticleField: React.FC<ParticleFieldProps> = ({ fullscreen }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -129,9 +104,9 @@ export const ParticleField: React.FC<ParticleFieldProps> = ({ fullscreen }) => {
   }, [particleSystem]);
 
   return (
-    <div style={particleContainerStyle(fullscreen)}>
-      <canvas ref={canvasRef} style={canvasStyle} />
-      <div style={particleInfoStyle}>
+    <div className={styles.particleContainer(fullscreen)}>
+      <canvas ref={canvasRef} className={styles.canvas} />
+      <div className={styles.particleInfo}>
         <span>Particles: {particleSystem.particles.length}</span>
         <span>Coherence: {(particleSystem.coherence * 100).toFixed(1)}%</span>
       </div>

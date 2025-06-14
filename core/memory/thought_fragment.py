@@ -1,5 +1,5 @@
 from helix_import_architecture import helix_import
-pulse_heat = helix_import("pulse_heat")
+from substrate import pulse_heat
 """
 DAWN Thought Fragment Engine
 Captures and formats DAWN's internal commentary as reflection fragments.
