@@ -14,15 +14,6 @@ from websockets.server import serve
 import logging
 import sys
 import os
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from main.startup import initialize_dawn
-from main.demo_advanced_consciousness import run_demo
-from main.restart_dawn_clean import restart_dawn
-from main.start_dawn_api import start_api
-from main.run_kan_server import run_kan
-from main.integrate_kan_cairrn import integrate
-from main.start_api_fixed import start_api_fixed
-from main.juliet_flower import run_juliet
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

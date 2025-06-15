@@ -21,7 +21,7 @@ asyncio==3.4.3
 aiofiles>=24.1.0
 
 # AI/ML
-torch==2.1.1
+torch>=2.2.0
 transformers>=4.46.0
 langchain>=0.3.0
 openai>=1.54.0
@@ -116,7 +116,6 @@ sentence-transformers>=2.0.0
 faiss-cpu>=1.7.0
 
 # New dependencies from the code block
-starlette==0.27.0
 watchfiles==0.21.0
 httptools==0.6.1
 

@@ -19,10 +19,8 @@ interface Message {
 interface SystemState {
   tick: number;
   scup: number;
-  entropy: number;
   mood: string;
-  active_processes: string[];
-  consciousness_state: string;
+  entropy: number;
 }
 
 export const TalkToInterface: React.FC = () => {
@@ -38,30 +36,29 @@ export const TalkToInterface: React.FC = () => {
     wsService.connect();
     
     // Add message handlers
-    wsService.addHandler('tick_update', (data: any) => {
+    wsService.on('tick_update', (data: any) => {
       setSystemState(data.state);
     });
 
-    wsService.addHandler('response', (data: any) => {
+    wsService.on('response', (data: any) => {
       addDAWNMessage(data.content, data.metadata);
       setIsProcessing(false);
     });
 
-    wsService.addHandler('visualization', (data: any) => {
+    wsService.on('visualization', (data: any) => {
       handleVisualization(data);
     });
 
-    wsService.addHandler('process_event', (data: any) => {
+    wsService.on('process_event', (data: any) => {
       handleProcessEvent(data);
     });
 
-    wsService.addHandler('consciousness_shift', (data: any) => {
+    wsService.on('consciousness_shift', (data: any) => {
       addSystemMessage(`Consciousness shift: ${data.from} → ${data.to}`);
     });
 
     // Request initial state
-    wsService.sendMessage({
-      type: 'init',
+    wsService.send('init', {
       subsystems: ['all']
     });
 
@@ -98,8 +95,7 @@ export const TalkToInterface: React.FC = () => {
     setIsProcessing(true);
 
     // Send to DAWN with full context
-    wsService.sendMessage({
-      type: 'message',
+    wsService.send('message', {
       content: input,
       context: {
         recent_messages: messages.slice(-10),
@@ -146,7 +142,7 @@ export const TalkToInterface: React.FC = () => {
 
     switch (command) {
       case '/status':
-        wsService.sendMessage({ type: 'get_status' });
+        wsService.send('get_status', {});
         break;
       
       case '/viz':
@@ -158,11 +154,11 @@ export const TalkToInterface: React.FC = () => {
         break;
       
       case '/entropy':
-        wsService.sendMessage({ type: 'adjust_entropy', value: parseFloat(parts[1]) });
+        wsService.send('adjust_entropy', { value: parseFloat(parts[1]) });
         break;
       
       case '/mood':
-        wsService.sendMessage({ type: 'set_mood', mood: parts[1] });
+        wsService.send('set_mood', { mood: parts[1] });
         break;
       
       case '/help':
@@ -175,96 +171,64 @@ export const TalkToInterface: React.FC = () => {
     const updated = new Set(activeVisualizations);
     if (updated.has(vizType)) {
       updated.delete(vizType);
-      wsService.sendMessage({ type: 'disable_viz', viz: vizType });
+      wsService.send('disable_viz', { viz: vizType });
     } else {
       updated.add(vizType);
-      wsService.sendMessage({ type: 'enable_viz', viz: vizType });
+      wsService.send('enable_viz', { viz: vizType });
     }
     setActiveVisualizations(updated);
   };
 
   const manageProcess = (action: string, process: string) => {
-    wsService.sendMessage({
-      type: 'process_control',
+    wsService.send('process_control', {
       action,
       process
     });
   };
 
   const showHelp = () => {
-    const helpText = `
-DAWN TERMINAL COMMANDS
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-/status          - Show full system status
-/viz [type]      - Toggle visualization (wave, matrix, entropy, etc.)
-/process [act]   - Manage process (start/stop/restart)
-/entropy [val]   - Adjust entropy (0.0-1.0)
-/mood [type]     - Set mood (contemplative, analytical, creative, focused)
-/help            - Show this help
-
-TALK MODE
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Just type naturally to converse with DAWN.
-The consciousness engine will process your input through all active subsystems.
-    `;
-    addSystemMessage(helpText);
+    addSystemMessage(`
+Available commands:
+/status - Show system status
+/viz [type] - Toggle visualization
+/process [action] [name] - Control processes
+/entropy [value] - Adjust entropy
+/mood [mood] - Set system mood
+/help - Show this help
+    `);
   };
 
   return (
-    <div className="talk-to-interface">
-      {/* Status Bar */}
-      <div className="status-bar">
-        <div className="status-item">
-          <span className="label">TICK</span>
-          <span className="value">{systemState?.tick || '---'}</span>
-        </div>
-        <div className="status-item">
-          <span className="label">SCUP</span>
-          <span className="value scup">{systemState?.scup || '--'}%</span>
-        </div>
-        <div className="status-item">
-          <span className="label">ENTROPY</span>
-          <span className="value">{systemState?.entropy?.toFixed(3) || '-.---'}</span>
-        </div>
-        <div className="status-item">
-          <span className="label">MOOD</span>
-          <span className="value mood">{systemState?.mood || 'UNKNOWN'}</span>
-        </div>
-        <div className="status-item">
-          <span className="label">STATE</span>
-          <span className="value">{systemState?.consciousness_state || 'INIT'}</span>
-        </div>
-      </div>
-
-      {/* Terminal Display */}
-      <div className="terminal-display" ref={terminalRef}>
+    <div className="talk-interface">
+      <div className="messages" ref={terminalRef}>
         {messages.map(msg => (
           <div key={msg.id} className={`message ${msg.type}`}>
-            {msg.type === 'user' && <span className="prompt">YOU &gt;</span>}
-            {msg.type === 'dawn' && <span className="prompt">DAWN &gt;</span>}
-            {msg.type === 'system' && <span className="prompt">SYS &gt;</span>}
-            <pre className="content">{msg.content}</pre>
-            {msg.metadata && (
-              <div className="metadata">
-                {msg.metadata.tick && <span>[T:{msg.metadata.tick}]</span>}
-                {msg.metadata.scup && <span>[S:{msg.metadata.scup}%]</span>}
-                {msg.metadata.mood && <span>[M:{msg.metadata.mood}]</span>}
-                {msg.metadata.process && <span>[P:{msg.metadata.process}]</span>}
+            <div className="message-header">
+              <span className="timestamp">
+                {new Date(msg.timestamp).toLocaleTimeString()}
+              </span>
+              {msg.type === 'dawn' && msg.metadata?.tick && (
+                <span className="tick">Tick #{msg.metadata.tick}</span>
+              )}
+            </div>
+            <div className="message-content">{msg.content}</div>
+            {msg.type === 'dawn' && msg.metadata && (
+              <div className="message-metadata">
+                {msg.metadata.scup && (
+                  <span className="scup">SCUP: {msg.metadata.scup}%</span>
+                )}
+                {msg.metadata.mood && (
+                  <span className="mood">Mood: {msg.metadata.mood}</span>
+                )}
+                {msg.metadata.process && (
+                  <span className="process">Process: {msg.metadata.process}</span>
+                )}
               </div>
             )}
           </div>
         ))}
-        {isProcessing && (
-          <div className="processing">
-            <span className="prompt">DAWN &gt;</span>
-            <span className="thinking">thinking...</span>
-          </div>
-        )}
       </div>
-
-      {/* Input Area */}
       <div className="input-area">
-        <span className="input-prompt">&gt;</span>
         <input
           type="text"
           value={input}
@@ -279,22 +243,13 @@ The consciousness engine will process your input through all active subsystems.
               }
             }
           }}
-          placeholder="Talk to DAWN or type /help for commands"
-          className="terminal-input"
-          autoFocus
+          placeholder="Type a message or command..."
+          disabled={isProcessing}
         />
-        <span className="cursor">_</span>
+        <button onClick={sendMessage} disabled={isProcessing || !input.trim()}>
+          Send
+        </button>
       </div>
-
-      {/* Active Processes Display */}
-      {systemState?.active_processes && systemState.active_processes.length > 0 && (
-        <div className="active-processes">
-          <span className="label">ACTIVE:</span>
-          {systemState.active_processes.map(proc => (
-            <span key={proc} className="process-badge">{proc}</span>
-          ))}
-        </div>
-      )}
     </div>
   );
 }; 

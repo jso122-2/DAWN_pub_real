@@ -11,11 +11,11 @@ const WebSocketDebugger: React.FC = () => {
   };
 
   const testEndpoints = [
-    'ws://localhost:8000/ws/talk',
+    'ws://localhost:8000/ws/tick-stream',
     'ws://localhost:8000/ws',
     'ws://localhost:8000/websocket',
     'ws://localhost:8000/consciousness/stream',
-    'ws://127.0.0.1:8000/ws/talk'
+    'ws://127.0.0.1:8000/ws/tick-stream'
   ];
 
   const testConnection = async (url: string) => {

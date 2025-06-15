@@ -25,7 +25,7 @@ class WebSocketService {
     this.isConnecting = true;
 
     try {
-      this.ws = new WebSocket('ws://localhost:8000/ws/talk');
+      this.ws = new WebSocket('ws://localhost:8000/ws/tick-stream');
       this.setupEventHandlers();
     } catch (error) {
       console.error('WebSocket connection error:', error);

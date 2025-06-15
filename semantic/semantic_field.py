@@ -9,8 +9,12 @@ from collections import defaultdict, deque
 from datetime import datetime, timedelta
 from enum import Enum
 import logging
+import uuid
 
-from cognitive.mood_urgency_probe import get_mood_probe
+from backend.cognitive.mood_urgency_probe import get_mood_probe
+from backend.cognitive.entropy_fluctuation import get_entropy_fluctuation
+from backend.cognitive.qualia_kernel import get_qualia_kernel
+from pulse.pulse_heat import pulse, PulseHeat, add_heat
 
 # Configure logging
 logging.basicConfig(
@@ -133,7 +137,7 @@ class SemanticNode:
     def _update_local_pressure(self, field_dynamics: Dict):
         """Calculate local semantic pressure from nearby nodes"""
         nearby_pressure = field_dynamics.get('pressure_map', {}).get(self.node_id, 0.0)
-        thermal_pressure = PulseHeat.current_heat / PulseHeat.heat_capacity
+        thermal_pressure = pulse.current_heat / pulse.heat_capacity
         
         self.local_pressure = (nearby_pressure * 0.7) + (thermal_pressure * 0.3)
 
@@ -343,7 +347,7 @@ class RhizomicSemanticField:
             )
             
             # Add thermal pressure contribution
-            thermal_contribution = PulseHeat.current_heat * 0.1
+            thermal_contribution = pulse.current_heat * 0.1
             
             total_pressure = connection_pressure + thermal_contribution
             self.pressure_map[node_id] = total_pressure

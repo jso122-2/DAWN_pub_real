@@ -72,7 +72,7 @@ export const TalkToInterface: React.FC = () => {
 
   useEffect(() => {
     // Initialize WebSocket connection
-    ws.current = new WebSocket('ws://localhost:8000/ws/talk');
+    ws.current = new WebSocket('ws://localhost:8000/ws/tick-stream');
     
     ws.current.onmessage = (event) => {
       const data = JSON.parse(event.data);

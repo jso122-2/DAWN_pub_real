@@ -12,7 +12,7 @@ class WebSocketService {
   private baseUrl = 'ws://localhost:8000';
   private endpoints = {
     main: '/ws',
-    talk: '/ws/talk',
+    talk: '/ws/tick-stream',
     tick: '/ws/tick'
   };
   private currentEndpoint: keyof typeof this.endpoints = 'main';

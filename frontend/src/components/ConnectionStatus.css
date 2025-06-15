@@ -1,0 +1,48 @@
+.connection-status {
+  background: var(--gray-950);
+  border-bottom: 1px solid var(--gray-700);
+  padding: var(--grid-unit);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+}
+
+.status-indicator {
+  display: flex;
+  align-items: center;
+  gap: var(--grid-unit);
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--gray-600);
+}
+
+.connected .status-dot {
+  background: var(--terminal-green);
+  box-shadow: 0 0 4px var(--terminal-green);
+}
+
+.disconnected .status-dot {
+  background: var(--terminal-red);
+}
+
+.system-metrics {
+  display: flex;
+  gap: calc(var(--grid-unit) * 2);
+  color: var(--gray-400);
+}
+
+.system-metrics span {
+  display: flex;
+  align-items: center;
+}
+
+.error-message {
+  color: var(--terminal-red);
+  font-size: 0.7rem;
+} 

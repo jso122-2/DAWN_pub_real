@@ -38,16 +38,16 @@ export const Terminal: React.FC = () => {
         };
 
         // Add WebSocket event handlers
-        wsService.onMessage('tick_data', handleTickData);
-        wsService.onMessage('connection_status', handleConnectionStatus);
+        wsService.on('tick_data', handleTickData);
+        wsService.on('connection_status', handleConnectionStatus);
 
         // Connect to WebSocket
         wsService.connect();
 
         return () => {
             // Cleanup handlers
-            wsService.offMessage('tick_data', handleTickData);
-            wsService.offMessage('connection_status', handleConnectionStatus);
+            wsService.off('tick_data', handleTickData);
+            wsService.off('connection_status', handleConnectionStatus);
             wsService.disconnect();
         };
     }, []);
@@ -96,7 +96,7 @@ export const Terminal: React.FC = () => {
                             </div>
                             <div className="metric">
                                 <span className="label">System Load:</span>
-                                <span className="value">{cosmicState.systemLoad.toFixed(2)}</span>
+                                <span className="value">{cosmicState.systemLoad.toFixed(2)}%</span>
                             </div>
                             <div className="metric">
                                 <span className="label">Quantum Coherence:</span>
@@ -105,7 +105,9 @@ export const Terminal: React.FC = () => {
                         </div>
                     </div>
                 ) : (
-                    <div className="no-data">Waiting for consciousness engine data...</div>
+                    <div className="no-data">
+                        Waiting for tick data...
+                    </div>
                 )}
             </div>
         </div>

@@ -13,17 +13,13 @@ export const MatplotlibVisualizer: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [visualizationData, setVisualizationData] = useState<VisualizationData | null>(null);
   const mounted = useRef(true);
-  const connectionSubscription = useRef<{ unsubscribe: () => void } | null>(null);
   const retryTimeout = useRef<NodeJS.Timeout | null>(null);
 
   const requestVisualization = async () => {
     if (!mounted.current) return;
 
     try {
-      await wsService.send({
-        type: 'visualization_request',
-        content: JSON.stringify({ type: 'matplotlib' })
-      });
+      await wsService.send('visualization_request', { type: 'matplotlib' });
     } catch (err) {
       console.error('Failed to request visualization:', err);
       if (mounted.current) {
@@ -75,10 +71,12 @@ export const MatplotlibVisualizer: React.FC = () => {
     };
 
     // Subscribe to connection changes
-    connectionSubscription.current = wsService.onConnectionChange(handleConnectionState);
+    wsService.on('connection_status', (status: string) => {
+      handleConnectionState(status === 'connected');
+    });
 
     // Subscribe to visualization messages
-    wsService.onMessage('visualization', handleMessage);
+    wsService.on('visualization', handleMessage);
 
     // Request initial visualization data
     requestVisualization();
@@ -93,14 +91,9 @@ export const MatplotlibVisualizer: React.FC = () => {
         retryTimeout.current = null;
       }
 
-      // Unsubscribe from connection changes
-      if (connectionSubscription.current) {
-        connectionSubscription.current.unsubscribe();
-        connectionSubscription.current = null;
-      }
-
       // Unsubscribe from messages
-      wsService.offMessage('visualization', handleMessage);
+      wsService.off('visualization', handleMessage);
+      wsService.off('connection_status', handleConnectionState);
     };
   }, []);
 

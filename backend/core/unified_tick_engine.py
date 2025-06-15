@@ -77,6 +77,7 @@ class UnifiedTickEngine:
     def __init__(self, config_path: str = "config/tick_config.yaml"):
         """Initialize tick engine with configuration"""
         self._state = TickState()
+        self._subsystems = {}  # Add subsystems dictionary
         
         # Resolve config path relative to backend directory
         backend_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -91,6 +92,17 @@ class UnifiedTickEngine:
         # Initialize monitoring
         self._process = psutil.Process()
         self._monitor_task = None
+        
+        self.current_tick = 0
+        self.tick_interval = 0.1  # 100ms between ticks
+        self.tick_history = []
+        self.max_history_size = 1000
+        self.tick_callbacks = []
+        self.tick_metrics = {
+            "tick_rate": 0,
+            "subsystem_times": {},
+            "total_time": 0
+        }
         
         logger.info("Initialized UnifiedTickEngine")
     
@@ -253,175 +265,122 @@ class UnifiedTickEngine:
     
     async def _process_tick(self) -> None:
         """Process a single tick"""
-        start_time = time.time()
-        self._state.tick_count += 1
-        
-        # Calculate delta time
-        delta = start_time - self._state.last_tick_time
-        self._state.last_tick_time = start_time
-        
-        # Update thermal state
-        await self._update_thermal_state(delta)
-        
-        # Emit tick event
-        await self._emit_event("tick", {
-            "tick": self._state.tick_count,
-            "delta": delta,
-            "interval": self._state.current_interval,
-            "thermal": self._state.thermal_state,
-            "performance": self._state.performance_metrics
-        })
-        
-        # Update interval
-        self._state.current_interval = self._calculate_interval()
-        
-        # Calculate event latency
-        self._state.performance_metrics['event_latency'] = time.time() - start_time
-
-        # Broadcast tick state to WebSocket clients
         try:
-            from backend.main import broadcast_tick_state
-            import asyncio
-            await broadcast_tick_state(self.get_state())
+            # Record start time
+            start_time = time.time()
+            
+            # Process subsystems in priority order
+            for priority in sorted(self._subsystems.keys()):
+                subsystem = self._subsystems[priority]
+                try:
+                    subsystem_start = time.time()
+                    await subsystem.process_tick()
+                    subsystem_time = time.time() - subsystem_start
+                    self.tick_metrics["subsystem_times"][subsystem.__class__.__name__] = subsystem_time
+                except Exception as e:
+                    logger.error(f"Error processing subsystem {subsystem.__class__.__name__}: {e}")
+            
+            # Calculate tick metrics
+            total_time = time.time() - start_time
+            self.tick_metrics["total_time"] = total_time
+            self.tick_metrics["tick_rate"] = 1.0 / total_time if total_time > 0 else 0
+            
+            # Store tick history
+            self.tick_history.append({
+                "tick": self.current_tick,
+                "timestamp": time.time(),
+                "metrics": self.tick_metrics.copy()
+            })
+            
+            # Trim history if needed
+            if len(self.tick_history) > self.max_history_size:
+                self.tick_history = self.tick_history[-self.max_history_size:]
+            
+            # Call tick callbacks
+            for callback in self.tick_callbacks:
+                try:
+                    await callback(self.current_tick, self.tick_metrics)
+                except Exception as e:
+                    logger.error(f"Error in tick callback: {e}")
+            
+            # Broadcast tick state
+            await self._broadcast_tick_state()
+            
+        except Exception as e:
+            logger.error(f"Error processing tick: {e}")
+    
+    async def _broadcast_tick_state(self):
+        """Broadcast current tick state to all subscribers"""
+        try:
+            state = {
+                "tick": self.current_tick,
+                "timestamp": time.time(),
+                "metrics": self.tick_metrics,
+                "subsystems": {
+                    name: {
+                        "active": True,
+                        "priority": priority
+                    }
+                    for priority, name in self._subsystems.items()
+                }
+            }
+            
+            # Broadcast to all subscribers
+            for callback in self.tick_callbacks:
+                try:
+                    await callback(state)
+                except Exception as e:
+                    logger.error(f"Error broadcasting tick state: {e}")
+                    
         except Exception as e:
             logger.error(f"Error broadcasting tick state: {e}")
-
-        # Log tick state to logs/tick_stream.log
-        try:
-            import os
-            import json
-            tick_log_path = os.path.join(self._log_dir, "tick_stream.log")
-            with open(tick_log_path, "a") as f:
-                f.write(json.dumps(self.get_state(), default=str) + "\n")
-        except Exception as e:
-            logger.error(f"Error logging tick state: {e}")
     
-    async def _update_thermal_state(self, delta: float) -> None:
-        """Update thermal state based on system load"""
-        # Calculate heat based on CPU usage
-        cpu_heat = self._state.performance_metrics['cpu_usage'] / 100.0
-        
-        # Update thermal momentum
-        self._state.thermal_state['momentum'] *= self._config.get('thermal_momentum_decay', 0.95)
-        self._state.thermal_state['momentum'] += cpu_heat * delta
-        
-        # Update heat level
-        self._state.thermal_state['heat'] = min(
-            1.0,
-            max(0.0, self._state.thermal_state['heat'] + self._state.thermal_state['momentum'])
-        )
-        
-        # Update stability
-        if self._state.thermal_state['heat'] > 0.8:
-            self._state.thermal_state['stability'] *= 0.95
-        else:
-            self._state.thermal_state['stability'] = min(1.0, self._state.thermal_state['stability'] + 0.01)
-    
-    async def _process_event_queue(self) -> None:
-        """Process pending events in queue"""
-        while self._state.event_queue:
-            event_type, data = self._state.event_queue.popleft()
-            await self._emit_event(event_type, data)
-    
-    def _calculate_interval(self) -> float:
-        """Calculate next tick interval based on system state"""
-        # Base interval from config
-        base_interval = self._config.get('tick_interval', 1.0)
-        
-        # Adjust based on thermal state
-        thermal_factor = 1.0
-        if self._state.thermal_state['heat'] > 0.8:
-            thermal_factor = 1.5  # Slow down when hot
-        elif self._state.thermal_state['heat'] < 0.2:
-            thermal_factor = 0.8  # Speed up when cool
-        
-        # Adjust based on performance
-        perf_factor = 1.0
-        if self._state.performance_metrics['cpu_usage'] > 80:
-            perf_factor = 1.3  # Slow down under high CPU load
-        
-        # Calculate final interval
-        interval = base_interval * thermal_factor * perf_factor
-        
-        # Apply bounds
-        return max(
-            self._config.get('tick_interval_min', 0.1),
-            min(self._config.get('tick_interval_max', 5.0), interval)
-        )
-    
-    async def _emit_event(self, event_type: str, data: Dict) -> None:
-        """Emit an event to registered handlers"""
-        if event_type in self._state.event_handlers:
-            for _, handler in self._state.event_handlers[event_type]:
-                try:
-                    await handler(data)
-                except Exception as e:
-                    logger.error(f"Error in event handler: {e}")
-                    self._state.error_count += 1
-    
-    def queue_event(self, event_type: str, data: Dict) -> None:
-        """Queue an event for processing"""
-        self._state.event_queue.append((event_type, data))
-    
-    def get_state(self) -> Dict:
-        """Get current tick engine state"""
-        # Get semantic field drift vectors
-        field = get_current_field()
-        drift_vectors = field.get_drift_vectors() if field else {}
-        
-        return {
-            "tick_count": self._state.tick_count,
-            "current_interval": self._state.current_interval,
-            "target_interval": self._state.target_interval,
-            "is_running": self._state.is_running,
-            "last_tick_time": self._state.last_tick_time,
-            "event_types": list(self._state.event_handlers.keys()),
-            "thermal_state": self._state.thermal_state,
-            "performance_metrics": self._state.performance_metrics,
-            "error_count": self._state.error_count,
-            "recovery_count": self._state.recovery_count,
-            "drift_vectors": drift_vectors
+    def register_subsystem(self, name: str, subsystem: Any, priority: int = 0) -> None:
+        """Register a subsystem with the tick engine"""
+        self._subsystems[name] = {
+            'instance': subsystem,
+            'priority': priority
         }
-    
-    def log_tick_event(self, event_type: str, details: Dict) -> None:
-        """Log a tick-related event"""
-        event = {
-            "timestamp": datetime.now().isoformat(),
-            "type": event_type,
-            "details": details,
-            "state": self.get_state()
-        }
+        logger.info(f"Registered subsystem {name} with priority {priority}")
         
-        # Write to log file
-        log_file = os.path.join(self._log_dir, "tick_events.log")
-        with open(log_file, "a") as f:
-            f.write(json.dumps(event) + "\n")
-        
-        logger.info(f"Logged tick event: {event_type}")
+        # Register tick handler for the subsystem
+        if hasattr(subsystem, 'on_tick'):
+            self.register_handler('tick', subsystem.on_tick, priority)
+            
+        # Register event handler if available
+        if hasattr(subsystem, 'on_event'):
+            self.register_handler('event', subsystem.on_event, priority)
+
+    def get_subsystem(self, name: str) -> Optional[Any]:
+        """Get a registered subsystem by name"""
+        return self._subsystems.get(name, {}).get('instance')
+
+    def get_active_processes(self) -> List[str]:
+        """Get list of active subsystem processes"""
+        return [name for name, info in self._subsystems.items() 
+                if hasattr(info['instance'], 'is_active') and info['instance'].is_active()]
+
+    def add_tick_callback(self, callback):
+        """Add a callback to be called on each tick"""
+        self.tick_callbacks.append(callback)
     
-    def export_state(self) -> Dict:
-        """Export current tick engine state"""
-        return {
-            "timestamp": datetime.now().isoformat(),
-            "state": self.get_state(),
-            "event_handlers": {
-                event_type: len(handlers)
-                for event_type, handlers in self._state.event_handlers.items()
-            },
-            "config": self._config
-        }
-
-    def is_running(self):
-        """Return True if the tick engine is running, otherwise False."""
-        return self._state.is_running
-
-    def get_tick_count(self):
-        """Return the current tick count."""
-        return self._state.tick_count
-
-    def get_last_tick_time(self):
-        """Return the last tick time."""
-        return self._state.last_tick_time
+    def remove_tick_callback(self, callback):
+        """Remove a tick callback"""
+        if callback in self.tick_callbacks:
+            self.tick_callbacks.remove(callback)
+    
+    async def shutdown(self):
+        """Shutdown the tick engine"""
+        self._state.is_running = False
+        logger.info("Shutting down tick engine")
+        
+        # Wait for any pending ticks to complete
+        await asyncio.sleep(self.tick_interval * 2)
+        
+        # Clear all callbacks and subsystems
+        self.tick_callbacks.clear()
+        self._subsystems.clear()
+        self.tick_history.clear()
 
 # Global instance
 tick_engine = UnifiedTickEngine()

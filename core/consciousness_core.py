@@ -33,6 +33,8 @@ from core.event_bus import EventBus
 from core.hot_reload import reload_module
 from core.shutdown_manager import ShutdownManager
 
+import numpy as np
+
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -77,6 +79,81 @@ def safe_float(val, default=0.0):
         return float(val)
     except (ValueError, TypeError):
         return default
+
+class ConsciousnessCore:
+    def __init__(self):
+        self.state = {
+            "neural_activity": np.zeros((10, 10)),
+            "quantum_coherence": 0.0,
+            "pattern_recognition": 0.0,
+            "memory_utilization": 0.0,
+            "chaos_factor": 0.0,
+            "last_update": datetime.now()
+        }
+        self.history = {
+            "neural_activity": [],
+            "quantum_coherence": [],
+            "pattern_recognition": [],
+            "memory_utilization": [],
+            "chaos_factor": []
+        }
+        self.max_history_size = 1000
+        logger.info("Initialized ConsciousnessCore")
+    
+    def update_state(self, new_state: Dict[str, Any]) -> None:
+        """Update consciousness state"""
+        self.state.update(new_state)
+        self.state["last_update"] = datetime.now()
+        
+        # Update history
+        for key, value in new_state.items():
+            if key in self.history:
+                self.history[key].append(value)
+                if len(self.history[key]) > self.max_history_size:
+                    self.history[key] = self.history[key][-self.max_history_size:]
+    
+    def get_state(self) -> Dict[str, Any]:
+        """Get current consciousness state"""
+        return self.state
+    
+    def get_history(self, duration: int = 100) -> Dict[str, List[Any]]:
+        """Get historical data"""
+        return {
+            key: values[-duration:] if len(values) > duration else values
+            for key, values in self.history.items()
+        }
+    
+    def get_metrics(self) -> Dict[str, float]:
+        """Get current consciousness metrics"""
+        return {
+            "neural_activity": float(np.mean(self.state["neural_activity"])),
+            "quantum_coherence": self.state["quantum_coherence"],
+            "pattern_recognition": self.state["pattern_recognition"],
+            "memory_utilization": self.state["memory_utilization"],
+            "chaos_factor": self.state["chaos_factor"]
+        }
+    
+    def reset(self) -> None:
+        """Reset consciousness state"""
+        self.state = {
+            "neural_activity": np.zeros((10, 10)),
+            "quantum_coherence": 0.0,
+            "pattern_recognition": 0.0,
+            "memory_utilization": 0.0,
+            "chaos_factor": 0.0,
+            "last_update": datetime.now()
+        }
+        self.history = {
+            "neural_activity": [],
+            "quantum_coherence": [],
+            "pattern_recognition": [],
+            "memory_utilization": [],
+            "chaos_factor": []
+        }
+        logger.info("Reset ConsciousnessCore state")
+
+# Global instance
+consciousness_core = ConsciousnessCore()
 
 class DAWNConsciousness:
     """
