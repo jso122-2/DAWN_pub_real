@@ -1,0 +1,53 @@
+:root {
+  --color-black: #000000;
+  --color-white: #ffffff;
+  --color-gray-900: #0a0a0a;
+  --color-gray-800: #1a1a1a;
+  --color-gray-700: #2a2a2a;
+  --color-gray-600: #3a3a3a;
+  --color-gray-500: #4a4a4a;
+  --color-gray-400: #6a6a6a;
+  --color-gray-300: #8a8a8a;
+  --color-gray-200: #aaaaaa;
+  --color-gray-100: #cacaca;
+  
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+  --font-sans: -apple-system, BlinkMacSystemFont, 'Inter', sans-serif;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-sans);
+  background: var(--color-black);
+  color: var(--color-gray-100);
+  font-size: 14px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+h1 {
+  font-size: 2rem;
+  font-weight: 300;
+  letter-spacing: 0.2em;
+  margin-bottom: 0.5rem;
+}
+
+p {
+  color: var(--color-gray-400);
+  font-size: 0.875rem;
+} 

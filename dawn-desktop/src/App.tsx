@@ -31,7 +31,7 @@ import { ModuleWheel } from '@components/system/ModuleWheel'
 import CosmicModuleSelector from '@components/modules/CosmicModuleSelector'
 import NeuralNetworkModule from '@components/modules/NeuralNetworkModule'
 import { EventEmitter } from './lib/EventEmitter'
-import '@styles/glass-tokens.css'
+import './styles/glass-tokens.css'
 
 // Create global event emitter
 const globalEmitter = typeof EventEmitter !== 'undefined' ? new EventEmitter() : undefined

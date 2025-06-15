@@ -1,5 +1,3 @@
-from helix_import_architecture import helix_import
-from substrate import pulse_heat
 # /core/semantic_field.py
 
 import math
@@ -10,8 +8,16 @@ from dataclasses import dataclass, field
 from collections import defaultdict, deque
 from datetime import datetime, timedelta
 from enum import Enum
+import logging
 
-from cognitive.mood_urgency_probe import mood_urgency_probe
+from cognitive.mood_urgency_probe import get_mood_probe
+
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger(__name__)
 
 class NodeCharge(Enum):
     """Semantic charge types for field dynamics"""
@@ -134,7 +140,17 @@ class SemanticNode:
 class RhizomicSemanticField:
     """Main semantic field implementing rhizomic growth dynamics"""
     
+    _instance = None
+    
+    def __new__(cls, *args, **kwargs):
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+        return cls._instance
+    
     def __init__(self, field_capacity: int = 10000):
+        if hasattr(self, 'initialized'):
+            return
+            
         self.nodes: Dict[str, SemanticNode] = {}
         self.field_center = np.array([0.0, 0.0, 0.0])
         self.field_capacity = field_capacity
@@ -153,7 +169,15 @@ class RhizomicSemanticField:
         self.tick_count = 0
         self.last_update = datetime.utcnow()
         
+        self.initialized = True
         print("[SemanticField] 🌱 Rhizomic field initialized")
+    
+    @classmethod
+    def get_current_field(cls) -> 'RhizomicSemanticField':
+        """Get the current semantic field instance"""
+        if cls._instance is None:
+            cls._instance = cls()
+        return cls._instance
     
     def add_semantic_node(self, content: str, embedding: np.ndarray, 
                          charge_type: NodeCharge = NodeCharge.STATIC_NEUTRAL) -> str:
@@ -474,8 +498,35 @@ class RhizomicSemanticField:
             }
         }
 
+    def get_drift_vectors(self) -> Dict[str, Dict[str, float]]:
+        """Get drift vectors for all nodes in the field"""
+        drift_vectors = {}
+        print(f"[DEBUG] get_drift_vectors called. Node count: {len(self.nodes)}")
+        
+        for node_id, node in self.nodes.items():
+            # Calculate drift based on local pressure and position changes
+            drift_magnitude = node.local_pressure
+            drift_direction = math.atan2(
+                node.field_position[1] - self.field_center[1],
+                node.field_position[0] - self.field_center[0]
+            )
+            
+            drift_vectors[node_id] = {
+                'magnitude': float(drift_magnitude),
+                'direction': float(drift_direction),
+                'x': float(node.field_position[0]),
+                'y': float(node.field_position[1]),
+                'z': float(node.field_position[2])
+            }
+        print(f"[DEBUG] get_drift_vectors returning: {drift_vectors}")
+        return drift_vectors
+
 # Global semantic field instance
 SemanticField = RhizomicSemanticField()
+
+def get_current_field() -> RhizomicSemanticField:
+    """Get the current semantic field instance"""
+    return SemanticField.get_current_field()
 
 # Convenience functions
 def add_concept(content: str, embedding: np.ndarray, charge_type: NodeCharge = NodeCharge.STATIC_NEUTRAL) -> str:

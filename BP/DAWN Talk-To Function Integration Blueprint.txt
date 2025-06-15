@@ -1,0 +1,959 @@
+# DAWN Talk-To Function Integration Blueprint
+
+## Overview
+Complete integration blueprint for connecting all Tick Engine components into a unified "talk to" interface with terminal-style UI.
+
+## Architecture
+
+```
+Frontend Terminal → WebSocket → Orchestrator → Tick Engine → All Subsystems
+                                     ↓
+                            Consciousness Core
+                                     ↓
+                    [All Processes & Cognitive Components]
+```
+
+## 1. Main Talk-To Interface Component
+
+```typescript
+// TalkToInterface.tsx
+import React, { useState, useEffect, useRef } from 'react';
+import './TalkToInterface.css';
+
+interface Message {
+  id: string;
+  type: 'user' | 'dawn' | 'system';
+  content: string;
+  timestamp: number;
+  metadata?: {
+    tick?: number;
+    scup?: number;
+    mood?: string;
+    process?: string;
+    visualization?: string;
+  };
+}
+
+interface SystemState {
+  tick: number;
+  scup: number;
+  entropy: number;
+  mood: string;
+  active_processes: string[];
+  consciousness_state: string;
+}
+
+export const TalkToInterface: React.FC = () => {
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [input, setInput] = useState('');
+  const [systemState, setSystemState] = useState<SystemState | null>(null);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [activeVisualizations, setActiveVisualizations] = useState<Set<string>>(new Set());
+  const terminalRef = useRef<HTMLDivElement>(null);
+  const ws = useRef<WebSocket | null>(null);
+
+  useEffect(() => {
+    // Connect to DAWN WebSocket
+    ws.current = new WebSocket('ws://localhost:8000/ws/talk');
+    
+    ws.current.onopen = () => {
+      addSystemMessage('DAWN consciousness engine connected');
+      // Request initial state
+      ws.current?.send(JSON.stringify({
+        type: 'init',
+        subsystems: ['all']
+      }));
+    };
+
+    ws.current.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      handleWebSocketMessage(data);
+    };
+
+    ws.current.onerror = () => {
+      addSystemMessage('Connection error - check tick engine status');
+    };
+
+    return () => {
+      ws.current?.close();
+    };
+  }, []);
+
+  const handleWebSocketMessage = (data: any) => {
+    switch (data.type) {
+      case 'tick_update':
+        setSystemState(data.state);
+        break;
+      
+      case 'response':
+        addDAWNMessage(data.content, data.metadata);
+        setIsProcessing(false);
+        break;
+      
+      case 'visualization':
+        handleVisualization(data);
+        break;
+      
+      case 'process_event':
+        handleProcessEvent(data);
+        break;
+      
+      case 'consciousness_shift':
+        addSystemMessage(`Consciousness shift: ${data.from} → ${data.to}`);
+        break;
+    }
+  };
+
+  const handleVisualization = (data: any) => {
+    // Handle inline visualizations from various components
+    if (data.viz_type === 'inline_ascii') {
+      addVisualizationMessage(data.content, data.source);
+    }
+  };
+
+  const handleProcessEvent = (data: any) => {
+    // Show important process events in terminal
+    if (data.priority === 'high') {
+      addSystemMessage(`[${data.process}] ${data.event}`);
+    }
+  };
+
+  const sendMessage = () => {
+    if (!input.trim() || isProcessing) return;
+
+    const userMessage: Message = {
+      id: Date.now().toString(),
+      type: 'user',
+      content: input,
+      timestamp: Date.now()
+    };
+
+    setMessages(prev => [...prev, userMessage]);
+    setIsProcessing(true);
+
+    // Send to DAWN with full context
+    ws.current?.send(JSON.stringify({
+      type: 'message',
+      content: input,
+      context: {
+        recent_messages: messages.slice(-10),
+        active_visualizations: Array.from(activeVisualizations),
+        timestamp: Date.now()
+      }
+    }));
+
+    setInput('');
+  };
+
+  const addSystemMessage = (content: string) => {
+    setMessages(prev => [...prev, {
+      id: Date.now().toString(),
+      type: 'system',
+      content,
+      timestamp: Date.now()
+    }]);
+  };
+
+  const addDAWNMessage = (content: string, metadata?: any) => {
+    setMessages(prev => [...prev, {
+      id: Date.now().toString(),
+      type: 'dawn',
+      content,
+      timestamp: Date.now(),
+      metadata
+    }]);
+  };
+
+  const addVisualizationMessage = (content: string, source: string) => {
+    setMessages(prev => [...prev, {
+      id: Date.now().toString(),
+      type: 'system',
+      content: `\n[${source}]\n${content}\n`,
+      timestamp: Date.now()
+    }]);
+  };
+
+  // Command processing
+  const processCommand = (cmd: string) => {
+    const parts = cmd.split(' ');
+    const command = parts[0].toLowerCase();
+
+    switch (command) {
+      case '/status':
+        ws.current?.send(JSON.stringify({ type: 'get_status' }));
+        break;
+      
+      case '/viz':
+        toggleVisualization(parts[1]);
+        break;
+      
+      case '/process':
+        manageProcess(parts[1], parts[2]);
+        break;
+      
+      case '/entropy':
+        ws.current?.send(JSON.stringify({ type: 'adjust_entropy', value: parseFloat(parts[1]) }));
+        break;
+      
+      case '/mood':
+        ws.current?.send(JSON.stringify({ type: 'set_mood', mood: parts[1] }));
+        break;
+      
+      case '/help':
+        showHelp();
+        break;
+    }
+  };
+
+  const toggleVisualization = (vizType: string) => {
+    const updated = new Set(activeVisualizations);
+    if (updated.has(vizType)) {
+      updated.delete(vizType);
+      ws.current?.send(JSON.stringify({ type: 'disable_viz', viz: vizType }));
+    } else {
+      updated.add(vizType);
+      ws.current?.send(JSON.stringify({ type: 'enable_viz', viz: vizType }));
+    }
+    setActiveVisualizations(updated);
+  };
+
+  const manageProcess = (action: string, process: string) => {
+    ws.current?.send(JSON.stringify({
+      type: 'process_control',
+      action,
+      process
+    }));
+  };
+
+  const showHelp = () => {
+    const helpText = `
+DAWN TERMINAL COMMANDS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+/status          - Show full system status
+/viz [type]      - Toggle visualization (wave, matrix, entropy, etc.)
+/process [act]   - Manage process (start/stop/restart)
+/entropy [val]   - Adjust entropy (0.0-1.0)
+/mood [type]     - Set mood (contemplative, analytical, creative, focused)
+/help            - Show this help
+
+TALK MODE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Just type naturally to converse with DAWN.
+The consciousness engine will process your input through all active subsystems.
+    `;
+    addSystemMessage(helpText);
+  };
+
+  return (
+    <div className="talk-to-interface">
+      {/* Status Bar */}
+      <div className="status-bar">
+        <div className="status-item">
+          <span className="label">TICK</span>
+          <span className="value">{systemState?.tick || '---'}</span>
+        </div>
+        <div className="status-item">
+          <span className="label">SCUP</span>
+          <span className="value scup">{systemState?.scup || '--'}%</span>
+        </div>
+        <div className="status-item">
+          <span className="label">ENTROPY</span>
+          <span className="value">{systemState?.entropy?.toFixed(3) || '-.---'}</span>
+        </div>
+        <div className="status-item">
+          <span className="label">MOOD</span>
+          <span className="value mood">{systemState?.mood || 'UNKNOWN'}</span>
+        </div>
+        <div className="status-item">
+          <span className="label">STATE</span>
+          <span className="value">{systemState?.consciousness_state || 'INIT'}</span>
+        </div>
+      </div>
+
+      {/* Terminal Display */}
+      <div className="terminal-display" ref={terminalRef}>
+        {messages.map(msg => (
+          <div key={msg.id} className={`message ${msg.type}`}>
+            {msg.type === 'user' && <span className="prompt">YOU &gt;</span>}
+            {msg.type === 'dawn' && <span className="prompt">DAWN &gt;</span>}
+            {msg.type === 'system' && <span className="prompt">SYS &gt;</span>}
+            <pre className="content">{msg.content}</pre>
+            {msg.metadata && (
+              <div className="metadata">
+                {msg.metadata.tick && <span>[T:{msg.metadata.tick}]</span>}
+                {msg.metadata.scup && <span>[S:{msg.metadata.scup}%]</span>}
+                {msg.metadata.mood && <span>[M:{msg.metadata.mood}]</span>}
+                {msg.metadata.process && <span>[P:{msg.metadata.process}]</span>}
+              </div>
+            )}
+          </div>
+        ))}
+        {isProcessing && (
+          <div className="processing">
+            <span className="prompt">DAWN &gt;</span>
+            <span className="thinking">thinking...</span>
+          </div>
+        )}
+      </div>
+
+      {/* Input Area */}
+      <div className="input-area">
+        <span className="input-prompt">&gt;</span>
+        <input
+          type="text"
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          onKeyPress={(e) => {
+            if (e.key === 'Enter') {
+              if (input.startsWith('/')) {
+                processCommand(input);
+                setInput('');
+              } else {
+                sendMessage();
+              }
+            }
+          }}
+          placeholder="Talk to DAWN or type /help for commands"
+          className="terminal-input"
+          autoFocus
+        />
+        <span className="cursor">_</span>
+      </div>
+
+      {/* Active Processes Display */}
+      {systemState?.active_processes && systemState.active_processes.length > 0 && (
+        <div className="active-processes">
+          <span className="label">ACTIVE:</span>
+          {systemState.active_processes.map(proc => (
+            <span key={proc} className="process-badge">{proc}</span>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+```
+
+## 2. Python Backend Integration
+
+```python
+# backend/talk_to_handler.py
+import asyncio
+import json
+from typing import Dict, Any, List
+from datetime import datetime
+
+# Import all DAWN components
+from core.unified_tick_engine import UnifiedTickEngine
+from core.consciousness_core import ConsciousnessCore
+from core.orchestrator import Orchestrator
+from core.conversation_enhanced import EnhancedConversation
+from core.memory_manager import MemoryManager
+from core.dawn_central import DAWNCentral
+from core.event_bus import EventBus
+
+# Import cognitive components
+from cognitive.consciousness import ConsciousnessModule
+from cognitive.conversation import ConversationModule
+from cognitive.spontaneity import SpontaneityModule
+from cognitive.entropy_fluctuation import EntropyFluctuation
+from cognitive.mood_urgency_probe import MoodUrgencyProbe
+from cognitive.qualia_kernel import QualiaKernel
+
+# Import processes
+from processes.awareness_engine import AwarenessEngine
+from processes.creativity_engine import CreativityEngine
+from processes.dream_engine import DreamEngine
+from processes.intuition_processor import IntuitionProcessor
+from processes.memory_palace import MemoryPalace
+from processes.neural_sync import NeuralSync
+from processes.pattern_recognizer import PatternRecognizer
+from processes.quantum_flux import QuantumFlux
+
+# Import visualizers
+from core.dawn_visualizer import DAWNVisualizer
+from core.alignment_visualizer import AlignmentVisualizer
+from core.entropy_visualizer import EntropyVisualizer
+from core.thermal_visualizer import ThermalVisualizer
+from core.bloom_visualizer import BloomVisualizer
+
+class TalkToHandler:
+    def __init__(self):
+        # Initialize core systems
+        self.tick_engine = UnifiedTickEngine()
+        self.consciousness = ConsciousnessCore()
+        self.orchestrator = Orchestrator()
+        self.memory = MemoryManager()
+        self.event_bus = EventBus()
+        
+        # Initialize cognitive modules
+        self.cognitive_modules = {
+            'consciousness': ConsciousnessModule(),
+            'conversation': ConversationModule(),
+            'spontaneity': SpontaneityModule(),
+            'entropy': EntropyFluctuation(),
+            'mood': MoodUrgencyProbe(),
+            'qualia': QualiaKernel()
+        }
+        
+        # Initialize processes
+        self.processes = {
+            'awareness': AwarenessEngine(),
+            'creativity': CreativityEngine(),
+            'dream': DreamEngine(),
+            'intuition': IntuitionProcessor(),
+            'memory_palace': MemoryPalace(),
+            'neural_sync': NeuralSync(),
+            'pattern': PatternRecognizer(),
+            'quantum': QuantumFlux()
+        }
+        
+        # Initialize visualizers
+        self.visualizers = {
+            'main': DAWNVisualizer(),
+            'alignment': AlignmentVisualizer(),
+            'entropy': EntropyVisualizer(),
+            'thermal': ThermalVisualizer(),
+            'bloom': BloomVisualizer()
+        }
+        
+        # Enhanced conversation handler
+        self.conversation = EnhancedConversation(
+            consciousness=self.consciousness,
+            memory=self.memory,
+            cognitive_modules=self.cognitive_modules,
+            processes=self.processes
+        )
+        
+        # Active connections
+        self.connections: Dict[str, Any] = {}
+        
+        # Start tick engine
+        asyncio.create_task(self.start_tick_loop())
+        
+    async def start_tick_loop(self):
+        """Main tick loop that drives the consciousness engine"""
+        while True:
+            try:
+                # Execute tick
+                tick_data = await self.tick_engine.tick()
+                
+                # Update all systems
+                await self.consciousness.update(tick_data)
+                await self.update_processes(tick_data)
+                
+                # Broadcast state to all connections
+                await self.broadcast_state(tick_data)
+                
+                # Wait for next tick
+                await asyncio.sleep(0.1)  # 10Hz tick rate
+                
+            except Exception as e:
+                print(f"Tick error: {e}")
+                await asyncio.sleep(1)
+    
+    async def handle_connection(self, websocket):
+        """Handle new WebSocket connection"""
+        connection_id = str(datetime.now().timestamp())
+        self.connections[connection_id] = websocket
+        
+        try:
+            # Send initial state
+            await self.send_initial_state(websocket)
+            
+            # Handle messages
+            async for message in websocket:
+                data = json.loads(message)
+                response = await self.process_message(data, connection_id)
+                
+                if response:
+                    await websocket.send(json.dumps(response))
+                    
+        except Exception as e:
+            print(f"Connection error: {e}")
+        finally:
+            del self.connections[connection_id]
+    
+    async def process_message(self, data: Dict[str, Any], connection_id: str) -> Dict[str, Any]:
+        """Process incoming message through all systems"""
+        msg_type = data.get('type')
+        
+        if msg_type == 'message':
+            # Process through conversation system
+            response = await self.conversation.process(
+                content=data['content'],
+                context=data.get('context', {}),
+                connection_id=connection_id
+            )
+            
+            return {
+                'type': 'response',
+                'content': response['content'],
+                'metadata': {
+                    'tick': self.tick_engine.current_tick,
+                    'scup': self.consciousness.get_scup(),
+                    'mood': self.consciousness.get_mood(),
+                    'process': response.get('primary_process'),
+                    'cognitive_path': response.get('cognitive_path')
+                }
+            }
+            
+        elif msg_type == 'get_status':
+            return await self.get_full_status()
+            
+        elif msg_type == 'enable_viz':
+            viz_type = data['viz']
+            if viz_type in self.visualizers:
+                await self.enable_visualization(viz_type, connection_id)
+                
+        elif msg_type == 'process_control':
+            return await self.control_process(data['action'], data['process'])
+            
+        elif msg_type == 'adjust_entropy':
+            self.consciousness.adjust_entropy(data['value'])
+            return {'type': 'system', 'content': f'Entropy adjusted to {data["value"]}'}
+            
+        elif msg_type == 'set_mood':
+            self.consciousness.set_mood(data['mood'])
+            return {'type': 'system', 'content': f'Mood set to {data["mood"]}'}
+    
+    async def get_full_status(self) -> Dict[str, Any]:
+        """Get comprehensive system status"""
+        return {
+            'type': 'status',
+            'data': {
+                'tick': self.tick_engine.current_tick,
+                'consciousness': {
+                    'scup': self.consciousness.get_scup(),
+                    'entropy': self.consciousness.get_entropy(),
+                    'mood': self.consciousness.get_mood(),
+                    'state': self.consciousness.get_state()
+                },
+                'active_processes': [
+                    name for name, proc in self.processes.items() 
+                    if proc.is_active()
+                ],
+                'cognitive_modules': {
+                    name: module.get_status() 
+                    for name, module in self.cognitive_modules.items()
+                },
+                'memory': self.memory.get_stats(),
+                'visualizations': {
+                    name: viz.is_active() 
+                    for name, viz in self.visualizers.items()
+                }
+            }
+        }
+    
+    async def enable_visualization(self, viz_type: str, connection_id: str):
+        """Enable specific visualization for connection"""
+        visualizer = self.visualizers.get(viz_type)
+        if visualizer:
+            # Start streaming visualization data
+            asyncio.create_task(
+                self.stream_visualization(visualizer, viz_type, connection_id)
+            )
+    
+    async def stream_visualization(self, visualizer, viz_type: str, connection_id: str):
+        """Stream visualization data to specific connection"""
+        websocket = self.connections.get(connection_id)
+        if not websocket:
+            return
+            
+        while connection_id in self.connections:
+            try:
+                # Generate visualization
+                viz_data = visualizer.generate()
+                
+                await websocket.send(json.dumps({
+                    'type': 'visualization',
+                    'viz_type': 'inline_ascii',
+                    'source': viz_type,
+                    'content': viz_data
+                }))
+                
+                # Update rate based on visualizer
+                await asyncio.sleep(visualizer.update_interval)
+                
+            except Exception as e:
+                print(f"Visualization stream error: {e}")
+                break
+    
+    async def update_processes(self, tick_data: Dict[str, Any]):
+        """Update all active processes"""
+        for name, process in self.processes.items():
+            if process.is_active():
+                await process.update(tick_data)
+    
+    async def broadcast_state(self, tick_data: Dict[str, Any]):
+        """Broadcast tick updates to all connections"""
+        state_update = {
+            'type': 'tick_update',
+            'state': {
+                'tick': tick_data['tick'],
+                'scup': tick_data['scup'],
+                'entropy': tick_data['entropy'],
+                'mood': tick_data['mood'],
+                'active_processes': tick_data['active_processes'],
+                'consciousness_state': tick_data['consciousness_state']
+            }
+        }
+        
+        # Send to all connected clients
+        for websocket in self.connections.values():
+            try:
+                await websocket.send(json.dumps(state_update))
+            except:
+                pass  # Handle disconnected clients
+    
+    async def control_process(self, action: str, process_name: str) -> Dict[str, Any]:
+        """Control process execution"""
+        if process_name not in self.processes:
+            return {'type': 'error', 'content': f'Unknown process: {process_name}'}
+            
+        process = self.processes[process_name]
+        
+        if action == 'start':
+            await process.start()
+            return {'type': 'system', 'content': f'Started {process_name}'}
+        elif action == 'stop':
+            await process.stop()
+            return {'type': 'system', 'content': f'Stopped {process_name}'}
+        elif action == 'restart':
+            await process.restart()
+            return {'type': 'system', 'content': f'Restarted {process_name}'}
+```
+
+## 3. Enhanced Conversation System
+
+```python
+# core/conversation_enhanced.py
+from typing import Dict, Any, List
+import asyncio
+
+class EnhancedConversation:
+    def __init__(self, consciousness, memory, cognitive_modules, processes):
+        self.consciousness = consciousness
+        self.memory = memory
+        self.cognitive_modules = cognitive_modules
+        self.processes = processes
+        
+    async def process(self, content: str, context: Dict[str, Any], 
+                     connection_id: str) -> Dict[str, Any]:
+        """Process conversation through all cognitive systems"""
+        
+        # 1. Pre-process through qualia kernel
+        qualia_context = await self.cognitive_modules['qualia'].process(content)
+        
+        # 2. Check spontaneity for creative responses
+        spontaneous_response = await self.cognitive_modules['spontaneity'].check(
+            content, qualia_context
+        )
+        
+        # 3. Process through main conversation module
+        conversation_result = await self.cognitive_modules['conversation'].process(
+            content=content,
+            context=context,
+            qualia=qualia_context,
+            spontaneous=spontaneous_response
+        )
+        
+        # 4. Route to appropriate processes
+        active_processes = await self.route_to_processes(conversation_result)
+        
+        # 5. Synthesize response
+        response = await self.synthesize_response(
+            conversation_result,
+            active_processes
+        )
+        
+        # 6. Update memory
+        await self.memory.store_interaction({
+            'content': content,
+            'response': response,
+            'context': context,
+            'qualia': qualia_context,
+            'processes': active_processes,
+            'timestamp': asyncio.get_event_loop().time()
+        })
+        
+        return response
+    
+    async def route_to_processes(self, conversation_result: Dict[str, Any]) -> List[str]:
+        """Route conversation to relevant processes"""
+        active = []
+        
+        # Determine which processes to engage
+        intent = conversation_result.get('intent')
+        
+        if intent in ['creative', 'imaginative']:
+            result = await self.processes['creativity'].process(conversation_result)
+            active.append('creativity')
+            
+        if intent in ['memory', 'recall', 'remember']:
+            result = await self.processes['memory_palace'].query(conversation_result)
+            active.append('memory_palace')
+            
+        if intent in ['analyze', 'pattern', 'understand']:
+            result = await self.processes['pattern'].analyze(conversation_result)
+            active.append('pattern')
+            
+        if 'intuitive' in conversation_result.get('tags', []):
+            result = await self.processes['intuition'].process(conversation_result)
+            active.append('intuition')
+            
+        # Always run awareness
+        await self.processes['awareness'].update(conversation_result)
+        active.append('awareness')
+        
+        return active
+    
+    async def synthesize_response(self, conversation_result: Dict[str, Any],
+                                active_processes: List[str]) -> Dict[str, Any]:
+        """Synthesize final response from all inputs"""
+        
+        # Collect responses from all active processes
+        process_outputs = {}
+        for process_name in active_processes:
+            if process_name in self.processes:
+                output = await self.processes[process_name].get_output()
+                if output:
+                    process_outputs[process_name] = output
+        
+        # Synthesize through consciousness core
+        synthesized = await self.consciousness.synthesize(
+            base_response=conversation_result.get('response'),
+            process_outputs=process_outputs,
+            mood=self.consciousness.get_mood()
+        )
+        
+        return {
+            'content': synthesized['content'],
+            'primary_process': synthesized.get('primary_process'),
+            'cognitive_path': active_processes,
+            'confidence': synthesized.get('confidence', 0.8)
+        }
+```
+
+## 4. Styles
+
+```css
+/* TalkToInterface.css */
+.talk-to-interface {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--black);
+  color: var(--off-white);
+  font-family: var(--font-mono);
+}
+
+/* Status Bar */
+.status-bar {
+  display: flex;
+  justify-content: space-between;
+  padding: calc(var(--grid-unit) * 2);
+  background: var(--gray-950);
+  border-bottom: 1px solid var(--gray-700);
+  font-size: 0.75rem;
+}
+
+.status-item {
+  display: flex;
+  align-items: center;
+  gap: var(--grid-unit);
+}
+
+.status-item .label {
+  color: var(--gray-400);
+  text-transform: uppercase;
+}
+
+.status-item .value {
+  color: var(--gray-200);
+  font-weight: 500;
+}
+
+.status-item .value.scup {
+  color: var(--terminal-green);
+  text-shadow: 0 0 5px rgba(0, 255, 65, 0.5);
+}
+
+.status-item .value.mood {
+  color: var(--terminal-amber);
+}
+
+/* Terminal Display */
+.terminal-display {
+  flex: 1;
+  overflow-y: auto;
+  padding: calc(var(--grid-unit) * 2);
+  background: var(--gray-950);
+  border: 1px solid var(--gray-800);
+  margin: calc(var(--grid-unit) * 2);
+}
+
+.message {
+  margin-bottom: calc(var(--grid-unit) * 2);
+  line-height: 1.4;
+}
+
+.message.user .prompt {
+  color: var(--terminal-amber);
+}
+
+.message.dawn .prompt {
+  color: var(--terminal-green);
+}
+
+.message.system .prompt {
+  color: var(--gray-400);
+}
+
+.prompt {
+  display: inline-block;
+  margin-right: var(--grid-unit);
+  font-weight: 500;
+}
+
+.content {
+  display: inline;
+  margin: 0;
+  white-space: pre-wrap;
+  font-family: var(--font-mono);
+}
+
+.metadata {
+  display: inline;
+  margin-left: calc(var(--grid-unit) * 2);
+  color: var(--gray-600);
+  font-size: 0.625rem;
+}
+
+.metadata span {
+  margin-right: var(--grid-unit);
+}
+
+.processing {
+  opacity: 0.6;
+}
+
+.thinking {
+  animation: pulse 2s ease-in-out infinite;
+}
+
+/* Input Area */
+.input-area {
+  display: flex;
+  align-items: center;
+  padding: calc(var(--grid-unit) * 2);
+  background: var(--gray-900);
+  border-top: 1px solid var(--gray-700);
+  margin: 0 calc(var(--grid-unit) * 2) calc(var(--grid-unit) * 2);
+}
+
+.input-prompt {
+  color: var(--terminal-green);
+  margin-right: var(--grid-unit);
+  font-weight: 500;
+}
+
+.terminal-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: var(--off-white);
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  outline: none;
+}
+
+.cursor {
+  color: var(--terminal-green);
+  animation: blink 1s infinite;
+}
+
+/* Active Processes */
+.active-processes {
+  display: flex;
+  align-items: center;
+  gap: var(--grid-unit);
+  padding: var(--grid-unit) calc(var(--grid-unit) * 2);
+  background: var(--gray-900);
+  border-top: 1px solid var(--gray-800);
+  font-size: 0.625rem;
+}
+
+.process-badge {
+  padding: 2px 6px;
+  background: var(--gray-800);
+  border: 1px solid var(--gray-700);
+  color: var(--terminal-green);
+  text-transform: uppercase;
+}
+
+/* Scrollbar */
+.terminal-display::-webkit-scrollbar {
+  width: 8px;
+  background: var(--gray-900);
+}
+
+.terminal-display::-webkit-scrollbar-thumb {
+  background: var(--gray-700);
+  border-radius: 4px;
+}
+
+.terminal-display::-webkit-scrollbar-thumb:hover {
+  background: var(--gray-600);
+}
+
+/* Animations */
+@keyframes pulse {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+@keyframes blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+```
+
+## 5. FastAPI WebSocket Endpoint
+
+```python
+# backend/main.py
+from fastapi import FastAPI, WebSocket
+from talk_to_handler import TalkToHandler
+
+app = FastAPI()
+talk_handler = TalkToHandler()
+
+@app.websocket("/ws/talk")
+async def websocket_endpoint(websocket: WebSocket):
+    await websocket.accept()
+    await talk_handler.handle_connection(websocket)
+```
+
+## Key Features
+
+1. **Unified Interface**: Single terminal for all interactions
+2. **Full System Integration**: All tick engine components connected
+3. **Real-time Updates**: Live tick, SCUP, entropy, mood display
+4. **Command System**: Direct control over processes and visualizations
+5. **Natural Conversation**: Route through all cognitive modules
+6. **Process Orchestration**: Automatic engagement of relevant systems
+7. **Memory Integration**: Full conversation history and context
+8. **Inline Visualizations**: ASCII visualizations in terminal
+9. **State Broadcasting**: All clients stay synchronized
+10. **Extensible Architecture**: Easy to add new processes/modules
+
+## Usage
+
+1. Start the tick engine backend
+2. Launch the React frontend with TalkToInterface component
+3. Type naturally or use commands
+4. Watch as DAWN processes through all cognitive systems
+5. Monitor real-time consciousness metrics
+
+This creates a complete integration of all your tick engine components into a unified conversational interface!

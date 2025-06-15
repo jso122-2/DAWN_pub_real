@@ -1,0 +1,49 @@
+{
+  "test_summary": {
+    "total_ticks": 15,
+    "total_switches": 1,
+    "final_schema": "persephone_intervention",
+    "final_metrics": {
+      "entropy": 0.8220000000000001,
+      "coherence": 0.5635,
+      "drift_velocity": 0.01200000000000001,
+      "pressure": 0.09213894235914241,
+      "valence": 0.355
+    }
+  },
+  "schema_switches": [
+    {
+      "tick": 5,
+      "from": "fractal_mode",
+      "to": "persephone_intervention",
+      "reason": "Negative mood gradient detected",
+      "metrics": {
+        "entropy": 0.576,
+        "coherence": 0.643,
+        "drift_velocity": 0.0,
+        "pressure": 0.13977599999999998,
+        "valence": 0.37
+      }
+    }
+  ],
+  "metric_history": [
+    {
+      "tick": 1,
+      "entropy": 0.36,
+      "coherence": 0.715,
+      "schema": "fractal_mode"
+    },
+    {
+      "tick": 6,
+      "entropy": 0.576,
+      "coherence": 0.643,
+      "schema": "persephone_intervention"
+    },
+    {
+      "tick": 11,
+      "entropy": 0.75,
+      "coherence": 0.5875,
+      "schema": "persephone_intervention"
+    }
+  ]
+}

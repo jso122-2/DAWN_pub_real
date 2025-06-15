@@ -1,100 +1,159 @@
 # /schema/mood_urgency_probe.py
 
-from core.schema_anomaly_logger import log_anomaly
 import math
-from typing import Dict, Optional, Tuple
+from typing import Dict, Optional, Tuple, List
+import logging
+import time
+from dataclasses import dataclass, field
 
-def mood_urgency_probe(mood_state: dict = None) -> float:
-    """
-    Computes urgency level based on dominant mood pressure with enhanced dynamics.
+logger = logging.getLogger(__name__)
 
-    Args:
-        mood_state (dict): A dictionary of mood intensities, e.g.
-            {'reflective': 0.32, 'resilient': 0.18, 'curious': 0.45}
+@dataclass
+class MoodState:
+    """Current mood state of the system"""
+    valence: float = 0.0  # Positive/negative (-1 to 1)
+    arousal: float = 0.0  # Energy level (0 to 1)
+    dominance: float = 0.5  # Control level (0 to 1)
+    urgency: float = 0.0  # Urgency level (0 to 1)
+    last_update: float = field(default_factory=time.time)
+    history: List[Dict] = field(default_factory=list)
 
-    Returns:
-        float: urgency level from 0.0 (calm) to 1.0 (urgent)
-    """
-    if not mood_state or len(mood_state) == 0:
-        log_anomaly("PhantomReference", "DAWN requested 'mood_urgency' without prior definition.")
-        return 0.0  # Safe fallback for now
-
-    # Calculate mood complexity (entropy-like measure)
-    total_intensity = sum(mood_state.values())
-    if total_intensity == 0:
-        return 0.0
+class MoodUrgencyProbe:
+    """Probes and analyzes mood states and urgency levels"""
     
-    complexity = _calculate_mood_complexity(mood_state, total_intensity)
-    dominant_mood, pressure = _get_dominant_mood(mood_state)
+    def __init__(self):
+        """Initialize the mood urgency probe"""
+        self.state = MoodState()
+        self.config = {
+            'history_size': 100,
+            'decay_rate': 0.95,
+            'urgency_threshold': 0.7,
+            'mood_update_interval': 1.0
+        }
+        logger.info("Initialized MoodUrgencyProbe")
     
-    # Base urgency from dominant mood pressure
-    base_urgency = min(max(pressure, 0.0), 1.0)
+    def update_mood(self, 
+                   valence: Optional[float] = None,
+                   arousal: Optional[float] = None,
+                   dominance: Optional[float] = None) -> None:
+        """
+        Update the current mood state
+        
+        Args:
+            valence: New valence value (-1 to 1)
+            arousal: New arousal value (0 to 1)
+            dominance: New dominance value (0 to 1)
+        """
+        # Update values if provided
+        if valence is not None:
+            self.state.valence = max(-1.0, min(1.0, valence))
+        if arousal is not None:
+            self.state.arousal = max(0.0, min(1.0, arousal))
+        if dominance is not None:
+            self.state.dominance = max(0.0, min(1.0, dominance))
+        
+        # Calculate urgency
+        self._update_urgency()
+        
+        # Record history
+        self._record_history()
+        
+        # Update timestamp
+        self.state.last_update = time.time()
+        
+        # Check for anomalies
+        self._check_anomalies()
     
-    # Modulate based on mood type and complexity
-    mood_modifier = _get_mood_urgency_modifier(dominant_mood)
-    complexity_factor = _calculate_complexity_factor(complexity)
+    def _update_urgency(self) -> None:
+        """Update the urgency level based on current mood state"""
+        # Urgency increases with high arousal and negative valence
+        arousal_factor = self.state.arousal
+        valence_factor = (1.0 - self.state.valence) / 2.0  # Convert -1,1 to 0,1
+        dominance_factor = 1.0 - self.state.dominance  # Lower dominance = higher urgency
+        
+        # Calculate urgency as weighted combination
+        self.state.urgency = (
+            0.4 * arousal_factor +
+            0.4 * valence_factor +
+            0.2 * dominance_factor
+        )
     
-    # Final urgency calculation with non-linear scaling
-    urgency = base_urgency * mood_modifier * complexity_factor
-    urgency = _apply_urgency_curve(urgency)
+    def _record_history(self) -> None:
+        """Record current state in history"""
+        state_record = {
+            'timestamp': time.time(),
+            'valence': self.state.valence,
+            'arousal': self.state.arousal,
+            'dominance': self.state.dominance,
+            'urgency': self.state.urgency
+        }
+        
+        self.state.history.append(state_record)
+        
+        # Trim history if too long
+        if len(self.state.history) > self.config['history_size']:
+            self.state.history = self.state.history[-self.config['history_size']:]
     
-    # Clamp to valid range
-    urgency = min(max(urgency, 0.0), 1.0)
+    def _check_anomalies(self) -> None:
+        """Check for anomalous mood states"""
+        # Check for extreme urgency
+        if self.state.urgency > self.config['urgency_threshold']:
+            log_anomaly(
+                'high_urgency',
+                {
+                    'urgency': self.state.urgency,
+                    'valence': self.state.valence,
+                    'arousal': self.state.arousal,
+                    'dominance': self.state.dominance
+                },
+                severity='warning'
+            )
+        
+        # Check for mood instability
+        if len(self.state.history) >= 2:
+            last_state = self.state.history[-2]
+            current_state = self.state.history[-1]
+            
+            # Calculate mood change
+            valence_change = abs(current_state['valence'] - last_state['valence'])
+            arousal_change = abs(current_state['arousal'] - last_state['arousal'])
+            
+            if valence_change > 0.5 or arousal_change > 0.5:
+                log_anomaly(
+                    'mood_instability',
+                    {
+                        'valence_change': valence_change,
+                        'arousal_change': arousal_change,
+                        'current_state': current_state,
+                        'previous_state': last_state
+                    },
+                    severity='warning'
+                )
     
-    print(f"[MoodUrgency] 🧠 Dominant: {dominant_mood} ({pressure:.3f}) | "
-          f"Complexity: {complexity:.3f} | Urgency: {urgency:.3f}")
+    def get_state(self) -> Dict:
+        """Get current mood state"""
+        return {
+            'valence': self.state.valence,
+            'arousal': self.state.arousal,
+            'dominance': self.state.dominance,
+            'urgency': self.state.urgency,
+            'last_update': self.state.last_update
+        }
     
-    return urgency
+    def get_history(self, limit: Optional[int] = None) -> List[Dict]:
+        """Get mood history"""
+        if limit is None:
+            return self.state.history
+        return self.state.history[-limit:]
 
-def _calculate_mood_complexity(mood_state: Dict[str, float], total_intensity: float) -> float:
-    """Calculate Shannon entropy-like complexity of mood distribution."""
-    complexity = 0.0
-    for intensity in mood_state.values():
-        if intensity > 0:
-            normalized = intensity / total_intensity
-            complexity -= normalized * math.log2(normalized)
-    return complexity
+# Global instance
+_mood_probe = None
 
-def _get_dominant_mood(mood_state: Dict[str, float]) -> Tuple[str, float]:
-    """Get the dominant mood and its intensity."""
-    dominant_mood = max(mood_state, key=mood_state.get)
-    pressure = mood_state[dominant_mood]
-    return dominant_mood, pressure
+def get_mood_probe() -> MoodUrgencyProbe:
+    """Get or create the global mood probe instance"""
+    global _mood_probe
+    if _mood_probe is None:
+        _mood_probe = MoodUrgencyProbe()
+    return _mood_probe
 
-def _get_mood_urgency_modifier(mood: str) -> float:
-    """Get urgency modifier based on mood type."""
-    urgency_modifiers = {
-        'anxious': 1.4,
-        'excited': 1.2,
-        'curious': 1.1,
-        'reflective': 0.8,
-        'calm': 0.6,
-        'resilient': 0.9,
-        'frustrated': 1.3,
-        'focused': 1.0,
-        'dreamy': 0.7,
-        'alert': 1.15
-    }
-    return urgency_modifiers.get(mood.lower(), 1.0)  # Default neutral
-
-def _calculate_complexity_factor(complexity: float) -> float:
-    """Convert complexity to urgency factor - higher complexity = higher urgency."""
-    # Sigmoid-like function: complex emotional states create more urgency
-    return 0.7 + 0.6 / (1 + math.exp(-2 * (complexity - 1.5)))
-
-def _apply_urgency_curve(urgency: float) -> float:
-    """Apply non-linear curve to urgency for more natural distribution."""
-    # Gentle S-curve to avoid extreme values while preserving sensitivity
-    return urgency * urgency * (3.0 - 2.0 * urgency)
-
-def get_mood_urgency_definition() -> Dict[str, str]:
-    """Return schema definition for mood_urgency calculation."""
-    return {
-        "function": "mood_urgency_probe",
-        "description": "Calculates urgency from mood state complexity and dominance",
-        "inputs": ["mood_state: Dict[str, float]"],
-        "outputs": ["urgency: float [0.0, 1.0]"],
-        "dependencies": ["core.schema_anomaly_logger"],
-        "complexity_algorithm": "Shannon entropy with mood-specific modifiers",
-        "curve_function": "Cubic smoothstep for natural distribution"
-    }
+__all__ = ['MoodUrgencyProbe', 'get_mood_probe']

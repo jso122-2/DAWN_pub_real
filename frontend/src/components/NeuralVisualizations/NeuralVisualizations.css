@@ -1,0 +1,101 @@
+.neural-viz {
+  background: var(--gray-950);
+  border: 1px solid var(--gray-700);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.viz-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--grid-unit);
+  border-bottom: 1px solid var(--gray-700);
+  background: var(--gray-900);
+}
+
+.viz-header h3 {
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  color: var(--off-white);
+  letter-spacing: 0.1em;
+}
+
+.view-toggle {
+  display: flex;
+  gap: 4px;
+}
+
+.view-toggle button {
+  background: transparent;
+  border: 1px solid var(--gray-700);
+  color: var(--gray-400);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  padding: 4px 8px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.view-toggle button:hover {
+  border-color: var(--gray-600);
+  color: var(--gray-300);
+}
+
+.view-toggle button.active {
+  background: var(--gray-800);
+  border-color: var(--terminal-green);
+  color: var(--terminal-green);
+}
+
+.viz-content {
+  flex: 1;
+  padding: calc(var(--grid-unit) * 2);
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.connection-status {
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  color: var(--gray-400);
+  text-align: center;
+  padding: var(--grid-unit);
+  background: var(--gray-900);
+  border: 1px solid var(--gray-800);
+  border-radius: 4px;
+}
+
+.ascii-display {
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  line-height: 1;
+  color: var(--terminal-green);
+  margin: 0;
+  padding: var(--grid-unit);
+  background: var(--black);
+  border: 1px solid var(--gray-800);
+  text-shadow: 0 0 5px rgba(0, 255, 65, 0.3);
+}
+
+.radar-legend,
+.histogram-stats {
+  margin-top: calc(var(--grid-unit) * 2);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--gray-300);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--grid-unit);
+}
+
+.radar-legend div,
+.histogram-stats div {
+  padding: 4px;
+  background: var(--gray-900);
+  border: 1px solid var(--gray-800);
+} 

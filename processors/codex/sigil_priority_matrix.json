@@ -1,0 +1,60 @@
+{
+  "sigil_priority_matrix": [
+    {
+      "id_prefix": "SGL_001",
+      "type": "structural",
+      "default_priority": 1,
+      "heat_sensitivity": 0.9,
+      "coherence_impact": 0.8,
+      "notes": "Reinforces schema boundary during overload. Runs early in drift cycles."
+    },
+    {
+      "id_prefix": "SGL_002",
+      "type": "healing",
+      "default_priority": 2,
+      "heat_sensitivity": 0.6,
+      "coherence_impact": 0.5,
+      "notes": "Repairs semantic tears and memory fragmentation. Essential for stability."
+    },
+    {
+      "id_prefix": "SGL_003",
+      "type": "temporal",
+      "default_priority": 2,
+      "heat_sensitivity": 0.7,
+      "coherence_impact": 0.3,
+      "notes": "Manages bloom sequencing and rebloom timing. Prevents temporal loops."
+    },
+    {
+      "id_prefix": "SGL_004",
+      "type": "memory",
+      "default_priority": 3,
+      "heat_sensitivity": 0.5,
+      "coherence_impact": 0.2,
+      "notes": "Archives significant patterns. Can pause under high heat without critical failure."
+    },
+    {
+      "id_prefix": "SGL_005",
+      "type": "decay",
+      "default_priority": 3,
+      "heat_sensitivity": 0.4,
+      "coherence_impact": -0.1,
+      "notes": "Allows controlled entropy increase. Necessary for evolution but reduces coherence."
+    },
+    {
+      "id_prefix": "SGL_006",
+      "type": "aesthetic",
+      "default_priority": 4,
+      "heat_sensitivity": 0.2,
+      "coherence_impact": 0.1,
+      "notes": "Generates poetic outputs and symbolic resonances. First to deactivate under pressure."
+    },
+    {
+      "id_prefix": "SGL_007",
+      "type": "prophetic",
+      "default_priority": 5,
+      "heat_sensitivity": 0.1,
+      "coherence_impact": -0.3,
+      "notes": "Future-state predictions and emergent pattern recognition. High risk, low priority."
+    }
+  ]
+}

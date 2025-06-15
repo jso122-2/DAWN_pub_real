@@ -13,17 +13,19 @@ from typing import Dict, Set, Any, Optional, List
 from websockets.server import WebSocketServerProtocol
 
 from .advanced_consciousness_system import AdvancedConsciousnessSystem, create_advanced_consciousness
+from .neural_metrics_service import NeuralMetricsService
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 class AdvancedConsciousnessWebSocketServer:
-    def __init__(self, host: str = "localhost", port: int = 8768):
+    def __init__(self, host: str = "localhost", port: int = 8000):
         self.host = host
         self.port = port
         self.clients: Set[WebSocketServerProtocol] = set()
         self.consciousness_system: Optional[AdvancedConsciousnessSystem] = None
+        self.neural_metrics = NeuralMetricsService()
         
         # Message handlers
         self.handlers = {
@@ -36,6 +38,7 @@ class AdvancedConsciousnessWebSocketServer:
             'get_voice_signature': self._handle_get_voice_signature,
             'get_mood_field': self._handle_get_mood_field,
             'get_resonance_chains': self._handle_get_resonance_chains,
+            'get_neural_metrics': self._handle_get_neural_metrics,
             'ping': self._handle_ping
         }
     
@@ -204,6 +207,13 @@ class AdvancedConsciousnessWebSocketServer:
             'resonance_map': self.consciousness_system.resonance_manager.get_resonance_map()
         }
     
+    async def _handle_get_neural_metrics(self, data: Dict[str, Any]) -> Dict[str, Any]:
+        """Get neural metrics data"""
+        return {
+            'type': 'neural_metrics',
+            'metrics': self.neural_metrics.generate_metrics()
+        }
+    
     async def _handle_ping(self, data: Dict[str, Any]) -> Dict[str, Any]:
         """Handle ping request"""
         return {
@@ -348,25 +358,23 @@ class AdvancedConsciousnessWebSocketServer:
         self.clients -= disconnected
     
     async def _consciousness_broadcast_loop(self):
-        """Periodically broadcast consciousness state to all clients"""
+        """Background task to broadcast consciousness state"""
         while True:
             try:
-                await asyncio.sleep(2)  # Broadcast every 2 seconds
+                # Generate neural metrics
+                neural_metrics = self.neural_metrics.generate_metrics()
+                await self._broadcast_to_all('neural_metrics', neural_metrics)
                 
-                if self.clients and self.consciousness_system:
-                    # Get current state
-                    state = self.consciousness_system.get_full_state()
-                    
-                    # Broadcast to all clients
-                    await self._broadcast_to_all('consciousness_update', state)
-                    
+                # Wait before next update
+                await asyncio.sleep(1.0)  # Update every second
+                
             except Exception as e:
-                logger.error(f"Broadcast loop error: {e}")
-                await asyncio.sleep(5)
+                logger.error(f"Error in broadcast loop: {e}")
+                await asyncio.sleep(5.0)  # Wait longer on error
 
 async def main():
     """Main function to start the server"""
-    server = AdvancedConsciousnessWebSocketServer(host="localhost", port=8768)
+    server = AdvancedConsciousnessWebSocketServer(host="localhost", port=8000)
     
     try:
         await server.start_server()

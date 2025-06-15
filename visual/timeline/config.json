@@ -1,0 +1,28 @@
+{
+  "websocket": {
+    "host": "localhost",
+    "port": 8080,
+    "path": "/consciousness/timeline"
+  },
+  "http": {
+    "port": 8081,
+    "auto_open": true
+  },
+  "events": {
+    "buffer_size": 10000,
+    "history_minutes": 60,
+    "default_filters": {
+      "pulse": true,
+      "mode_shift": true,
+      "fault": true,
+      "flux": true,
+      "intervention": true
+    }
+  },
+  "integration": {
+    "consciousness_tracer": true,
+    "tick_engine": true,
+    "juliet_flower": true,
+    "rhizome_pathfinder": false
+  }
+} 

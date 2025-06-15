@@ -18,6 +18,7 @@ from collections import deque, defaultdict
 from dataclasses import dataclass
 import logging
 import math
+import asyncio
 
 logger = logging.getLogger(__name__)
 
@@ -42,6 +43,110 @@ class SpontaneousThought:
     intensity: float
     source_map: Dict[str, str]
     poetic_form: str
+
+
+class EnhancedConversation:
+    def __init__(self, consciousness, memory, cognitive_modules, processes):
+        self.consciousness = consciousness
+        self.memory = memory
+        self.cognitive_modules = cognitive_modules
+        self.processes = processes
+        
+    async def process(self, content: str, context: Dict[str, Any], 
+                     connection_id: str) -> Dict[str, Any]:
+        """Process conversation through all cognitive systems"""
+        
+        # 1. Pre-process through qualia kernel
+        qualia_context = await self.cognitive_modules['qualia'].process(content)
+        
+        # 2. Check spontaneity for creative responses
+        spontaneous_response = await self.cognitive_modules['spontaneity'].check(
+            content, qualia_context
+        )
+        
+        # 3. Process through main conversation module
+        conversation_result = await self.cognitive_modules['conversation'].process(
+            content=content,
+            context=context,
+            qualia=qualia_context,
+            spontaneous=spontaneous_response
+        )
+        
+        # 4. Route to appropriate processes
+        active_processes = await self.route_to_processes(conversation_result)
+        
+        # 5. Synthesize response
+        response = await self.synthesize_response(
+            conversation_result,
+            active_processes
+        )
+        
+        # 6. Update memory
+        await self.memory.store_interaction({
+            'content': content,
+            'response': response,
+            'context': context,
+            'qualia': qualia_context,
+            'processes': active_processes,
+            'timestamp': asyncio.get_event_loop().time()
+        })
+        
+        return response
+    
+    async def route_to_processes(self, conversation_result: Dict[str, Any]) -> List[str]:
+        """Route conversation to relevant processes"""
+        active = []
+        
+        # Determine which processes to engage
+        intent = conversation_result.get('intent')
+        
+        if intent in ['creative', 'imaginative']:
+            result = await self.processes['creativity'].process(conversation_result)
+            active.append('creativity')
+            
+        if intent in ['memory', 'recall', 'remember']:
+            result = await self.processes['memory_palace'].query(conversation_result)
+            active.append('memory_palace')
+            
+        if intent in ['analyze', 'pattern', 'understand']:
+            result = await self.processes['pattern'].analyze(conversation_result)
+            active.append('pattern')
+            
+        if 'intuitive' in conversation_result.get('tags', []):
+            result = await self.processes['intuition'].process(conversation_result)
+            active.append('intuition')
+            
+        # Always run awareness
+        await self.processes['awareness'].update(conversation_result)
+        active.append('awareness')
+        
+        return active
+    
+    async def synthesize_response(self, conversation_result: Dict[str, Any],
+                                active_processes: List[str]) -> Dict[str, Any]:
+        """Synthesize final response from all inputs"""
+        
+        # Collect responses from all active processes
+        process_outputs = {}
+        for process_name in active_processes:
+            if process_name in self.processes:
+                output = await self.processes[process_name].get_output()
+                if output:
+                    process_outputs[process_name] = output
+        
+        # Synthesize through consciousness core
+        synthesized = await self.consciousness.synthesize(
+            base_response=conversation_result.get('response'),
+            process_outputs=process_outputs,
+            mood=self.consciousness.get_mood()
+        )
+        
+        return {
+            'content': synthesized['content'],
+            'primary_process': synthesized.get('primary_process'),
+            'cognitive_path': active_processes,
+            'confidence': synthesized.get('confidence', 0.8)
+        }
 
 
 class DAWNConversationEnhanced:

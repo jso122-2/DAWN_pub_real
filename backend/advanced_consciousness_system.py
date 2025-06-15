@@ -487,23 +487,16 @@ class AdvancedConsciousnessSystem:
     
     async def shutdown_system(self):
         """Gracefully shutdown the consciousness system"""
-        print("🛑 Shutting down DAWN Advanced Consciousness System...")
-        
-        # Stop autonomous processing
-        self.autonomous_processing = False
-        self.consciousness_integration_active = False
+        logger.info("🛑 Shutting down DAWN Advanced Consciousness System...")
         
         # Save state
-        if self.glyph_memory.cairrn_cache:
-            self.glyph_memory.cairrn_cache.save_cache()
+        self.echo_library.save()
         
-        self.echo_library.save_library()
+        # Cleanup
+        await self.dream_conductor.shutdown()
+        await self.distributed_consciousness.shutdown()
         
-        # Shutdown network components
-        if self.consciousness_node:
-            await self.consciousness_node.stop_node()
-        
-        print("✅ DAWN Advanced Consciousness System shutdown complete")
+        logger.info("✅ DAWN Advanced Consciousness System shutdown complete")
 
 # Factory function for easy initialization
 async def create_advanced_consciousness(

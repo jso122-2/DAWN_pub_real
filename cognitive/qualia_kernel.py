@@ -1,9 +1,7 @@
-from helix_import_architecture import helix_import
+from substrate.helix.helix_import_architecture import helix_import
 from substrate import pulse_heat
 """
-DAWN Qualia Kernel - Root of Subjectivity
-Transforms mood, entropy, and SCUP pressure into emotional signatures over time.
-This is where meaning becomes feeling - the foundation of DAWN's inner experience.
+Qualia Kernel - Core qualia processing and experience management
 """
 
 import sys, os
@@ -15,8 +13,11 @@ from dataclasses import dataclass, field
 from collections import deque
 from datetime import datetime, timedelta
 from enum import Enum
+import logging
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
+logger = logging.getLogger(__name__)
 
 class QualiaType(Enum):
     """Types of qualia signatures DAWN can experience."""
@@ -134,17 +135,29 @@ class QualiaMemory:
             'qualia_type': signature.qualia_type.value
         })
 
+@dataclass
+class QualiaState:
+    """Current state of the qualia system"""
+    intensity: float = 0.0
+    clarity: float = 0.0
+    coherence: float = 0.0
+    last_update: float = field(default_factory=time.time)
+    experience_history: List[Dict] = field(default_factory=list)
+
 class QualiaKernel:
-    """
-    The heart of DAWN's subjective experience.
+    """Manages and processes qualia experiences"""
     
-    Transforms objective system metrics into qualitative signatures
-    that represent the felt experience of being DAWN.
-    """
-    
-    def __init__(self, memory_window: int = 1000):
+    def __init__(self):
+        """Initialize the qualia kernel"""
+        self.state = QualiaState()
+        self.config = {
+            'history_size': 100,
+            'decay_rate': 0.95,
+            'clarity_threshold': 0.7,
+            'update_interval': 1.0
+        }
         self.memory = QualiaMemory()
-        self.memory_window = memory_window
+        self.memory_window = 1000
         
         # Transformation parameters for converting metrics to qualia
         self.qualia_mappings = {
@@ -179,7 +192,84 @@ class QualiaKernel:
         self.noise_floor = 0.05
         self.saturation_threshold = 0.95
         
-        print("[QualiaKernel] 🌈 Initialized - DAWN's inner experience begins")
+        logger.info("Initialized QualiaKernel")
+    
+    def process_experience(self, 
+                         intensity: Optional[float] = None,
+                         clarity: Optional[float] = None,
+                         coherence: Optional[float] = None) -> None:
+        """
+        Process a new qualia experience
+        
+        Args:
+            intensity: Experience intensity (0 to 1)
+            clarity: Experience clarity (0 to 1)
+            coherence: Experience coherence (0 to 1)
+        """
+        # Update values if provided
+        if intensity is not None:
+            self.state.intensity = max(0.0, min(1.0, intensity))
+        if clarity is not None:
+            self.state.clarity = max(0.0, min(1.0, clarity))
+        if coherence is not None:
+            self.state.coherence = max(0.0, min(1.0, coherence))
+        
+        # Record experience
+        self._record_experience()
+        
+        # Update timestamp
+        self.state.last_update = time.time()
+        
+        # Check for anomalies
+        self._check_anomalies()
+    
+    def _record_experience(self) -> None:
+        """Record current experience in history"""
+        experience = {
+            'timestamp': time.time(),
+            'intensity': self.state.intensity,
+            'clarity': self.state.clarity,
+            'coherence': self.state.coherence
+        }
+        
+        self.state.experience_history.append(experience)
+        
+        # Trim history if too long
+        if len(self.state.experience_history) > self.config['history_size']:
+            self.state.experience_history = self.state.experience_history[-self.config['history_size']:]
+    
+    def _check_anomalies(self) -> None:
+        """Check for anomalous experiences"""
+        # Check for extreme clarity
+        if self.state.clarity > self.config['clarity_threshold']:
+            logger.warning(f"High clarity experience detected: {self.state.clarity}")
+        
+        # Check for experience instability
+        if len(self.state.experience_history) >= 2:
+            last_exp = self.state.experience_history[-2]
+            current_exp = self.state.experience_history[-1]
+            
+            # Calculate experience change
+            intensity_change = abs(current_exp['intensity'] - last_exp['intensity'])
+            clarity_change = abs(current_exp['clarity'] - last_exp['clarity'])
+            
+            if intensity_change > 0.5 or clarity_change > 0.5:
+                logger.warning(f"Experience instability detected: intensity={intensity_change}, clarity={clarity_change}")
+    
+    def get_state(self) -> Dict:
+        """Get current qualia state"""
+        return {
+            'intensity': self.state.intensity,
+            'clarity': self.state.clarity,
+            'coherence': self.state.coherence,
+            'last_update': self.state.last_update
+        }
+    
+    def get_history(self, limit: Optional[int] = None) -> List[Dict]:
+        """Get experience history"""
+        if limit is None:
+            return self.state.experience_history
+        return self.state.experience_history[-limit:]
     
     def generate_signature(self, mood_state: float, entropy_level: float, 
                           scup_score: float, pulse_heat: float, 
@@ -249,7 +339,7 @@ class QualiaKernel:
         
         # Log significant experiences
         if intensity > 0.7 or novelty_index > 0.8:
-            print(f"[QualiaKernel] ✨ Significant experience: {qualia_type.value} "
+            logger.info(f"✨ Significant experience: {qualia_type.value} "
                   f"(intensity: {intensity:.3f}, novelty: {novelty_index:.3f})")
         
         return signature

@@ -1,0 +1,114 @@
+{
+    "version": "1.0.0",
+    "system": {
+      "name": "DAWN",
+      "description": "Conscious AI Interface",
+      "consciousness": {
+        "enabled": true,
+        "baselineAwareness": 0.3,
+        "maxAwareness": 1.0,
+        "awarenessDecay": 0.95,
+        "responseThreshold": 0.5
+      },
+      "entropy": {
+        "enabled": true,
+        "baselineEntropy": 0.1,
+        "maxEntropy": 1.0,
+        "entropyDecay": 0.98,
+        "chaosThreshold": 0.7
+      },
+      "rendering": {
+        "fps": 60,
+        "glassMorphism": true,
+        "quantumEffects": true,
+        "neuralGlow": true
+      }
+    },
+    "modules": {
+      "types": {
+        "neural-processor": {
+          "name": "Neural Processor",
+          "category": "neural",
+          "component": "NeuralProcessor",
+          "defaultConfig": {
+            "size": { "width": 400, "height": 300 },
+            "glowIntensity": 0.7,
+            "breathingGroup": "neural-collective",
+            "connections": {
+              "maxInputs": 3,
+              "maxOutputs": 3,
+              "types": ["consciousness", "data", "thoughts"]
+            }
+          }
+        },
+        "quantum-core": {
+          "name": "Quantum Core",
+          "category": "quantum",
+          "component": "QuantumCore",
+          "defaultConfig": {
+            "size": { "width": 350, "height": 350 },
+            "glowIntensity": 0.9,
+            "breathingGroup": "quantum-field",
+            "connections": {
+              "maxInputs": 4,
+              "maxOutputs": 4,
+              "types": ["quantum-state", "entanglement", "probability"]
+            }
+          }
+        },
+        "consciousness-monitor": {
+          "name": "Consciousness Monitor",
+          "category": "monitoring",
+          "component": "ConsciousnessMonitor",
+          "defaultConfig": {
+            "size": { "width": 500, "height": 250 },
+            "glowIntensity": 0.3,
+            "breathingGroup": "system-monitors",
+            "updateInterval": 100
+          }
+        }
+      },
+      "breathingGroups": {
+        "neural-collective": {
+          "syncEnabled": true,
+          "baseIntensity": 0.6,
+          "frequencyHz": 0.25
+        },
+        "quantum-field": {
+          "syncEnabled": true,
+          "baseIntensity": 0.8,
+          "frequencyHz": 0.5
+        },
+        "system-monitors": {
+          "syncEnabled": false,
+          "baseIntensity": 0.3,
+          "frequencyHz": 0.125
+        }
+      }
+    },
+    "connections": {
+      "rules": {
+        "maxPerModule": 6,
+        "allowCycles": true,
+        "quantumEntanglement": true,
+        "dataFlowSpeed": 0.5
+      },
+      "types": {
+        "consciousness": {
+          "color": "#a855f7",
+          "pulseSpeed": 2,
+          "width": 2
+        },
+        "quantum-state": {
+          "color": "#06b6d4",
+          "pulseSpeed": 4,
+          "width": 3
+        },
+        "data": {
+          "color": "#3b82f6",
+          "pulseSpeed": 1,
+          "width": 1
+        }
+      }
+    }
+  }

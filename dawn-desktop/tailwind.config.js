@@ -1,115 +1,91 @@
 /** @type {import('tailwindcss').Config} */
-export default {
+module.exports = {
   content: [
-    "./index.html",
-    "./src/**/*.{js,ts,jsx,tsx}",
+    "./src/**/*.{js,jsx,ts,tsx}",
   ],
   theme: {
     extend: {
       colors: {
-        cosmic: {
-          void: '#0A0A0F',
-          deep: '#0F0F1F',
-          dark: '#151525',
-          surface: '#1A1A2E',
-        },
-        neural: {
-          50: 'var(--neural-50)',
-          100: 'var(--neural-100)',
-          200: 'var(--neural-200)',
-          300: 'var(--neural-300)',
-          400: 'var(--neural-400)',
-          500: 'var(--neural-500)',
-          600: 'var(--neural-600)',
-          700: 'var(--neural-700)',
-          800: 'var(--neural-800)',
-          900: 'var(--neural-900)',
-          950: 'var(--neural-950)',
-        },
-        quantum: {
-          50: 'var(--quantum-50)',
-          100: 'var(--quantum-100)',
-          200: 'var(--quantum-200)',
-          300: 'var(--quantum-300)',
-          400: 'var(--quantum-400)',
-          500: 'var(--quantum-500)',
-          600: 'var(--quantum-600)',
-          700: 'var(--quantum-700)',
-          800: 'var(--quantum-800)',
-          900: 'var(--quantum-900)',
-          950: 'var(--quantum-950)',
-        },
-        chaos: {
-          50: 'var(--chaos-50)',
-          100: 'var(--chaos-100)',
-          200: 'var(--chaos-200)',
-          300: 'var(--chaos-300)',
-          400: 'var(--chaos-400)',
-          500: 'var(--chaos-500)',
-          600: 'var(--chaos-600)',
-          700: 'var(--chaos-700)',
-          800: 'var(--chaos-800)',
-          900: 'var(--chaos-900)',
-          950: 'var(--chaos-950)',
-        },
-        process: {
-          50: 'var(--process-50)',
-          100: 'var(--process-100)',
-          200: 'var(--process-200)',
-          300: 'var(--process-300)',
-          400: 'var(--process-400)',
-          500: 'var(--process-500)',
-          600: 'var(--process-600)',
-          700: 'var(--process-700)',
-          800: 'var(--process-800)',
-          900: 'var(--process-900)',
-          950: 'var(--process-950)',
-        },
-        alert: {
-          50: 'var(--alert-50)',
-          100: 'var(--alert-100)',
-          200: 'var(--alert-200)',
-          300: 'var(--alert-300)',
-          400: 'var(--alert-400)',
-          500: 'var(--alert-500)',
-          600: 'var(--alert-600)',
-          700: 'var(--alert-700)',
-          800: 'var(--alert-800)',
-          900: 'var(--alert-900)',
-          950: 'var(--alert-950)',
-        },
+        // Swiss Base
+        'black': '#000000',
+        'gray-950': '#0a0a0a',
+        'gray-900': '#111111',
+        'gray-800': '#1a1a1a',
+        'gray-700': '#222222',
+        'gray-600': '#2a2a2a',
+        'gray-400': '#444444',
+        'gray-200': '#666666',
+        'gray-100': '#888888',
+        'white': '#ffffff',
+        'off-white': '#f0f0f0',
+        
+        // Terminal Accents
+        'terminal-green': '#00ff41',
+        'terminal-green-dim': '#00cc33',
+        'terminal-amber': '#ffb000',
+        'terminal-red': '#ff0040',
+
+        // Neural Spectrum
+        'neural-primary': '#a78bfa',
+        'neural-accent': '#8b5cf6',
+        'neural-spectrum-1': '#a78bfa',
+        'neural-spectrum-2': '#c4b5fd',
+        'neural-spectrum-3': '#f3e8ff',
+
+        // Consciousness Spectrum
+        'consciousness-primary': '#22d3ee',
+        'consciousness-accent': '#06b6d4',
+        'consciousness-spectrum-1': '#22d3ee',
+        'consciousness-spectrum-2': '#67e8f9',
+        'consciousness-spectrum-3': '#cffafe',
+
+        // Chaos Spectrum
+        'chaos-primary': '#f472b6',
+        'chaos-accent': '#ec4899',
+        'chaos-spectrum-1': '#f472b6',
+        'chaos-spectrum-2': '#fb7185',
+        'chaos-spectrum-3': '#fbcfe8',
+
+        // Process Spectrum
+        'process-primary': '#f59e0b',
+        'process-accent': '#fbbf24',
+        'process-spectrum-1': '#f59e0b',
+        'process-spectrum-2': '#fcd34d',
+        'process-spectrum-3': '#fef3c7',
+      },
+      fontFamily: {
+        'ui': ['Inter', '-apple-system', 'sans-serif'],
+        'mono': ['JetBrains Mono', 'Fira Code', 'monospace'],
       },
       spacing: {
-        quantum: 'var(--space-quantum)',
-        atom: 'var(--space-atom)',
-        molecule: 'var(--space-molecule)',
-        cell: 'var(--space-cell)',
-        tissue: 'var(--space-tissue)',
-        organ: 'var(--space-organ)',
-        system: 'var(--space-system)',
-        entity: 'var(--space-entity)',
-        cosmos: 'var(--space-cosmos)',
+        'grid': '8px',
       },
       animation: {
-        'spin-slow': 'spin 20s linear infinite',
-        'breathe-fast': 'breathe var(--breathe-fast) var(--ease-breathe-in) infinite',
-        'breathe-normal': 'breathe var(--breathe-normal) var(--ease-breathe-in) infinite',
-        'breathe-slow': 'breathe var(--breathe-slow) var(--ease-breathe-in) infinite',
-        'breathe-cosmic': 'breathe var(--breathe-cosmic) var(--ease-breathe-in) infinite',
-        'pulse-glow': 'pulse-glow var(--breathe-fast) ease-in-out infinite',
+        'scanlines': 'scanlines 8s linear infinite',
+        'pulse-glow': 'pulse-glow 2s ease-in-out infinite',
+        'blink': 'blink 1s infinite',
+        'dots': 'dots 1.5s steps(4, end) infinite',
       },
       keyframes: {
+        scanlines: {
+          '0%': { transform: 'translateY(0)' },
+          '100%': { transform: 'translateY(10px)' },
+        },
         'pulse-glow': {
-          '0%, 100%': { 
-            opacity: '1',
-            filter: 'drop-shadow(0 0 20px rgba(139, 92, 246, 0.8))'
-          },
-          '50%': { 
-            opacity: '0.8',
-            filter: 'drop-shadow(0 0 40px rgba(139, 92, 246, 1))'
-          }
-        }
-      }
+          '0%, 100%': { opacity: 1 },
+          '50%': { opacity: 0.8 },
+        },
+        blink: {
+          '0%, 50%': { opacity: 1 },
+          '51%, 100%': { opacity: 0 },
+        },
+        dots: {
+          '0%, 20%': { content: '""' },
+          '40%': { content: '"."' },
+          '60%': { content: '".."' },
+          '80%, 100%': { content: '"..."' },
+        },
+      },
     },
   },
   plugins: [],

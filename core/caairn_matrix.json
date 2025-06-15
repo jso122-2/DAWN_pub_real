@@ -1,0 +1,45 @@
+{
+    "meta": {
+        "version": "1.0",
+        "created": "2024-03-19T00:00:00Z",
+        "last_updated": "2024-03-19T00:00:00Z",
+        "schema_version": "1.0"
+    },
+    "matrix": {
+        "C": {
+            "description": "Claude-generated content",
+            "entries": {}
+        },
+        "A": {
+            "description": "Analysis and assessment",
+            "entries": {}
+        },
+        "I": {
+            "description": "Integration and implementation",
+            "entries": {}
+        },
+        "R": {
+            "description": "Reflection and review",
+            "entries": {}
+        },
+        "N": {
+            "description": "Network and navigation",
+            "entries": {}
+        }
+    },
+    "stats": {
+        "total_entries": 0,
+        "by_type": {
+            "C": 0,
+            "A": 0,
+            "I": 0,
+            "R": 0,
+            "N": 0
+        },
+        "by_file_type": {
+            "md": 0,
+            "json": 0,
+            "txt": 0
+        }
+    }
+} 

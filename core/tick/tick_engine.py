@@ -427,6 +427,11 @@ class TickEngine:
     
     def get_state(self) -> Dict:
         """Get current tick engine state"""
+        # Get semantic field drift vectors
+        from semantic.semantic_field import get_current_field
+        field = get_current_field()
+        drift_vectors = field.get_drift_vectors() if field else {}
+        
         return {
             "tick_count": self._state.tick_count,
             "current_interval": self._state.current_interval,
@@ -437,7 +442,8 @@ class TickEngine:
             "thermal_state": self._state.thermal_state,
             "performance_metrics": self._state.performance_metrics,
             "error_count": self._state.error_count,
-            "recovery_count": self._state.recovery_count
+            "recovery_count": self._state.recovery_count,
+            "drift_vectors": drift_vectors
         }
     
     def log_tick_event(self, event_type: str, details: Dict) -> None:

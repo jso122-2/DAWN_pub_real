@@ -1,0 +1,25 @@
+{
+    "current_tick": 0,
+    "system_pressure": 0.35,
+    "mood": "stable",
+    "pulse_temperature": "cool",
+    "last_claude_signal": "schema drift",
+    "thermal_state": {
+        "current_heat": 0.0,
+        "baseline_heat": 0.0,
+        "thermal_momentum": 0.0,
+        "stability_index": 1.0,
+        "heat_capacity": 10.0,
+        "current_zone": "🟢 calm"
+    },
+    "pressure_components": {
+        "entropy_level": 0.0,
+        "mood_valence": 0.0,
+        "drift_pressure": 0.0,
+        "pulse_temp": 0.0
+    },
+    "last_update": "",
+    "zone_history": [],
+    "heat_sources": {},
+    "mood_pressure": {}
+} 

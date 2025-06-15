@@ -1,0 +1,169 @@
+# DAWN Salvage Checklist - What to Port from Old Frontend
+
+## 🎯 Essential Logic to Port (Copy & Adapt)
+
+### 1. WebSocket Connection Logic
+```typescript
+// FROM: old frontend WebSocket manager
+// TO: frontend/src/services/websocket.ts
+
+// Keep:
+- Connection URL and retry logic
+- Message parsing for TickData
+- Reconnection handling
+- Event subscription pattern
+
+// Remove:
+- UI update callbacks
+- Animation triggers
+- Complex state management
+```
+
+### 2. API Service Layer
+```typescript
+// FROM: old API calls
+// TO: frontend/src/services/api.ts
+
+// Keep:
+- Endpoint definitions
+- Authentication headers
+- Error handling patterns
+- Response type definitions
+
+// Simplify:
+- Remove loading spinners
+- Remove toast notifications
+- Keep console logging only
+```
+
+### 3. Core Data Types
+```typescript
+// FROM: various type files
+// TO: frontend/src/types/index.ts
+
+// Already included:
+interface TickData
+interface PythonProcess
+interface WebSocketMessage
+
+// Check for and add:
+- Module definitions
+- Configuration types
+- API response types
+```
+
+### 4. Module Registry Pattern
+```typescript
+// FROM: module system
+// TO: Simplify for terminal display
+
+// Original concept:
+const modules = {
+  'neural': NeuralModule,
+  'quantum': QuantumModule,
+  // etc
+}
+
+// New approach:
+const modules = {
+  'neural': { name: 'Neural Network', command: 'neural.py' },
+  'quantum': { name: 'Quantum Engine', command: 'quantum.py' },
+  // etc
+}
+```
+
+## 📋 Quick Port Checklist
+
+When porting each piece, ask:
+
+- [ ] Does this handle data or just UI?
+- [ ] Can this be simplified to text output?
+- [ ] Is this essential for backend communication?
+- [ ] Can animations be replaced with status text?
+
+## 🔍 Specific Files to Check
+
+From `frontend_old_backup_*/src/`:
+
+1. **utils/websocket.ts** or similar
+   - Port core connection logic
+   - Remove UI callbacks
+
+2. **services/** or **api/**
+   - Port endpoint definitions
+   - Simplify error handling
+
+3. **contexts/AppContext** or similar
+   - Extract only data flow logic
+   - Rebuild as simple React context
+
+4. **hooks/useWebSocket** or similar
+   - Convert to service pattern
+   - Remove React-specific complexity
+
+## ❌ Do NOT Port
+
+- Anything in `styles/`
+- Animation utilities
+- Component-specific logic
+- Canvas/WebGL code
+- Particle effects
+- Breathing/floating animations
+- Glass morphism effects
+
+## 🚀 Porting Strategy
+
+```bash
+# 1. Look for WebSocket logic
+grep -r "WebSocket" frontend_old_backup_*/src/
+
+# 2. Find API endpoints
+grep -r "fetch\|axios" frontend_old_backup_*/src/
+
+# 3. Find type definitions
+find frontend_old_backup_*/src -name "*.ts" -o -name "*.tsx" | xargs grep -l "interface\|type"
+
+# 4. Find module definitions
+grep -r "module\|Module" frontend_old_backup_*/src/
+```
+
+## 📝 New Minimal Implementations
+
+Instead of porting complex components, create these minimal versions:
+
+```typescript
+// Terminal.tsx - Replace complex input components
+const Terminal = () => {
+  const [input, setInput] = useState('');
+  const [history, setHistory] = useState<string[]>([]);
+  
+  const executeCommand = (cmd: string) => {
+    // Simple command parsing
+    // Send to backend via WebSocket
+  };
+};
+
+// StatusBar.tsx - Replace floating status modules  
+const StatusBar = ({ tick, scup, mood }: TickData) => {
+  return (
+    <div className="status-bar">
+      TICK: {tick} | SCUP: {scup}% | MOOD: {mood}
+    </div>
+  );
+};
+
+// ModuleList.tsx - Replace floating module cards
+const ModuleList = ({ modules }) => {
+  return (
+    <div className="module-list">
+      {modules.map(m => (
+        <div key={m.id} className="module-row">
+          [{m.status}] {m.name} - {m.output || 'idle'}
+        </div>
+      ))}
+    </div>
+  );
+};
+```
+
+Remember: The goal is a clean, minimal, terminal-inspired interface. When in doubt, display as text!

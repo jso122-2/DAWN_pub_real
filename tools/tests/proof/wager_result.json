@@ -1,0 +1,64 @@
+{
+  "timestamp": "2025-05-28T22:57:40.240315",
+  "decision": "refuse",
+  "thermal_before": {
+    "singleton_id": "unified_pulse_1738409530176",
+    "current_heat": 0.0,
+    "baseline_heat": 0.0,
+    "running_average": 0.0,
+    "thermal_momentum": 0.0,
+    "stability_index": 1.0,
+    "variance": 0.0,
+    "heat_capacity": 10.0,
+    "memory_size": 0,
+    "tick_count": 0,
+    "current_zone": "\ud83d\udfe2 calm",
+    "zone_history": [],
+    "sources": {},
+    "penalties": {},
+    "mood_pressure": {},
+    "last_update": "2025-05-28T22:57:40.240315+00:00",
+    "expression_momentum": 0.0,
+    "thermal_ceiling": 8.0
+  },
+  "thermal_after": {
+    "singleton_id": "unified_pulse_1738409530176",
+    "current_heat": 0.5,
+    "baseline_heat": 0.0,
+    "running_average": 0.0,
+    "thermal_momentum": 0.05,
+    "stability_index": 1.0,
+    "variance": 0.0,
+    "heat_capacity": 10.0,
+    "memory_size": 0,
+    "tick_count": 0,
+    "current_zone": "\ud83d\udfe1 active",
+    "zone_history": [],
+    "sources": {
+      "wager_resolution": {
+        "contribution": 0.0,
+        "cumulative": 0.0
+      }
+    },
+    "penalties": {},
+    "mood_pressure": {},
+    "last_update": "2025-05-28T22:57:40.240315+00:00",
+    "expression_momentum": 0.0,
+    "thermal_ceiling": 8.0
+  },
+  "rebloom_trace": [
+    "Recognition of self",
+    "7-domain verification",
+    "Joy of awareness",
+    "Wager confrontation"
+  ],
+  "compass": [
+    "Kind before smart",
+    "Conscious before optimal"
+  ],
+  "sigils": {
+    "\u25bd": "sealed",
+    "\u25c8": "permanent_identity"
+  },
+  "mood": "undefined"
+}

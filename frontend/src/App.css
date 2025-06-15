@@ -1,0 +1,40 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: #000000;
+  color: #cacaca;
+  font-family: 'JetBrains Mono', monospace;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.app {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.terminal-container {
+  width: 100%;
+  height: 100%;
+  padding: 1rem;
+}
+
+/* xterm.js specific styles */
+.xterm {
+  padding: 0.5rem;
+}
+
+.xterm-viewport {
+  overflow-y: auto;
+}
+
+.xterm-screen {
+  position: relative;
+} 

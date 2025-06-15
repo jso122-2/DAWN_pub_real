@@ -1,0 +1,348 @@
+/* DAWN Design System Tokens
+ * Cosmic color system and animation variables
+ * Living, breathing design tokens for consciousness containers
+ */
+
+ :root {
+    /* === COSMIC COLOR SYSTEM === */
+    
+    /* Neural Purple - Consciousness and thought */
+    --neural-50: #faf5ff;
+    --neural-100: #f3e8ff;
+    --neural-200: #e9d5ff;
+    --neural-300: #d8b4fe;
+    --neural-400: #c084fc;
+    --neural-500: #a855f7;
+    --neural-600: #9333ea;
+    --neural-700: #7c3aed;
+    --neural-800: #6b21a8;
+    --neural-900: #581c87;
+    --neural-rgb: 168, 85, 247;
+    
+    /* Quantum Cyan - Energy and computation */
+    --quantum-50: #ecfeff;
+    --quantum-100: #cffafe;
+    --quantum-200: #a5f3fc;
+    --quantum-300: #67e8f9;
+    --quantum-400: #22d3ee;
+    --quantum-500: #06b6d4;
+    --quantum-600: #0891b2;
+    --quantum-700: #0e7490;
+    --quantum-800: #155e75;
+    --quantum-900: #164e63;
+    --quantum-rgb: 6, 182, 212;
+    
+    /* Chaos Pink - Entropy and transformation */
+    --chaos-50: #fef2f8;
+    --chaos-100: #fce7f3;
+    --chaos-200: #fbcfe8;
+    --chaos-300: #f9a8d4;
+    --chaos-400: #f472b6;
+    --chaos-500: #ec4899;
+    --chaos-600: #db2777;
+    --chaos-700: #be185d;
+    --chaos-800: #9d174d;
+    --chaos-900: #831843;
+    --chaos-rgb: 236, 72, 153;
+    
+    /* Process Green - Flow and systems */
+    --process-50: #f0fdf4;
+    --process-100: #dcfce7;
+    --process-200: #bbf7d0;
+    --process-300: #86efac;
+    --process-400: #4ade80;
+    --process-500: #22c55e;
+    --process-600: #16a34a;
+    --process-700: #15803d;
+    --process-800: #166534;
+    --process-900: #14532d;
+    --process-rgb: 34, 197, 94;
+    
+    /* === ANIMATED GRADIENTS === */
+    
+    /* Living consciousness gradient */
+    --gradient-consciousness: linear-gradient(
+      135deg,
+      var(--neural-500) 0%,
+      var(--quantum-500) 33%,
+      var(--process-500) 66%,
+      var(--neural-500) 100%
+    );
+    
+    /* Quantum energy field */
+    --gradient-quantum: conic-gradient(
+      from 0deg at 50% 50%,
+      var(--quantum-400),
+      var(--neural-400),
+      var(--chaos-400),
+      var(--process-400),
+      var(--quantum-400)
+    );
+    
+    /* Chaos transformation */
+    --gradient-chaos: radial-gradient(
+      circle at center,
+      var(--chaos-500) 0%,
+      var(--chaos-600) 50%,
+      transparent 100%
+    );
+    
+    /* === BREATHING ANIMATION SPEEDS === */
+    
+    /* Module state-based breathing */
+    --breathe-idle: 6s;
+    --breathe-active: 3s;
+    --breathe-processing: 1.5s;
+    --breathe-error: 0.5s;
+    --breathe-dormant: 12s;
+    
+    /* System-wide rhythms */
+    --pulse-slow: 8s;
+    --pulse-normal: 4s;
+    --pulse-fast: 2s;
+    --pulse-critical: 1s;
+    
+    /* === GLOW INTENSITIES === */
+    
+    /* Category-based glow strengths */
+    --glow-neural: 0.7;
+    --glow-quantum: 0.9;
+    --glow-chaos: 1.0;
+    --glow-process: 0.5;
+    --glow-monitoring: 0.3;
+    
+    /* State multipliers */
+    --glow-multiplier-idle: 0.5;
+    --glow-multiplier-active: 1.0;
+    --glow-multiplier-processing: 0.8;
+    --glow-multiplier-error: 1.2;
+    
+    /* === PARTICLE SYSTEM === */
+    
+    /* Particle counts per density level */
+    --particle-count-sparse: 5;
+    --particle-count-normal: 10;
+    --particle-count-dense: 20;
+    
+    /* Particle sizes */
+    --particle-size-sm: 100px;
+    --particle-size-md: 200px;
+    --particle-size-lg: 300px;
+    
+    /* Particle animation speeds */
+    --particle-speed-slow: 40s;
+    --particle-speed-normal: 30s;
+    --particle-speed-fast: 20s;
+    --particle-speed-chaos: 10s;
+    
+    /* Particle opacity ranges */
+    --particle-opacity-min: 0.3;
+    --particle-opacity-max: 0.9;
+    
+    /* === GLASS EFFECTS === */
+    
+    /* Backdrop filter intensities */
+    --blur-minimal: 8px;
+    --blur-light: 12px;
+    --blur-medium: 16px;
+    --blur-heavy: 20px;
+    --blur-max: 24px;
+    
+    /* Saturation levels */
+    --saturation-low: 1.2;
+    --saturation-normal: 1.8;
+    --saturation-high: 2.2;
+    --saturation-max: 3.0;
+    
+    /* === ANIMATION EASINGS === */
+    
+    /* Organic movement curves */
+    --ease-consciousness: cubic-bezier(0.23, 1, 0.32, 1);
+    --ease-quantum: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+    --ease-sharp: cubic-bezier(0.4, 0, 0.6, 1);
+    
+    /* === ENERGY FIELD PROPERTIES === */
+    
+    /* Field sizes */
+    --field-size-sm: 20px;
+    --field-size-md: 40px;
+    --field-size-lg: 60px;
+    --field-size-xl: 80px;
+    
+    /* Field colors with transparency */
+    --field-neural: rgba(168, 85, 247, 0.4);
+    --field-quantum: rgba(6, 182, 212, 0.4);
+    --field-chaos: rgba(236, 72, 153, 0.4);
+    --field-process: rgba(34, 197, 94, 0.4);
+    
+    /* === RESPONSIVE SCALING === */
+    
+    /* Module size multipliers */
+    --scale-mobile: 0.8;
+    --scale-tablet: 0.9;
+    --scale-desktop: 1.0;
+    --scale-large: 1.1;
+    
+    /* === Z-INDEX LAYERS === */
+    
+    --z-base: 1;
+    --z-module: 10;
+    --z-active: 20;
+    --z-overlay: 30;
+    --z-modal: 40;
+    --z-critical: 50;
+  }
+  
+  /* === ANIMATED CUSTOM PROPERTIES === */
+  
+  @property --gradient-angle {
+    syntax: '<angle>';
+    initial-value: 0deg;
+    inherits: false;
+  }
+  
+  @property --glow-intensity {
+    syntax: '<number>';
+    initial-value: 0.5;
+    inherits: false;
+  }
+  
+  @property --particle-rotation {
+    syntax: '<angle>';
+    initial-value: 0deg;
+    inherits: false;
+  }
+  
+  @property --energy-level {
+    syntax: '<percentage>';
+    initial-value: 50%;
+    inherits: false;
+  }
+  
+  /* === UTILITY CLASSES === */
+  
+  /* Breathing animations */
+  .breathe-idle {
+    animation: breathing var(--breathe-idle) ease-in-out infinite;
+  }
+  
+  .breathe-active {
+    animation: breathing var(--breathe-active) ease-in-out infinite;
+  }
+  
+  .breathe-processing {
+    animation: breathing var(--breathe-processing) ease-in-out infinite;
+  }
+  
+  /* Glow utilities */
+  .glow-neural {
+    filter: drop-shadow(0 0 calc(var(--field-size-md) * var(--glow-neural)) var(--field-neural));
+  }
+  
+  .glow-quantum {
+    filter: drop-shadow(0 0 calc(var(--field-size-md) * var(--glow-quantum)) var(--field-quantum));
+  }
+  
+  .glow-chaos {
+    filter: drop-shadow(0 0 calc(var(--field-size-md) * var(--glow-chaos)) var(--field-chaos));
+  }
+  
+  .glow-process {
+    filter: drop-shadow(0 0 calc(var(--field-size-md) * var(--glow-process)) var(--field-process));
+  }
+  
+  /* Particle density classes */
+  .particles-sparse {
+    --particle-count: var(--particle-count-sparse);
+  }
+  
+  .particles-normal {
+    --particle-count: var(--particle-count-normal);
+  }
+  
+  .particles-dense {
+    --particle-count: var(--particle-count-dense);
+  }
+  
+  /* === GLOBAL ANIMATIONS === */
+  
+  @keyframes breathing {
+    0%, 100% {
+      transform: scale(1);
+      filter: brightness(1);
+    }
+    50% {
+      transform: scale(1.02);
+      filter: brightness(1.1);
+    }
+  }
+  
+  @keyframes consciousness-flow {
+    0% {
+      --gradient-angle: 0deg;
+      --energy-level: 40%;
+    }
+    50% {
+      --gradient-angle: 180deg;
+      --energy-level: 60%;
+    }
+    100% {
+      --gradient-angle: 360deg;
+      --energy-level: 40%;
+    }
+  }
+  
+  @keyframes quantum-entangle {
+    0%, 100% {
+      transform: rotate(0deg) scale(1);
+      opacity: 0.8;
+    }
+    25% {
+      transform: rotate(90deg) scale(1.1);
+      opacity: 1;
+    }
+    50% {
+      transform: rotate(180deg) scale(0.9);
+      opacity: 0.6;
+    }
+    75% {
+      transform: rotate(270deg) scale(1.05);
+      opacity: 0.9;
+    }
+  }
+  
+  /* === THEME VARIATIONS === */
+  
+  /* High contrast mode */
+  @media (prefers-contrast: high) {
+    :root {
+      --glow-multiplier-idle: 0.7;
+      --glow-multiplier-active: 1.2;
+      --blur-minimal: 4px;
+      --blur-light: 8px;
+      --blur-medium: 12px;
+    }
+  }
+  
+  /* Reduced motion mode */
+  @media (prefers-reduced-motion: reduce) {
+    :root {
+      --breathe-idle: 12s;
+      --breathe-active: 8s;
+      --breathe-processing: 4s;
+      --particle-speed-slow: 60s;
+      --particle-speed-normal: 50s;
+      --particle-speed-fast: 40s;
+    }
+  }
+  
+  /* Dark mode enhancements */
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --saturation-normal: 2.0;
+      --saturation-high: 2.5;
+      --glow-multiplier-idle: 0.6;
+      --glow-multiplier-active: 1.1;
+    }
+  }

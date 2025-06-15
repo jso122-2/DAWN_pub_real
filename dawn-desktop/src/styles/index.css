@@ -2,6 +2,7 @@
 @import "./glass-tokens.css";
 @import "./cosmic.css";
 @import './glass.css';
+@import './swiss-terminal.css';
 
 @tailwind base;
 @tailwind components;
@@ -19,10 +20,12 @@
 html, body {
   height: 100%;
   overflow: hidden;
+  background: var(--black);
+  color: var(--off-white);
+  font-family: var(--font-ui);
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -34,7 +37,7 @@ body {
     radial-gradient(ellipse at top left, rgba(139, 92, 246, 0.15) 0%, transparent 50%),
     radial-gradient(ellipse at bottom right, rgba(6, 182, 212, 0.1) 0%, transparent 50%),
     radial-gradient(ellipse at center, rgba(236, 72, 153, 0.05) 0%, transparent 70%),
-    linear-gradient(to bottom, #0A0A0F, #0F0F1F);
+    linear-gradient(to bottom, var(--gray-950), var(--gray-900));
   background-attachment: fixed;
   position: relative;
   overflow: hidden;
@@ -56,17 +59,61 @@ body {
   pointer-events: none;
 }
 
-/* Subtle grid overlay for depth */
-#root::after {
-  content: '';
+/* Grid overlay */
+.grid-lines {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Terminal-style monospace text */
+.mono {
+  font-family: var(--font-mono);
+}
+
+/* Terminal-style glow effects */
+.glow {
+  text-shadow: var(--glow-green);
+}
+
+/* CRT effect container */
+.crt {
+  position: relative;
+  overflow: hidden;
+}
+
+.crt::before {
+  content: "";
   position: absolute;
   inset: 0;
-  background-image: 
-    linear-gradient(rgba(139, 92, 246, 0.02) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(139, 92, 246, 0.02) 1px, transparent 1px);
-  background-size: 50px 50px;
+  background: linear-gradient(
+    var(--scanline) 50%,
+    transparent 50%
+  );
+  background-size: 100% 2px;
   pointer-events: none;
-  opacity: 0.5;
+  animation: scanlines 8s linear infinite;
+}
+
+@keyframes scanlines {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(10px); }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .swiss-grid {
+    padding: calc(var(--grid-unit) * 2);
+  }
+  
+  .data-module {
+    min-height: calc(var(--grid-unit) * 16);
+  }
+  
+  .data-value {
+    font-size: var(--text-xl);
+  }
 }
 
 /* Main app container */

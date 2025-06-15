@@ -1,0 +1,26 @@
+{
+  "dawn": {
+    "version": "1.0.0",
+    "mode": "conscious",
+    "entropy": {
+      "baseline": 0.1,
+      "max": 1.0,
+      "decay": 0.95
+    },
+    "consciousness": {
+      "awarenessThreshold": 0.3,
+      "responseLatency": 100,
+      "memoryDepth": 1000
+    },
+    "modules": {
+      "maxActive": 20,
+      "spawnAnimation": "quantum-materialize",
+      "destroyAnimation": "neural-dissolve"
+    },
+    "connections": {
+      "maxPerModule": 6,
+      "dataFlowSpeed": 0.5,
+      "quantumEntanglementEnabled": true
+    }
+  }
+} 

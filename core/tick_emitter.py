@@ -2,9 +2,38 @@ import os
 import json
 import pandas as pd
 from datetime import datetime
+from typing import Callable, List, Dict, Any
 
 TICK_FILE = "tick_state.json"
 ZONE_OVERLAY_FILE = "juliet_flowers/cluster_report/zone_overlay_log.csv"
+
+# Global tick subscribers
+_tick_subscribers: List[Callable] = []
+
+def tick_subscribe(callback: Callable) -> Callable:
+    """
+    Subscribe a callback function to tick events.
+    The callback will be called with the current tick number.
+    
+    Args:
+        callback: Function to call on each tick
+        
+    Returns:
+        The callback function for chaining
+    """
+    if callback not in _tick_subscribers:
+        _tick_subscribers.append(callback)
+    return callback
+
+def tick_unsubscribe(callback: Callable) -> None:
+    """
+    Unsubscribe a callback function from tick events.
+    
+    Args:
+        callback: Function to remove from subscribers
+    """
+    if callback in _tick_subscribers:
+        _tick_subscribers.remove(callback)
 
 class TickEmitter:
     """Core tick emission system for DAWN"""
@@ -45,6 +74,13 @@ class TickEmitter:
                 log.write(f"{self.tick_state['tick']},{zone},{pulse},{drift}\n")
         except Exception as e:
             print(f"[Pulse] ❌ Failed to log overlay: {e}")
+            
+        # Notify subscribers
+        for subscriber in _tick_subscribers:
+            try:
+                subscriber(self.tick_state["tick"])
+            except Exception as e:
+                print(f"[Tick] ❌ Subscriber error: {e}")
             
         print(f"⏱️ Tick emitted | Tick: {self.tick_state['tick']} | Zone: {zone} | Pulse: {pulse}")
         return self.tick_state["tick"]
@@ -99,6 +135,14 @@ def save_tick(tick, zone=None, pulse=None):
 def emit_tick(zone=None, pulse=None):
     tick = load_tick() + 1
     save_tick(tick, zone=zone, pulse=pulse)
+    
+    # Notify subscribers
+    for subscriber in _tick_subscribers:
+        try:
+            subscriber(tick)
+        except Exception as e:
+            print(f"[Tick] ❌ Subscriber error: {e}")
+            
     print(f"⏱️ Tick emitted | Tick: {tick} | Zone: {zone} | Pulse: {pulse}")
     return tick
 

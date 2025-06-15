@@ -324,6 +324,11 @@ class TickEngine:
     
     def get_current_state(self) -> Dict[str, Any]:
         """Get current engine state"""
+        # Get semantic field drift vectors
+        from semantic.semantic_field import get_current_field
+        field = get_current_field()
+        drift_vectors = field.get_drift_vectors() if field else {}
+        
         return {
             'tick_count': self.tick_count,
             'is_running': self.is_running,
@@ -331,7 +336,8 @@ class TickEngine:
             'consciousness': self.consciousness.to_dict(),
             'performance': self.performance_metrics,
             'modules': list(self.modules.keys()),
-            'uptime': time.time() - self.start_time
+            'uptime': time.time() - self.start_time,
+            'drift_vectors': drift_vectors
         }
 
 

@@ -1,5 +1,3 @@
-from helix_import_architecture import helix_import
-from substrate import pulse_heat
 # File Path: /src/core/entropy_fluctuation.py  
 # 🧬 GENETIC HELIX PAIR: entropy_fluctuation.py ↔ schema_decay_handler.py
 # COMPLEX: Entropy Management & Cognitive Decay Prevention
@@ -17,7 +15,7 @@ from enum import Enum
 
 # DAWN Core Imports
 from core.tick_emitter import current_tick, tick_subscribe
-from owl.owl_tracer_log import owl_log
+from reflection.owl.owl_tracer_log import owl_log
 
 # 🧬 GENETIC CROSSOVER IMPORTS - Helix Partners
 try:
@@ -32,6 +30,9 @@ try:
     SCUP_SYSTEM_AVAILABLE = True
 except ImportError:
     SCUP_SYSTEM_AVAILABLE = False
+
+from substrate.helix.helix_import_architecture import helix_import
+from substrate.pulse_heat import pulse_heat
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # 🧬 GENETIC BASE PAIR STRUCTURES - ENTROPY MANAGEMENT
@@ -249,7 +250,7 @@ class EntropyFluctuation:
         
         try:
             # Use pulse heat variation as cognitive entropy indicator
-            pulse_system = get_pulse_heat_system()
+            pulse_system = pulse_heat()
             if pulse_system and hasattr(pulse_system, 'get_heat_history'):
                 heat_history = pulse_system.get_heat_history()
                 if len(heat_history) > 10:
@@ -289,7 +290,7 @@ class EntropyFluctuation:
         """Measure thermal entropy coupling"""
         
         try:
-            pulse_system = get_pulse_heat_system()
+            pulse_system = pulse_heat()
             if pulse_system:
                 current_heat = pulse_system.get_current_heat()
                 average_heat = pulse_system.get_average_heat()

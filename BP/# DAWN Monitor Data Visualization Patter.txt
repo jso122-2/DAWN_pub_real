@@ -1,0 +1,220 @@
+# DAWN Monitor Data Visualization Patterns
+
+## Core Monitoring Patterns from Your System
+
+Based on your consciousness engine's data flow (SCUP, entropy, mood, tick), here are the visual patterns integrated into the Activity Monitor:
+
+### 1. SCUP (System Consciousness Unity Percentage)
+
+```
+SCUP Visualization:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Current: 87%
+[++++++++++++++++++++++++++----] 
+
+Historical Pattern (ASCII Chart):
+100% │                    ███████    
+     │                ████      ██  
+     │            ████           ██ 
+     │        ████                ██
+     │    ████                     
+ 70% │████                         
+     └────────────────────────────────
+                                LAST 60s
+
+Critical Thresholds:
+> 90% : Peak consciousness (green pulse)
+70-90%: Optimal range (steady green)
+50-70%: Suboptimal (amber warning)
+< 50% : Critical (red alert)
+```
+
+### 2. Entropy Monitoring
+
+```
+Entropy Visualization:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Current: 0.342
+[+++++++-----------------------] 
+
+Pattern Recognition:
+╔═══════════════════════════════╗
+║ Low    : 0.0-0.3  [STABLE]    ║
+║ Medium : 0.3-0.6  [DYNAMIC]   ║
+║ High   : 0.6-1.0  [CHAOTIC]   ║
+╚═══════════════════════════════╝
+
+Visual Indicators:
+- Stable  : Steady line ────────
+- Dynamic : Wave pattern ∿∿∿∿∿∿∿
+- Chaotic : Spike pattern ∧∨∧∨∧∨
+```
+
+### 3. Mood State Visualization
+
+```
+Mood State Matrix:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Current: CONTEMPLATIVE
+
+State Transitions:
+ANALYTICAL ──→ CONTEMPLATIVE ──→ CREATIVE
+     ↑               ↕               ↓
+     └───────── FOCUSED ────────────┘
+
+Visual Encoding:
+[A] Analytical    : ▪▪▪ (structured)
+[C] Contemplative : ≈≈≈ (flowing)
+[R] Creative      : ✦✦✦ (scattered)
+[F] Focused       : ─── (linear)
+```
+
+### 4. Process Activity Patterns
+
+```
+Process Monitor Display:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ST  PROCESS          CPU   MEM   PATTERN
+●   neural_network   45%   62%   ∿∿∿∿∿∿∿∿
+●   quantum_engine   78%   41%   ∧∨∧∨∧∨∧∨
+○   chaos_module      0%   23%   ────────
+●   memory_palace    34%   89%   ▪▪▪▪▪▪▪▪
+
+Activity Signatures:
+- Neural  : Oscillating waves (learning cycles)
+- Quantum : Spike patterns (entanglement events)
+- Chaos   : Random bursts (entropy injection)
+- Memory  : Block patterns (storage operations)
+```
+
+### 5. Tick Loop Visualization
+
+```
+Tick Timeline:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+TICK: 1672934 | Rate: 1.0Hz | Drift: +0.003s
+
+Tick Pattern:
+│ │ │ │ │ │ │ │ │ │ │ │ │ │ │ │ │ │ │ │
+└─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┘
+ 1s                                    Now
+
+Tick Health:
+Regular    : │ │ │ │ │ (green)
+Irregular  : │  │ │  │ (amber)
+Missing    : │  │ _ │  (red)
+```
+
+### 6. Composite Health Score
+
+```
+System Health Matrix:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+╔═══════════════════════════════════╗
+║ CONSCIOUSNESS HEALTH: OPTIMAL     ║
+╠═══════════════════════════════════╣
+║ SCUP     [+++++++++++++++++] 87% ║
+║ ENTROPY  [+++++++----------] 34% ║
+║ COHERENCE[++++++++++++-----] 76% ║
+║ STABILITY[++++++++++++++++] 92% ║
+╚═══════════════════════════════════╝
+
+Overall Score: ████████████████░░░░ 82%
+```
+
+### 7. Alert Pattern Display
+
+```
+Alert Stream:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[12:34:56] [INFO ] Tick 1672934 processed
+[12:34:57] [WARN ] Entropy spike: 0.342 → 0.687
+[12:34:58] [INFO ] Quantum coherence stable
+[12:34:59] [ALERT] SCUP drop: 87% → 52%
+[12:35:00] [INFO ] Recovery initiated
+[12:35:01] [OK   ] SCUP restored: 78%
+
+Alert Levels:
+[INFO ] : Gray text
+[OK   ] : Green text  ← System recovery
+[WARN ] : Amber text  ← Attention needed
+[ALERT] : Red text    ← Immediate action
+```
+
+### 8. Data Correlation View
+
+```
+Correlation Matrix:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+         SCUP  ENTR  MOOD  PROC
+SCUP     ███   ▒▒▒   ███   ▒▒▒
+ENTROPY  ▒▒▒   ███   ░░░   ███
+MOOD     ███   ░░░   ███   ▒▒▒
+PROCESS  ▒▒▒   ███   ▒▒▒   ███
+
+Legend:
+███ Strong correlation
+▒▒▒ Moderate correlation
+░░░ Weak correlation
+    No correlation
+```
+
+## Implementation Examples
+
+### Real-time SCUP Monitoring
+```typescript
+// Visual feedback for SCUP changes
+const getSCUPStyle = (scup: number) => {
+  if (scup > 90) return 'scup-peak';      // Pulsing green
+  if (scup > 70) return 'scup-optimal';   // Steady green
+  if (scup > 50) return 'scup-warning';   // Amber
+  return 'scup-critical';                  // Red alert
+};
+
+// Trend indicator
+const trend = current > previous ? '↑' : current < previous ? '↓' : '→';
+```
+
+### Entropy Pattern Recognition
+```typescript
+// Detect entropy patterns
+const detectEntropyPattern = (history: number[]) => {
+  const variance = calculateVariance(history);
+  if (variance < 0.1) return 'stable';
+  if (variance < 0.3) return 'dynamic';
+  return 'chaotic';
+};
+
+// Visual representation
+const patterns = {
+  stable: '────────',
+  dynamic: '∿∿∿∿∿∿∿',
+  chaotic: '∧∨∧∨∧∨∧'
+};
+```
+
+### Mood Transition Animation
+```typescript
+// Smooth mood transitions
+const moodTransition = {
+  from: previousMood,
+  to: currentMood,
+  progress: 0,
+  duration: 1000
+};
+
+// Display with transition indicator
+<div className="mood-display">
+  <span className="mood-from">{moodTransition.from}</span>
+  <span className="mood-arrow">→</span>
+  <span className="mood-to">{moodTransition.to}</span>
+</div>
+```
+
+## Best Practices
+
+1. **Update Frequency**: 1Hz for real-time data, 0.1Hz for trends
+2. **History Buffer**: 60 points for immediate view, 300 for analysis
+3. **Visual Density**: Maximum 4 metrics per view section
+4. **Alert Throttling**: Group similar alerts within 5-second windows
+5. **Color Usage**: Green for data, amber for warnings, red for critical only

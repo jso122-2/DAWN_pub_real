@@ -9,24 +9,43 @@ export interface TickData {
 
 class WebSocketService {
   private ws: WebSocket | null = null;
-  private url = 'ws://localhost:8001/ws';
+  private baseUrl = 'ws://localhost:8000';
+  private endpoints = {
+    main: '/ws',
+    talk: '/ws/talk',
+    tick: '/ws/tick'
+  };
+  private currentEndpoint: keyof typeof this.endpoints = 'main';
   private callbacks: Set<(data: TickData) => void> = new Set();
   private reconnectTimeout: number | null = null;
   private reconnectAttempts = 0;
   private maxReconnectAttempts = 10;
+  private isConnecting = false;
   
   // Tick rate calculation
   private lastTickTime: number | null = null;
   private tickRate: number = 0;
   private tickCount: number = 0;
   
-  connect() {
-    console.log('🔌 Connecting to DAWN WebSocket server on ws://localhost:8001/ws...');
+  constructor() {
+    // Try to connect to all endpoints in sequence
+    this.connectToEndpoint('main');
+  }
+  
+  private connectToEndpoint(endpoint: keyof typeof this.endpoints) {
+    if (this.isConnecting) return;
+    
+    this.isConnecting = true;
+    this.currentEndpoint = endpoint;
+    const url = `${this.baseUrl}${this.endpoints[endpoint]}`;
+    
+    console.log(`🔌 Connecting to DAWN WebSocket server on ${url}...`);
     try {
-      this.ws = new WebSocket(this.url);
+      this.ws = new WebSocket(url);
       
       this.ws.onopen = () => {
-        console.log('✅ Connected to DAWN consciousness engine on ws://localhost:8001/ws!');
+        console.log(`✅ Connected to DAWN consciousness engine on ${url}!`);
+        this.isConnecting = false;
         this.reconnectAttempts = 0;
         if (this.reconnectTimeout) {
           clearTimeout(this.reconnectTimeout);
@@ -56,7 +75,7 @@ class WebSocketService {
             // Server message format
             const rawData = message.data;
             tickData = {
-              scup: rawData.scup ? rawData.scup / 100 : rawData.scup || 0.5, // Convert from 0-100 to 0-1 if needed
+              scup: rawData.scup ? rawData.scup / 100 : rawData.scup || 0.5,
               entropy: rawData.entropy || 0.5,
               heat: rawData.systemLoad || rawData.heat || 0.5,
               mood: this.mapMood(rawData.mood),
@@ -97,14 +116,18 @@ class WebSocketService {
       
       this.ws.onerror = (error) => {
         console.error('WebSocket error:', error);
+        this.isConnecting = false;
+        this.scheduleReconnect();
       };
       
       this.ws.onclose = () => {
-        console.log('WebSocket disconnected from ws://localhost:8001/ws');
+        console.log(`WebSocket disconnected from ${url}`);
+        this.isConnecting = false;
         this.scheduleReconnect();
       };
     } catch (error) {
       console.error('Failed to connect:', error);
+      this.isConnecting = false;
       this.scheduleReconnect();
     }
   }
@@ -140,7 +163,12 @@ class WebSocketService {
       this.reconnectTimeout = window.setTimeout(() => {
         console.log(`Attempting to reconnect... (${this.reconnectAttempts + 1}/${this.maxReconnectAttempts})`);
         this.reconnectAttempts++;
-        this.connect();
+        
+        // Try next endpoint in sequence
+        const endpoints = Object.keys(this.endpoints) as Array<keyof typeof this.endpoints>;
+        const currentIndex = endpoints.indexOf(this.currentEndpoint);
+        const nextEndpoint = endpoints[(currentIndex + 1) % endpoints.length];
+        this.connectToEndpoint(nextEndpoint);
       }, delay);
     }
   }
@@ -160,6 +188,7 @@ class WebSocketService {
       this.reconnectTimeout = null;
     }
     this.reconnectAttempts = 0;
+    this.isConnecting = false;
   }
   
   isConnected(): boolean {
@@ -167,6 +196,7 @@ class WebSocketService {
   }
   
   getConnectionState(): 'connecting' | 'connected' | 'disconnected' | 'error' {
+    if (this.isConnecting) return 'connecting';
     if (!this.ws) return 'disconnected';
     
     switch (this.ws.readyState) {

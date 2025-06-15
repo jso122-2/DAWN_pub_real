@@ -1,0 +1,54 @@
+{
+  "moduleTypes": {
+    "neural-processor": {
+      "id": "neural-processor",
+      "name": "Neural Processor",
+      "category": "neural",
+      "description": "Processes consciousness patterns",
+      "defaultSize": { "width": 400, "height": 300 },
+      "connections": {
+        "inputs": ["data", "consciousness"],
+        "outputs": ["processed", "thoughts"]
+      },
+      "behavior": {
+        "breathingIntensity": 0.7,
+        "glowPattern": "pulse",
+        "floatingEnabled": true
+      },
+      "component": "NeuralProcessor"
+    },
+    "quantum-core": {
+      "id": "quantum-core",
+      "name": "Quantum Core",
+      "category": "quantum",
+      "description": "Quantum state computation",
+      "defaultSize": { "width": 350, "height": 350 },
+      "connections": {
+        "inputs": ["quantum-data"],
+        "outputs": ["entangled-state", "probability"]
+      },
+      "behavior": {
+        "breathingIntensity": 0.9,
+        "glowPattern": "wave",
+        "quantumFluctuation": true
+      },
+      "component": "QuantumCore"
+    },
+    "system-monitor": {
+      "id": "system-monitor",
+      "name": "System Monitor",
+      "category": "monitoring",
+      "description": "Monitors system consciousness",
+      "defaultSize": { "width": 500, "height": 250 },
+      "connections": {
+        "inputs": ["system-state"],
+        "outputs": ["alerts", "metrics"]
+      },
+      "behavior": {
+        "breathingIntensity": 0.3,
+        "updateInterval": 1000
+      },
+      "component": "SystemMonitor"
+    }
+  }
+} 
