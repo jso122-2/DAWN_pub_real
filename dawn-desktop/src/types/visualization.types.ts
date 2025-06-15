@@ -31,7 +31,7 @@ export interface ParticleSystem {
   particles: Particle[];
   centerMass: Vector3;
   entropy: number;
-  coherence: number;
+  unity: number;
 }
 
 export interface Particle {

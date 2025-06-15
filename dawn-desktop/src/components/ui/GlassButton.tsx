@@ -1,7 +1,7 @@
 import { cn } from '../../lib/utils'
 
 interface GlassButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'base' | 'quantum' | 'neural' | 'alert'
+  variant?: 'base' | 'consciousness' | 'neural' | 'alert'
   size?: 'sm' | 'md' | 'lg'
 }
 
@@ -23,7 +23,7 @@ export function GlassButton({
       className={cn(
         'glass-base rounded-lg font-medium transition-all',
         'hover:scale-105 active:scale-95',
-        variant === 'quantum' && 'glass-quantum text-quantum-300',
+        variant === 'consciousness' && 'glass-consciousness text-consciousness-300',
         variant === 'neural' && 'glass-neural text-neural-300',
         variant === 'alert' && 'glass-critical text-alert-300',
         sizeClasses[size],

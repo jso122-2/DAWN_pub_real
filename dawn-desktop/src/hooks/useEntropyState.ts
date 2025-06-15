@@ -33,7 +33,7 @@ export const useEntropyState = () => {
         },
         {
           pid: 5678,
-          name: 'Quantum Engine',
+          name: 'Consciousness Engine',
           status: Math.random() > 0.5 ? 'processing' : 'active',
           cpu: Math.random() * 100,
           memory: Math.random() * 2048,

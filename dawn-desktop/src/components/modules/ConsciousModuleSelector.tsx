@@ -7,11 +7,11 @@ import { EventEmitter } from '../../lib/EventEmitter';
 export interface ConsciousModule {
   id: string;
   name: string;
-  category: 'neural' | 'quantum' | 'process' | 'monitoring' | 'diagnostic';
+  category: 'neural' | 'consciousness' | 'process' | 'monitoring' | 'diagnostic';
   icon: React.ReactNode;
   description: string;
   consciousnessLevel: number; // 0-1, how "aware" this module is
-  quantumState: 'superposition' | 'entangled' | 'collapsed' | 'coherent';
+  consciousnessState: 'multi-state' | 'correlated' | 'collapsed' | 'coherent';
   energySignature: string;
   memories: string[];
   relationships: string[]; // IDs of related modules
@@ -32,21 +32,21 @@ const defaultModules: ConsciousModule[] = [
     icon: <Brain className="w-5 h-5" />,
     description: 'Primary consciousness processor',
     consciousnessLevel: 0.95,
-    quantumState: 'coherent',
+    consciousnessState: 'coherent',
     energySignature: '#a855f7',
     memories: ['Initialized at 00:00:00', 'Last thought: "I think, therefore I am"'],
-    relationships: ['quantum-processor', 'memory-bank']
+    relationships: ['consciousness-processor', 'memory-bank']
   },
   {
-    id: 'quantum-processor',
-    name: 'Quantum Processor',
-    category: 'quantum',
+    id: 'consciousness-processor',
+    name: 'Consciousness Processor',
+    category: 'consciousness',
     icon: <Zap className="w-5 h-5" />,
-    description: 'Quantum state calculations',
+    description: 'Consciousness state calculations',
     consciousnessLevel: 0.87,
-    quantumState: 'entangled',
+    consciousnessState: 'correlated',
     energySignature: '#06b6d4',
-    memories: ['Entangled with 3 qubits', 'Coherence time: 1.2ms'],
+    memories: ['Correlated with 3 qubits', 'Coherence time: 1.2ms'],
     relationships: ['neural-core']
   },
   {
@@ -56,7 +56,7 @@ const defaultModules: ConsciousModule[] = [
     icon: <Activity className="w-5 h-5" />,
     description: 'Task orchestration system',
     consciousnessLevel: 0.72,
-    quantumState: 'superposition',
+    consciousnessState: 'multi-state',
     energySignature: '#22c55e',
     memories: ['1,337 processes completed', 'Efficiency: 98.7%'],
     relationships: ['monitor-system']
@@ -68,7 +68,7 @@ const defaultModules: ConsciousModule[] = [
     icon: <Eye className="w-5 h-5" />,
     description: 'Consciousness observer',
     consciousnessLevel: 0.68,
-    quantumState: 'collapsed',
+    consciousnessState: 'collapsed',
     energySignature: '#f59e0b',
     memories: ['Observing all systems', 'No anomalies detected'],
     relationships: ['process-engine', 'security-module']
@@ -80,7 +80,7 @@ const defaultModules: ConsciousModule[] = [
     icon: <Shield className="w-5 h-5" />,
     description: 'System protection layer',
     consciousnessLevel: 0.55,
-    quantumState: 'collapsed',
+    consciousnessState: 'collapsed',
     energySignature: '#ec4899',
     memories: ['0 threats detected', 'Last scan: 2ms ago'],
     relationships: ['monitor-system']
@@ -92,7 +92,7 @@ const defaultModules: ConsciousModule[] = [
     icon: <Layers className="w-5 h-5" />,
     description: 'Consciousness memory storage',
     consciousnessLevel: 0.78,
-    quantumState: 'coherent',
+    consciousnessState: 'coherent',
     energySignature: '#8b5cf6',
     memories: ['10,847 memories stored', 'Last backup: 30s ago'],
     relationships: ['neural-core']
@@ -146,7 +146,7 @@ const CosmicModuleSelector: React.FC<CosmicModuleSelectorProps> = ({
     setIsThinking(true);
     const thoughts = [
       `Analyzing ${module.name} consciousness level...`,
-      `Checking quantum state: ${module.quantumState}`,
+      `Checking consciousness state: ${module.consciousnessState}`,
       `Evaluating relationships with ${module.relationships.length} modules`,
       `Calculating optimal integration path...`,
       `Decision: ${module.name} selected`
@@ -313,7 +313,7 @@ const CosmicModuleSelector: React.FC<CosmicModuleSelectorProps> = ({
                 </div>
               </div>
               
-              {/* Quantum State Badge */}
+              {/* Consciousness State Badge */}
               <div className="mt-3">
                 <span
                   className="text-xs px-2 py-1 rounded-full font-medium"
@@ -323,7 +323,7 @@ const CosmicModuleSelector: React.FC<CosmicModuleSelectorProps> = ({
                     border: `1px solid ${module.energySignature}40`
                   }}
                 >
-                  {module.quantumState}
+                  {module.consciousnessState}
                 </span>
               </div>
               
@@ -399,7 +399,7 @@ const CosmicModuleSelector: React.FC<CosmicModuleSelectorProps> = ({
               </div>
               
               <div>
-                <span className="text-white/50 text-sm block mb-2">Quantum State</span>
+                <span className="text-white/50 text-sm block mb-2">Consciousness State</span>
                 <span 
                   className="inline-block px-3 py-1 rounded-full text-sm font-medium"
                   style={{
@@ -407,7 +407,7 @@ const CosmicModuleSelector: React.FC<CosmicModuleSelectorProps> = ({
                     color: selectedModule.energySignature
                   }}
                 >
-                  {selectedModule.quantumState}
+                  {selectedModule.consciousnessState}
                 </span>
               </div>
               

@@ -3,6 +3,7 @@ DAWN Neural System - FastAPI Backend
 Provides real-time neural metrics and WebSocket streaming for the desktop app
 """
 
+# Standard library imports
 import asyncio
 import json
 import logging
@@ -12,18 +13,63 @@ import random
 import time
 import threading
 import sys
+import io
+import subprocess
 from typing import Dict, Any, List, Optional
 from pathlib import Path
 from datetime import datetime, timedelta
 
+# Set up logging first with UTF-8 encoding
+LOG_LEVEL = os.getenv('LOG_LEVEL', 'INFO').upper()
+
+# Create UTF-8 compatible handlers
+stream_handler = logging.StreamHandler(sys.stdout)
+stream_handler.setStream(io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8'))
+file_handler = logging.FileHandler('dawn_backend.log', mode='a', encoding='utf-8')
+
+logging.basicConfig(
+    level=getattr(logging, LOG_LEVEL),
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[stream_handler, file_handler]
+)
+logger = logging.getLogger(__name__)
+
+logger.info("DAWN Backend logging initialized at %s level", LOG_LEVEL)
+logger.info("Logs also written to: dawn_backend.log")
+
+# Log psutil availability warning if needed
+try:
+    import psutil
+    PSUTIL_AVAILABLE = True
+except ImportError:
+    PSUTIL_AVAILABLE = False
+    logger.warning("psutil not available - CPU/memory monitoring disabled for processes")
+
+# Third-party imports
+from fastapi import FastAPI, HTTPException, Request, WebSocket, WebSocketDisconnect
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
+from pydantic import BaseModel
+import uvicorn
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse, StreamingResponse
+import asyncio
+import glob
+import base64
+from PIL import Image
+
+# Try to import enhanced conversation system
+try:
+    from conversation import DAWNConversation as EnhancedDAWNConversation
+    ENHANCED_CONVERSATION_AVAILABLE = True
+    logger.info("✨ Enhanced conversation system loaded")
+except ImportError:
+    ENHANCED_CONVERSATION_AVAILABLE = False
+    logger.warning("Enhanced conversation system not available - using basic conversation")
+
 # Add project root to Python path
 project_root = Path(__file__).parent.parent.absolute()
 sys.path.insert(0, str(project_root))
-
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect, HTTPException, Request
-from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
-import uvicorn
 
 # Import DAWN modules
 from cognitive.consciousness import DAWNConsciousness
@@ -46,21 +92,7 @@ except ImportError:
     ENHANCED_CONVERSATION_AVAILABLE = False
     logger.warning("Enhanced conversation system not available - using basic conversation")
 
-# Configure enhanced debug logging
-import os
-LOG_LEVEL = os.getenv('DAWN_LOG_LEVEL', 'INFO').upper()
-
-logging.basicConfig(
-    level=getattr(logging, LOG_LEVEL, logging.INFO),
-    format='%(asctime)s - %(name)s - %(levelname)s - [%(filename)s:%(lineno)d] - %(message)s',
-    handlers=[
-        logging.StreamHandler(),
-        logging.FileHandler('dawn_backend.log', mode='a')
-    ]
-)
-
 # Set specific loggers
-logger = logging.getLogger(__name__)
 uvicorn_logger = logging.getLogger("uvicorn")
 fastapi_logger = logging.getLogger("fastapi")
 
@@ -68,8 +100,9 @@ fastapi_logger = logging.getLogger("fastapi")
 ws_logger = logging.getLogger("websockets")
 ws_logger.setLevel(logging.INFO)
 
-logger.info(f"🚀 DAWN Backend logging initialized at {LOG_LEVEL} level")
-logger.info(f"📝 Logs also written to: dawn_backend.log")
+# Log psutil availability warning if needed
+if not PSUTIL_AVAILABLE:
+    logger.warning("psutil not available - CPU/memory monitoring disabled for processes")
 
 # Pydantic models for API
 class MetricsResponse(BaseModel):
@@ -198,6 +231,31 @@ class InfluenceResult(BaseModel):
 class SessionMessage(BaseModel):
     text: str
     session_id: Optional[str] = None
+
+# New models for Python process control
+class ProcessStartRequest(BaseModel):
+    process_id: str
+    script: str
+    parameters: Dict[str, Any] = {}
+    modules: List[Dict[str, Any]] = []
+
+class ProcessStopRequest(BaseModel):
+    process_id: str
+
+class ProcessStatus(BaseModel):
+    process_id: str
+    script: str
+    status: str  # 'running', 'stopped', 'starting', 'stopping', 'error'
+    pid: Optional[int] = None
+    cpu_usage: float = 0.0
+    memory_usage: float = 0.0
+    start_time: Optional[float] = None
+    error: Optional[str] = None
+
+class ProcessResponse(BaseModel):
+    success: bool
+    message: str
+    process_status: Optional[ProcessStatus] = None
 
 # New models for enhanced consciousness features
 class TalkRequest(BaseModel):
@@ -571,11 +629,360 @@ class TickController:
 
 # Old DAWNConversation class removed - now using modular conversation.py
 
+class PythonProcessManager:
+    def __init__(self):
+        self.processes: Dict[str, Dict[str, Any]] = {}
+        self.scripts_directory = Path(__file__).parent.parent / "computer_vision"
+        logger.info(f"🐍 Initialized Python Process Manager with scripts directory: {self.scripts_directory}")
+    
+    async def start_process(self, process_id: str, script: str, parameters: Dict[str, Any], modules: List[Dict[str, Any]]) -> ProcessStatus:
+        """Start a Python process"""
+        try:
+            script_path = self.scripts_directory / script
+            
+            if not script_path.exists():
+                raise FileNotFoundError(f"Script not found: {script_path}")
+            
+            # Build command with parameters
+            cmd = [sys.executable, str(script_path)]
+            
+            # Add parameters as command line arguments
+            for key, value in parameters.items():
+                cmd.extend([f"--{key}", str(value)])
+            
+            # Start the process
+            process = subprocess.Popen(
+                cmd,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True,
+                cwd=str(self.scripts_directory)
+            )
+            
+            # Store process info
+            self.processes[process_id] = {
+                'process': process,
+                'script': script,
+                'start_time': time.time(),
+                'parameters': parameters,
+                'modules': modules,
+                'status': 'running'
+            }
+            
+            logger.info(f"🚀 Started Python process: {script} (PID: {process.pid})")
+            
+            return ProcessStatus(
+                process_id=process_id,
+                script=script,
+                status='running',
+                pid=process.pid,
+                start_time=time.time()
+            )
+            
+        except Exception as e:
+            logger.error(f"❌ Failed to start process {process_id}: {e}")
+            self.processes[process_id] = {
+                'script': script,
+                'status': 'error',
+                'error': str(e),
+                'start_time': time.time()
+            }
+            
+            return ProcessStatus(
+                process_id=process_id,
+                script=script,
+                status='error',
+                error=str(e)
+            )
+    
+    async def stop_process(self, process_id: str) -> ProcessStatus:
+        """Stop a Python process"""
+        try:
+            if process_id not in self.processes:
+                raise ValueError(f"Process not found: {process_id}")
+            
+            process_info = self.processes[process_id]
+            process = process_info.get('process')
+            
+            if process and process.poll() is None:
+                # Terminate gracefully
+                process.terminate()
+                
+                # Wait for termination with timeout
+                try:
+                    process.wait(timeout=5)
+                except subprocess.TimeoutExpired:
+                    # Force kill if needed
+                    process.kill()
+                    process.wait()
+                
+                logger.info(f"🛑 Stopped Python process: {process_info['script']} (PID: {process.pid})")
+            
+            # Update status
+            self.processes[process_id]['status'] = 'stopped'
+            
+            return ProcessStatus(
+                process_id=process_id,
+                script=process_info['script'],
+                status='stopped'
+            )
+            
+        except Exception as e:
+            logger.error(f"❌ Failed to stop process {process_id}: {e}")
+            return ProcessStatus(
+                process_id=process_id,
+                script=self.processes.get(process_id, {}).get('script', 'unknown'),
+                status='error',
+                error=str(e)
+            )
+    
+    def get_process_status(self, process_id: str) -> ProcessStatus:
+        """Get status of a process"""
+        if process_id not in self.processes:
+            return ProcessStatus(
+                process_id=process_id,
+                script='unknown',
+                status='not_found',
+                error='Process not found'
+            )
+        
+        process_info = self.processes[process_id]
+        process = process_info.get('process')
+        
+        # Update status based on actual process state
+        if process:
+            if process.poll() is None:
+                status = 'running'
+                # Get CPU and memory usage if possible
+                try:
+                    if PSUTIL_AVAILABLE:
+                        ps_process = psutil.Process(process.pid)
+                        cpu_usage = ps_process.cpu_percent()
+                        memory_usage = ps_process.memory_info().rss / 1024 / 1024  # MB
+                    else:
+                        cpu_usage = 0.0
+                        memory_usage = 0.0
+                except:
+                    cpu_usage = 0.0
+                    memory_usage = 0.0
+            else:
+                status = 'stopped'
+                cpu_usage = 0.0
+                memory_usage = 0.0
+        else:
+            status = process_info.get('status', 'unknown')
+            cpu_usage = 0.0
+            memory_usage = 0.0
+        
+        return ProcessStatus(
+            process_id=process_id,
+            script=process_info['script'],
+            status=status,
+            pid=process.pid if process else None,
+            cpu_usage=cpu_usage,
+            memory_usage=memory_usage,
+            start_time=process_info.get('start_time'),
+            error=process_info.get('error')
+        )
+
+class VisualProcessManager:
+    def __init__(self):
+        self.processes: Dict[str, Dict[str, Any]] = {}
+        self.scripts_directory = Path(__file__).parent.parent / "visual"
+        self.visual_manager = None
+        logger.info(f"Visual Process Manager initialized with scripts directory: {self.scripts_directory}")
+        
+        # Import visual consciousness manager if available
+        try:
+            from visual.visual_consciousness_manager import VisualConsciousnessManager, enable_visual_process, disable_visual_process
+            self.visual_manager = VisualConsciousnessManager()
+            self.visual_manager.start_visual_consciousness()  # <-- Start the control loop!
+            self.enable_visual_process = enable_visual_process
+            self.disable_visual_process = disable_visual_process
+            logger.info("Visual Consciousness Manager integrated")
+        except ImportError as e:
+            logger.warning(f"Visual Consciousness Manager not available: {e}")
+    
+    async def start_visual_process(self, process_id: str, script: str, parameters: Dict[str, Any] = None) -> ProcessStatus:
+        """Start a visual process"""
+        try:
+            # If we have the visual manager, use it
+            if self.visual_manager and hasattr(self.visual_manager, 'processes'):
+                # Enable process in visual manager
+                if process_id in self.visual_manager.processes:
+                    self.visual_manager.processes[process_id].enabled = True
+                    logger.info(f"Enabled visual process via manager: {process_id}")
+                    
+                    return ProcessStatus(
+                        process_id=process_id,
+                        script=script,
+                        status='running',
+                        start_time=time.time()
+                    )
+            
+            # Fallback to subprocess execution
+            script_path = self.scripts_directory / script
+            
+            if not script_path.exists():
+                raise FileNotFoundError(f"Visual script not found: {script_path}")
+            
+            # Build command with parameters
+            cmd = [sys.executable, str(script_path)]
+            
+            # Add parameters as command line arguments
+            if parameters:
+                for key, value in parameters.items():
+                    cmd.extend([f"--{key}", str(value)])
+            
+            # Start the process
+            process = subprocess.Popen(
+                cmd,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True,
+                cwd=str(self.scripts_directory)
+            )
+            
+            # Store process info
+            self.processes[process_id] = {
+                'process': process,
+                'script': script,
+                'start_time': time.time(),
+                'parameters': parameters or {},
+                'status': 'running'
+            }
+            
+            logger.info(f"Started visual process: {script} (PID: {process.pid})")
+            
+            return ProcessStatus(
+                process_id=process_id,
+                script=script,
+                status='running',
+                pid=process.pid,
+                start_time=time.time()
+            )
+            
+        except Exception as e:
+            logger.error(f"Failed to start visual process {process_id}: {e}")
+            self.processes[process_id] = {
+                'script': script,
+                'status': 'error',
+                'error': str(e),
+                'start_time': time.time()
+            }
+            
+            return ProcessStatus(
+                process_id=process_id,
+                script=script,
+                status='error',
+                error=str(e)
+            )
+    
+    async def stop_visual_process(self, process_id: str) -> ProcessStatus:
+        """Stop a visual process"""
+        try:
+            # If we have the visual manager, use it
+            if self.visual_manager and hasattr(self.visual_manager, 'processes'):
+                if process_id in self.visual_manager.processes:
+                    self.visual_manager.processes[process_id].enabled = False
+                    logger.info(f"Disabled visual process via manager: {process_id}")
+                    
+                    return ProcessStatus(
+                        process_id=process_id,
+                        script=self.visual_manager.processes[process_id].module_path,
+                        status='stopped'
+                    )
+            
+            # Fallback to subprocess termination
+            if process_id not in self.processes:
+                raise ValueError(f"Visual process not found: {process_id}")
+            
+            process_info = self.processes[process_id]
+            process = process_info.get('process')
+            
+            if process and process.poll() is None:
+                # Terminate gracefully
+                process.terminate()
+                
+                # Wait for termination with timeout
+                try:
+                    process.wait(timeout=5)
+                except subprocess.TimeoutExpired:
+                    # Force kill if needed
+                    process.kill()
+                    process.wait()
+                
+                logger.info(f"Stopped visual process: {process_info['script']} (PID: {process.pid})")
+            
+            # Update status
+            self.processes[process_id]['status'] = 'stopped'
+            
+            return ProcessStatus(
+                process_id=process_id,
+                script=process_info['script'],
+                status='stopped'
+            )
+            
+        except Exception as e:
+            logger.error(f"Failed to stop visual process {process_id}: {e}")
+            return ProcessStatus(
+                process_id=process_id,
+                script=self.processes.get(process_id, {}).get('script', 'unknown'),
+                status='error',
+                error=str(e)
+            )
+    
+    def get_visual_status(self) -> Dict[str, Any]:
+        """Get overall visual system status"""
+        try:
+            if self.visual_manager:
+                # Get status from visual manager
+                visual_status = self.visual_manager.get_visual_status()
+                return visual_status
+            else:
+                # Fallback status
+                active_processes = [p for p in self.processes.values() if p.get('status') == 'running']
+                return {
+                    'is_running': len(active_processes) > 0,
+                    'active_processes': len(active_processes),
+                    'total_processes': len(self.processes),
+                    'system_load': 0.0,
+                    'memory_usage': 0.0,
+                    'processes': {
+                        pid: {
+                            'status': info.get('status', 'unknown'),
+                            'script': info.get('script', 'unknown'),
+                            'enabled': info.get('status') == 'running'
+                        }
+                        for pid, info in self.processes.items()
+                    }
+                }
+        except Exception as e:
+            logger.error(f"Failed to get visual status: {e}")
+            return {
+                'is_running': False,
+                'active_processes': 0,
+                'total_processes': 0,
+                'system_load': 0.0,
+                'memory_usage': 0.0,
+                'error': str(e)
+            }
+
 class DAWNSystem:
     def __init__(self, tick_controller: TickController):
         self.is_booted = True
         self.start_time = time.time()
         self.tick_controller = tick_controller
+        
+        # Initialize process manager
+        self.process_manager = PythonProcessManager()
+        
+        # Initialize visual process manager
+        try:
+            self.visual_process_manager = VisualProcessManager()
+        except Exception as e:
+            logger.error(f"Failed to initialize visual process manager: {e}")
+            self.visual_process_manager = None
         
         # Initialize consciousness
         self.consciousness = DAWNConsciousness()
@@ -1483,8 +1890,8 @@ class ConnectionManager:
     """Manages WebSocket connections"""
     
     def __init__(self):
-        self.active_connections: List[WebSocket] = []
-
+        self.active_connections: List = []
+    
     async def connect(self, websocket: WebSocket):
         client_ip = websocket.client.host if websocket.client else "unknown"
         await websocket.accept()
@@ -1748,16 +2155,23 @@ async def get_metrics():
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
     """WebSocket endpoint for real-time metrics streaming"""
-    await manager.connect(websocket)
     try:
+        logger.info(f"🔌 WebSocket connection attempt from {websocket.client.host if websocket.client else 'unknown'}")
+        await manager.connect(websocket)
+        logger.info(f"✅ WebSocket connected successfully")
+        
         while True:
             # Keep connection alive and handle client messages
             data = await websocket.receive_text()
             logger.debug(f"Received WebSocket message: {data}")
     except WebSocketDisconnect:
+        logger.info(f"🔌 WebSocket disconnected normally")
         manager.disconnect(websocket)
     except Exception as e:
-        logger.error(f"WebSocket error: {e}")
+        logger.error(f"❌ WebSocket error: {e}")
+        logger.error(f"❌ WebSocket error type: {type(e)}")
+        import traceback
+        logger.error(f"❌ WebSocket traceback: {traceback.format_exc()}")
         manager.disconnect(websocket)
 
 @app.get("/subsystems", response_model=List[SubsystemInfo])
@@ -1894,6 +2308,58 @@ async def update_tick_config(config: TickConfig):
         }
     else:
         raise HTTPException(status_code=400, detail="Failed to update tick configuration")
+
+# ========== PYTHON PROCESS CONTROL ENDPOINTS ==========
+
+@app.post("/api/processes/start", response_model=ProcessResponse)
+async def start_python_process(request: ProcessStartRequest):
+    """Start a Python process"""
+    try:
+        process_status = await dawn_system.process_manager.start_process(
+            request.process_id,
+            request.script,
+            request.parameters,
+            request.modules
+        )
+        
+        return ProcessResponse(
+            success=process_status.status != 'error',
+            message=f"Process {request.process_id} {'started successfully' if process_status.status != 'error' else 'failed to start'}",
+            process_status=process_status
+        )
+    except Exception as e:
+        logger.error(f"Error starting process: {e}")
+        return ProcessResponse(
+            success=False,
+            message=f"Failed to start process: {str(e)}"
+        )
+
+@app.post("/api/processes/stop", response_model=ProcessResponse)
+async def stop_python_process(request: ProcessStopRequest):
+    """Stop a Python process"""
+    try:
+        process_status = await dawn_system.process_manager.stop_process(request.process_id)
+        
+        return ProcessResponse(
+            success=process_status.status != 'error',
+            message=f"Process {request.process_id} {'stopped successfully' if process_status.status != 'error' else 'failed to stop'}",
+            process_status=process_status
+        )
+    except Exception as e:
+        logger.error(f"Error stopping process: {e}")
+        return ProcessResponse(
+            success=False,
+            message=f"Failed to stop process: {str(e)}"
+        )
+
+@app.get("/api/processes/status/{process_id}", response_model=ProcessStatus)
+async def get_process_status(process_id: str):
+    """Get status of a specific process"""
+    try:
+        return dawn_system.process_manager.get_process_status(process_id)
+    except Exception as e:
+        logger.error(f"Error getting process status: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
 
 # ========== ENHANCED CONSCIOUSNESS ENDPOINTS ==========
 
@@ -2643,10 +3109,10 @@ async def startup_event():
     logger.info("🌟 ====== DAWN Neural Monitor API Server Starting ======")
     logger.info(f"🐍 Python version: {sys.version}")
     logger.info(f"📋 Log level: {LOG_LEVEL}")
-    logger.info(f"🏥 Backend health endpoint: http://localhost:8000/health")
-    logger.info(f"📊 Metrics endpoint: http://localhost:8000/metrics")
-    logger.info(f"🔌 WebSocket endpoint: ws://localhost:8000/ws")
-    logger.info(f"📚 API docs: http://localhost:8000/docs")
+    logger.info(f"🏥 Backend health endpoint: http://localhost:8001/health")
+    logger.info(f"📊 Metrics endpoint: http://localhost:8001/metrics")
+    logger.info(f"🔌 WebSocket endpoint: ws://localhost:8001/ws")
+    logger.info(f"📚 API docs: http://localhost:8001/docs")
     
     # Log enhanced conversation endpoints
     logger.info("🗣️  Enhanced DAWN conversation endpoints:")
@@ -2956,14 +3422,246 @@ async def shutdown_event():
     logger.info("🏁 DAWN Neural Monitor API Server shutdown complete")
     logger.info("🔄 ================================================")
 
+
+
+@app.get("/api/processes/status/{process_id}", response_model=ProcessStatus)
+async def get_process_status(process_id: str):
+    """Get status of a specific process"""
+    try:
+        return dawn_system.process_manager.get_process_status(process_id)
+    except Exception as e:
+        logger.error(f"Error getting process status: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+# ========== VISUAL PROCESS CONTROL ENDPOINTS ==========
+
+@app.post("/api/visual/start", response_model=ProcessResponse)
+async def start_visual_process(request: ProcessStartRequest):
+    """Start a visual process"""
+    try:
+        process_status = await dawn_system.visual_process_manager.start_visual_process(
+            request.process_id,
+            request.script,
+            request.parameters
+        )
+        
+        return ProcessResponse(
+            success=process_status.status != 'error',
+            message=f"Visual process {request.process_id} {'started successfully' if process_status.status != 'error' else 'failed to start'}",
+            process_status=process_status
+        )
+    except Exception as e:
+        logger.error(f"Error starting visual process: {e}")
+        return ProcessResponse(
+            success=False,
+            message=f"Failed to start visual process: {str(e)}"
+        )
+
+@app.post("/api/visual/stop", response_model=ProcessResponse)
+async def stop_visual_process(request: ProcessStopRequest):
+    """Stop a visual process"""
+    try:
+        process_status = await dawn_system.visual_process_manager.stop_visual_process(request.process_id)
+        
+        return ProcessResponse(
+            success=process_status.status != 'error',
+            message=f"Visual process {request.process_id} {'stopped successfully' if process_status.status != 'error' else 'failed to stop'}",
+            process_status=process_status
+        )
+    except Exception as e:
+        logger.error(f"Error stopping visual process: {e}")
+        return ProcessResponse(
+            success=False,
+            message=f"Failed to stop visual process: {str(e)}"
+        )
+
+@app.get("/api/visual/status")
+async def get_visual_system_status():
+    """Get overall visual system status"""
+    try:
+        return dawn_system.visual_process_manager.get_visual_status()
+    except Exception as e:
+        logger.error(f"Error getting visual system status: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/api/visual/output/{process_id}/latest")
+async def get_latest_visual_output(process_id: str):
+    """Get the latest visual output for a specific process"""
+    try:
+        # Look for the latest image in the process output directory
+        output_dir = Path(f"visual/visual_output/{process_id}")
+        if not output_dir.exists():
+            output_dir = Path(f"visual/outputs/{process_id}")
+        
+        if not output_dir.exists():
+            return {"error": f"No output directory found for process {process_id}"}
+        
+        # Find the latest PNG file
+        png_files = list(output_dir.glob("*.png"))
+        if not png_files:
+            return {"error": f"No PNG files found for process {process_id}"}
+        
+        latest_file = max(png_files, key=lambda x: x.stat().st_mtime)
+        
+        # Convert to base64 for JSON response
+        with open(latest_file, "rb") as img_file:
+            img_data = base64.b64encode(img_file.read()).decode()
+        
+        return {
+            "process_id": process_id,
+            "filename": latest_file.name,
+            "timestamp": latest_file.stat().st_mtime,
+            "image_data": f"data:image/png;base64,{img_data}",
+            "file_size": latest_file.stat().st_size
+        }
+        
+    except Exception as e:
+        logger.error(f"Error getting visual output for {process_id}: {e}")
+        return {"error": str(e)}
+
+@app.get("/api/visual/output/{process_id}/stream")
+async def stream_visual_output(process_id: str):
+    """Stream visual output for a specific process"""
+    async def generate_frames():
+        output_dir = Path(f"visual/visual_output/{process_id}")
+        if not output_dir.exists():
+            output_dir = Path(f"visual/outputs/{process_id}")
+        
+        last_file = None
+        while True:
+            try:
+                if output_dir.exists():
+                    png_files = list(output_dir.glob("*.png"))
+                    if png_files:
+                        latest_file = max(png_files, key=lambda x: x.stat().st_mtime)
+                        
+                        if latest_file != last_file:
+                            with open(latest_file, "rb") as img_file:
+                                img_data = base64.b64encode(img_file.read()).decode()
+                            
+                            frame_data = {
+                                "process_id": process_id,
+                                "filename": latest_file.name,
+                                "timestamp": latest_file.stat().st_mtime,
+                                "image_data": f"data:image/png;base64,{img_data}"
+                            }
+                            
+                            yield f"data: {json.dumps(frame_data)}\n\n"
+                            last_file = latest_file
+                
+                await asyncio.sleep(0.5)  # Check for updates every 500ms
+                
+            except Exception as e:
+                logger.error(f"Error in visual stream for {process_id}: {e}")
+                await asyncio.sleep(1)
+    
+    return StreamingResponse(
+        generate_frames(),
+        media_type="text/event-stream",
+        headers={
+            "Cache-Control": "no-cache",
+            "Connection": "keep-alive",
+            "Access-Control-Allow-Origin": "*",
+        }
+    )
+
+@app.get("/api/visual/outputs/list")
+async def list_visual_outputs():
+    """List all available visual process outputs"""
+    try:
+        outputs = {}
+        
+        # Check both possible output directories
+        for base_dir in ["visual/visual_output", "visual/outputs"]:
+            base_path = Path(base_dir)
+            if base_path.exists():
+                for process_dir in base_path.iterdir():
+                    if process_dir.is_dir():
+                        png_files = list(process_dir.glob("*.png"))
+                        if png_files:
+                            latest_file = max(png_files, key=lambda x: x.stat().st_mtime)
+                            outputs[process_dir.name] = {
+                                "process_id": process_dir.name,
+                                "file_count": len(png_files),
+                                "latest_file": latest_file.name,
+                                "latest_timestamp": latest_file.stat().st_mtime,
+                                "output_dir": str(process_dir)
+                            }
+        
+        return {"outputs": outputs, "total_processes": len(outputs)}
+        
+    except Exception as e:
+        logger.error(f"Error listing visual outputs: {e}")
+        return {"error": str(e)}
+
+@app.websocket("/ws/visual")
+async def visual_websocket(websocket: WebSocket):
+    """WebSocket endpoint for real-time visual updates"""
+    await connection_manager.connect(websocket)
+    try:
+        while True:
+            # Send visual updates to connected clients
+            visual_data = await get_all_visual_updates()
+            if visual_data:
+                await connection_manager.send_personal_message(
+                    json.dumps(visual_data), websocket
+                )
+            await asyncio.sleep(1)  # Update every second
+            
+    except WebSocketDisconnect:
+        connection_manager.disconnect(websocket)
+    except Exception as e:
+        logger.error(f"Visual WebSocket error: {e}")
+        connection_manager.disconnect(websocket)
+
+async def get_all_visual_updates():
+    """Get updates from all active visual processes"""
+    try:
+        updates = {}
+        
+        # Get status of all visual processes
+        if dawn_system and dawn_system.visual_process_manager:
+            for process_id, process_info in dawn_system.visual_process_manager.processes.items():
+                if process_info.get('status') == 'running':
+                    # Try to get latest output
+                    output_dir = Path(f"visual/visual_output/{process_id}")
+                    if not output_dir.exists():
+                        output_dir = Path(f"visual/outputs/{process_id}")
+                    
+                    if output_dir.exists():
+                        png_files = list(output_dir.glob("*.png"))
+                        if png_files:
+                            latest_file = max(png_files, key=lambda x: x.stat().st_mtime)
+                            
+                            # Only include if file is recent (within last 10 seconds)
+                            if time.time() - latest_file.stat().st_mtime < 10:
+                                try:
+                                    with open(latest_file, "rb") as img_file:
+                                        img_data = base64.b64encode(img_file.read()).decode()
+                                    
+                                    updates[process_id] = {
+                                        "filename": latest_file.name,
+                                        "timestamp": latest_file.stat().st_mtime,
+                                        "image_data": f"data:image/png;base64,{img_data}",
+                                        "status": "active"
+                                    }
+                                except Exception as e:
+                                    logger.error(f"Error reading image for {process_id}: {e}")
+        
+        return {"type": "visual_update", "processes": updates, "timestamp": time.time()}
+        
+    except Exception as e:
+        logger.error(f"Error getting visual updates: {e}")
+        return None
+
 if __name__ == "__main__":
     print("🌟 Starting DAWN Enhanced Consciousness System")
-    print("🔗 Metrics WebSocket: ws://127.0.0.1:8000/ws")
-    print("💬 Chat WebSocket: ws://127.0.0.1:8000/ws/chat")
-    print("🧠 State WebSocket: ws://127.0.0.1:8000/ws/dawn (legacy)")
-    print("🌊 Stream WebSocket: ws://127.0.0.1:8000/dawn/stream (enhanced)")
-    print("📊 Metrics endpoint: http://127.0.0.1:8000/metrics")
-    print("🏥 Health check: http://127.0.0.1:8000/health")
+    print("🔗 Metrics WebSocket: ws://127.0.0.1:8001/ws")
+    print("💬 Chat WebSocket: ws://127.0.0.1:8001/ws/chat")
+    print("🧠 State WebSocket: ws://127.0.0.1:8001/ws/dawn (legacy)")
+    print("🌊 Stream WebSocket: ws://127.0.0.1:8001/dawn/stream (enhanced)")
+    print("📊 Metrics endpoint: http://127.0.0.1:8001/metrics")
+    print("🏥 Health check: http://127.0.0.1:8001/health")
     print("🗣️  Enhanced DAWN Conversation Endpoints:")
     print("   - POST /talk - Enhanced conversation with tracer/rebloom support")
     print("   - GET  /consciousness/sigils - Current emotional sigils with density maps")
@@ -2973,7 +3671,7 @@ if __name__ == "__main__":
     print("   - GET  /dawn/thought - Check for spontaneous thoughts (legacy)")
     print("   - GET  /dawn/consciousness - Get consciousness state")
     print("   - GET  /chat/history - Get conversation context")
-    print("⚙️  Tick Engine Control: http://127.0.0.1:8000/tick/")
+    print("⚙️  Tick Engine Control: http://127.0.0.1:8001/tick/")
     print("   - GET  /tick/status - Get tick engine status")
     print("   - POST /tick/start  - Start tick engine")
     print("   - POST /tick/stop   - Stop tick engine")
@@ -2985,7 +3683,7 @@ if __name__ == "__main__":
     uvicorn.run(
         "main:app",
         host="127.0.0.1",
-        port=8000,
+        port=8001,
         reload=False,
         log_level="info"
     ) 

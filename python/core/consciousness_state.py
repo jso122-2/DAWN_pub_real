@@ -30,7 +30,7 @@ class ConsciousnessState:
     
     # Subsystem metrics
     neural_activity: float = 0.5  # Neural firing rate (0-1)
-    quantum_coherence: float = 0.5  # Quantum stability (0-1)
+    consciousness_unity: float = 0.5  # Consciousness stability (0-1)
     memory_pressure: float = 0.3  # Memory utilization (0-1)
     
     # Internal state
@@ -61,8 +61,8 @@ class ConsciousnessState:
             self.neural_activity + np.random.normal(0, 0.02), 0, 1
         )
         
-        self.quantum_coherence = np.clip(
-            self.quantum_coherence + np.random.normal(0, 0.01), 0, 1
+        self.consciousness_unity = np.clip(
+            self.consciousness_unity + np.random.normal(0, 0.01), 0, 1
         )
         
         # Update mood momentum
@@ -73,14 +73,14 @@ class ConsciousnessState:
         # Weighted combination of subsystems
         weights = {
             'neural': 0.3,
-            'quantum': 0.2,
+            'consciousness': 0.2,
             'memory': 0.2,
             'entropy_balance': 0.3
         }
         
         # Calculate component scores
         neural_score = self.neural_activity
-        quantum_score = self.quantum_coherence
+        consciousness_score = self.consciousness_unity
         memory_score = 1.0 - self.memory_pressure  # Lower pressure is better
         
         # Entropy balance - optimal around 0.5
@@ -90,7 +90,7 @@ class ConsciousnessState:
         # Calculate weighted SCUP
         self.scup = (
             neural_score * weights['neural'] +
-            quantum_score * weights['quantum'] +
+            consciousness_score * weights['consciousness'] +
             memory_score * weights['memory'] +
             entropy_score * weights['entropy_balance']
         ) * 100
@@ -215,7 +215,7 @@ class ConsciousnessState:
             'entropy': self.entropy,
             'mood': self.mood.value,
             'neural_activity': self.neural_activity,
-            'quantum_coherence': self.quantum_coherence,
+            'consciousness_unity': self.consciousness_unity,
             'memory_pressure': self.memory_pressure,
             'mood_stability': self._mood_stability,
             'mood_momentum': self._mood_momentum

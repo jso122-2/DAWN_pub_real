@@ -19,18 +19,18 @@
     --neural-900: #581c87;
     --neural-950: #3b0764;
     
-    /* Quantum Spectrum - Electric energy colors */
-    --quantum-50: #f0fdfe;
-    --quantum-100: #ccfbf9;
-    --quantum-200: #99f6f0;
-    --quantum-300: #5eead4;
-    --quantum-400: #2dd4bf;
-    --quantum-500: #14b8a6;
-    --quantum-600: #0d9488;
-    --quantum-700: #0f766e;
-    --quantum-800: #115e59;
-    --quantum-900: #134e4a;
-    --quantum-950: #042f2e;
+    /* Consciousness Spectrum - Electric energy colors */
+    --consciousness-50: #f0fdfe;
+    --consciousness-100: #ccfbf9;
+    --consciousness-200: #99f6f0;
+    --consciousness-300: #5eead4;
+    --consciousness-400: #2dd4bf;
+    --consciousness-500: #14b8a6;
+    --consciousness-600: #0d9488;
+    --consciousness-700: #0f766e;
+    --consciousness-800: #115e59;
+    --consciousness-900: #134e4a;
+    --consciousness-950: #042f2e;
     
     /* Chaos Spectrum - Entropy and transformation */
     --chaos-50: #fef3f2;
@@ -73,7 +73,7 @@
     
     /* === SPACING SYSTEM === */
     /* Based on golden ratio for harmonic module spacing */
-    --space-quantum: 0.25rem;  /* 4px - Quantum level */
+    --space-consciousness: 0.25rem;  /* 4px - Consciousness level */
     --space-atom: 0.5rem;      /* 8px - Atomic level */
     --space-molecule: 0.75rem; /* 12px - Molecular level */
     --space-cell: 1rem;        /* 16px - Cellular level */
@@ -115,16 +115,16 @@
     --gradient-consciousness: linear-gradient(
       var(--gradient-angle, 135deg),
       var(--neural-600) 0%,
-      var(--quantum-600) 25%,
+      var(--consciousness-600) 25%,
       var(--process-600) 50%,
       var(--neural-600) 75%,
-      var(--quantum-600) 100%
+      var(--consciousness-600) 100%
     );
     
     --gradient-aurora: conic-gradient(
       from var(--aurora-angle, 0deg) at 50% 50%,
       var(--neural-400),
-      var(--quantum-400),
+      var(--consciousness-400),
       var(--process-400),
       var(--alert-400),
       var(--neural-400)
@@ -132,8 +132,8 @@
     
     --gradient-plasma: radial-gradient(
       ellipse at var(--plasma-x, 50%) var(--plasma-y, 50%),
-      var(--quantum-500) 0%,
-      var(--quantum-600) 20%,
+      var(--consciousness-500) 0%,
+      var(--consciousness-600) 20%,
       var(--process-500) 40%,
       var(--neural-500) 60%,
       transparent 100%
@@ -147,17 +147,17 @@
       transparent 100%
     );
     
-    --gradient-quantum-field: repeating-conic-gradient(
-      from var(--quantum-angle, 0deg) at 50% 50%,
-      var(--quantum-400) 0deg,
+    --gradient-consciousness-field: repeating-conic-gradient(
+      from var(--consciousness-angle, 0deg) at 50% 50%,
+      var(--consciousness-400) 0deg,
       var(--process-400) 30deg,
-      var(--quantum-400) 60deg
+      var(--consciousness-400) 60deg
     );
     
     /* Energy field colors with smooth transitions */
     --energy-idle: color-mix(in srgb, var(--neural-500) 30%, transparent);
-    --energy-active: color-mix(in srgb, var(--neural-400) 60%, var(--quantum-400) 40%);
-    --energy-processing: color-mix(in srgb, var(--quantum-400) 70%, var(--process-400) 30%);
+    --energy-active: color-mix(in srgb, var(--neural-400) 60%, var(--consciousness-400) 40%);
+    --energy-processing: color-mix(in srgb, var(--consciousness-400) 70%, var(--process-400) 30%);
     --energy-critical: color-mix(in srgb, var(--alert-400) 80%, var(--chaos-400) 20%);
     
     /* === PARTICLE SYSTEM VARIABLES === */
@@ -197,7 +197,7 @@
     --ease-breathe-in: cubic-bezier(0.4, 0, 0.2, 1);
     --ease-breathe-out: cubic-bezier(0.8, 0, 0.6, 1);
     --ease-consciousness: cubic-bezier(0.23, 1, 0.32, 1);
-    --ease-quantum: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    --ease-consciousness: cubic-bezier(0.68, -0.55, 0.265, 1.55);
     
     /* === ADVANCED GLASS EFFECTS === */
     --glass-refraction-intensity: 0.8;
@@ -227,24 +227,24 @@
     --plasma-intensity: 0.8;
     --plasma-speed: 10s;
     --plasma-distortion: 5px;
-    --plasma-colors: var(--quantum-400), var(--process-400), var(--neural-400);
+    --plasma-colors: var(--consciousness-400), var(--process-400), var(--neural-400);
     
     /* Electric arc containment */
     --arc-thickness: 1px;
     --arc-opacity: 0.4;
     --arc-speed: 2s;
-    --arc-colors: var(--quantum-500), var(--process-500);
+    --arc-colors: var(--consciousness-500), var(--process-500);
     
     /* Consciousness field distortions */
     --consciousness-distortion: 3px;
     --consciousness-speed: 8s;
     --consciousness-intensity: 0.6;
-    --consciousness-colors: var(--neural-500), var(--quantum-500);
+    --consciousness-colors: var(--neural-500), var(--consciousness-500);
     
     /* Grid overlay properties */
     --grid-size: 20px;
     --grid-opacity: 0.1;
-    --grid-color: var(--quantum-400);
+    --grid-color: var(--consciousness-400);
     --grid-speed: 20s;
     
     /* === ANIMATION TIMINGS === */
@@ -252,11 +252,11 @@
     --particle-drift-duration: 30s;
     --holographic-shift-duration: 12s;
     --energy-field-pulse-duration: 4s;
-    --quantum-fluctuation-duration: 8s;
+    --consciousness-fluctuation-duration: 8s;
     --consciousness-pulse-duration: 4s;
     --energy-rotation-duration: 20s;
     --electric-surge-duration: 2s;
-    --quantum-particle-phase-duration: 10s;
+    --consciousness-particle-phase-duration: 10s;
     --grid-pulse-duration: 5s;
     
     /* === RESPONSIVE STATES === */
@@ -341,7 +341,7 @@
     --plasma-y: 50%;
     --entropy-x: 50%;
     --entropy-y: 50%;
-    --quantum-angle: 0deg;
+    --consciousness-angle: 0deg;
     
     animation: 
       cosmic-drift var(--breathe-cosmic) ease-in-out infinite,
@@ -358,19 +358,19 @@
   @keyframes gradient-shift {
     0%, 100% { 
       --gradient-angle: 135deg;
-      --quantum-angle: 0deg;
+      --consciousness-angle: 0deg;
     }
     25% { 
       --gradient-angle: 225deg;
-      --quantum-angle: 90deg;
+      --consciousness-angle: 90deg;
     }
     50% { 
       --gradient-angle: 315deg;
-      --quantum-angle: 180deg;
+      --consciousness-angle: 180deg;
     }
     75% { 
       --gradient-angle: 45deg;
-      --quantum-angle: 270deg;
+      --consciousness-angle: 270deg;
     }
   }
   
@@ -462,7 +462,7 @@
     inset: 0;
     background-image: 
       radial-gradient(circle, var(--neural-400) var(--particle-size-min), transparent var(--particle-size-min)),
-      radial-gradient(circle, var(--quantum-400) var(--particle-size-min), transparent var(--particle-size-min)),
+      radial-gradient(circle, var(--consciousness-400) var(--particle-size-min), transparent var(--particle-size-min)),
       radial-gradient(circle, var(--process-400) var(--particle-size-max), transparent var(--particle-size-max));
     background-size: 3% 3%, 2% 2%, 4% 4%;
     background-position: 0% 0%, 50% 50%, 100% 100%;
@@ -502,7 +502,7 @@
       45deg,
       transparent 30%,
       var(--neural-400) 35%,
-      var(--quantum-400) 40%,
+      var(--consciousness-400) 40%,
       var(--process-400) 45%,
       transparent 50%
     );

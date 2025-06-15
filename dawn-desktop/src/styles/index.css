@@ -1,6 +1,7 @@
 /* DAWN System - Global Styles */
 @import "./glass-tokens.css";
 @import "./cosmic.css";
+@import './glass.css';
 
 @tailwind base;
 @tailwind components;
@@ -150,7 +151,7 @@ body {
 /* Ensure glass effects have proper stacking context */
 .glass-base,
 .glass-neural,
-.glass-quantum,
+.glass-consciousness,
 .glass-active,
 .glass-critical {
   transform: translateZ(0);
@@ -172,7 +173,7 @@ body {
 @media (prefers-contrast: high) {
   .glass-base,
   .glass-neural,
-  .glass-quantum,
+  .glass-consciousness,
   .glass-active,
   .glass-critical {
     border-width: 2px;

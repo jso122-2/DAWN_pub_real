@@ -17,7 +17,7 @@ class PulseWaveformRenderer:
     """Renders and saves pulse heat waveforms with valence-based coloring"""
     
     def __init__(self, 
-                 output_dir: str = "visual_output/pulse_waveform",
+                 output_dir: str = "visual/outputs/pulse_waveform_renderer",
                  window_size: int = 100,
                  save_interval: int = 20):
         """
@@ -32,6 +32,9 @@ class PulseWaveformRenderer:
         self.window_size = window_size
         self.save_interval = save_interval
         
+        # Ensure output directory exists
+        os.makedirs(self.output_dir, exist_ok=True)
+        
         # Data storage
         self.ticks: List[int] = []
         self.heat_values: List[float] = []
@@ -40,9 +43,6 @@ class PulseWaveformRenderer:
         # Metadata storage
         self.metadata_index: List[Dict] = []
         self.current_tick = 0
-        
-        # Create output directory
-        os.makedirs(output_dir, exist_ok=True)
         
         # Setup figure
         self.fig, self.ax = plt.subplots(figsize=(12, 6))
@@ -239,25 +239,11 @@ class PulseWaveformRenderer:
         plt.close(self.fig)
 
 
-# Example usage
+def main():
+    output_dir = "visual/outputs/pulse_waveform_renderer"
+    os.makedirs(output_dir, exist_ok=True)
+    # Example usage or test run here
+
+
 if __name__ == "__main__":
-    # Create renderer
-    renderer = PulseWaveformRenderer()
-    
-    # Example awareness calculation
-    def calculate_awareness(tick, heat, valence):
-        # Simple awareness model based on heat stability
-        return 1.0 / (1.0 + abs(valence))
-    
-    # Generate example pulse sequence
-    print("Generating pulse waveform sequence...")
-    renderer.generate_pulse_sequence(
-        duration=200,
-        base_frequency=0.15,
-        awareness_callback=calculate_awareness
-    )
-    
-    # Close renderer
-    renderer.close()
-    print(f"Waveform images saved to: {renderer.output_dir}")
-    print(f"Total frames generated: {renderer.current_tick // renderer.save_interval}")
+    main()

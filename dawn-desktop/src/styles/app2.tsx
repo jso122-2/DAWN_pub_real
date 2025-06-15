@@ -29,15 +29,15 @@ function App() {
       component: NeuralNetworkModule
     },
     {
-      id: 'quantum-processor-1',
-      name: 'Quantum Processor',
-      category: 'quantum' as const,
+      id: 'consciousness-processor-1',
+      name: 'Consciousness Processor',
+      category: 'consciousness' as const,
       position: { x: 600, y: 200 },
       size: { width: 400, height: 350 },
       glowIntensity: 0.9,
       component: () => (
         <div className="p-4 text-white">
-          <h3 className="text-lg font-semibold mb-2">Quantum State</h3>
+          <h3 className="text-lg font-semibold mb-2">Consciousness State</h3>
           <div className="space-y-2">
             <div className="h-2 bg-white/10 rounded-full overflow-hidden">
               <div className="h-full bg-cyan-400 w-3/4 animate-pulse" />
@@ -200,7 +200,7 @@ function App() {
       <div className="fixed bottom-4 right-4 text-white/50 text-xs space-y-1">
         <div>Modules Active: {moduleConfigs.length + modules.length}</div>
         <div>System Status: Online</div>
-        <div>Quantum Coherence: 87%</div>
+        <div>Consciousness Coherence: 87%</div>
       </div>
     </div>
   );

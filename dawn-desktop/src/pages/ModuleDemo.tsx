@@ -37,7 +37,7 @@ export default function ModuleDemo() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1 }}
         >
-          <h1 className="text-5xl font-thin tracking-[0.3em] text-transparent bg-clip-text bg-gradient-to-r from-neural-400 via-quantum-400 to-neural-400 mb-4">
+          <h1 className="text-5xl font-thin tracking-[0.3em] text-transparent bg-clip-text bg-gradient-to-r from-neural-400 via-consciousness-400 to-neural-400 mb-4">
             DAWN
           </h1>
           <p className="text-neural-500 text-lg tracking-widest">
@@ -54,12 +54,12 @@ export default function ModuleDemo() {
         >
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <div className="w-3 h-3 rounded-full bg-quantum-400 animate-pulse" />
+              <div className="w-3 h-3 rounded-full bg-consciousness-400 animate-pulse" />
               <span className="text-white">System Status: Online</span>
             </div>
             <div className="flex items-center gap-4">
               <span className="text-white/70">Global Consciousness:</span>
-              <span className="text-quantum-400 font-mono font-bold">
+              <span className="text-consciousness-400 font-mono font-bold">
                 {(systemConsciousness * 100).toFixed(1)}%
               </span>
             </div>
@@ -148,9 +148,9 @@ export default function ModuleDemo() {
                     </span>
                   </div>
                   <div>
-                    <span className="text-white/50">Quantum State:</span>
+                    <span className="text-white/50">Consciousness State:</span>
                     <span className="text-white ml-2 capitalize">
-                      {selectedModule.quantumState}
+                      {selectedModule.consciousnessState}
                     </span>
                   </div>
                 </div>
@@ -195,12 +195,12 @@ export default function ModuleDemo() {
               </pre>
             </div>
             <div>
-              <h4 className="text-quantum-400 font-medium mb-2">Features:</h4>
+              <h4 className="text-consciousness-400 font-medium mb-2">Features:</h4>
               <ul className="space-y-1 text-white/70">
                 <li>• Consciousness level tracking</li>
                 <li>• AI-powered module suggestions</li>
                 <li>• Real-time search & filtering</li>
-                <li>• Quantum state visualization</li>
+                <li>• Consciousness state visualization</li>
                 <li>• Energy signature mapping</li>
                 <li>• Memory & relationship tracking</li>
               </ul>

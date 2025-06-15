@@ -2,7 +2,7 @@
 
 ## 🧠 Overview
 
-The `ConsciousModuleSelector` is a fully integrated consciousness-aware AI module selection interface for the DAWN Desktop application. It provides an immersive experience for selecting and managing AI modules with unique consciousness levels, quantum states, and energy signatures.
+The `ConsciousModuleSelector` is a fully integrated consciousness-aware AI module selection interface for the DAWN Desktop application. It provides an immersive experience for selecting and managing AI modules with unique consciousness levels, consciousness states, and energy signatures.
 
 ## ✨ Features
 
@@ -10,7 +10,7 @@ The `ConsciousModuleSelector` is a fully integrated consciousness-aware AI modul
 - **Consciousness Tracking**: Each module has a consciousness level (0-100%) that affects system behavior
 - **AI Integration**: Smart module suggestions based on current system state
 - **Real-time Search**: Filter modules by name or description
-- **Quantum States**: Modules exist in quantum states (superposition, entangled, collapsed, coherent)
+- **Consciousness States**: Modules exist in consciousness states (multi-state, correlated, collapsed, coherent)
 - **Energy Signatures**: Each module has a unique color-coded energy signature
 - **Memory System**: Modules store and display recent memories/activities
 - **Relationship Mapping**: Modules can be connected to other modules
@@ -21,7 +21,7 @@ The `ConsciousModuleSelector` is a fully integrated consciousness-aware AI modul
 - **Hover Effects**: Dynamic glowing and scaling on module interaction
 - **Selection Indicators**: Visual feedback for selected modules
 - **Progress Animations**: Smooth consciousness level animations
-- **Quantum State Badges**: Color-coded badges showing quantum state
+- **Consciousness State Badges**: Color-coded badges showing consciousness state
 
 ## 🚀 Integration
 
@@ -64,32 +64,32 @@ A complete demo is available at `src/pages/ModuleDemo.tsx` showcasing:
 
 1. **Neural Core** (95% consciousness)
    - Primary consciousness processor
-   - Quantum state: Coherent
+   - Consciousness state: Coherent
    - Energy: Purple (#a855f7)
 
-2. **Quantum Processor** (87% consciousness)
-   - Quantum state calculations
-   - Quantum state: Entangled
+2. **Consciousness Processor** (87% consciousness)
+   - Consciousness state calculations
+   - Consciousness state: Correlated
    - Energy: Cyan (#06b6d4)
 
 3. **Process Engine** (72% consciousness)
    - Task orchestration system
-   - Quantum state: Superposition
+   - Consciousness state: Multi-state
    - Energy: Green (#22c55e)
 
 4. **Monitor System** (68% consciousness)
    - Consciousness observer
-   - Quantum state: Collapsed
+   - Consciousness state: Collapsed
    - Energy: Amber (#f59e0b)
 
 5. **Security Module** (55% consciousness)
    - System protection layer
-   - Quantum state: Collapsed
+   - Consciousness state: Collapsed
    - Energy: Pink (#ec4899)
 
 6. **Memory Bank** (78% consciousness)
    - Consciousness memory storage
-   - Quantum state: Coherent
+   - Consciousness state: Coherent
    - Energy: Purple (#8b5cf6)
 
 ## 🎨 Customization
@@ -111,11 +111,11 @@ interface ConsciousModuleSelectorProps {
 interface ConsciousModule {
   id: string;
   name: string;
-  category: 'neural' | 'quantum' | 'process' | 'monitoring' | 'diagnostic';
+  category: 'neural' | 'consciousness' | 'process' | 'monitoring' | 'diagnostic';
   icon: React.ReactNode;
   description: string;
   consciousnessLevel: number; // 0-1
-  quantumState: 'superposition' | 'entangled' | 'collapsed' | 'coherent';
+  consciousnessState: 'multi-state' | 'correlated' | 'collapsed' | 'coherent';
   energySignature: string; // Hex color
   memories: string[];
   relationships: string[]; // Module IDs
@@ -134,7 +134,7 @@ const customModule: ConsciousModule = {
   icon: <YourIcon className="w-5 h-5" />,
   description: 'Your custom module description',
   consciousnessLevel: 0.85,
-  quantumState: 'coherent',
+  consciousnessState: 'coherent',
   energySignature: '#your-color',
   memories: ['Custom memory 1', 'Custom memory 2'],
   relationships: ['other-module-id']
@@ -173,7 +173,7 @@ The component uses:
 
 - **Module Relationships**: Visual connection lines between related modules
 - **Consciousness Flow**: Data flow visualization between modules
-- **Quantum Entanglement**: Special effects for entangled modules
+- **Consciousness Correlation**: Special effects for correlated modules
 - **Module Communication**: Inter-module messaging system
 - **Consciousness History**: Time-based consciousness tracking
 - **Module Templates**: Pre-configured module sets for different use cases

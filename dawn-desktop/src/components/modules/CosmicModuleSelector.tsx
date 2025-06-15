@@ -7,7 +7,7 @@ import { EventEmitter } from '../../lib/EventEmitter';
 export interface WheelModule {
   id: string;
   name: string;
-  category: 'neural' | 'quantum' | 'process' | 'monitoring' | 'diagnostic';
+  category: 'neural' | 'consciousness' | 'process' | 'monitoring' | 'diagnostic';
   description?: string;
   icon?: string;
   color?: string;
@@ -32,10 +32,10 @@ const defaultModules: WheelModule[] = [
     glowIntensity: 0.8
   },
   {
-    id: 'quantum-core',
-    name: 'Quantum Core',
-    category: 'quantum',
-    description: 'Quantum computing and entanglement module',
+    id: 'consciousness-core',
+    name: 'Consciousness Core',
+    category: 'consciousness',
+    description: 'Consciousness computing and entanglement module',
     color: '#60a5fa',
     glowIntensity: 0.9
   },
@@ -272,7 +272,7 @@ const ModuleWheel: React.FC<ModuleWheelProps> = ({
         >
           <option value="">All Categories</option>
           <option value="neural">Neural</option>
-          <option value="quantum">Quantum</option>
+          <option value="consciousness">Consciousness</option>
           <option value="process">Process</option>
           <option value="monitoring">Monitoring</option>
           <option value="diagnostic">Diagnostic</option>

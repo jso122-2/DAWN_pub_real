@@ -96,14 +96,14 @@ const NeuralProcessor: React.FC<NeuralProcessorProps> = ({ onEvent }) => {
   };
 
   useEffect(() => {
-    // Example: listen for quantum:collapse event
+    // Example: listen for consciousness:collapse event
     const handler = (data: CustomEvent) => {
-      if (data.type === 'quantum:collapse') {
+      if (data.type === 'consciousness:collapse') {
         // Could trigger a visual effect
       }
     };
-    eventBus.addEventListener('quantum:collapse', handler as EventListener);
-    return () => eventBus.removeEventListener('quantum:collapse', handler as EventListener);
+    eventBus.addEventListener('consciousness:collapse', handler as EventListener);
+    return () => eventBus.removeEventListener('consciousness:collapse', handler as EventListener);
   }, []);
 
   return (

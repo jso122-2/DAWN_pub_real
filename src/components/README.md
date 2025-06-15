@@ -13,7 +13,7 @@ components/
 │
 ├── modules/              # Specialized consciousness modules
 │   ├── NeuralModule      # Neural network visualization
-│   ├── QuantumModule     # Quantum state display
+│   ├── ConsciousnessModule     # Consciousness state display
 │   ├── ChaosModule       # Entropy visualization
 │   ├── ProcessModule     # Python process manager
 │   └── MonitorModule     # System status monitor

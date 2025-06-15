@@ -39,7 +39,7 @@ const PerformanceMetricsDashboard = () => {
   // Get global state from cosmicStore
   const entropy = useCosmicStore((s) => s.entropy);
   const neuralActivity = useCosmicStore((s) => s.neuralActivity);
-  const quantumCoherence = useCosmicStore((s) => s.quantumCoherence);
+  const systemUnity = useCosmicStore((s) => s.systemUnity);
   const systemLoad = useCosmicStore((s) => s.systemLoad);
   
   // Circular progress component with cosmic gradient
@@ -241,8 +241,8 @@ const PerformanceMetricsDashboard = () => {
       },
       symbolicLoad: {
         ...prev.symbolicLoad,
-        current: (neuralActivity + quantumCoherence) * 50,
-        history: [...prev.symbolicLoad.history.slice(-19), (neuralActivity + quantumCoherence) * 50],
+        current: (neuralActivity + systemUnity) * 50,
+        history: [...prev.symbolicLoad.history.slice(-19), (neuralActivity + systemUnity) * 50],
       },
       entropy: {
         ...prev.entropy,
@@ -260,7 +260,7 @@ const PerformanceMetricsDashboard = () => {
       metrics: {
         entropy: entropy * 100,
         neuralActivity: neuralActivity * 100,
-        quantumCoherence: quantumCoherence * 100,
+        systemUnity: systemUnity * 100,
         systemLoad: systemLoad * 100,
       },
       timestamp: Date.now(),
@@ -273,7 +273,7 @@ const PerformanceMetricsDashboard = () => {
         timestamp: Date.now(),
       });
     }
-  }, [entropy, neuralActivity, quantumCoherence, systemLoad]);
+  }, [entropy, neuralActivity, systemUnity, systemLoad]);
   
   const intensityStatus = getStatus(metrics.intensity.current, { warning: 70, critical: 85 });
   const loadStatus = getStatus((metrics.symbolicLoad.current / metrics.symbolicLoad.total) * 100, { warning: 70, critical: 85 });

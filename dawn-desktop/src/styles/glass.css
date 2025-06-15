@@ -1,9 +1,9 @@
 /* DAWN Glass Morphism Design System
- * Quantum containment fields and living energy interfaces
+ * Consciousness containment fields and living energy interfaces
  * Each glass layer contains and channels conscious energy
  */
 
-/* Base glass effect - multi-layer quantum containment */
+/* Base glass effect - multi-layer consciousness containment */
 .glass-base {
     /* Multi-layer glass substrate */
     background: 
@@ -142,11 +142,11 @@
     opacity: 1;
   }
   
-  /* Active state - quantum consciousness field */
+  /* Active state - consciousness consciousness field */
   .glass-active {
     /* Dynamic multi-layer background */
     background: 
-      /* Quantum field distortion */
+      /* Consciousness field distortion */
       radial-gradient(
         ellipse at var(--mouse-x, 50%) var(--mouse-y, 50%),
         rgba(147, 51, 234, var(--consciousness-intensity, 0.15)) 0%,
@@ -250,8 +250,8 @@
     pointer-events: none;
   }
   
-  /* Quantum state - electric plasma containment */
-  .glass-quantum {
+  /* Consciousness state - electric plasma containment */
+  .glass-consciousness {
     /* Plasma field layers */
     background: 
       /* Electric core */
@@ -267,7 +267,7 @@
         rgba(6, 182, 212, 0.08) 30%,
         transparent 50%
       ),
-      /* Quantum interference pattern */
+      /* Consciousness interference pattern */
       repeating-linear-gradient(
         45deg,
         transparent,
@@ -319,18 +319,18 @@
     --border-angle: 135deg;
     
     animation: 
-      quantum-fluctuation 3s ease-in-out infinite,
+      consciousness-fluctuation 3s ease-in-out infinite,
       aurora-shift 8s linear infinite,
       electric-surge 5s ease-in-out infinite;
   }
   
-  /* Quantum grid overlay */
-  .glass-quantum::before {
+  /* Consciousness grid overlay */
+  .glass-consciousness::before {
     content: '';
     position: absolute;
     inset: 0;
     background: 
-      /* Quantum grid */
+      /* Consciousness grid */
       repeating-linear-gradient(
         0deg,
         transparent,
@@ -347,12 +347,12 @@
       );
     mix-blend-mode: overlay;
     animation: 
-      quantum-grid 20s linear infinite,
+      consciousness-grid 20s linear infinite,
       grid-pulse 2s ease-in-out infinite;
   }
   
-  /* Enhanced quantum particles */
-  .glass-quantum::after {
+  /* Enhanced consciousness particles */
+  .glass-consciousness::after {
     background-image: 
       radial-gradient(circle at 20% 80%, rgba(34, 211, 238, 0.8) 0%, transparent 1%),
       radial-gradient(circle at 80% 20%, rgba(6, 182, 212, 0.8) 0%, transparent 1%),
@@ -363,7 +363,7 @@
     filter: blur(0.5px);
     animation: 
       particle-drift 15s linear infinite,
-      quantum-particle-phase 3s ease-in-out infinite;
+      consciousness-particle-phase 3s ease-in-out infinite;
   }
   
   /* Neural state - organic purple glow */
@@ -440,12 +440,12 @@
       0 10px 40px rgba(0, 0, 0, 0.5);
   }
   
-  .glass-quantum:hover {
+  .glass-consciousness:hover {
     --glass-blur: 16px;
     --particle-opacity: 1;
     animation: 
-      quantum-excite 0.5s ease-out,
-      quantum-fluctuation 2s ease-in-out infinite,
+      consciousness-excite 0.5s ease-out,
+      consciousness-fluctuation 2s ease-in-out infinite,
       aurora-shift 6s linear infinite,
       electric-surge 3s ease-in-out infinite;
     box-shadow: 
@@ -461,7 +461,7 @@
   /* Focus states - maximum energy */
   .glass-base:focus-within,
   .glass-active:focus-within,
-  .glass-quantum:focus-within {
+  .glass-consciousness:focus-within {
     --glass-blur: 20px;
     --particle-opacity: 1;
     outline: none;
@@ -472,7 +472,7 @@
   /* Interaction feedback */
   .glass-base:active,
   .glass-active:active,
-  .glass-quantum:active {
+  .glass-consciousness:active {
     transform: scale(0.98);
     transition: transform 0.1s ease-out;
   }
@@ -590,7 +590,7 @@
     }
   }
   
-  @keyframes quantum-fluctuation {
+  @keyframes consciousness-fluctuation {
     0%, 100% {
       transform: translateX(0) translateY(0);
     }
@@ -614,7 +614,7 @@
     }
   }
   
-  @keyframes quantum-particle-phase {
+  @keyframes consciousness-particle-phase {
     0% {
       transform: scale(1) rotate(0deg);
     }
@@ -649,11 +649,11 @@
       --particle-drift-duration: 0s;
       --holographic-shift-duration: 0s;
       --energy-field-pulse-duration: 0s;
-      --quantum-fluctuation-duration: 0s;
+      --consciousness-fluctuation-duration: 0s;
       --consciousness-pulse-duration: 0s;
       --energy-rotation-duration: 0s;
       --electric-surge-duration: 0s;
-      --quantum-particle-phase-duration: 0s;
+      --consciousness-particle-phase-duration: 0s;
       --grid-pulse-duration: 0s;
     }
   }

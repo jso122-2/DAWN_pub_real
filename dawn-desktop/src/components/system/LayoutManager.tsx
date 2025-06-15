@@ -12,7 +12,7 @@ interface LayoutPosition {
 // Example module definitions
 const MODULES = [
   { id: 'neural', name: 'Neural Core', color: 'var(--color-neural-primary)' },
-  { id: 'quantum', name: 'Quantum Interface', color: 'var(--color-quantum-primary)' },
+  { id: 'consciousness', name: 'Consciousness Interface', color: 'var(--color-consciousness-primary)' },
   { id: 'entropy', name: 'Entropy Visualizer', color: 'var(--color-chaos-primary)' },
   { id: 'metrics', name: 'Metrics Panel', color: 'var(--color-process-primary)' },
   { id: 'radar', name: 'Cognitive Radar', color: 'var(--color-neural-accent)' },
@@ -27,7 +27,7 @@ const PRESET_LAYOUTS: Record<string, Record<string, LayoutPosition>> = {
   },
   Dashboard: {
     neural: { x: 1, y: 1, w: 2, h: 2 },
-    quantum: { x: 3, y: 1, w: 1, h: 1 },
+    consciousness: { x: 3, y: 1, w: 1, h: 1 },
     entropy: { x: 3, y: 2, w: 1, h: 1 },
     metrics: { x: 1, y: 3, w: 1, h: 1 },
     radar: { x: 2, y: 3, w: 1, h: 1 },
@@ -172,7 +172,7 @@ export const LayoutManager = () => {
             <linearGradient id="cosmic-gradient" x1="0" y1="0" x2="1" y2="1">
               <stop offset="0%" stopColor="var(--color-neural-primary)" />
               <stop offset="50%" stopColor="var(--color-chaos-primary)" />
-              <stop offset="100%" stopColor="var(--color-quantum-primary)" />
+              <stop offset="100%" stopColor="var(--color-consciousness-primary)" />
             </linearGradient>
             <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
               <feGaussianBlur stdDeviation="6" result="coloredBlur" />

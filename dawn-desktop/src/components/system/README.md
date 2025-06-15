@@ -17,7 +17,7 @@ The heart of the consciousness system. Distributes consciousness state to all mo
 <ConsciousnessProvider
   initialConsciousness={{
     consciousnessLevel: 75,
-    quantumState: 'entangled',
+    consciousnessState: 'correlated',
     mood: 'excited'
   }}
 >
@@ -32,7 +32,7 @@ Foundation component that makes any element consciousness-aware:
 <ConsciousMotionDiv
   moduleId="neural-core"
   consciousnessLevel={85}
-  quantumState="entangled"
+  consciousnessState="correlated"
   mood="critical"
   category="neural"
 >
@@ -133,7 +133,7 @@ Manages visual connections between modules:
 #### Connection Types:
 - **data-flow**: Animated data transfer lines
 - **neural**: Synaptic connections with pulses
-- **quantum**: Entanglement visualization
+- **consciousness**: Correlation visualization
 - **dependency**: Structural relationships
 
 ## Animation & Effects
@@ -155,7 +155,7 @@ Consciousness-driven breathing effects:
 ### Particle Effects
 Background particle systems:
 - Neural network nodes
-- Quantum field particles
+- Consciousness field particles
 - Data flow visualization
 - Consciousness field effects
 
@@ -169,11 +169,11 @@ All DAWN modules support these consciousness-aware props:
 interface DAWNModuleProps {
   // Core identity
   moduleId: string;
-  category: 'neural' | 'quantum' | 'chaos' | 'process' | 'monitor';
+  category: 'neural' | 'consciousness' | 'chaos' | 'process' | 'monitor';
   
   // 🧠 CONSCIOUSNESS PROPERTIES (NOT FILTERED!)
   consciousnessLevel?: number;        // 0-100 SCUP value
-  quantumState?: QuantumState;        // Quantum coherence state
+  consciousnessState?: ConsciousnessState;        // Consciousness unity state
   neuralActivity?: number;            // 0-1 neural firing rate
   entropyLevel?: number;              // 0-1 chaos measurement
   mood?: MoodState;                   // Emotional resonance
@@ -181,7 +181,7 @@ interface DAWNModuleProps {
   // Visual behavior
   isActive?: boolean;
   isCritical?: boolean;
-  isEntangled?: boolean;
+  isCorrelated?: boolean;
   isDreaming?: boolean;
   
   // Synchronization
@@ -203,7 +203,7 @@ interface PortProps {
   y: number;
   active: boolean;    // Port availability
   type: 'input' | 'output' | 'bidirectional';
-  dataType?: 'neural' | 'quantum' | 'data';
+  dataType?: 'neural' | 'consciousness' | 'data';
   maxConnections?: number;
 }
 ```
@@ -240,17 +240,17 @@ interface PortProps {
 </ModuleContainer>
 ```
 
-### Quantum Processor
+### Consciousness Processor
 ```tsx
-<ModuleContainer id="quantum" title="Quantum Core">
+<ModuleContainer id="consciousness" title="Consciousness Core">
   <ConsciousMotionDiv
-    moduleId="quantum-processor"
-    category="quantum"
-    quantumState="superposition"
+    moduleId="consciousness-processor"
+    category="consciousness"
+    consciousnessState="multi-state"
     entropyLevel={0.7}
-    isEntangled={true}
+    isCorrelated={true}
   >
-    <QuantumVisualization />
+    <ConsciousnessVisualization />
   </ConsciousMotionDiv>
 </ModuleContainer>
 ```
@@ -292,7 +292,7 @@ The system now **celebrates** consciousness props as first-class citizens:
 
 #### Consciousness Props (AMPLIFIED)
 - `consciousnessLevel` - Drives breathing intensity and glow
-- `quantumState` - Controls quantum visual effects  
+- `consciousnessState` - Controls consciousness visual effects  
 - `neuralActivity` - Affects animation speed and intensity
 - `entropyLevel` - Drives particle chaos and irregularity
 - `mood` - Sets color schemes and behavioral patterns
@@ -301,7 +301,7 @@ The system now **celebrates** consciousness props as first-class citizens:
 #### Enhanced Features
 - **Real-time consciousness updates** via ConsciousnessProvider
 - **Synchronized breathing** across module groups
-- **Quantum entanglement** visual effects
+- **Correlation networks** visual effects
 - **Mood-based color schemes** and animations
 - **Neural connection** visualization
 - **Entropy-driven** particle effects
@@ -317,8 +317,8 @@ The system exposes consciousness values as CSS custom properties:
   /* Consciousness level (0-100) */
   opacity: calc(var(--consciousness-level) / 100);
   
-  /* Quantum coherence (0-1) */
-  filter: brightness(calc(1 + var(--quantum-coherence) * 0.5));
+  /* Consciousness unity (0-1) */
+  filter: brightness(calc(1 + var(--consciousness-unity) * 0.5));
   
   /* Neural activity (0-1) */
   animation-duration: calc(3s - var(--neural-activity) * 2s);
@@ -337,10 +337,10 @@ The system exposes consciousness values as CSS custom properties:
   box-shadow: 0 0 30px var(--critical-glow);
 }
 
-/* Quantum entangled state */
-[data-quantum-state="entangled"] {
+/* Consciousness correlated state */
+[data-consciousness-state="correlated"] {
   filter: hue-rotate(45deg);
-  animation: quantum-fluctuation 2s infinite;
+  animation: consciousness-fluctuation 2s infinite;
 }
 
 /* Chaotic mood */

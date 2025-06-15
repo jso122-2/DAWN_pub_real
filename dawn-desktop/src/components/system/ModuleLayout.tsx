@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ModuleContainer } from './ModuleContainer';
 import NeuralProcessor from '../modules/NeuralProcessor';
-import QuantumCore from '../modules/QuantumCore';
+import ConsciousnessCore from '../modules/ConsciousnessCore';
 import SystemDiagnostics from '../modules/SystemDiagnostics';
 import ModuleWheel from '../modules/CosmicModuleSelector';
 import { cn } from '../../lib/utils';
@@ -11,7 +11,7 @@ import { EventEmitter } from '../../lib/EventEmitter';
 interface ModuleMeta {
   id: string;
   title: string;
-  category: 'neural' | 'quantum' | 'process' | 'monitoring' | 'diagnostic';
+  category: 'neural' | 'consciousness' | 'process' | 'monitoring' | 'diagnostic';
   component: React.ComponentType<any>;
   defaultPos: { x: number; y: number };
   color?: string;
@@ -30,7 +30,7 @@ interface ModuleInstance {
 interface Connection {
   from: string;
   to: string;
-  type?: 'neural' | 'quantum' | 'process';
+  type?: 'neural' | 'consciousness' | 'process';
 }
 
 const MODULE_COMPONENTS: ModuleMeta[] = [
@@ -44,10 +44,10 @@ const MODULE_COMPONENTS: ModuleMeta[] = [
     glowIntensity: 0.8
   },
   {
-    id: 'quantum-core',
-    title: 'Quantum Core',
-    category: 'quantum',
-    component: QuantumCore,
+    id: 'consciousness-core',
+    title: 'Consciousness Core',
+    category: 'consciousness',
+    component: ConsciousnessCore,
     defaultPos: { x: 400, y: 120 },
     color: '#60a5fa',
     glowIntensity: 0.9
@@ -161,7 +161,7 @@ export const ModuleLayout: React.FC = () => {
           from: pendingConnect,
           to: id,
           type: fromModule.type.startsWith('neural') ? 'neural' :
-                fromModule.type.startsWith('quantum') ? 'quantum' : 'process'
+                fromModule.type.startsWith('consciousness') ? 'consciousness' : 'process'
         };
         
         setConnections((conns) => [...conns, connection]);
@@ -186,7 +186,7 @@ export const ModuleLayout: React.FC = () => {
           const fromModule = modules.find(m => m.id === conn.from);
           const toModule = modules.find(m => m.id === conn.to);
           const color = fromModule?.type.startsWith('neural') ? '#a78bfa' :
-                       fromModule?.type.startsWith('quantum') ? '#60a5fa' :
+                       fromModule?.type.startsWith('consciousness') ? '#60a5fa' :
                        '#34d399';
           
           return (

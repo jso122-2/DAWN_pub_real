@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 
 const EntropyRingHUD = () => {
   const { systemEntropy, subprocesses } = useEntropyState();
-  const [coherence, setCoherence] = useState(78);
+  const [unity, setCoherence] = useState(78);
   const [isHovered, setIsHovered] = useState(false);
   const [showTracer, setShowTracer] = useState(false);
   const [pulseIntensity, setPulseIntensity] = useState(0);
@@ -19,9 +19,9 @@ const EntropyRingHUD = () => {
   };
 
   const getCoherenceColor = (value: number) => {
-    if (value > 70) return '#00ffcc'; // high coherence
+    if (value > 70) return '#00ffcc'; // high unity
     if (value > 40) return '#9945ff'; // medium
-    return '#ff0080'; // low coherence
+    return '#ff0080'; // low unity
   };
 
   // Auto-show when entropy is high
@@ -82,13 +82,13 @@ const EntropyRingHUD = () => {
           
           {/* Inner Coherence Ring */}
           <circle
-            stroke={getCoherenceColor(coherence)}
+            stroke={getCoherenceColor(unity)}
             fill="transparent"
             strokeWidth={strokeWidth}
             strokeDasharray={`${circumference} ${circumference}`}
             style={{
-              strokeDashoffset: circumference - (coherence / 100) * circumference,
-              filter: `drop-shadow(0 0 10px ${getCoherenceColor(coherence)})`,
+              strokeDashoffset: circumference - (unity / 100) * circumference,
+              filter: `drop-shadow(0 0 10px ${getCoherenceColor(unity)})`,
               transition: 'all 0.3s ease-out'
             }}
             r={normalizedRadius - 15}
@@ -213,7 +213,7 @@ const EntropyRingHUD = () => {
           <div className="mt-3 pt-3 border-t border-cyan-300/20">
             <div className="flex justify-between text-xs">
               <span className="text-gray-400">System Coherence</span>
-              <span className="text-cyan-300">{coherence.toFixed(1)}%</span>
+              <span className="text-cyan-300">{unity.toFixed(1)}%</span>
             </div>
             <div className="flex justify-between text-xs mt-1">
               <span className="text-gray-400">Active Processes</span>

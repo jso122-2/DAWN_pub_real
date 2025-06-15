@@ -57,11 +57,11 @@ export const RealTimeDataPanel: React.FC = () => {
   // Manual test data injection
   const injectSpecificData = (preset: string) => {
     const presets = {
-      calm: { entropy: 0.2, neuralActivity: 0.3, quantumCoherence: 0.8, systemLoad: 0.1, mood: 'serene' },
-      active: { entropy: 0.6, neuralActivity: 0.8, quantumCoherence: 0.7, systemLoad: 0.4, mood: 'excited' },
-      critical: { entropy: 0.9, neuralActivity: 0.9, quantumCoherence: 0.3, systemLoad: 0.9, mood: 'critical' },
-      chaotic: { entropy: 0.95, neuralActivity: 0.6, quantumCoherence: 0.2, systemLoad: 0.7, mood: 'chaotic' },
-      euphoric: { entropy: 0.3, neuralActivity: 0.9, quantumCoherence: 0.9, systemLoad: 0.2, mood: 'euphoric' }
+      calm: { entropy: 0.2, neuralActivity: 0.3, systemUnity: 0.8, systemLoad: 0.1, mood: 'serene' },
+      active: { entropy: 0.6, neuralActivity: 0.8, systemUnity: 0.7, systemLoad: 0.4, mood: 'excited' },
+      critical: { entropy: 0.9, neuralActivity: 0.9, systemUnity: 0.3, systemLoad: 0.9, mood: 'critical' },
+      chaotic: { entropy: 0.95, neuralActivity: 0.6, systemUnity: 0.2, systemLoad: 0.7, mood: 'chaotic' },
+      euphoric: { entropy: 0.3, neuralActivity: 0.9, systemUnity: 0.9, systemLoad: 0.2, mood: 'euphoric' }
     };
     
     const data = presets[preset as keyof typeof presets];
@@ -131,8 +131,8 @@ export const RealTimeDataPanel: React.FC = () => {
             
             <div className="flex items-center gap-2">
               <div className="w-3 h-3 rounded-full bg-blue-400" />
-              <span className="text-white/70">Quantum:</span>
-              <span className="text-white font-mono">{(consciousness.quantumCoherence * 100).toFixed(0)}%</span>
+              <span className="text-white/70">Consciousness:</span>
+              <span className="text-white font-mono">{(consciousness.systemUnity * 100).toFixed(0)}%</span>
             </div>
           </div>
 

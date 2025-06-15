@@ -29,9 +29,9 @@ interface Connection {
   target: string;
   strength: number; // 0-1
   dataVolume: number; // 0-1
-  type: 'data' | 'consciousness' | 'quantum' | 'neural';
+  type: 'data' | 'consciousness' | 'consciousness' | 'neural';
   particles: Particle[];
-  entangled?: boolean;
+  correlated?: boolean;
 }
 
 interface Particle {
@@ -50,7 +50,7 @@ interface SpatialConfig {
   maxVelocity: number;
   connectionDistance: number;
   orbitalRadius: number;
-  quantumEntanglementThreshold: number;
+  consciousnessCorrelationThreshold: number;
 }
 
 interface SpatialManagerProps {
@@ -75,14 +75,14 @@ const DEFAULT_CONFIG: SpatialConfig = {
   maxVelocity: 5,
   connectionDistance: 300,
   orbitalRadius: 150,
-  quantumEntanglementThreshold: 0.8
+  consciousnessCorrelationThreshold: 0.8
 };
 
 // Connection type colors
 const CONNECTION_COLORS = {
   data: '#3b82f6',
   consciousness: '#a855f7',
-  quantum: '#06b6d4',
+  consciousness: '#06b6d4',
   neural: '#8b5cf6'
 };
 
@@ -127,8 +127,8 @@ const ConnectionLine: React.FC<{
   const dy = targetPos.y - sourcePos.y;
   const distance = Math.sqrt(dx * dx + dy * dy);
   
-  // Quantum entanglement effect
-  const entanglementOffset = connection.entangled ? Math.sin(Date.now() * 0.001) * 20 : 0;
+  // Correlation networks effect
+  const entanglementOffset = connection.correlated ? Math.sin(Date.now() * 0.001) * 20 : 0;
   
   const controlPoint1 = {
     x: sourcePos.x + dx * 0.25 + dy * 0.1 + entanglementOffset,
@@ -163,14 +163,14 @@ const ConnectionLine: React.FC<{
         animate={{ 
           pathLength: 1, 
           opacity: 0.3 + connection.strength * 0.4,
-          strokeWidth: connection.entangled ? 
+          strokeWidth: connection.correlated ? 
             [2 + connection.strength * 4, 4 + connection.strength * 6, 2 + connection.strength * 4] : 
             2 + connection.strength * 4
         }}
         transition={{
           pathLength: { duration: 1, ease: "easeOut" },
           opacity: { duration: 0.5 },
-          strokeWidth: connection.entangled ? { duration: 2, repeat: Infinity } : undefined
+          strokeWidth: connection.correlated ? { duration: 2, repeat: Infinity } : undefined
         }}
       />
       
@@ -268,8 +268,8 @@ const SpatialManager: React.FC<SpatialManagerProps> = ({
             let type: Connection['type'] = 'data';
             if (sourceNode.category === 'neural' && targetNode.category === 'neural') {
               type = 'neural';
-            } else if (sourceNode.category === 'quantum' || targetNode.category === 'quantum') {
-              type = 'quantum';
+            } else if (sourceNode.category === 'consciousness' || targetNode.category === 'consciousness') {
+              type = 'consciousness';
             } else if (sourceNode.category === 'neural' || targetNode.category === 'neural') {
               type = 'consciousness';
             }
@@ -282,7 +282,7 @@ const SpatialManager: React.FC<SpatialManagerProps> = ({
               dataVolume,
               type,
               particles: [],
-              entangled: type === 'quantum' && strength > spatialConfig.quantumEntanglementThreshold
+              correlated: type === 'consciousness' && strength > spatialConfig.consciousnessCorrelationThreshold
             });
           }
         }

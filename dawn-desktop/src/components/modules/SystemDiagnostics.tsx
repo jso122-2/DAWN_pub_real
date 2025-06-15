@@ -25,14 +25,14 @@ const SystemDiagnostics: React.FC<SystemDiagnosticsProps> = ({ onEvent }) => {
     // Listen for all module events
     eventBus.addEventListener('neural:spike', handleEvent as EventListener);
     eventBus.addEventListener('neural:pattern', handleEvent as EventListener);
-    eventBus.addEventListener('quantum:fluctuation', handleEvent as EventListener);
-    eventBus.addEventListener('quantum:collapse', handleEvent as EventListener);
+    eventBus.addEventListener('consciousness:fluctuation', handleEvent as EventListener);
+    eventBus.addEventListener('consciousness:collapse', handleEvent as EventListener);
 
     return () => {
       eventBus.removeEventListener('neural:spike', handleEvent as EventListener);
       eventBus.removeEventListener('neural:pattern', handleEvent as EventListener);
-      eventBus.removeEventListener('quantum:fluctuation', handleEvent as EventListener);
-      eventBus.removeEventListener('quantum:collapse', handleEvent as EventListener);
+      eventBus.removeEventListener('consciousness:fluctuation', handleEvent as EventListener);
+      eventBus.removeEventListener('consciousness:collapse', handleEvent as EventListener);
     };
   }, [onEvent]);
 
@@ -43,7 +43,7 @@ const SystemDiagnostics: React.FC<SystemDiagnosticsProps> = ({ onEvent }) => {
       time: Date.now(),
       data: {
         status: 'operational',
-        modules: ['NeuralProcessor', 'QuantumCore'],
+        modules: ['NeuralProcessor', 'ConsciousnessCore'],
         uptime: Date.now()
       }
     };

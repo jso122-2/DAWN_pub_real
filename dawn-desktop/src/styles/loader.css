@@ -1,0 +1,136 @@
+.page-loader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4c1d95 100%);
+  color: white;
+}
+
+.loader-spinner {
+  text-align: center;
+}
+
+.quantum-loader {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 20px;
+}
+
+.quantum-particle {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  opacity: 0.8;
+}
+
+.quantum-particle:nth-child(1) {
+  background: linear-gradient(45deg, #06b6d4, #3b82f6);
+  animation: quantum-orbit-1 2s linear infinite;
+  top: 0;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.quantum-particle:nth-child(2) {
+  background: linear-gradient(45deg, #8b5cf6, #a855f7);
+  animation: quantum-orbit-2 2s linear infinite;
+  animation-delay: -0.67s;
+  top: 50%;
+  right: 0;
+  transform: translate(50%, -50%);
+}
+
+.quantum-particle:nth-child(3) {
+  background: linear-gradient(45deg, #ec4899, #f43f5e);
+  animation: quantum-orbit-3 2s linear infinite;
+  animation-delay: -1.33s;
+  bottom: 0;
+  left: 50%;
+  transform: translate(-50%, 50%);
+}
+
+@keyframes quantum-orbit-1 {
+  0% {
+    transform: translate(-50%, -50%) rotate(0deg) translateX(35px) rotate(0deg);
+  }
+  100% {
+    transform: translate(-50%, -50%) rotate(360deg) translateX(35px) rotate(-360deg);
+  }
+}
+
+@keyframes quantum-orbit-2 {
+  0% {
+    transform: translate(50%, -50%) rotate(0deg) translateX(35px) rotate(0deg);
+  }
+  100% {
+    transform: translate(50%, -50%) rotate(360deg) translateX(35px) rotate(-360deg);
+  }
+}
+
+@keyframes quantum-orbit-3 {
+  0% {
+    transform: translate(-50%, 50%) rotate(0deg) translateX(35px) rotate(0deg);
+  }
+  100% {
+    transform: translate(-50%, 50%) rotate(360deg) translateX(35px) rotate(-360deg);
+  }
+}
+
+.loader-spinner p {
+  font-size: 16px;
+  color: #e2e8f0;
+  margin: 0;
+  font-weight: 300;
+  letter-spacing: 1px;
+  animation: pulse-text 2s ease-in-out infinite;
+}
+
+@keyframes pulse-text {
+  0%, 100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* Enhanced quantum effect */
+.quantum-loader::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 70px;
+  height: 70px;
+  border: 1px solid rgba(99, 102, 241, 0.3);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  animation: quantum-pulse 3s ease-in-out infinite;
+}
+
+.quantum-loader::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 50px;
+  height: 50px;
+  border: 1px solid rgba(139, 92, 246, 0.2);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  animation: quantum-pulse 3s ease-in-out infinite reverse;
+}
+
+@keyframes quantum-pulse {
+  0%, 100% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0.3;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.2);
+    opacity: 0.6;
+  }
+} 

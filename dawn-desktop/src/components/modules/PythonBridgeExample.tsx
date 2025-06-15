@@ -7,14 +7,14 @@ import { EventEmitter } from '@/lib/EventEmitter';
 interface TickData {
   id: string;
   timestamp: number;
-  type: 'neural' | 'quantum' | 'genomic' | 'system';
+  type: 'neural' | 'consciousness' | 'genomic' | 'system';
   value: number;
   metadata?: Record<string, any>;
 }
 
 interface VisualizationData {
   neural: number[];
-  quantum: number[];
+  consciousness: number[];
   genomic: number[];
   system: number[];
 }
@@ -24,7 +24,7 @@ const PythonBridgeExample: React.FC = () => {
   const [tickData, setTickData] = useState<TickData[]>([]);
   const [visualization, setVisualization] = useState<VisualizationData>({
     neural: [],
-    quantum: [],
+    consciousness: [],
     genomic: [],
     system: []
   });
@@ -75,14 +75,14 @@ for epoch in range(100):
         "epoch": epoch
     }))
     
-    # Simulate quantum measurements
+    # Simulate consciousness measurements
     if epoch % 5 == 0:
-        quantum_value = random.random()
+        consciousness_value = random.random()
         print(json.dumps({
-            "type": "quantum",
-            "value": quantum_value,
+            "type": "consciousness",
+            "value": consciousness_value,
             "qubits": 8,
-            "coherence": 0.95
+            "unity": 0.95
         }))
     
     # Progress indicator
@@ -108,7 +108,7 @@ print("Training completed!")
   const getTypeColor = (type: string) => {
     switch (type) {
       case 'neural': return 'text-blue-400';
-      case 'quantum': return 'text-purple-400';
+      case 'consciousness': return 'text-purple-400';
       case 'genomic': return 'text-green-400';
       case 'system': return 'text-yellow-400';
       default: return 'text-white';
@@ -118,7 +118,7 @@ print("Training completed!")
   const getTypeGradient = (type: string) => {
     switch (type) {
       case 'neural': return 'from-blue-500 to-cyan-400';
-      case 'quantum': return 'from-purple-500 to-pink-400';
+      case 'consciousness': return 'from-purple-500 to-pink-400';
       case 'genomic': return 'from-green-500 to-emerald-400';
       case 'system': return 'from-yellow-500 to-orange-400';
       default: return 'from-gray-500 to-gray-400';

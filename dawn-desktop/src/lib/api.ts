@@ -2,7 +2,7 @@
 let ws: WebSocket | null = null;
 const callbacks: { [key: string]: ((data: any) => void)[] } = {};
 
-export const connectWebSocket = (url: string = 'ws://localhost:8080') => {
+export const connectWebSocket = (url: string = 'ws://localhost:8001') => {
   if (ws && ws.readyState === WebSocket.OPEN) return;
   
   ws = new WebSocket(url);

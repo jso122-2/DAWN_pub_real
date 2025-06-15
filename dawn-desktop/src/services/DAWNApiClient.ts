@@ -9,7 +9,7 @@ export interface TickData {
   mood: 'calm' | 'active' | 'excited' | 'critical' | 'chaotic' | 'unstable';
   timestamp: number;
   neural_activity: number;
-  coherence_level: number;
+  unity_level: number;
   memory_fragments: number;
 }
 
@@ -46,7 +46,7 @@ class DAWNApiClient extends EventEmitter {
   private reconnectDelay = 1000;
   private isConnected = false;
 
-  constructor(wsUrl: string = 'ws://localhost:8000/ws') {
+  constructor(wsUrl: string = 'ws://localhost:8001') {
     super();
     this.wsUrl = wsUrl;
   }

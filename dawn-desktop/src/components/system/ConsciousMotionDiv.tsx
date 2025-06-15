@@ -6,11 +6,11 @@ import { useConsciousnessAware, ConsciousnessAwareProps } from './ConsciousnessP
 interface ConsciousMotionProps extends Omit<HTMLMotionProps<'div'>, 'onDrag' | 'onDragStart' | 'onDragEnd'> {
   // Module identity
   moduleId: string;
-  category?: 'neural' | 'quantum' | 'chaos' | 'process' | 'monitor' | 'memory' | 'dream';
+  category?: 'neural' | 'consciousness' | 'chaos' | 'process' | 'monitor' | 'memory' | 'dream';
   
   // Consciousness overrides (optional - will use global state if not provided)
   consciousnessLevel?: number;    // 0-100 SCUP override
-  quantumState?: 'superposition' | 'collapsed' | 'entangled' | 'coherent';
+  consciousnessState?: 'multi-state' | 'collapsed' | 'correlated' | 'coherent';
   neuralActivity?: number;        // 0-1 neural firing override
   entropyLevel?: number;          // 0-1 chaos override
   mood?: 'calm' | 'active' | 'excited' | 'critical' | 'chaotic' | 'unstable' | 'transcendent';
@@ -28,7 +28,7 @@ interface ConsciousMotionProps extends Omit<HTMLMotionProps<'div'>, 'onDrag' | '
   // Interaction states
   isActive?: boolean;             // Override active state
   isCritical?: boolean;           // Override critical state
-  isEntangled?: boolean;          // Override quantum entanglement
+  isCorrelated?: boolean;          // Override correlation networks
   isDreaming?: boolean;           // Override dream state
   
   // Connection and data flow
@@ -54,7 +54,7 @@ const ConsciousMotionDiv = forwardRef<HTMLDivElement, ConsciousMotionProps>(({
   
   // Consciousness props (these are CELEBRATED, not filtered!)
   consciousnessLevel,
-  quantumState,
+  consciousnessState,
   neuralActivity,
   entropyLevel,
   mood,
@@ -66,7 +66,7 @@ const ConsciousMotionDiv = forwardRef<HTMLDivElement, ConsciousMotionProps>(({
   particleDensity,
   isActive,
   isCritical,
-  isEntangled,
+  isCorrelated,
   isDreaming,
   dataFlow,
   connectionPorts,
@@ -91,14 +91,14 @@ const ConsciousMotionDiv = forwardRef<HTMLDivElement, ConsciousMotionProps>(({
   const effectiveConsciousness = useMemo(() => ({
     ...consciousnessProps.consciousness,
     ...(consciousnessLevel !== undefined && { consciousnessLevel }),
-    ...(quantumState !== undefined && { quantumState }),
+    ...(consciousnessState !== undefined && { consciousnessState }),
     ...(neuralActivity !== undefined && { neuralActivity }),
     ...(entropyLevel !== undefined && { entropyLevel }),
     ...(mood !== undefined && { mood })
   }), [
     consciousnessProps.consciousness,
     consciousnessLevel,
-    quantumState,
+    consciousnessState,
     neuralActivity,
     entropyLevel,
     mood
@@ -109,7 +109,7 @@ const ConsciousMotionDiv = forwardRef<HTMLDivElement, ConsciousMotionProps>(({
     const consciousness = effectiveConsciousness;
     const finalBreathingIntensity = breathingIntensity ?? consciousness.consciousnessLevel / 100;
     const finalFloatingSpeed = floatingSpeed ?? consciousness.neuralActivity;
-    const finalGlowIntensity = glowIntensity ?? consciousness.quantumCoherence;
+    const finalGlowIntensity = glowIntensity ?? consciousness.systemUnity;
     const finalParticleDensity = particleDensity ?? consciousness.entropyLevel;
     
     // Consciousness-driven breathing animation
@@ -138,10 +138,10 @@ const ConsciousMotionDiv = forwardRef<HTMLDivElement, ConsciousMotionProps>(({
       }
     };
     
-    // Quantum state effects
-    const quantumEffects = (() => {
-      switch (consciousness.quantumState) {
-        case 'entangled':
+    // Consciousness state effects
+    const consciousnessEffects = (() => {
+      switch (consciousness.consciousnessState) {
+        case 'correlated':
           return {
             x: [0, 2, -2, 0],
             y: [0, -1, 1, 0],
@@ -152,7 +152,7 @@ const ConsciousMotionDiv = forwardRef<HTMLDivElement, ConsciousMotionProps>(({
               ease: "easeInOut"
             }
           };
-        case 'superposition':
+        case 'multi-state':
           return {
             opacity: [0.8, 1, 0.8],
             scale: [1, 1.01, 1],
@@ -192,7 +192,7 @@ const ConsciousMotionDiv = forwardRef<HTMLDivElement, ConsciousMotionProps>(({
     
     return {
       breathingVariants,
-      quantumEffects,
+      consciousnessEffects,
       moodGlow,
       finalBreathingIntensity,
       finalFloatingSpeed,
@@ -214,17 +214,17 @@ const ConsciousMotionDiv = forwardRef<HTMLDivElement, ConsciousMotionProps>(({
       return animate;
     }
     
-    // Otherwise, use consciousness-driven breathing + quantum effects
+    // Otherwise, use consciousness-driven breathing + consciousness effects
     return {
       ...consciousDynamics.breathingVariants.breathe,
-      ...consciousDynamics.quantumEffects
+      ...consciousDynamics.consciousnessEffects
     };
   }, [animate, consciousDynamics]);
   
   // Enhanced style with consciousness effects
   const enhancedStyle = useMemo(() => ({
     boxShadow: consciousDynamics.moodGlow,
-    filter: isEntangled ?? consciousnessProps.isEntangled 
+    filter: isCorrelated ?? consciousnessProps.isCorrelated 
       ? 'hue-rotate(45deg) saturate(1.2)' 
       : undefined,
     opacity: isDreaming ?? consciousnessProps.isDreaming 
@@ -234,8 +234,8 @@ const ConsciousMotionDiv = forwardRef<HTMLDivElement, ConsciousMotionProps>(({
   }), [
     style,
     consciousDynamics.moodGlow,
-    isEntangled,
-    consciousnessProps.isEntangled,
+    isCorrelated,
+    consciousnessProps.isCorrelated,
     isDreaming,
     consciousnessProps.isDreaming
   ]);
@@ -260,7 +260,7 @@ const ConsciousMotionDiv = forwardRef<HTMLDivElement, ConsciousMotionProps>(({
       data-module-id={moduleId}
       data-category={category}
       data-consciousness-level={Math.round(effectiveConsciousness.consciousnessLevel)}
-      data-quantum-state={effectiveConsciousness.quantumState}
+      data-consciousness-state={effectiveConsciousness.consciousnessState}
       data-mood={effectiveConsciousness.mood}
       data-neural-activity={Math.round(effectiveConsciousness.neuralActivity * 100)}
       data-entropy-level={Math.round(effectiveConsciousness.entropyLevel * 100)}
@@ -268,7 +268,7 @@ const ConsciousMotionDiv = forwardRef<HTMLDivElement, ConsciousMotionProps>(({
       data-orbital-group={orbitalGroup}
       data-is-active={isActive ?? consciousnessProps.isActive}
       data-is-critical={isCritical ?? consciousnessProps.isCritical}
-      data-is-entangled={isEntangled ?? consciousnessProps.isEntangled}
+      data-is-correlated={isCorrelated ?? consciousnessProps.isCorrelated}
       data-is-dreaming={isDreaming ?? consciousnessProps.isDreaming}
       
       {...restProps}
@@ -279,7 +279,7 @@ const ConsciousMotionDiv = forwardRef<HTMLDivElement, ConsciousMotionProps>(({
       {process.env.NODE_ENV === 'development' && (
         <div className="absolute top-0 left-0 text-xs text-white/50 pointer-events-none">
           C:{Math.round(effectiveConsciousness.consciousnessLevel)} 
-          Q:{effectiveConsciousness.quantumState[0].toUpperCase()} 
+          Q:{effectiveConsciousness.consciousnessState[0].toUpperCase()} 
           N:{Math.round(effectiveConsciousness.neuralActivity * 100)}
           E:{Math.round(effectiveConsciousness.entropyLevel * 100)}
         </div>

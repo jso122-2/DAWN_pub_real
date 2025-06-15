@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 interface Connection {
   from: string;
   to: string;
-  type?: 'quantum' | 'neural';
+  type?: 'consciousness' | 'neural';
 }
 
 interface ConnectionLayerProps {
@@ -15,9 +15,9 @@ interface ConnectionLayerProps {
 }
 
 const COLOR_MAP = {
-  quantum: 'var(--quantum-400)',
+  consciousness: 'var(--consciousness-400)',
   neural: 'var(--neural-400)',
-  default: 'var(--quantum-400)',
+  default: 'var(--consciousness-400)',
 };
 
 const PULSE_ANIMATION = {

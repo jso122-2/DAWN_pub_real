@@ -1,3 +1,5 @@
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 import numpy as np
@@ -13,9 +15,11 @@ class SigilTraceVisualizer:
     Maps sigil execution patterns across time as visual memory traces.
     """
     
-    def __init__(self, base_path="C:/Users/Admin/OneDrive/Desktop/DAWN/Tick_engine"):
+    def __init__(self, base_path=None):
+        if base_path is None:
+            base_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
         self.base_path = base_path
-        self.visual_output_path = os.path.join(base_path, "visual_output", "sigil_trace")
+        self.visual_output_path = os.path.join(base_path, "visual", "outputs", "sigil_trace_visualizer")
         self.sigil_memory_path = os.path.join(base_path, "sigil_memory_ring.json")
         self.sigil_dispatch_path = os.path.join(base_path, "sigil_dispatch.json")
         
@@ -273,7 +277,7 @@ class SigilTraceVisualizer:
         return summary
 
 
-def main():
+def main(*args, **kwargs):
     """Entry point for sigil trace visualization"""
     visualizer = SigilTraceVisualizer()
     
@@ -284,6 +288,11 @@ def main():
     print(f"   Total Sigils: {summary['total_sigils']}")
     print(f"   Total Activations: {summary['total_activations']}")
     print(f"   Output: {summary['output_path']}")
+
+    output_dir = "visual/outputs/sigil_trace_visualizer"
+    os.makedirs(output_dir, exist_ok=True)
+    output_path = visualizer.save_visualization(visualizer.create_trace_plot(), summary['current_tick'])
+    print(f"✅ Saved sigil trace visualization to {output_path}")
 
 
 if __name__ == "__main__":

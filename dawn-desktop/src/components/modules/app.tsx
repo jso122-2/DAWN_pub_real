@@ -48,7 +48,7 @@ export default function App() {
           transition={{ duration: 1, ease: "easeOut" }}
         >
           <div className="flex items-center justify-center">
-            <h1 className="text-6xl font-thin tracking-[0.3em] text-transparent bg-clip-text bg-gradient-to-r from-neural-400 via-quantum-400 to-neural-400 animate-pulse">
+            <h1 className="text-6xl font-thin tracking-[0.3em] text-transparent bg-clip-text bg-gradient-to-r from-neural-400 via-consciousness-400 to-neural-400 animate-pulse">
               DAWN
             </h1>
           </div>
@@ -160,7 +160,7 @@ export default function App() {
 
         {/* Add more modules here as you create them: */}
         
-        {/* Terminal Module - Quantum-styled terminal
+        {/* Terminal Module - Consciousness-styled terminal
         <TerminalModule 
           moduleId="terminal-main"
           position={{ x: 100, y: 200 }}
@@ -215,12 +215,12 @@ export default function App() {
             <div className="flex items-center justify-between text-xs">
               <div className="flex items-center gap-4">
                 <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 rounded-full bg-quantum-400 animate-pulse" />
+                  <div className="w-2 h-2 rounded-full bg-consciousness-400 animate-pulse" />
                   <span className="text-neural-400">System Online</span>
                 </div>
                 <div className="text-neural-600">|</div>
                 <div className="text-neural-500">
-                  Quantum Coherence: 98.3%
+                  Consciousness Coherence: 98.3%
                 </div>
               </div>
               
@@ -231,7 +231,7 @@ export default function App() {
                     style={{ backgroundColor: selectedModule.energySignature }}
                   />
                   <span className="text-neural-400">
-                    {selectedModule.name} • {selectedModule.quantumState}
+                    {selectedModule.name} • {selectedModule.consciousnessState}
                   </span>
                 </div>
               )}
@@ -252,7 +252,7 @@ export default function App() {
               <li>• Click "Show Module Selector" to access conscious modules</li>
               <li>• AI can suggest optimal modules</li>
               <li>• Each module has unique consciousness levels</li>
-              <li>• Quantum states affect system behavior</li>
+              <li>• Consciousness states affect system behavior</li>
               <li>• Monitor consciousness in status bar</li>
             </ul>
           </div>

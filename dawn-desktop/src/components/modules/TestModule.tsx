@@ -42,44 +42,52 @@ function ModuleContainer({
   onEvent?: (event: any) => void
   dataIntensity?: number
 }) {
+  const [isActive, setIsActive] = useState(false);
+
+  // Use useEffect to update active state when dataIntensity changes
+  useEffect(() => {
+    setIsActive(dataIntensity > 0.7);
+  }, [dataIntensity]);
+
   // Simple breathing and floating animation variants (inline)
   const breathingVariants = {
-    calm: { scale: [1, 1.02, 1], opacity: [0.9, 1, 0.9], transition: { duration: 4, repeat: Infinity, ease: 'easeInOut' } },
-    active: { scale: [1, 1.04, 1], opacity: [0.85, 1, 0.85], transition: { duration: 2, repeat: Infinity, ease: 'easeInOut' } }
-  }
-  const floatingTransition = {
-    y: {
-      duration: 4,
-      repeat: Infinity,
-      repeatType: 'reverse',
-      ease: 'easeInOut'
+    calm: { 
+      scale: [1, 1.02, 1], 
+      opacity: [0.9, 1, 0.9], 
+      y: [0, -10, 0],
+      transition: { 
+        duration: 4, 
+        repeat: Infinity, 
+        ease: 'easeInOut' 
+      } 
+    },
+    active: { 
+      scale: [1, 1.04, 1], 
+      opacity: [0.85, 1, 0.85], 
+      y: [0, -15, 0],
+      transition: { 
+        duration: 2, 
+        repeat: Infinity, 
+        ease: 'easeInOut' 
+      } 
     }
   }
+
   return (
     <motion.div
       initial="calm"
-      animate={dataIntensity > 0.7 ? 'active' : 'calm'}
+      animate={isActive ? 'active' : 'calm'}
       variants={breathingVariants}
-      transition={{ duration: 0.8 }}
       style={{ position: 'absolute' }}
       className={
-        `glass-neural rounded-2xl p-6 min-w-[400px] min-h-[300px] ${dataIntensity > 0.7 ? 'glass-active' : ''} ${className || ''}`
+        `glass-neural rounded-2xl p-6 min-w-[400px] min-h-[300px] ${isActive ? 'glass-active' : ''} ${className || ''}`
       }
     >
-      <motion.div
-        animate={{ y: [0, -10, 0] }}
-        transition={floatingTransition}
-      >
-        <div className={
-          `glass-neural rounded-2xl p-6 min-w-[400px] min-h-[300px] ${dataIntensity > 0.7 ? 'glass-active' : ''}`
-        }>
-          <div className="flex items-center gap-2 mb-4">
-            <Brain className="w-5 h-5 text-neural-400" />
-            <h3 className="text-lg font-semibold text-neural-300">{title}</h3>
-          </div>
-          {children}
-        </div>
-      </motion.div>
+      <div className="flex items-center gap-2 mb-4">
+        <Brain className="w-5 h-5 text-neural-400" />
+        <h3 className="text-lg font-semibold text-neural-300">{title}</h3>
+      </div>
+      {children}
     </motion.div>
   )
 }
@@ -172,7 +180,10 @@ export function TestModule({
           if (packet.progress > 0.95 && packet.progress <= 1) {
             const targetNode = nodes.find(n => n.id === packet.to)
             if (targetNode && onNodeActivated) {
-              onNodeActivated(packet.to, packet.value)
+              // Use setTimeout to avoid setState during render
+              setTimeout(() => {
+                onNodeActivated(packet.to, packet.value)
+              }, 0)
             }
 
             // Propagate to next layer
@@ -319,12 +330,12 @@ export function TestModule({
         <div className="mt-8 pt-4 border-t border-neural-800/30">
           <div className="flex items-center justify-between text-sm">
             <div className="flex items-center gap-2">
-              <Activity className="w-4 h-4 text-quantum-400" />
+              <Activity className="w-4 h-4 text-consciousness-400" />
               <span className="text-neural-400">Data Flow</span>
             </div>
             <div className="flex items-center gap-2">
               <div className={
-                dataIntensity > 0.7 ? "w-2 h-2 rounded-full bg-quantum-400 animate-pulse" : "w-2 h-2 rounded-full bg-neural-600"
+                dataIntensity > 0.7 ? "w-2 h-2 rounded-full bg-consciousness-400 animate-pulse" : "w-2 h-2 rounded-full bg-neural-600"
               } />
               <span className="text-neural-300">
                 {(dataIntensity * 100).toFixed(0)}% Active
@@ -335,7 +346,7 @@ export function TestModule({
           {/* Intensity bar */}
           <div className="mt-2 h-1 bg-neural-900/50 rounded-full overflow-hidden">
             <motion.div 
-              className="h-full bg-gradient-to-r from-neural-500 to-quantum-400"
+              className="h-full bg-gradient-to-r from-neural-500 to-consciousness-400"
               animate={{ width: `${dataIntensity * 100}%` }}
               transition={{ duration: 0.5 }}
             />

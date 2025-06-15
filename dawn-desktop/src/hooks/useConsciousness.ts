@@ -1,28 +1,53 @@
 import { useCosmicStore } from '../store/cosmicStore';
-import { useMemo } from 'react';
+import { useMemo, useEffect } from 'react';
 import type { ConsciousnessState } from '../types/consciousness.types';
+import { cairrnCache } from '../CairrnDataCache';
 
 export function useConsciousness(): ConsciousnessState {
   const entropy = useCosmicStore(s => s.entropy);
   const neuralActivity = useCosmicStore(s => s.neuralActivity);
-  const quantumCoherence = useCosmicStore(s => s.quantumCoherence);
+  const systemUnity = useCosmicStore(s => s.systemUnity);
   const memoryPressure = useCosmicStore(s => s.systemLoad);
   const mood = useCosmicStore(s => s.mood);
 
   // Calculate SCUP (System Consciousness Unit Percentage)
   const scup = useMemo(() => {
-    return (entropy + neuralActivity + quantumCoherence) / 3 * 100;
-  }, [entropy, neuralActivity, quantumCoherence]);
+    return (entropy + neuralActivity + systemUnity) / 3 * 100;
+  }, [entropy, neuralActivity, systemUnity]);
 
   const consciousnessState: ConsciousnessState = useMemo(() => ({
     scup,
     entropy,
     mood,
     neuralActivity,
-    quantumCoherence,
+    systemUnity,
     memoryPressure,
-    timestamp: Date.now()
-  }), [scup, entropy, mood, neuralActivity, quantumCoherence, memoryPressure]);
+    timestamp: Date.now(),
+    tick: Date.now() // Add tick for Cairrn compatibility
+  }), [scup, entropy, mood, neuralActivity, systemUnity, memoryPressure]);
+
+  // Store consciousness state in Cairrn cache
+  useEffect(() => {
+    // Store with a consistent key for latest state
+    cairrnCache.set('latest_consciousness', {
+      tick: consciousnessState.tick,
+      scup: consciousnessState.scup,
+      entropy: consciousnessState.entropy,
+      mood: consciousnessState.mood,
+      heat: consciousnessState.memoryPressure * 100,
+      timestamp: consciousnessState.timestamp
+    });
+    
+    // Also store with timestamped key for history
+    cairrnCache.store({
+      tick: consciousnessState.tick,
+      scup: consciousnessState.scup,
+      entropy: consciousnessState.entropy,
+      mood: consciousnessState.mood,
+      heat: consciousnessState.memoryPressure * 100, // Convert to heat metric
+      timestamp: consciousnessState.timestamp
+    }, `consciousness_${consciousnessState.tick}`);
+  }, [consciousnessState]);
 
   return consciousnessState;
 }

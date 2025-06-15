@@ -75,13 +75,13 @@ function DAWNLogo() {
   );
 }
 
-// Quantum Processor Component
-function QuantumProcessor({ entropy }: { entropy: number }) {
+// Consciousness Processor Component
+function ConsciousnessProcessor({ entropy }: { entropy: number }) {
   return (
     <div className="p-4 text-white">
       <h3 className="text-lg font-semibold mb-2 flex items-center gap-2">
         <Cpu className="w-5 h-5 text-cyan-400" />
-        <span>Quantum Processor</span>
+        <span>Consciousness Processor</span>
         <div className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
       </h3>
       <div className="space-y-3">
@@ -98,7 +98,7 @@ function QuantumProcessor({ entropy }: { entropy: number }) {
             <div className="text-white/80">{(75 + entropy * 25).toFixed(0)}%</div>
           </div>
           <div className="bg-white/5 p-2 rounded">
-            <span className="text-purple-400">Entanglement</span>
+            <span className="text-purple-400">Correlation</span>
             <div className="text-white/80">{(92 - entropy * 10).toFixed(0)}%</div>
           </div>
         </div>
@@ -246,7 +246,7 @@ export default function DAWNDemo() {
           />
         </motion.div>
 
-        {/* Quantum Processor Module */}
+        {/* Consciousness Processor Module */}
         <motion.div
           className="fixed top-32 right-8 glass-base rounded-xl"
           style={{ width: 350, height: 300 }}
@@ -254,7 +254,7 @@ export default function DAWNDemo() {
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.7 }}
         >
-          <QuantumProcessor entropy={globalEntropy} />
+          <ConsciousnessProcessor entropy={globalEntropy} />
         </motion.div>
 
         {/* System Monitor Module */}
@@ -346,7 +346,7 @@ export default function DAWNDemo() {
         <div>Active Module: {selectedModule?.name || 'None'}</div>
         <div>System Consciousness: {(systemConsciousness * 100).toFixed(1)}%</div>
         <div>Global Entropy: {(globalEntropy * 100).toFixed(1)}%</div>
-        <div>Quantum Coherence: {(87 + globalEntropy * 13).toFixed(1)}%</div>
+        <div>Consciousness Coherence: {(87 + globalEntropy * 13).toFixed(1)}%</div>
         <div>Neural Activity: {globalEntropy > 0.7 ? 'HIGH' : 'NORMAL'}</div>
       </motion.div>
       

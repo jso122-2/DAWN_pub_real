@@ -4,13 +4,13 @@ import { useMemo } from 'react';
 export function useConsciousnessLevel({ critical = 0.8, active = 0.5 } = {}) {
   const entropy = useCosmicStore(s => s.entropy);
   const neural = useCosmicStore(s => s.neuralActivity);
-  const quantum = useCosmicStore(s => s.quantumCoherence);
+  const consciousness = useCosmicStore(s => s.systemUnity);
   const system = useCosmicStore(s => s.systemLoad);
 
   // Compute consciousness level (weighted average)
   const level = useMemo(() => (
-    (entropy + neural + quantum + system) / 4
-  ), [entropy, neural, quantum, system]);
+    (entropy + neural + consciousness + system) / 4
+  ), [entropy, neural, consciousness, system]);
 
   let status: 'idle' | 'active' | 'critical' = 'idle';
   if (level >= critical) status = 'critical';

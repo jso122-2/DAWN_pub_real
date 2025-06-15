@@ -34,12 +34,12 @@ describe('ModuleContainer', () => {
 
   it('renders with correct glass class for category', () => {
     const { container } = render(
-      <ModuleContainer config={{ ...baseConfig, category: 'quantum' }}>
+      <ModuleContainer config={{ ...baseConfig, category: 'consciousness' }}>
         <div>Content</div>
       </ModuleContainer>
     );
     expect(container.firstChild).toHaveClass('glass-base');
-    expect(container.firstChild).toHaveClass('glass-quantum');
+    expect(container.firstChild).toHaveClass('glass-consciousness');
   });
 
   it('emits events on drag end', () => {

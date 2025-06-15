@@ -19,9 +19,9 @@ export const Default: Story = {
 
 export const WithHeaderActions: Story = {
   args: {
-    title: 'Quantum Module',
-    headerActions: <button className="glass-quantum px-3 py-1 rounded">⚡ Action</button>,
-    children: <div className="text-quantum-400">Quantum content</div>,
+    title: 'Consciousness Module',
+    headerActions: <button className="glass-consciousness px-3 py-1 rounded">⚡ Action</button>,
+    children: <div className="text-consciousness-400">Consciousness content</div>,
   },
 };
 

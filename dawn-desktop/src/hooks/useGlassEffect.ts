@@ -6,7 +6,7 @@ export function useGlassEffect({
   isActive = false,
   isCritical = false,
 }: {
-  category?: 'base' | 'neural' | 'quantum' | 'process' | 'diagnostic' | string;
+  category?: 'base' | 'neural' | 'consciousness' | 'process' | 'diagnostic' | string;
   intensity?: number;
   isActive?: boolean;
   isCritical?: boolean;
@@ -17,7 +17,7 @@ export function useGlassEffect({
     if (isActive) return 'glass-active';
     switch (category) {
       case 'neural': return 'glass-neural';
-      case 'quantum': return 'glass-quantum';
+      case 'consciousness': return 'glass-consciousness';
       case 'process': return 'glass-active';
       case 'diagnostic': return 'glass-critical';
       default: return 'glass-base';

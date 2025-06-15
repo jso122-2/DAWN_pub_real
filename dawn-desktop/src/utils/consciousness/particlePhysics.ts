@@ -5,14 +5,14 @@ interface ConsciousnessState {
   entropy: number;
   mood: string;
   neuralActivity: number;
-  quantumCoherence: number;
+  systemUnity: number;
 }
 
 export class ParticlePhysics {
   private readonly maxParticles = 500;
   private readonly gravitationalConstant = 0.001;
   private readonly repulsionConstant = 0.1;
-  private readonly coherenceRadius = 100;
+  private readonly unityRadius = 100;
 
   updateParticleSystem(
     system: ParticleSystem,
@@ -33,14 +33,14 @@ export class ParticlePhysics {
     // Remove dead particles
     const aliveParticles = updatedParticles.filter(p => p.lifespan > 0);
 
-    // Update connections based on coherence
+    // Update connections based on unity
     const connectedParticles = this.updateConnections(aliveParticles, state);
 
     return {
       particles: connectedParticles,
       centerMass: this.calculateCenterMass(connectedParticles),
       entropy: state.entropy,
-      coherence: state.quantumCoherence || 0.5
+      unity: state.systemUnity || 0.5
     };
   }
 
@@ -69,7 +69,7 @@ export class ParticlePhysics {
       const diff = this.vectorSubtract(other.position, particle.position);
       const distance = this.vectorMagnitude(diff);
       
-      if (distance > 0 && distance < this.coherenceRadius) {
+      if (distance > 0 && distance < this.unityRadius) {
         // Repulsion at close range
         if (distance < 20) {
           const repulsion = this.repulsionConstant / (distance * distance);
@@ -81,7 +81,7 @@ export class ParticlePhysics {
         
         // Coherence attraction for connected particles
         if (particle.connections.includes(other.id)) {
-          const attraction = (state.quantumCoherence || 0.5) * 0.01;
+          const attraction = (state.systemUnity || 0.5) * 0.01;
           force = this.vectorAdd(
             force,
             this.vectorScale(this.vectorNormalize(diff), attraction)
@@ -189,9 +189,9 @@ export class ParticlePhysics {
           this.vectorSubtract(other.position, particle.position)
         );
         
-        // Connect based on coherence and distance
-        if (distance < this.coherenceRadius * (state.quantumCoherence || 0.5) &&
-            Math.random() < (state.quantumCoherence || 0.5)) {
+        // Connect based on unity and distance
+        if (distance < this.unityRadius * (state.systemUnity || 0.5) &&
+            Math.random() < (state.systemUnity || 0.5)) {
           connections.push(other.id);
         }
       });

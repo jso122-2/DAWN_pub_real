@@ -15,7 +15,7 @@ types/
 ├── modules/
 │   ├── module.types.ts        # Base module interfaces
 │   ├── neural.types.ts        # Neural module specific
-│   ├── quantum.types.ts       # Quantum module specific
+│   ├── consciousness.types.ts       # Consciousness module specific
 │   └── process.types.ts       # Process module specific
 │
 ├── api/
@@ -39,7 +39,7 @@ export interface ConsciousnessState {
   entropy: number;             // 0-1 Chaos level
   mood: MoodState;            // Current emotional state
   neuralActivity: number;      // 0-1 Neural firing rate
-  quantumCoherence: number;    // 0-1 Quantum stability
+  systemUnity: number;    // 0-1 Consciousness stability
   memoryPressure: number;      // 0-1 Memory utilization
   timestamp: number;           // Unix timestamp
 }
@@ -77,7 +77,7 @@ export interface TickData {
   entropy: number;
   mood: MoodState;
   neural_activity: number;
-  quantum_coherence: number;
+  consciousness_unity: number;
   memory_pressure: number;
   active_processes: string[];
   subsystems: SubsystemStates;
@@ -86,7 +86,7 @@ export interface TickData {
 // Subsystem states
 export interface SubsystemStates {
   neural: NeuralState;
-  quantum: QuantumState;
+  consciousness: ConsciousnessState;
   chaos: ChaosState;
 }
 
@@ -97,11 +97,11 @@ export interface NeuralState {
   nodes_active: number;
 }
 
-export interface QuantumState {
-  superposition: number;      // 0-1
+export interface ConsciousnessState {
+  multi-state: number;      // 0-1
   entanglement: number;       // 0-1
-  decoherence_rate: number;   // 0-1
-  quantum_bits: number;
+  deunity_rate: number;   // 0-1
+  consciousness_bits: number;
 }
 
 export interface ChaosState {
@@ -126,7 +126,7 @@ export interface Module {
 
 export type ModuleCategory = 
   | 'neural' 
-  | 'quantum' 
+  | 'consciousness' 
   | 'chaos' 
   | 'process' 
   | 'monitor';
@@ -271,7 +271,7 @@ export type FloatingPattern =
   | 'orbital'
   | 'random'
   | 'magnetic'
-  | 'quantum';
+  | 'consciousness';
 
 // Glow effect configuration
 export interface GlowConfig {

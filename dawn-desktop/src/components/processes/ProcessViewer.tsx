@@ -36,6 +36,60 @@ type ProcessesViewerTabProps = {
   onToggleComponent?: (component: string, enabled: boolean) => void;
 };
 
+// API configuration
+const API_BASE_URL = process.env.NODE_ENV === 'development' ? 'http://localhost:8001' : '';
+
+const processAPI = {
+  async startPythonProcess(processId: string, script: string, parameters?: any, modules?: any[]) {
+    const response = await fetch(`${API_BASE_URL}/api/processes/start`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        process_id: processId,
+        script: script,
+        parameters: parameters || {},
+        modules: modules || []
+      })
+    });
+    
+    if (!response.ok) {
+      throw new Error(`Failed to start process: ${response.statusText}`);
+    }
+    
+    return await response.json();
+  },
+
+  async stopPythonProcess(processId: string) {
+    const response = await fetch(`${API_BASE_URL}/api/processes/stop`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        process_id: processId
+      })
+    });
+    
+    if (!response.ok) {
+      throw new Error(`Failed to stop process: ${response.statusText}`);
+    }
+    
+    return await response.json();
+  },
+
+  async getProcessStatus(processId: string) {
+    const response = await fetch(`${API_BASE_URL}/api/processes/status/${processId}`);
+    
+    if (!response.ok) {
+      throw new Error(`Failed to get process status: ${response.statusText}`);
+    }
+    
+    return await response.json();
+  }
+};
+
 const ProcessesViewerTab: React.FC<ProcessesViewerTabProps> = ({ onToggleComponent }) => {
   const [pythonProcesses, setPythonProcesses] = useState<PythonProcess[]>([
     {
@@ -264,36 +318,76 @@ const ProcessesViewerTab: React.FC<ProcessesViewerTabProps> = ({ onToggleCompone
   const [activeView, setActiveView] = useState<string>('all');
   const [selectedProcess, setSelectedProcess] = useState<string | null>(null);
 
-  // Toggle Python process
+  // Toggle Python process with real API calls
   const togglePythonProcess = async (processId: string) => {
     const process = pythonProcesses.find(p => p.id === processId);
     if (!process) return;
 
     try {
-      if (process.enabled) {
-        // Stop the process
-        console.log('Mock: stopping process', process.script);
-      } else {
-        // Start the process with parameters
-        console.log('Mock: starting process', process.script, process.parameters || {}, process.modules || []);
-      }
-
       setPythonProcesses(prev => prev.map(proc => {
         if (proc.id === processId) {
-          const newEnabled = !proc.enabled;
+          return { ...proc, status: process.enabled ? 'stopping' : 'starting' };
+        }
+        return proc;
+      }));
+
+      if (process.enabled) {
+        // Stop the process
+        console.log('🛑 Stopping Python process:', process.script);
+        await processAPI.stopPythonProcess(processId);
+        
+        setPythonProcesses(prev => prev.map(proc => {
+          if (proc.id === processId) {
+            return {
+              ...proc,
+              enabled: false,
+              status: 'stopped',
+              cpu: 0,
+              memory: 0,
+              fps: 0
+            };
+          }
+          return proc;
+        }));
+        
+        console.log('✅ Successfully stopped:', process.script);
+      } else {
+        // Start the process with parameters
+        console.log('🚀 Starting Python process:', process.script, process.parameters || {}, process.modules || []);
+        await processAPI.startPythonProcess(processId, process.script, process.parameters, process.modules);
+        
+        setPythonProcesses(prev => prev.map(proc => {
+          if (proc.id === processId) {
+            return {
+              ...proc,
+              enabled: true,
+              status: 'running',
+              cpu: 15 + Math.random() * 20,
+              memory: 100 + Math.random() * 200,
+              fps: Math.floor(15 + Math.random() * 30)
+            };
+          }
+          return proc;
+        }));
+        
+        console.log('✅ Successfully started:', process.script);
+      }
+    } catch (error) {
+      console.error('❌ Failed to toggle Python process:', error);
+      
+      // Revert the status on error
+      setPythonProcesses(prev => prev.map(proc => {
+        if (proc.id === processId) {
           return {
             ...proc,
-            enabled: newEnabled,
-            status: newEnabled ? 'running' : 'stopped',
-            cpu: newEnabled ? 15 + Math.random() * 20 : 0,
-            memory: newEnabled ? 100 + Math.random() * 200 : 0,
-            fps: newEnabled ? Math.floor(15 + Math.random() * 30) : 0
+            status: process.enabled ? 'running' : 'stopped'
           };
         }
         return proc;
       }));
-    } catch (error) {
-      console.error('Failed to toggle Python process:', error);
+      
+      // Show user-friendly error message
+      alert(`Failed to ${process.enabled ? 'stop' : 'start'} ${process.name}: ${error instanceof Error ? error.message : String(error)}`);
     }
   };
 

@@ -50,12 +50,12 @@ const STANDARD_DOM_PROPS = new Set([
 
 // Custom props that are commonly used in the DAWN ecosystem
 const DAWN_CUSTOM_PROPS = new Set([
-  'globalEntropy', 'consciousnessLevel', 'quantumState', 'neuralActivity',
+  'globalEntropy', 'consciousnessLevel', 'consciousnessState', 'neuralActivity',
   'entropyLevel', 'breathingPreset', 'floatingPreset', 'syncGroup',
   'orbitalGroup', 'moduleId', 'groupId', 'isActive', 'isCritical',
   'enableFloating', 'enableBreathing', 'glowIntensity', 'particleCount',
   'connectionPorts', 'dataFlow', 'processingLoad', 'healthStatus',
-  'quantumCoherence', 'memoryFragments', 'tickNumber', 'scup', 'entropy',
+  'systemUnity', 'memoryFragments', 'tickNumber', 'scup', 'entropy',
   'mood', 'motionProps', 'emitter', 'animationControls', 'allModules'
 ]);
 

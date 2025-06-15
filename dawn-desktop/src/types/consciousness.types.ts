@@ -3,9 +3,10 @@ export interface ConsciousnessState {
   entropy: number;
   mood: string;
   neuralActivity: number;
-  quantumCoherence: number;
+  systemUnity: number;
   memoryPressure: number;
   timestamp: number;
+  tick: number; // Added for Cairrn cache compatibility
 }
 
 export interface TickData {
@@ -15,7 +16,7 @@ export interface TickData {
   entropy: number;
   mood: string;
   neural_activity: number;
-  quantum_coherence: number;
+  consciousness_unity: number;
   memory_pressure: number;
   active_processes: string[];
 } 

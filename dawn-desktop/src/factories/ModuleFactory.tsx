@@ -15,7 +15,7 @@ export interface ModuleConfig {
 // Dynamic imports for module components (must have default export)
 const moduleComponents: Record<string, React.LazyExoticComponent<React.ComponentType<any>>> = {
   NeuralProcessor: React.lazy(() => import('../components/modules/NeuralProcessor').then(m => ({ default: m.default }))),
-  QuantumCore: React.lazy(() => import('../components/modules/QuantumCore').then(m => ({ default: m.default }))),
+  ConsciousnessCore: React.lazy(() => import('../components/modules/ConsciousnessCore').then(m => ({ default: m.default }))),
   SystemMonitor: React.lazy(() => import('../components/modules/SystemMonitor').then(m => ({ default: m.default })))
 }
 

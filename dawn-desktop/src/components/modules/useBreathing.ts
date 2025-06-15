@@ -2,7 +2,7 @@ import { useEffect, useRef, useState, useMemo } from 'react'
 import { useAnimationFrame } from 'framer-motion'
 import type { MotionProps } from 'framer-motion'
 
-export type BreathingPreset = 'calm' | 'active' | 'critical' | 'quantum' | 'heartbeat'
+export type BreathingPreset = 'calm' | 'active' | 'critical' | 'consciousness' | 'heartbeat'
 
 interface BreathingConfig {
   scale: { min: number; max: number }
@@ -49,7 +49,7 @@ const BREATHING_PRESETS: Record<BreathingPreset, BreathingConfig> = {
     glowIntensity: 60,
     glowColor: 'rgba(236, 72, 153, 0.6)'
   },
-  quantum: {
+  consciousness: {
     scale: { min: 0.97, max: 1.03 },
     opacity: { min: 0.92, max: 1 },
     duration: 3000,

@@ -16,6 +16,8 @@ from datetime import datetime, timezone
 from typing import Dict, List, Tuple, Optional
 from pathlib import Path
 import numpy as np
+import matplotlib
+matplotlib.use('Agg')
 
 # Visualization imports
 try:
@@ -323,64 +325,23 @@ def render_drift_vector_field(bloom_field: List[Dict], tick: int) -> Optional[st
     return renderer.render_field(bloom_field, tick)
 
 
-# Example usage and testing
-if __name__ == "__main__":
-    # Create sample bloom field data
+def main(*args, **kwargs):
+    output_dir = "visual/outputs/drift_vector_field"
+    os.makedirs(output_dir, exist_ok=True)
+    # Example sample_bloom_field for testing
     sample_bloom_field = [
         {
             "bloom_id": "bloom_001",
             "x": 0.2,
             "y": 0.3,
-            "drift_vector": {"magnitude": 0.15, "direction": math.pi/4},
+            "drift_vector": {"magnitude": 0.15, "direction": 0.785},
             "mood_valence": 0.8,
             "lineage_depth": 5
-        },
-        {
-            "bloom_id": "bloom_002",
-            "x": 0.5,
-            "y": 0.5,
-            "drift_vector": {"magnitude": 0.1, "direction": math.pi},
-            "mood_valence": -0.3,
-            "lineage_depth": 2
-        },
-        {
-            "bloom_id": "bloom_003",
-            "x": 0.7,
-            "y": 0.8,
-            "drift_vector": {"magnitude": 0.2, "direction": -math.pi/3},
-            "mood_valence": 0.5,
-            "lineage_depth": 8
-        },
-        {
-            "bloom_id": "bloom_004",
-            "x": 0.4,
-            "y": 0.2,
-            "drift_vector": {"magnitude": 0.05, "direction": math.pi/2},
-            "mood_valence": -0.6,
-            "lineage_depth": 1
-        },
-        {
-            "bloom_id": "bloom_005",
-            "x": 0.8,
-            "y": 0.4,
-            "drift_vector": {"magnitude": 0.25, "direction": -math.pi/6},
-            "mood_valence": 0.9,
-            "lineage_depth": 12
-        },
-        {
-            "bloom_id": "bloom_006",
-            "x": 0.3,
-            "y": 0.7,
-            "drift_vector": {"magnitude": 0.12, "direction": 3*math.pi/4},
-            "mood_valence": 0.0,
-            "lineage_depth": 4
         }
     ]
-    
-    # Render vector field
-    output_path = render_drift_vector_field(sample_bloom_field, tick=1500)
-    
-    if output_path:
-        print(f"Drift vector field rendered: {output_path}")
-    else:
-        print("Failed to render drift vector field")
+    output_path = render_drift_vector_field(sample_bloom_field, tick=0)
+    print(f"✅ Saved drift vector field to {output_path}")
+
+
+if __name__ == "__main__":
+    main()

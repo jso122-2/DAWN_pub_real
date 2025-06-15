@@ -61,7 +61,7 @@ const TickLoopMonitor: React.FC<TickLoopMonitorProps> = ({
   const connectWebSocket = useCallback(() => {
     try {
       // In production, use actual WebSocket URL
-      // wsRef.current = new WebSocket('ws://localhost:8000/ws/tick');
+      // wsRef.current = new WebSocket('ws://localhost:8001/ws/tick');
       
       // For demo, simulate WebSocket connection
       setIsConnected(true);

@@ -7,7 +7,7 @@ interface Module {
   name: string;
   icon: React.ComponentType<{ className?: string }>;
   preview?: React.ReactNode;
-  category: 'neural' | 'quantum' | 'process' | 'monitoring' | 'diagnostic';
+  category: 'neural' | 'consciousness' | 'process' | 'monitoring' | 'diagnostic';
   color: string;
   description: string;
 }
@@ -29,12 +29,12 @@ const defaultModules: Module[] = [
     description: 'Consciousness processing network'
   },
   {
-    id: 'quantum-core',
-    name: 'Quantum Core',
+    id: 'consciousness-core',
+    name: 'Consciousness Core',
     icon: Zap,
-    category: 'quantum',
+    category: 'consciousness',
     color: '#06b6d4',
-    description: 'Quantum state processor'
+    description: 'Consciousness state processor'
   },
   {
     id: 'process-engine',

@@ -1,77 +1,86 @@
 import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
-import { mainWebSocket } from '@/services/websocket/WebSocketService';
-import { ConsciousnessState, TickData } from '@/types/consciousness.types';
+import { webSocketService } from '../services/websocket/WebSocketService';
+import type { TickData, ConsciousnessData } from '../services/websocket/WebSocketService';
 
-interface ConsciousnessContextValue {
-  state: ConsciousnessState;
-  tickHistory: TickData[];
+interface ConsciousnessState {
+  scup: number;
+  entropy: number;
+  mood: string;
+  tickNumber: number;
+  memoryUsage: number;
+  neuralActivity: number;
+  systemUnity: number;
   isConnected: boolean;
-  updateState: (updates: Partial<ConsciousnessState>) => void;
+}
+
+interface ConsciousnessContextType extends ConsciousnessState {
+  updateConsciousness: (updates: Partial<ConsciousnessState>) => void;
+  reset: () => void;
 }
 
 const defaultState: ConsciousnessState = {
   scup: 50,
-  entropy: 0.5,
-  mood: 'contemplative',
+  entropy: 0.3,
+  mood: 'calm',
+  tickNumber: 0,
+  memoryUsage: 0,
   neuralActivity: 0.5,
-  quantumCoherence: 0.5,
-  memoryPressure: 0.3,
-  timestamp: Date.now(),
+  systemUnity: 0.8,
+  isConnected: false
 };
 
-const ConsciousnessContext = createContext<ConsciousnessContextValue | null>(null);
+const ConsciousnessContext = createContext<ConsciousnessContextType>({
+  ...defaultState,
+  updateConsciousness: () => {},
+  reset: () => {}
+});
 
 export const ConsciousnessProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [state, setState] = useState<ConsciousnessState>(defaultState);
-  const [tickHistory, setTickHistory] = useState<TickData[]>([]);
-  const [isConnected, setIsConnected] = useState(false);
-
+  
   useEffect(() => {
-    // Connect to WebSocket
-    mainWebSocket.connect();
-
-    // Handle connection events
-    mainWebSocket.on('connected', () => {
-      setIsConnected(true);
-      console.log('Connected to consciousness engine');
-    });
-
-    mainWebSocket.on('disconnected', () => {
-      setIsConnected(false);
-      console.log('Disconnected from consciousness engine');
-    });
-
-    // Handle tick data
-    mainWebSocket.on('tick', (data: TickData) => {
-      setState({
+    // Subscribe to WebSocket events
+    const unsubscribeTick = webSocketService.on('tick', (data: TickData) => {
+      setState(prev => ({
+        ...prev,
         scup: data.scup,
         entropy: data.entropy,
         mood: data.mood,
-        neuralActivity: data.neural_activity,
-        quantumCoherence: data.quantum_coherence,
-        memoryPressure: data.memory_pressure,
-        timestamp: data.timestamp,
-      });
-
-      setTickHistory(prev => {
-        const newHistory = [...prev, data];
-        // Keep only last 1000 ticks
-        return newHistory.slice(-1000);
-      });
+        tickNumber: data.tick_count
+      }));
     });
-
+    
+    const unsubscribeConsciousness = webSocketService.on('consciousness', (data: ConsciousnessData) => {
+      setState(prev => ({
+        ...prev,
+        memoryUsage: data.memory_usage,
+        neuralActivity: data.neural_activity,
+        systemUnity: data.consciousness_unity
+      }));
+    });
+    
+    const unsubscribeConnection = webSocketService.onConnectionChange((connected) => {
+      setState(prev => ({ ...prev, isConnected: connected }));
+    });
+    
     return () => {
-      mainWebSocket.disconnect();
-      mainWebSocket.removeAllListeners();
+      unsubscribeTick();
+      unsubscribeConsciousness();
+      unsubscribeConnection();
     };
   }, []);
-
-  const updateState = useCallback((updates: Partial<ConsciousnessState>) => {
+  
+  const updateConsciousness = useCallback((updates: Partial<ConsciousnessState>) => {
     setState(prev => ({ ...prev, ...updates }));
   }, []);
-
+  
+  const reset = useCallback(() => {
+    setState(defaultState);
+    webSocketService.send('consciousness_reset', {});
+  }, []);
+  
   return (
-    <ConsciousnessContext.Provider value={{ state, tickHistory, isConnected, updateState }}>
+    <ConsciousnessContext.Provider value={{ ...state, updateConsciousness, reset }}>
       {children}
     </ConsciousnessContext.Provider>
   );
@@ -81,14 +90,6 @@ export const useConsciousness = () => {
   const context = useContext(ConsciousnessContext);
   if (!context) {
     throw new Error('useConsciousness must be used within ConsciousnessProvider');
-  }
-  return context.state;
-};
-
-export const useConsciousnessContext = () => {
-  const context = useContext(ConsciousnessContext);
-  if (!context) {
-    throw new Error('useConsciousnessContext must be used within ConsciousnessProvider');
   }
   return context;
 }; 

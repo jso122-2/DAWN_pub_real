@@ -46,7 +46,7 @@ class BreathingSyncManager {
   }
 }
 
-export type BreathingPreset = 'calm' | 'active' | 'critical' | 'quantum' | 'dormant';
+export type BreathingPreset = 'calm' | 'active' | 'critical' | 'consciousness' | 'dormant';
 
 interface BreathingConfig {
   duration: number;
@@ -95,7 +95,7 @@ const BREATHING_CONFIGS: Record<BreathingPreset, BreathingConfig> = {
     blur: { min: 0, max: 3 },
     glow: { min: 0.4, max: 1.5 }
   },
-  quantum: {
+  consciousness: {
     duration: 3,
     scale: { min: 0.97, max: 1.05 },
     opacity: { min: 0.7, max: 1 },
@@ -164,7 +164,7 @@ export function useBreathing({
     const params = getBreathingParams();
     
     if (config.irregular) {
-      // Quantum irregular breathing pattern
+      // Consciousness irregular breathing pattern
       return {
         inhale: {
           scale: [

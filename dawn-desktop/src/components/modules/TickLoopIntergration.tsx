@@ -19,7 +19,7 @@ import { getPythonExecutor, ProcessHandle, OutputChunk, ResourceMetrics } from '
 interface TickData {
   id: string;
   timestamp: number;
-  type: 'neural' | 'quantum' | 'genomic' | 'system';
+  type: 'neural' | 'consciousness' | 'genomic' | 'system';
   value: number;
   metadata?: Record<string, any>;
 }
@@ -69,8 +69,8 @@ const PythonBridge: React.FC<PythonBridgeProps> = ({
   const dataRateCounter = useRef(0);
   const executor = useRef(getPythonExecutor());
   
-  // API base URL
-  const API_BASE = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+  // API configuration
+  const API_BASE = process.env.REACT_APP_API_URL || 'http://localhost:8001';
   
   // Initialize bridge
   useEffect(() => {
@@ -268,7 +268,7 @@ const PythonBridge: React.FC<PythonBridgeProps> = ({
   const detectDataType = (data: any): TickData['type'] => {
     if (data.type) return data.type;
     if (data.neural || data.neurons) return 'neural';
-    if (data.quantum || data.qubits) return 'quantum';
+    if (data.consciousness || data.qubits) return 'consciousness';
     if (data.sequence || data.genome) return 'genomic';
     return 'system';
   };

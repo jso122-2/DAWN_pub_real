@@ -14,6 +14,7 @@ from datetime import datetime
 from dataclasses import dataclass, asdict
 from typing import Dict, List, Optional
 from pathlib import Path
+import numpy as np
 
 @dataclass
 class SchemaState:
@@ -265,6 +266,31 @@ class DataLogger:
             json.dump(session_summary, f, indent=2, ensure_ascii=False)
         
         return session_summary
+
+    def save_visual_data(self, data_dict):
+        """Save all required .npy/.npz files for visual processes to data/ directory"""
+        data_dir = Path('data')
+        data_dir.mkdir(exist_ok=True)
+        # Save each file if present in data_dict
+        if 'attention_matrix' in data_dict:
+            np.save(data_dir / 'attention_matrix.npy', data_dict['attention_matrix'])
+        if 'activations' in data_dict:
+            np.save(data_dir / 'activations.npy', data_dict['activations'])
+        if 'loss_surface' in data_dict:
+            # Should be a dict with X, Y, Z, path_x, path_y
+            np.savez(data_dir / 'loss_surface.npz', **data_dict['loss_surface'])
+        if 'spike_trains' in data_dict:
+            np.save(data_dir / 'spike_trains.npy', data_dict['spike_trains'])
+        if 'latent_trajectory' in data_dict:
+            np.save(data_dir / 'latent_trajectory.npy', data_dict['latent_trajectory'])
+        if 'correlation_data' in data_dict:
+            np.save(data_dir / 'correlation_data.npy', data_dict['correlation_data'])
+        if 'state_transitions' in data_dict:
+            np.save(data_dir / 'state_transitions.npy', data_dict['state_transitions'])
+        if 'anomaly_signal' in data_dict:
+            np.save(data_dir / 'anomaly_signal.npy', data_dict['anomaly_signal'])
+        if 'anomaly_flags' in data_dict:
+            np.save(data_dir / 'anomaly_flags.npy', data_dict['anomaly_flags'])
 
 class PulseHeatManager:
     def __init__(self, initial_heat: float = 2.74, logger: DataLogger = None):

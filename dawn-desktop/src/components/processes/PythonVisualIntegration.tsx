@@ -38,7 +38,7 @@ const PythonVisualIntegration: React.FC<PythonVisualIntegrationProps> = ({ activ
   // Set stream URL based on active processes
   useEffect(() => {
     const baseUrl = window.location.hostname === 'localhost' 
-      ? 'http://localhost:8080'
+      ? 'http://localhost:8001'
       : `https://${window.location.hostname}`;
     const activeStreamUrl = activeProcesses.find(p => p.enabled && p.script)?.streamUrl;
     if (activeStreamUrl) {

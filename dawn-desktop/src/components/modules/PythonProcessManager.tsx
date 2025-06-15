@@ -30,7 +30,7 @@ import type { TickData, PythonProcess } from '@/services/DAWNApiClient';
  * ```
  * 
  * ## Features:
- * - 🧬 **5 Scientific Categories**: Genomic Processing, Neural Networks, Quantum Simulations, Data Analysis, System Diagnostics
+ * - 🧬 **5 Scientific Categories**: Genomic Processing, Neural Networks, Consciousness Simulations, Data Analysis, System Diagnostics
  * - 🎮 **Interactive Controls**: Play, stop, parameter input, real-time monitoring
  * - 📺 **Live Terminal**: Real-time output with syntax highlighting and auto-scroll
  * - 📊 **Process Tracking**: Status indicators, progress bars, execution history
@@ -40,7 +40,7 @@ import type { TickData, PythonProcess } from '@/services/DAWNApiClient';
  * ## Process Categories:
  * - **Genomic Processing**: DNA/RNA analysis, protein synthesis, RNA folding
  * - **Neural Networks**: Consciousness mapping, neural evolution, dream generation
- * - **Quantum Simulations**: Quantum entanglement, superposition visualization
+ * - **Consciousness Simulations**: Correlation networks, multi-state visualization
  * - **Data Analysis**: Pattern recognition, chaos analysis, statistical functions
  * - **System Diagnostics**: Health monitoring, memory analysis, performance tracking
  * 
@@ -142,11 +142,11 @@ const tickProcesses: TickAwareProcess[] = [
     impact: { scup: 0.15, entropy: -0.05 }
   },
   {
-    script: "quantum_entangler.py",
-    description: "Creates quantum entanglements for coherence",
-    category: "Quantum Operations",
+    script: "consciousness_entangler.py",
+    description: "Creates consciousness correlations for unity",
+    category: "Consciousness Operations",
     triggers: { onSCUP: { operator: '>', value: 0.8 } },
-    params: { entanglement_strength: 0.9, coherence_target: 0.95 },
+    params: { correlation_strength: 0.9, unity_target: 0.95 },
     impact: { scup: 0.1, entropy: 0.05 }
   },
   {
@@ -175,7 +175,7 @@ const categoryIcons: Record<string, React.ReactNode> = {
   "Consciousness Analysis": <Brain className="w-4 h-4" />,
   "System Optimization": <Cpu className="w-4 h-4" />,
   "Mood Management": <Smile className="w-4 h-4" />,
-  "Quantum Operations": <Zap className="w-4 h-4" />,
+  "Consciousness Operations": <Zap className="w-4 h-4" />,
   "Signal Processing": <Activity className="w-4 h-4" />
 };
 
@@ -200,7 +200,7 @@ const PythonProcessManager: React.FC<PythonProcessManagerProps> = ({
     mood: 'calm' as const,
     timestamp: Date.now(),
     neural_activity: 0.5,
-    coherence_level: 0.5,
+    unity_level: 0.5,
     memory_fragments: 0
   };
 

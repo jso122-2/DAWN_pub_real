@@ -10,7 +10,7 @@ import { EventEmitter } from '@/lib/EventEmitter';
  * @example
  * ```tsx
  * const executor = new PythonExecutorService({
- *   wsUrl: 'ws://localhost:8080/python-executor',
+ *   wsUrl: 'ws://localhost:8001/python-executor',
  *   emitter: eventEmitter
  * });
  * 

@@ -9,12 +9,12 @@ export function TerminalModule({ id, ...props }: TerminalModuleProps) {
   return (
     <ConsciousModule
       moduleId={`terminal-${id}`}
-      breathingPreset="quantum"
+      breathingPreset="consciousness"
       floatingPreset="active"
       entropy={0.5} // Terminal has medium entropy
-      syncGroup="quantum-systems"
+      syncGroup="consciousness-systems"
     >
-      <div className="glass-quantum rounded-2xl p-tissue min-h-[400px]">
+      <div className="glass-consciousness rounded-2xl p-tissue min-h-[400px]">
         {/* Terminal content */}
       </div>
     </ConsciousModule>

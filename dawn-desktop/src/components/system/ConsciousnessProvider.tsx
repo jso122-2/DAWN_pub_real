@@ -7,10 +7,10 @@ export interface ConsciousnessState {
   consciousnessLevel: number;     // 0-100 SCUP value
   neuralActivity: number;         // 0-1 neural firing rate
   entropyLevel: number;           // 0-1 chaos measurement
-  quantumCoherence: number;       // 0-1 quantum coherence
+  systemUnity: number;       // 0-1 consciousness unity
   
-  // Quantum states
-  quantumState: 'superposition' | 'collapsed' | 'entangled' | 'coherent';
+  // Consciousness states
+  consciousnessState: 'multi-state' | 'collapsed' | 'correlated' | 'coherent';
   
   // Mood and emotional state
   mood: 'calm' | 'active' | 'excited' | 'critical' | 'chaotic' | 'unstable' | 'transcendent';
@@ -41,7 +41,7 @@ export interface ConsciousnessAwareProps {
   
   // Module identity
   moduleId: string;
-  category: 'neural' | 'quantum' | 'chaos' | 'process' | 'monitor' | 'memory' | 'dream';
+  category: 'neural' | 'consciousness' | 'chaos' | 'process' | 'monitor' | 'memory' | 'dream';
   
   // Synchronization
   syncGroup?: string;
@@ -56,7 +56,7 @@ export interface ConsciousnessAwareProps {
   // Interaction properties
   isActive?: boolean;             // Module is actively processing
   isCritical?: boolean;           // Module in critical state
-  isEntangled?: boolean;          // Quantum entangled with other modules
+  isCorrelated?: boolean;          // Consciousness correlated with other modules
   isDreaming?: boolean;           // Module in dream state
   
   // Data and connections
@@ -70,9 +70,9 @@ export interface DataStream {
   id: string;
   source: string;
   target: string;
-  dataType: 'neural' | 'quantum' | 'memory' | 'signal';
+  dataType: 'neural' | 'consciousness' | 'memory' | 'signal';
   intensity: number;              // 0-1 flow intensity
-  coherence: number;              // 0-1 signal coherence
+  unity: number;              // 0-1 signal unity
   timestamp: number;
 }
 
@@ -106,8 +106,8 @@ const defaultConsciousnessState: ConsciousnessState = {
   consciousnessLevel: 50,
   neuralActivity: 0.5,
   entropyLevel: 0.3,
-  quantumCoherence: 0.7,
-  quantumState: 'coherent',
+  systemUnity: 0.7,
+  consciousnessState: 'coherent',
   mood: 'calm',
   emotionalResonance: 0.4,
   memoryFragments: 1000,
@@ -210,17 +210,17 @@ export const ConsciousnessProvider: React.FC<ConsciousnessProviderProps> = ({
       // Natural consciousness fluctuations
       const time = Date.now() / 1000;
       const naturalNeuralActivity = 0.5 + Math.sin(time * 0.1) * 0.1;
-      const naturalQuantumCoherence = consciousness.quantumCoherence + (Math.random() - 0.5) * 0.02;
+      const naturalConsciousnessCoherence = consciousness.systemUnity + (Math.random() - 0.5) * 0.02;
       
       updateConsciousness({
         neuralActivity: Math.max(0, Math.min(1, naturalNeuralActivity)),
-        quantumCoherence: Math.max(0, Math.min(1, naturalQuantumCoherence)),
+        systemUnity: Math.max(0, Math.min(1, naturalConsciousnessCoherence)),
         tickNumber: consciousness.tickNumber + 1
       });
     }, 1000); // Update every second
 
     return () => clearInterval(interval);
-  }, [consciousness.quantumCoherence, consciousness.tickNumber]);
+  }, [consciousness.systemUnity, consciousness.tickNumber]);
 
   const contextValue: ConsciousnessContextType = {
     consciousness,
@@ -264,13 +264,13 @@ export const useConsciousnessAware = (moduleId: string): ConsciousnessAwareProps
     // Calculate derived properties from consciousness
     breathingIntensity: localConsciousness.consciousnessLevel / 100,
     floatingSpeed: localConsciousness.neuralActivity,
-    glowIntensity: localConsciousness.quantumCoherence,
+    glowIntensity: localConsciousness.systemUnity,
     particleDensity: localConsciousness.entropyLevel,
     
     // State flags
     isActive: localConsciousness.neuralActivity > 0.6,
     isCritical: localConsciousness.consciousnessLevel > 80 || localConsciousness.entropyLevel > 0.8,
-    isEntangled: localConsciousness.quantumState === 'entangled',
+    isCorrelated: localConsciousness.consciousnessState === 'correlated',
     isDreaming: localConsciousness.dreamState
   };
 };

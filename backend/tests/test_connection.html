@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DAWN WebSocket Connection Test</title>
+    <style>
+        body {
+            background: #000;
+            color: #00ff88;
+            font-family: 'Courier New', monospace;
+            padding: 20px;
+        }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        .connected { background: rgba(0, 255, 136, 0.2); }
+        .disconnected { background: rgba(255, 68, 68, 0.2); }
+        .data {
+            background: rgba(0, 136, 255, 0.1);
+            padding: 10px;
+            margin: 5px 0;
+            border-left: 3px solid #0088ff;
+        }
+        .metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin: 20px 0;
+        }
+        .metric {
+            background: rgba(0, 255, 136, 0.1);
+            padding: 15px;
+            border-radius: 5px;
+            text-align: center;
+        }
+        .value {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>🌊 DAWN WebSocket Connection Test</h1>
+    
+    <div id="status" class="status disconnected">
+        ❌ Disconnected from ws://localhost:8001
+    </div>
+    
+    <div class="metrics">
+        <div class="metric">
+            <div>SCUP</div>
+            <div id="scup" class="value">--</div>
+        </div>
+        <div class="metric">
+            <div>Entropy</div>
+            <div id="entropy" class="value">--</div>
+        </div>
+        <div class="metric">
+            <div>Tick Count</div>
+            <div id="tick" class="value">--</div>
+        </div>
+        <div class="metric">
+            <div>Mood</div>
+            <div id="mood" class="value">--</div>
+        </div>
+    </div>
+    
+    <h3>📡 Live Data Stream:</h3>
+    <div id="log" style="height: 300px; overflow-y: auto; background: rgba(0,0,0,0.5); padding: 10px; border-radius: 5px;"></div>
+    
+    <script>
+        const statusEl = document.getElementById('status');
+        const logEl = document.getElementById('log');
+        const scupEl = document.getElementById('scup');
+        const entropyEl = document.getElementById('entropy');
+        const tickEl = document.getElementById('tick');
+        const moodEl = document.getElementById('mood');
+        
+        let ws;
+        let tickCount = 0;
+        
+        function log(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const div = document.createElement('div');
+            div.className = 'data';
+            div.innerHTML = `<strong>[${timestamp}]</strong> ${message}`;
+            logEl.appendChild(div);
+            logEl.scrollTop = logEl.scrollHeight;
+            
+            // Keep only last 50 messages
+            while (logEl.children.length > 50) {
+                logEl.removeChild(logEl.firstChild);
+            }
+        }
+        
+        function connect() {
+            try {
+                ws = new WebSocket('ws://localhost:8001');
+                
+                ws.onopen = () => {
+                    statusEl.textContent = '✅ Connected to ws://localhost:8001';
+                    statusEl.className = 'status connected';
+                    log('🔌 WebSocket connection established');
+                };
+                
+                ws.onmessage = (event) => {
+                    try {
+                        const data = JSON.parse(event.data);
+                        
+                        if (data.type === 'tick' && data.data) {
+                            tickCount++;
+                            const tickData = data.data;
+                            
+                            // Update metrics
+                            scupEl.textContent = (tickData.scup * 100).toFixed(1) + '%';
+                            entropyEl.textContent = tickData.entropy.toFixed(3);
+                            tickEl.textContent = tickData.tick_number || tickCount;
+                            moodEl.textContent = tickData.mood || 'unknown';
+                            
+                            // Log every 10th tick to avoid spam
+                            if (tickCount % 10 === 0) {
+                                log(`📊 Tick #${tickData.tick_number}: SCUP=${(tickData.scup * 100).toFixed(1)}%, Entropy=${tickData.entropy.toFixed(3)}, Mood=${tickData.mood}`);
+                            }
+                        } else if (data.type === 'connection') {
+                            log(`🎯 Server connection data: ${JSON.stringify(data.data)}`);
+                        } else if (data.type === 'subprocess_list') {
+                            log(`🔧 Subprocess list received: ${data.data.length} processes`);
+                        } else {
+                            log(`📦 Received: ${data.type}`);
+                        }
+                    } catch (e) {
+                        log(`❌ Parse error: ${e.message}`);
+                    }
+                };
+                
+                ws.onerror = (error) => {
+                    log(`❌ WebSocket error: ${error}`);
+                };
+                
+                ws.onclose = () => {
+                    statusEl.textContent = '❌ Disconnected from ws://localhost:8001';
+                    statusEl.className = 'status disconnected';
+                    log('🔌 WebSocket connection closed. Reconnecting in 3 seconds...');
+                    setTimeout(connect, 3000);
+                };
+                
+            } catch (error) {
+                log(`❌ Connection failed: ${error.message}`);
+                setTimeout(connect, 3000);
+            }
+        }
+        
+        // Start connection
+        connect();
+        
+        // Add some helpful info
+        log('🌟 DAWN WebSocket Test Page Loaded');
+        log('🔗 Attempting to connect to ws://localhost:8001');
+        log('📈 This page will show real-time consciousness data from your DAWN tick engine');
+    </script>
+</body>
+</html> 

@@ -55,7 +55,7 @@ print('{"type": "neural", "value": 0.87, "neurons": 128}')
 ### Type Detection
 Automatically categorizes data:
 - **Neural**: AI/ML training data, neuron activity
-- **Quantum**: Quantum simulations, qubit states
+- **Consciousness**: Consciousness simulations, qubit states
 - **Genomic**: DNA sequences, genetic algorithms
 - **System**: Progress, performance metrics
 

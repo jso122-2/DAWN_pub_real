@@ -214,7 +214,7 @@ export function useOwlState(options: UseOwlStateOptions = {}) {
 
   const requestPlans = useCallback(() => {
     // This would be a REST API call since plans are less frequently updated
-    fetch('http://localhost:8000/api/owl/plans')
+    fetch('http://localhost:8001/api/owl/plans')
       .then(response => response.json())
       .then(data => {
         if (data.plans) {
@@ -228,7 +228,7 @@ export function useOwlState(options: UseOwlStateOptions = {}) {
   }, [onError]);
 
   const requestSchemaAlignments = useCallback(() => {
-    return fetch('http://localhost:8000/api/owl/schemas')
+    return fetch('http://localhost:8001/api/owl/schemas')
       .then(response => response.json())
       .catch(error => {
         console.error('Failed to fetch schema alignments:', error);

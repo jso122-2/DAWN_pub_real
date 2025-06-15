@@ -108,7 +108,7 @@ These props should NOT be passed to DOM elements:
 
 - `globalEntropy`
 - `consciousnessLevel` 
-- `quantumState`
+- `consciousnessState`
 - `neuralActivity`
 - `entropyLevel`
 - `breathingPreset`

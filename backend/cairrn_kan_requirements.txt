@@ -1,0 +1,59 @@
+# KAN-Cairrn Integration System Requirements
+# Core scientific computing
+numpy>=1.21.0
+scipy>=1.7.0
+
+# Neural network and machine learning
+torch>=1.11.0  # For advanced spline computations if needed
+scikit-learn>=1.0.0  # For feature processing
+
+# Graph processing for KAN topology
+networkx>=2.6
+
+# Web framework and API
+fastapi>=0.70.0
+uvicorn>=0.15.0  # ASGI server for FastAPI
+websockets>=10.0  # For real-time visualization
+
+# HTTP client
+httpx>=0.23.0  # For Claude API integration
+requests>=2.28.0  # Alternative HTTP client
+
+# Configuration and serialization
+pydantic>=1.9.0  # Data validation (included with FastAPI)
+pyyaml>=6.0  # For YAML configuration
+toml>=0.10.2  # For TOML configuration support
+
+# Data persistence and caching
+redis>=4.0.0  # Optional caching backend
+sqlite3  # Built-in with Python (for local storage)
+
+# Async support
+asyncio  # Built-in with Python
+aiofiles>=0.8.0  # Async file operations
+
+# Logging and monitoring
+structlog>=22.0.0  # Structured logging
+prometheus-client>=0.14.0  # Optional metrics
+
+# Date and time
+python-dateutil>=2.8.0
+
+# Optional visualization dependencies
+matplotlib>=3.5.0  # For plotting spline functions
+plotly>=5.0.0  # Interactive visualizations
+dash>=2.0.0  # Web-based dashboards
+
+# Development and testing
+pytest>=7.0.0
+pytest-asyncio>=0.19.0  # For testing async functions
+black>=22.0.0  # Code formatting
+flake8>=4.0.0  # Linting
+
+# Jupyter support (optional)
+jupyter>=1.0.0
+ipywidgets>=7.6.0  # For interactive notebooks
+
+# Performance optimization
+numba>=0.56.0  # JIT compilation for numerical functions
+cython>=0.29.0  # Optional C extensions 

@@ -89,7 +89,7 @@ export function debugComponentProps(
       
       // Highlight DAWN-specific props that might cause issues
       const dawnProps = customProps.filter(key => 
-        ['globalEntropy', 'consciousnessLevel', 'quantumState', 'entropyLevel', 'motionProps'].includes(key)
+        ['globalEntropy', 'consciousnessLevel', 'consciousnessState', 'entropyLevel', 'motionProps'].includes(key)
       );
       
       if (dawnProps.length > 0) {
@@ -119,7 +119,7 @@ export function checkPropPatterns(
   }
   
   // Check for DAWN custom props
-  const dawnProps = ['globalEntropy', 'consciousnessLevel', 'quantumState'];
+  const dawnProps = ['globalEntropy', 'consciousnessLevel', 'consciousnessState'];
   const foundDawnProps = dawnProps.filter(prop => props.hasOwnProperty(prop));
   if (foundDawnProps.length > 0) {
     issues.push(`DAWN custom props detected: ${foundDawnProps.join(', ')}`);

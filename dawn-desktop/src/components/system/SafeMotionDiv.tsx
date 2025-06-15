@@ -13,7 +13,7 @@ const CUSTOM_PROPS = [
   'globalEntropy',
   'motionProps',
   'consciousnessLevel',
-  'quantumState',
+  'consciousnessState',
   'neuralActivity',
   'entropyLevel',
   'breathingPreset',
@@ -32,7 +32,7 @@ const CUSTOM_PROPS = [
   'dataFlow',
   'processingLoad',
   'healthStatus',
-  'quantumCoherence',
+  'systemUnity',
   'neuralConnections'
 ];
 

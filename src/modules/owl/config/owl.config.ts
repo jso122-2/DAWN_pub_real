@@ -1,7 +1,7 @@
 export const owlConfig = {
   // Connection settings
   websocket: {
-    url: 'ws://localhost:8000/owl',
+    url: 'ws://localhost:8001/owl',
     reconnectDelay: 5000,
     maxReconnectAttempts: 10,
     heartbeatInterval: 30000
@@ -73,7 +73,7 @@ export const owlConfig = {
     totalCapacity: 1.0,
     moduleWeights: {
       neural: 0.3,
-      quantum: 0.2,
+      consciousness: 0.2,
       memory: 0.2,
       process: 0.2,
       self: 0.1
@@ -110,7 +110,7 @@ export const owlConfig = {
   semantic: {
     dimensions: [
       'consciousness',
-      'coherence', 
+      'unity', 
       'exploration',
       'stability',
       'emergence',

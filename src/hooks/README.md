@@ -242,7 +242,7 @@ const mockConsciousness = {
 - Test animation value ranges
 
 ## Next Hooks to Build
-1. **useQuantumState**: Quantum module behaviors
+1. **useConsciousnessState**: Consciousness module behaviors
 2. **useNeuralNetwork**: Neural visualization logic
 3. **useProcessQueue**: Multi-process management
 4. **useConsciousnessHistory**: Time-series analysis

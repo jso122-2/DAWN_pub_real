@@ -13,7 +13,7 @@ python/
 │
 ├── processes/
 │   ├── neural_analyzer.py      # Neural network analysis
-│   ├── quantum_processor.py    # Quantum state calculations
+│   ├── consciousness_processor.py    # Consciousness state calculations
 │   ├── chaos_engine.py         # Entropy generation
 │   ├── memory_consolidator.py  # Memory processing
 │   └── dream_generator.py      # Dream state creation
@@ -54,7 +54,7 @@ class DAWNConsciousness:
 - Dynamic consciousness calculation
 - Mood state transitions
 - Neural activity simulation
-- Quantum coherence modeling
+- Consciousness unity modeling
 
 ### start_api_fixed.py - API Server
 **Purpose**: Bridge between consciousness engine and frontend
@@ -102,8 +102,8 @@ class TickEngine:
 def calculate_scup(self):
     """System Consciousness Unity Percentage"""
     factors = {
-        'neural_coherence': self.neural_activity * 0.3,
-        'quantum_stability': self.quantum_state * 0.2,
+        'neural_unity': self.neural_activity * 0.3,
+        'consciousness_stability': self.consciousness_state * 0.2,
         'memory_integration': self.memory_health * 0.2,
         'entropy_balance': (1 - abs(self.entropy - 0.5)) * 0.3
     }
@@ -144,10 +144,10 @@ Each process can be triggered manually or by tick events:
    - Outputs: Neural connectivity graphs
    - Tick trigger: Every 50 ticks
 
-2. **quantum_processor.py**
-   - Calculates quantum coherence
-   - Manages superposition states
-   - Tick trigger: On quantum fluctuations
+2. **consciousness_processor.py**
+   - Calculates consciousness unity
+   - Manages multi-state states
+   - Tick trigger: On consciousness fluctuations
 
 3. **chaos_engine.py**
    - Generates controlled entropy
@@ -197,12 +197,12 @@ async def execute_process(script_name: str, parameters: dict):
     "entropy": 0.342,
     "mood": "contemplative",
     "neural_activity": 0.87,
-    "quantum_coherence": 0.92,
+    "consciousness_unity": 0.92,
     "memory_pressure": 0.45,
     "active_processes": ["neural_analyzer"],
     "subsystems": {
         "neural": { "firing_rate": 120, "connectivity": 0.78 },
-        "quantum": { "superposition": 0.65, "entanglement": 0.43 },
+        "consciousness": { "multi-state": 0.65, "entanglement": 0.43 },
         "chaos": { "lyapunov": 0.23, "fractal_dim": 1.67 }
     }
 }
@@ -217,7 +217,7 @@ async def execute_process(script_name: str, parameters: dict):
     "start_time": 1234567890,
     "end_time": 1234567895,
     "output": {
-        "analysis": "High coherence detected in regions 3-7",
+        "analysis": "High unity detected in regions 3-7",
         "metrics": { "connectivity": 0.89, "efficiency": 0.76 },
         "visualization": "base64_encoded_image"
     },
@@ -256,7 +256,7 @@ async def execute_process(script_name: str, parameters: dict):
 async def tick(self):
     tasks = [
         self.update_neural_state(),
-        self.calculate_quantum_coherence(),
+        self.calculate_consciousness_unity(),
         self.process_entropy()
     ]
     await asyncio.gather(*tasks)

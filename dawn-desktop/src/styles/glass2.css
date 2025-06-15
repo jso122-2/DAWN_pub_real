@@ -54,7 +54,7 @@
   border-image: linear-gradient(
     var(--aurora-angle),
     var(--neural-400) 0%,
-    var(--quantum-400) 25%,
+    var(--consciousness-400) 25%,
     var(--process-400) 50%,
     var(--chaos-400) 75%,
     var(--neural-400) 100%
@@ -99,7 +99,7 @@
   background-image:
     /* Large particles */
     radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.8) 0%, transparent 1%),
-    radial-gradient(circle at 80% 20%, rgba(var(--quantum-rgb), 0.8) 0%, transparent 1%),
+    radial-gradient(circle at 80% 20%, rgba(var(--consciousness-rgb), 0.8) 0%, transparent 1%),
     radial-gradient(circle at 50% 50%, rgba(var(--neural-rgb), 0.8) 0%, transparent 1%),
     /* Medium particles */
     radial-gradient(circle at 70% 70%, rgba(255, 255, 255, 0.6) 0%, transparent 0.5%),
@@ -140,7 +140,7 @@
     105deg,
     transparent 40%,
     rgba(var(--neural-rgb), 0.3) 45%,
-    rgba(var(--quantum-rgb), 0.3) 50%,
+    rgba(var(--consciousness-rgb), 0.3) 50%,
     rgba(var(--process-rgb), 0.3) 55%,
     transparent 60%
   );
@@ -164,15 +164,15 @@
   --particle-opacity: 0.7;
 }
 
-.glass-quantum {
-  --module-color-rgb: var(--quantum-rgb);
+.glass-consciousness {
+  --module-color-rgb: var(--consciousness-rgb);
   --glass-blur: 20px;
   --energy-intensity: 0.9;
   --particle-opacity: 0.8;
   animation: 
     aurora-shift 10s linear infinite,
     energy-pulse 3s ease-in-out infinite,
-    quantum-fluctuation 5s ease-in-out infinite;
+    consciousness-fluctuation 5s ease-in-out infinite;
 }
 
 .glass-chaos {
@@ -275,7 +275,7 @@
   }
 }
 
-@keyframes quantum-fluctuation {
+@keyframes consciousness-fluctuation {
   0%, 100% {
     transform: scale(1) rotate(0deg);
   }

@@ -19,6 +19,14 @@ export function safeCloneElement(
     return element;
   }
 
+  // Check if it's a framer-motion component
+  if (isMotionComponent(element)) {
+    // It's a motion component, filter props appropriately
+    const combinedProps = Object.assign({}, element.props, customProps);
+    const { motionProps, domProps } = filterProps(combinedProps);
+    return React.cloneElement(element, Object.assign({}, domProps, motionProps));
+  }
+
   // It's a React component, safe to pass custom props
   try {
     return React.cloneElement(element, customProps);
@@ -40,7 +48,27 @@ export function safePassPropsToChildren(
       return child;
     }
     
-    return safeCloneElement(child, customProps);
+    // Filter out custom props for motion components and DOM elements to prevent warnings
+    const filteredCustomProps = Object.keys(customProps).reduce((acc, key) => {
+      // Only pass custom props to React components, not DOM elements or motion components
+      if (typeof child.type !== 'string' && !isMotionComponent(child)) {
+        acc[key] = customProps[key];
+      }
+      return acc;
+    }, {} as Record<string, any>);
+    
+    // Apply safe prop passing
+    const safeChild = safeCloneElement(child, filteredCustomProps);
+    
+    // If the child has children, recursively apply safe prop passing
+    if (child.props.children) {
+      const updatedChild = React.cloneElement(safeChild, {
+        children: safePassPropsToChildren(child.props.children, customProps)
+      });
+      return updatedChild;
+    }
+    
+    return safeChild;
   });
 }
 
@@ -78,4 +106,36 @@ export function isReactComponent(element: React.ReactElement): boolean {
  */
 export function isDOMElement(element: React.ReactElement): boolean {
   return typeof element.type === 'string';
+}
+
+/**
+ * Check if a component is a framer-motion component
+ */
+export function isMotionComponent(element: React.ReactElement): boolean {
+  if (!element.type) {
+    return false;
+  }
+  
+  // Check for motion component display name
+  if (typeof element.type === 'object' && 'displayName' in element.type) {
+    const displayName = (element.type as any).displayName;
+    if (displayName && displayName.includes('motion.')) {
+      return true;
+    }
+  }
+  
+  // Check for framer-motion component properties
+  if (typeof element.type === 'object') {
+    const type = element.type as any;
+    // Check if it has motion-specific properties
+    if (type.$$typeof || type._payload || type.render) {
+      // Check the element's props for motion-specific keys
+      const motionKeys = ['animate', 'initial', 'exit', 'variants', 'whileHover', 'whileTap'];
+      if (element.props && motionKeys.some(key => key in element.props)) {
+        return true;
+      }
+    }
+  }
+  
+  return false;
 } 

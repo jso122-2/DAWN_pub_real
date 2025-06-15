@@ -7,7 +7,7 @@ interface ConsciousnessState {
   entropy: number;
   mood: string;
   neuralActivity: number;
-  quantumCoherence: number;
+  systemUnity: number;
 }
 
 // Mock consciousness hook - replace with actual implementation
@@ -17,7 +17,7 @@ function useConsciousness(): ConsciousnessState {
     entropy: 0.5,
     mood: 'active',
     neuralActivity: 0.6,
-    quantumCoherence: 0.7
+    systemUnity: 0.7
   });
 
   useEffect(() => {
@@ -27,7 +27,7 @@ function useConsciousness(): ConsciousnessState {
         scup: Math.max(0, Math.min(100, prev.scup + (Math.random() - 0.5) * 10)),
         entropy: Math.max(0, Math.min(1, prev.entropy + (Math.random() - 0.5) * 0.2)),
         neuralActivity: Math.max(0, Math.min(1, prev.neuralActivity + (Math.random() - 0.5) * 0.3)),
-        quantumCoherence: Math.max(0, Math.min(1, prev.quantumCoherence + (Math.random() - 0.5) * 0.1))
+        systemUnity: Math.max(0, Math.min(1, prev.systemUnity + (Math.random() - 0.5) * 0.1))
       }));
     }, 1000);
 
@@ -42,7 +42,7 @@ export function useParticleSystem() {
     particles: [],
     centerMass: { x: 0, y: 0, z: 0 },
     entropy: 0.5,
-    coherence: 0.5
+    unity: 0.5
   });
 
   const consciousness = useConsciousness();
@@ -80,7 +80,7 @@ export function useParticleSystem() {
       particles: [],
       centerMass: { x: 0, y: 0, z: 0 },
       entropy: consciousness.entropy,
-      coherence: consciousness.quantumCoherence
+      unity: consciousness.systemUnity
     });
   }, [consciousness]);
 

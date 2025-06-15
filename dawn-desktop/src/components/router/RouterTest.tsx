@@ -9,7 +9,7 @@ export const RouterTest: React.FC = () => {
   const testRoutes = [
     { path: '/', name: 'Home', description: 'Main module orchestra' },
     { path: '/demo', name: 'Demo', description: 'DAWN demonstration' },
-    { path: '/quantum', name: 'Quantum', description: 'Quantum interface' },
+    { path: '/consciousness', name: 'Consciousness', description: 'Consciousness interface' },
     { path: '/neural', name: 'Neural', description: 'Neural dashboard' },
     { path: '/system', name: 'System', description: 'System dashboard' },
     { path: '/modules', name: 'Modules', description: 'Module demo page' },

@@ -22,7 +22,7 @@ export function useRealTimeConsciousness(): RealTimeConsciousnessState {
   const updateCosmicStore = useCallback((metrics: ConsciousnessMetrics) => {
     cosmicStore.updateEntropy(metrics.entropy);
     cosmicStore.updateNeuralActivity(metrics.neuralActivity);
-    cosmicStore.updateQuantumCoherence(metrics.quantumCoherence);
+    cosmicStore.updateConsciousnessCoherence(metrics.systemUnity);
     cosmicStore.updateSystemLoad(metrics.systemLoad);
     cosmicStore.updateMood(metrics.mood);
   }, [cosmicStore]);
@@ -99,8 +99,8 @@ export function useRealTimeConsciousness(): RealTimeConsciousnessState {
     scup: fallbackConsciousness.scup,
     entropy: fallbackConsciousness.entropy,
     neuralActivity: fallbackConsciousness.neuralActivity,
-    quantumCoherence: fallbackConsciousness.quantumCoherence,
-    systemLoad: fallbackConsciousness.systemLoad,
+    systemUnity: fallbackConsciousness.systemUnity,
+    systemLoad: fallbackConsciousness.memoryPressure, // Map memoryPressure to systemLoad
     mood: fallbackConsciousness.mood,
     isConnected: false,
     lastUpdate: 0,
@@ -115,7 +115,7 @@ export function useConsciousnessTestData() {
       timestamp: Date.now(),
       entropy: data.entropy || 0.5,
       neuralActivity: data.neuralActivity || 0.5,
-      quantumCoherence: data.quantumCoherence || 0.5,
+      systemUnity: data.systemUnity || 0.5,
       systemLoad: data.systemLoad || 0.3,
       mood: data.mood,
       scup: data.scup
@@ -126,7 +126,7 @@ export function useConsciousnessTestData() {
     injectTestData({
       entropy: Math.random(),
       neuralActivity: Math.random(),
-      quantumCoherence: Math.random(),
+      systemUnity: Math.random(),
       systemLoad: Math.random() * 0.8,
       mood: ['contemplative', 'excited', 'serene', 'anxious', 'euphoric', 'chaotic'][Math.floor(Math.random() * 6)]
     });

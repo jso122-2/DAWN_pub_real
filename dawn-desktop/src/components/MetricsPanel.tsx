@@ -471,7 +471,7 @@ const TickRateGauge: React.FC<GaugeProps> = ({ value, history = [] }) => {
 const CompositeMetrics: React.FC<CompositeMetricsProps> = ({ scup, entropy, heat, tickRate }) => {
   const systemLoad = (entropy * 0.4 + heat * 0.3 + tickRate * 0.3);
   const stabilityIndex = (scup * 0.5 + (1 - entropy) * 0.3 + (1 - Math.abs(heat - 0.5)) * 0.2);
-  const coherenceScore = (scup * 0.6 + stabilityIndex * 0.4);
+  const unityScore = (scup * 0.6 + stabilityIndex * 0.4);
   const pressureWarning = (entropy > 0.8 || heat > 0.9 || tickRate > 0.9);
 
   return (
@@ -521,16 +521,16 @@ const CompositeMetrics: React.FC<CompositeMetricsProps> = ({ scup, entropy, heat
         <div className="flex items-center justify-between mb-2">
           <h4 className="text-sm font-medium text-gray-300">🔗 Coherence</h4>
           <div className={`w-2 h-2 rounded-full ${
-            coherenceScore > 0.8 ? 'bg-purple-400 animate-pulse' :
-            coherenceScore > 0.5 ? 'bg-blue-400' :
+            unityScore > 0.8 ? 'bg-purple-400 animate-pulse' :
+            unityScore > 0.5 ? 'bg-blue-400' :
             'bg-gray-400'
           }`} />
         </div>
         <div className="text-2xl font-bold text-white">
-          {(coherenceScore * 100).toFixed(0)}%
+          {(unityScore * 100).toFixed(0)}%
         </div>
         <div className="text-xs text-gray-400 mt-1">
-          {coherenceScore > 0.8 ? 'High' : coherenceScore > 0.5 ? 'Medium' : 'Low'}
+          {unityScore > 0.8 ? 'High' : unityScore > 0.5 ? 'Medium' : 'Low'}
         </div>
       </div>
 

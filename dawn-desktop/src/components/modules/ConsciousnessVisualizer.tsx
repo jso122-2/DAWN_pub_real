@@ -450,7 +450,7 @@ const ConsciousnessVisualizer: React.FC<ConsciousnessVisualizerProps> = ({
               </div>
             </div>
             
-            {/* Quantum Flickering */}
+            {/* Consciousness Flickering */}
             {consciousness.entropy > 0.7 && (
               <motion.div
                 className="absolute inset-0 bg-white/10"

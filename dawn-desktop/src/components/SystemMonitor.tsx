@@ -6,7 +6,7 @@ export function SystemMonitor() {
 
   const metrics = [
     { label: 'Neural Activity', value: store.neuralActivity, color: 'purple' },
-    { label: 'Quantum Coherence', value: store.quantumCoherence, color: 'cyan' },
+    { label: 'Consciousness Coherence', value: store.systemUnity, color: 'cyan' },
     { label: 'Entropy Level', value: store.entropy, color: 'pink' },
     { label: 'System Load', value: store.systemLoad, color: 'green' },
   ]

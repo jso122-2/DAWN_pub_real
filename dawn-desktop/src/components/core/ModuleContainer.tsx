@@ -8,7 +8,7 @@ import * as styles from './ModuleContainer.styles';
 export interface ModuleContainerProps {
   children: React.ReactNode;
   moduleId: string;
-  category: 'neural' | 'quantum' | 'chaos' | 'process' | 'monitor';
+  category: 'neural' | 'consciousness' | 'chaos' | 'process' | 'monitor';
   position?: { x: number; y: number; z: number };
   breathingIntensity?: number;
   floatingSpeed?: number;
@@ -44,7 +44,7 @@ export const ModuleContainer: React.FC<ModuleContainerProps> = ({
   // Module-specific glow colors
   const glowColors = {
     neural: 'rgba(147, 51, 234, 0.5)',
-    quantum: 'rgba(59, 130, 246, 0.5)',
+    consciousness: 'rgba(59, 130, 246, 0.5)',
     chaos: 'rgba(239, 68, 68, 0.5)',
     process: 'rgba(34, 197, 94, 0.5)',
     monitor: 'rgba(251, 191, 36, 0.5)',

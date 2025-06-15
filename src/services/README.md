@@ -165,7 +165,7 @@ Python Process Execution
     entropy: 0.342,
     mood: "contemplative",
     neural_activity: 0.87,
-    quantum_coherence: 0.92
+    consciousness_unity: 0.92
   }
 }
 ```

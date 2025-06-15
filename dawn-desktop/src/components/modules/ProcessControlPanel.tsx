@@ -26,7 +26,7 @@ import { EventEmitter } from '@/lib/EventEmitter';
 interface ProcessNode {
   id: string;
   name: string;
-  type: 'python' | 'system' | 'quantum' | 'neural';
+  type: 'python' | 'system' | 'consciousness' | 'neural';
   status: 'queued' | 'running' | 'completed' | 'error' | 'paused';
   dependencies: string[];
   resources: {
@@ -101,8 +101,8 @@ const ProcessControlPanel: React.FC<ProcessControlPanelProps> = ({
       },
       {
         id: 'proc-3',
-        name: 'quantum_simulation.py',
-        type: 'quantum',
+        name: 'consciousness_simulation.py',
+        type: 'consciousness',
         status: 'queued',
         dependencies: [],
         resources: { cpu: 2, memory: 4, priority: 'normal' },

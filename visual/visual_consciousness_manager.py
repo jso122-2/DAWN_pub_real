@@ -797,9 +797,9 @@ class VisualConsciousnessManager:
         for name, process in self.processes.items():
             process_status[name] = {
                 'enabled': process.enabled,
-                'running': process.thread.is_alive() if process.thread else False,
-                'priority': process.priority.name,
-                'mode': process.mode.value,
+                'running': bool(process.thread and process.thread.is_alive()),
+                'priority': process.priority.name if hasattr(process.priority, 'name') else str(process.priority),
+                'mode': process.mode.value if hasattr(process.mode, 'value') else str(process.mode),
                 'target_fps': process.target_fps,
                 'error_count': process.error_count,
                 'last_update': process.last_update.isoformat() if process.last_update else None

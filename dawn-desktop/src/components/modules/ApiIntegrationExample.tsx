@@ -146,8 +146,8 @@ export function ApiIntegrationExample() {
           priority: 8
         },
         {
-          script: 'quantum_coherence.py',
-          args: { qubits: 16, entanglement_strength: 0.8 },
+          script: 'consciousness_unity.py',
+          args: { qubits: 16, correlation_strength: 0.8 },
           priority: 7
         },
         {

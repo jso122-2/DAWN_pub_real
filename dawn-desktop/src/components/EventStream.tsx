@@ -93,6 +93,14 @@ const EventStream: React.FC<EventStreamProps> = ({ events = [], onEventSelect })
   const eventRefs = useRef<Map<string, HTMLDivElement | null>>(new Map());
   const shouldAutoScroll = useRef(true);
 
+  // Event handlers defined early to avoid hoisting issues
+  const handleEventSelect = useCallback((event: Event) => {
+    setSelectedEvent(event);
+    if (onEventSelect) {
+      onEventSelect(event);
+    }
+  }, [onEventSelect]);
+
   // Debounce search term
   const debouncedSetSearchTerm = useMemo(() => debounce(setDebouncedSearchTerm, 200), []);
   useEffect(() => {
@@ -122,8 +130,80 @@ const EventStream: React.FC<EventStreamProps> = ({ events = [], onEventSelect })
     return filtered;
   }, [events, selectedTypes, debouncedSearchTerm, timeRange]);
 
+  // Render event item
+  const renderEvent = useCallback((event: Event, index: number) => {
+    const typeConfig = EVENT_TYPES[event.type as keyof typeof EVENT_TYPES];
+    if (!typeConfig) return null;
+    
+    const Icon = typeConfig.icon;
+    const hasChildren = causalLinks.has(event.id);
+    const isGradient = 'isGradient' in typeConfig ? typeConfig.isGradient : false;
+    
+    return (
+      <div
+        key={event.id}
+        ref={el => eventRefs.current.set(event.id, el)}
+        className={`event-item ${selectedEvent?.id === event.id ? 'selected' : ''}`}
+        style={{ 
+          borderLeftColor: isGradient ? 'transparent' : typeConfig.color,
+          borderImage: isGradient ? typeConfig.color : 'none',
+          borderImageSlice: isGradient ? 1 : 'initial'
+        }}
+        onClick={() => handleEventSelect(event)}
+      >
+        <div className="event-header">
+          <div className="event-time">
+            <Clock className="time-icon" />
+            {format(new Date(event.timestamp), 'HH:mm:ss.SSS')}
+          </div>
+          <div 
+            className="event-type" 
+            style={{ 
+              color: isGradient ? 'transparent' : typeConfig.color,
+              background: isGradient ? typeConfig.color : 'none',
+              backgroundClip: isGradient ? 'text' : 'initial',
+              WebkitBackgroundClip: isGradient ? 'text' : 'initial'
+            }}
+          >
+            <Icon className="type-icon" />
+            {typeConfig.name}
+          </div>
+        </div>
+        
+        <div className="event-body">
+          <div className="event-source">{event.source}</div>
+          <div className="event-description">{event.description}</div>
+          
+          {event.metrics && (
+            <div className="event-metrics">
+              {Object.entries(event.metrics).map(([key, value]) => (
+                <span key={key} className="metric">
+                  {key}: {typeof value === 'number' ? value.toFixed(3) : value}
+                </span>
+              ))}
+            </div>
+          )}
+        </div>
+        
+        {event.causedBy && (
+          <div className="event-causal-link">
+            <LinkIcon className="link-icon" />
+            Caused by: {event.causedBy}
+          </div>
+        )}
+        
+        {hasChildren && causalLinks.get(event.id) && (
+          <div className="event-has-effects">
+            <ChevronRight className="effects-icon" />
+            Triggers {causalLinks.get(event.id)!.length} event(s)
+          </div>
+        )}
+      </div>
+    );
+  }, [selectedEvent, causalLinks, handleEventSelect]);
+
   // Memoize event item renderer
-  const MemoEventItem = useMemo(() => React.memo(renderEvent), [selectedEvent, causalLinks]);
+  const MemoEventItem = useMemo(() => React.memo(renderEvent), [renderEvent]);
 
   // Virtualized list row renderer
   const Row = useCallback(({ index, style }: ListChildComponentProps) => {
@@ -196,14 +276,6 @@ const EventStream: React.FC<EventStreamProps> = ({ events = [], onEventSelect })
     URL.revokeObjectURL(url);
   };
 
-  // Select event for detailed view
-  const selectEvent = (event) => {
-    setSelectedEvent(event);
-    if (onEventSelect) {
-      onEventSelect(event);
-    }
-  };
-
   // Get causal chain for an event
   const getCausalChain = (event) => {
     const chain = [];
@@ -238,75 +310,6 @@ const EventStream: React.FC<EventStreamProps> = ({ events = [], onEventSelect })
     addEffects(event.id);
     
     return chain;
-  };
-
-  // Render event item
-  const renderEvent = (event, index) => {
-    const typeConfig = EVENT_TYPES[event.type];
-    const Icon = typeConfig.icon;
-    const hasChildren = causalLinks.has(event.id);
-    
-    return (
-      <div
-        key={event.id}
-        ref={el => eventRefs.current.set(event.id, el)}
-        className={`event-item ${selectedEvent?.id === event.id ? 'selected' : ''}`}
-        style={{ 
-          borderLeftColor: typeConfig.isGradient ? 'transparent' : typeConfig.color,
-          borderImage: typeConfig.isGradient ? typeConfig.color : 'none',
-          borderImageSlice: typeConfig.isGradient ? 1 : 'initial'
-        }}
-        onClick={() => selectEvent(event)}
-      >
-        <div className="event-header">
-          <div className="event-time">
-            <Clock className="time-icon" />
-            {format(new Date(event.timestamp), 'HH:mm:ss.SSS')}
-          </div>
-          <div 
-            className="event-type" 
-            style={{ 
-              color: typeConfig.isGradient ? 'transparent' : typeConfig.color,
-              background: typeConfig.isGradient ? typeConfig.color : 'none',
-              backgroundClip: typeConfig.isGradient ? 'text' : 'initial',
-              WebkitBackgroundClip: typeConfig.isGradient ? 'text' : 'initial'
-            }}
-          >
-            <Icon className="type-icon" />
-            {typeConfig.name}
-          </div>
-        </div>
-        
-        <div className="event-body">
-          <div className="event-source">{event.source}</div>
-          <div className="event-description">{event.description}</div>
-          
-          {event.metrics && (
-            <div className="event-metrics">
-              {Object.entries(event.metrics).map(([key, value]) => (
-                <span key={key} className="metric">
-                  {key}: {typeof value === 'number' ? value.toFixed(3) : value}
-                </span>
-              ))}
-            </div>
-          )}
-        </div>
-        
-        {event.causedBy && (
-          <div className="event-causal-link">
-            <LinkIcon className="link-icon" />
-            Caused by: {event.causedBy}
-          </div>
-        )}
-        
-        {hasChildren && (
-          <div className="event-has-effects">
-            <ChevronRight className="effects-icon" />
-            Triggers {causalLinks.get(event.id).length} event(s)
-          </div>
-        )}
-      </div>
-    );
   };
 
   // Render event details panel

@@ -6,7 +6,7 @@ import eventBus, { emitEvent } from '../../lib/eventBus';
 interface ModuleConfig {
   id: string;
   title: string;
-  category: 'neural' | 'quantum' | 'process' | 'timeline' | 'monitor' | 'diagnostic';
+  category: 'neural' | 'consciousness' | 'process' | 'timeline' | 'monitor' | 'diagnostic';
   size: 'sm' | 'md' | 'lg' | 'xl' | 'fluid';
   glowColor?: string;
   breathingSpeed?: number;
@@ -98,7 +98,7 @@ const ModuleContainerComponent: React.FC<ModuleContainerProps> = React.memo(({
         glow: 'shadow-[0_0_30px_rgba(139,92,246,0.3)]',
         header: 'bg-gradient-to-r from-purple-500/20 to-purple-600/20'
       },
-      quantum: {
+      consciousness: {
         border: 'border-cyan-500/20',
         glow: 'shadow-[0_0_30px_rgba(34,211,238,0.3)]',
         header: 'bg-gradient-to-r from-cyan-500/20 to-cyan-600/20'

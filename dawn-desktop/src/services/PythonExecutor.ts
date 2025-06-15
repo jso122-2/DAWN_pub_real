@@ -29,7 +29,7 @@ export class PythonExecutor extends EventEmitter {
   private processes: Map<string, ProcessHandle> = new Map();
   private baseUrl: string;
 
-  constructor(baseUrl = 'http://localhost:8000') {
+  constructor(baseUrl = 'http://localhost:8001') {
     super();
     this.baseUrl = baseUrl;
   }

@@ -20,7 +20,7 @@ interface Event {
 }
 
 export function SystemDashboard() {
-  const { entropy, neuralActivity, quantumCoherence, systemLoad } = useCosmicStore()
+  const { entropy, neuralActivity, systemUnity, systemLoad } = useCosmicStore()
   
   // Generate mock events for EventStream
   const [events, setEvents] = useState<Event[]>([])
@@ -28,7 +28,7 @@ export function SystemDashboard() {
     entropy: entropy,
     heat: systemLoad,
     scup: neuralActivity,
-    tickRate: quantumCoherence
+    tickRate: systemUnity
   })
   
   const [history, setHistory] = useState({
@@ -44,7 +44,7 @@ export function SystemDashboard() {
       entropy: entropy,
       heat: systemLoad,
       scup: neuralActivity,
-      tickRate: quantumCoherence
+      tickRate: systemUnity
     })
     
     // Update history
@@ -52,9 +52,9 @@ export function SystemDashboard() {
       entropy: [...prev.entropy.slice(-50), entropy],
       heat: [...prev.heat.slice(-50), systemLoad],
       scup: [...prev.scup.slice(-50), neuralActivity],
-      tickRate: [...prev.tickRate.slice(-50), quantumCoherence]
+      tickRate: [...prev.tickRate.slice(-50), systemUnity]
     }))
-  }, [entropy, systemLoad, neuralActivity, quantumCoherence])
+  }, [entropy, systemLoad, neuralActivity, systemUnity])
 
   return (
     <div className="relative w-full h-screen">

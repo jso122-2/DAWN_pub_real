@@ -10,13 +10,13 @@ interface ConsciousModuleProps {
   
   // Consciousness properties - these are CELEBRATED!
   consciousnessLevel?: number     // 0-100 SCUP override
-  quantumState?: 'superposition' | 'collapsed' | 'entangled' | 'coherent'
+  consciousnessState?: 'multi-state' | 'collapsed' | 'correlated' | 'coherent'
   neuralActivity?: number         // 0-1 neural firing override
   entropyLevel?: number           // 0-1 chaos override
   mood?: 'calm' | 'active' | 'excited' | 'critical' | 'chaotic' | 'unstable' | 'transcendent'
   
   // Module behavior
-  category?: 'neural' | 'quantum' | 'chaos' | 'process' | 'monitor' | 'memory' | 'dream'
+  category?: 'neural' | 'consciousness' | 'chaos' | 'process' | 'monitor' | 'memory' | 'dream'
   syncGroup?: string              // Breathing synchronization group
   orbitalGroup?: string           // Orbital floating group
   
@@ -29,7 +29,7 @@ interface ConsciousModuleProps {
   // State flags
   isActive?: boolean              // Module is actively processing
   isCritical?: boolean            // Module in critical state
-  isEntangled?: boolean           // Quantum entangled
+  isCorrelated?: boolean           // Consciousness correlated
   isDreaming?: boolean            // In dream state
   
   // Connection data
@@ -46,7 +46,7 @@ interface ConsciousModuleProps {
   neuralConnections?: string[]    // Connected module IDs
   
   // Legacy props for backward compatibility
-  breathingPreset?: 'calm' | 'active' | 'critical' | 'quantum' | 'heartbeat'
+  breathingPreset?: 'calm' | 'active' | 'critical' | 'consciousness' | 'heartbeat'
   floatingPreset?: 'gentle' | 'active' | 'orbital' | 'magnetic'
   enableFloating?: boolean
   enableBreathing?: boolean
@@ -60,7 +60,7 @@ export function ConsciousModule({
   
   // Consciousness props
   consciousnessLevel,
-  quantumState,
+  consciousnessState,
   neuralActivity,
   entropyLevel,
   mood,
@@ -73,7 +73,7 @@ export function ConsciousModule({
   particleDensity,
   isActive,
   isCritical,
-  isEntangled,
+  isCorrelated,
   isDreaming,
   dataFlow,
   connectionPorts,
@@ -99,7 +99,7 @@ export function ConsciousModule({
     'calm': 'calm' as const,
     'active': 'active' as const,
     'critical': 'critical' as const,
-    'quantum': 'excited' as const,
+    'consciousness': 'excited' as const,
     'heartbeat': 'active' as const
   }
   
@@ -128,12 +128,12 @@ export function ConsciousModule({
     }
   })()
   
-  // Determine quantum state from mood if not provided
-  const effectiveQuantumState = quantumState ?? (() => {
+  // Determine consciousness state from mood if not provided
+  const effectiveConsciousnessState = consciousnessState ?? (() => {
     switch (effectiveMood) {
       case 'critical': return 'collapsed' as const
-      case 'chaotic': return 'superposition' as const
-      case 'excited': return 'entangled' as const
+      case 'chaotic': return 'multi-state' as const
+      case 'excited': return 'correlated' as const
       case 'transcendent': return 'coherent' as const
       default: return 'coherent' as const
     }
@@ -151,7 +151,7 @@ export function ConsciousModule({
       
       // Pass consciousness props - these make the module ALIVE!
       consciousnessLevel={effectiveConsciousnessLevel}
-      quantumState={effectiveQuantumState}
+      consciousnessState={effectiveConsciousnessState}
       neuralActivity={neuralActivity}
       entropyLevel={effectiveEntropyLevel}
       mood={effectiveMood}
@@ -169,7 +169,7 @@ export function ConsciousModule({
       // State flags
       isActive={isActive}
       isCritical={isCritical}
-      isEntangled={isEntangled}
+      isCorrelated={isCorrelated}
       isDreaming={isDreaming}
       
       // Data connections

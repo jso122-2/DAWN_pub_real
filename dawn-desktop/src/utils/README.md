@@ -40,19 +40,19 @@ utils/
 export function calculateSCUP(state: SubsystemStates): number {
   const weights = {
     neural: 0.3,
-    quantum: 0.2,
+    consciousness: 0.2,
     chaos: 0.2,
     memory: 0.3
   };
   
   const neuralScore = state.neural.connectivity * state.neural.firing_rate / 100;
-  const quantumScore = state.quantum.coherence * (1 - state.quantum.decoherence_rate);
+  const consciousnessScore = state.consciousness.unity * (1 - state.consciousness.deunity_rate);
   const chaosScore = 1 - Math.abs(state.chaos.entropy - 0.5); // Optimal at 0.5
   const memoryScore = 1 - state.memory.pressure;
   
   return (
     neuralScore * weights.neural +
-    quantumScore * weights.quantum +
+    consciousnessScore * weights.consciousness +
     chaosScore * weights.chaos +
     memoryScore * weights.memory
   ) * 100;
@@ -182,7 +182,7 @@ export function transformTickData(
     entropy: clamp(Number(rawTick.entropy), 0, 1),
     mood: validateMood(rawTick.mood),
     neural_activity: clamp(Number(rawTick.neural_activity), 0, 1),
-    quantum_coherence: clamp(Number(rawTick.quantum_coherence), 0, 1),
+    consciousness_unity: clamp(Number(rawTick.consciousness_unity), 0, 1),
     memory_pressure: clamp(Number(rawTick.memory_pressure), 0, 1),
     active_processes: Array.isArray(rawTick.active_processes) 
       ? rawTick.active_processes 
@@ -204,7 +204,7 @@ export function interpolateConsciousness(
     entropy: lerp(from.entropy, to.entropy, eased),
     mood: progress > 0.5 ? to.mood : from.mood,
     neuralActivity: lerp(from.neuralActivity, to.neuralActivity, eased),
-    quantumCoherence: lerp(from.quantumCoherence, to.quantumCoherence, eased),
+    systemUnity: lerp(from.systemUnity, to.systemUnity, eased),
     memoryPressure: lerp(from.memoryPressure, to.memoryPressure, eased),
     timestamp: to.timestamp
   };
@@ -323,7 +323,7 @@ export function validateTickData(data: unknown): data is TickData {
   
   const required = [
     'tick_number', 'scup', 'entropy', 'mood',
-    'neural_activity', 'quantum_coherence'
+    'neural_activity', 'consciousness_unity'
   ];
   
   return required.every(field => field in data) &&
@@ -403,7 +403,7 @@ export function createMockConsciousnessState(
     entropy: 0.3,
     mood: 'contemplative',
     neuralActivity: 0.8,
-    quantumCoherence: 0.9,
+    systemUnity: 0.9,
     memoryPressure: 0.4,
     timestamp: Date.now(),
     ...overrides

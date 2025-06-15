@@ -62,7 +62,7 @@ const ConsciousnessContext = createContext({
     emotion: 'curious',
     intensity: 0.5,
     temperature: 37.0,
-    coherence: 0.8
+    unity: 0.8
   },
   actions: {
     updateEmotion: () => {},
@@ -188,7 +188,7 @@ const useConsciousnessStore = create(
       emotion: 'curious',
       intensity: 0.5,
       temperature: 37.0,
-      coherence: 0.8,
+      unity: 0.8,
       lastUpdate: null,
       
       // Actions
@@ -202,13 +202,13 @@ const useConsciousnessStore = create(
         emotion: 'curious',
         intensity: 0.5,
         temperature: 37.0,
-        coherence: 0.8
+        unity: 0.8
       }),
       
       // Computed values
       getHealthScore: () => {
         const state = get();
-        return (state.coherence + (1 - Math.abs(state.temperature - 37)) + state.intensity) / 3;
+        return (state.unity + (1 - Math.abs(state.temperature - 37)) + state.intensity) / 3;
       }
     })),
     {
@@ -297,9 +297,9 @@ export const consciousnessUtils = {
   --creative-secondary: #A78BFA;
   
   /* Consciousness metrics */
-  --coherence-high: #10B981;
-  --coherence-medium: #F59E0B;
-  --coherence-low: #EF4444;
+  --unity-high: #10B981;
+  --unity-medium: #F59E0B;
+  --unity-low: #EF4444;
   
   /* Animation timings */
   --consciousness-transition: 0.3s ease-in-out;

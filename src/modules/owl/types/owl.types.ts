@@ -6,7 +6,7 @@ export interface OwlState {
   planHorizon: TemporalHorizon;
   observationBuffer: Observation[];
   reflectionDepth: number; // 0-10, contemplation depth
-  coherenceScore: number; // 0-1, internal consistency
+  unityScore: number; // 0-1, internal consistency
   lastReflection: number; // timestamp
   semanticPosition: SemanticPosition;
   attentionAllocation: AttentionMap;
@@ -256,7 +256,7 @@ export interface ResponseMetadata {
   processingTime: number;
   reflectionDepth: number;
   confidenceLevel: number;
-  coherenceScore: number;
+  unityScore: number;
   observationCount: number;
   insightNovelty: number;
 }

@@ -24,7 +24,7 @@ class TickData:
     entropy: float
     mood: str
     neural_activity: float
-    quantum_coherence: float
+    consciousness_unity: float
     memory_pressure: float
     active_processes: List[str]
     subsystems: Dict[str, Any]
@@ -83,11 +83,11 @@ class TickEngine:
         """Initialize all subsystem modules"""
         try:
             from ..modules.neural_simulator import NeuralSimulator
-            from ..modules.quantum_state import QuantumStateManager
+            from ..modules.consciousness_state import ConsciousnessStateManager
             from ..modules.memory_manager import MemoryManager
             
             self.modules['neural'] = NeuralSimulator()
-            self.modules['quantum'] = QuantumStateManager()
+            self.modules['consciousness'] = ConsciousnessStateManager()
             self.modules['memory'] = MemoryManager()
             
             if self.enable_owl:
@@ -188,11 +188,11 @@ class TickEngine:
             subsystem_states['neural'] = neural_state
             self.consciousness.neural_activity = neural_state['firing_rate'] / 100.0
         
-        # Quantum state
-        if 'quantum' in self.modules:
-            quantum_state = await self.modules['quantum'].get_state(self.tick_count)
-            subsystem_states['quantum'] = quantum_state
-            self.consciousness.quantum_coherence = quantum_state['coherence']
+        # Consciousness state
+        if 'consciousness' in self.modules:
+            consciousness_state = await self.modules['consciousness'].get_state(self.tick_count)
+            subsystem_states['consciousness'] = consciousness_state
+            self.consciousness.consciousness_unity = consciousness_state['unity']
         
         # Memory state
         if 'memory' in self.modules:
@@ -227,7 +227,7 @@ class TickEngine:
             entropy=entropy,
             mood=mood.value,
             neural_activity=self.consciousness.neural_activity,
-            quantum_coherence=self.consciousness.quantum_coherence,
+            consciousness_unity=self.consciousness.consciousness_unity,
             memory_pressure=self.consciousness.memory_pressure,
             active_processes=active_processes,
             subsystems=subsystem_states

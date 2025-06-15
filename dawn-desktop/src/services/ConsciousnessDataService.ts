@@ -1,11 +1,12 @@
-import { mainWebSocket, WebSocketService } from './websocket/WebSocketService';
+import { webSocketService } from './websocket/WebSocketService';
+import WebSocketService from './websocket/WebSocketService';
 import { useCosmicStore } from '../store/cosmicStore';
 
 export interface TickData {
   timestamp: number;
   entropy: number;
   neuralActivity: number;
-  quantumCoherence: number;
+  systemUnity: number;
   systemLoad: number;
   mood?: string;
   scup?: number;
@@ -20,7 +21,7 @@ export interface ConsciousnessMetrics {
   scup: number;
   entropy: number;
   neuralActivity: number;
-  quantumCoherence: number;
+  systemUnity: number;
   systemLoad: number;
   mood: string;
 }
@@ -35,7 +36,7 @@ export class ConsciousnessDataService {
   private updateCallbacks: ((metrics: ConsciousnessMetrics) => void)[] = [];
 
   constructor() {
-    this.webSocket = mainWebSocket;
+    this.webSocket = webSocketService;
     this.setupEventListeners();
   }
 
@@ -95,30 +96,30 @@ export class ConsciousnessDataService {
     // Base metrics from tick data
     let entropy = tickData.entropy || 0.5;
     let neuralActivity = tickData.neuralActivity || 0.5;
-    let quantumCoherence = tickData.quantumCoherence || 0.5;
+    let systemUnity = tickData.systemUnity || 0.5;
     let systemLoad = tickData.systemLoad || 0.3;
 
     // Calculate SCUP (System Consciousness Unified Percentage)
     let scup = tickData.scup;
     if (scup === undefined) {
-      scup = (entropy + neuralActivity + quantumCoherence) / 3 * 100;
+      scup = (entropy + neuralActivity + systemUnity) / 3 * 100;
     }
 
     // Determine mood based on metrics
-    let mood = tickData.mood || this.calculateMood(entropy, neuralActivity, quantumCoherence, systemLoad);
+    let mood = tickData.mood || this.calculateMood(entropy, neuralActivity, systemUnity, systemLoad);
 
     return {
       scup: Math.max(0, Math.min(100, scup)),
       entropy: Math.max(0, Math.min(1, entropy)),
       neuralActivity: Math.max(0, Math.min(1, neuralActivity)),
-      quantumCoherence: Math.max(0, Math.min(1, quantumCoherence)),
+      systemUnity: Math.max(0, Math.min(1, systemUnity)),
       systemLoad: Math.max(0, Math.min(1, systemLoad)),
       mood
     };
   }
 
-  private calculateMood(entropy: number, neural: number, quantum: number, load: number): string {
-    const activity = (neural + quantum) / 2;
+  private calculateMood(entropy: number, neural: number, consciousness: number, load: number): string {
+    const activity = (neural + consciousness) / 2;
     const stability = 1 - entropy;
     const stress = load;
 
@@ -144,9 +145,8 @@ export class ConsciousnessDataService {
   }
 
   private requestInitialData(): void {
-    if (this.webSocket.isConnected()) {
-      this.webSocket.send({
-        type: 'request_consciousness_data',
+    if (this.webSocket.isConnected) {
+      this.webSocket.send('request_consciousness_data', {
         subscribe: true,
         timestamp: Date.now()
       });
@@ -160,7 +160,7 @@ export class ConsciousnessDataService {
     this.isActive = true;
     console.log('🧠 Consciousness Data Service: Started');
     
-    if (!this.webSocket.isConnected()) {
+    if (!this.webSocket.isConnected) {
       this.webSocket.connect();
     } else {
       this.requestInitialData();
@@ -173,7 +173,7 @@ export class ConsciousnessDataService {
   }
 
   isRunning(): boolean {
-    return this.isActive && this.webSocket.isConnected();
+    return this.isActive && this.webSocket.isConnected;
   }
 
   subscribeToUpdates(callback: (metrics: ConsciousnessMetrics) => void): () => void {
@@ -196,7 +196,7 @@ export class ConsciousnessDataService {
       timestamp: Date.now(),
       entropy: 0.5,
       neuralActivity: 0.5,
-      quantumCoherence: 0.5,
+      systemUnity: 0.5,
       systemLoad: 0.3,
       ...data
     };

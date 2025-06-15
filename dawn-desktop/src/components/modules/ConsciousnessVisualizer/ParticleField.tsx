@@ -108,7 +108,7 @@ export const ParticleField: React.FC<ParticleFieldProps> = ({ fullscreen }) => {
       <canvas ref={canvasRef} className={styles.canvas} />
       <div className={styles.particleInfo}>
         <span>Particles: {particleSystem.particles.length}</span>
-        <span>Coherence: {(particleSystem.coherence * 100).toFixed(1)}%</span>
+        <span>Coherence: {(particleSystem.unity * 100).toFixed(1)}%</span>
       </div>
     </div>
   );

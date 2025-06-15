@@ -26,7 +26,7 @@ class ConsciousnessDataGenerator:
         self.base_time = time.time()
         self.entropy_trend = 0.5
         self.neural_trend = 0.5
-        self.quantum_trend = 0.5
+        self.consciousness_trend = 0.5
         self.system_load = 0.3
         self.mood_timer = 0
         self.current_mood = 'active'
@@ -42,35 +42,35 @@ class ConsciousnessDataGenerator:
         # Update trends slowly
         self.entropy_trend += (random.random() - 0.5) * 0.01
         self.neural_trend += (random.random() - 0.5) * 0.01
-        self.quantum_trend += (random.random() - 0.5) * 0.01
+        self.consciousness_trend += (random.random() - 0.5) * 0.01
         self.system_load += (random.random() - 0.5) * 0.005
         
         # Clamp values
         self.entropy_trend = max(0.1, min(0.9, self.entropy_trend))
         self.neural_trend = max(0.1, min(0.9, self.neural_trend))
-        self.quantum_trend = max(0.1, min(0.9, self.quantum_trend))
+        self.consciousness_trend = max(0.1, min(0.9, self.consciousness_trend))
         self.system_load = max(0.05, min(0.8, self.system_load))
         
         # Add some noise
         entropy = max(0, min(1, self.entropy_trend + wave_factor + (random.random() - 0.5) * 0.1))
         neural_activity = max(0, min(1, self.neural_trend + wave_factor + (random.random() - 0.5) * 0.1))
-        quantum_coherence = max(0, min(1, self.quantum_trend + wave_factor + (random.random() - 0.5) * 0.1))
+        consciousness_unity = max(0, min(1, self.consciousness_trend + wave_factor + (random.random() - 0.5) * 0.1))
         system_load = max(0, min(1, self.system_load + (random.random() - 0.5) * 0.05))
         
         # Calculate SCUP
-        scup = (entropy + neural_activity + quantum_coherence) / 3 * 100
+        scup = (entropy + neural_activity + consciousness_unity) / 3 * 100
         
         # Update mood periodically
         self.mood_timer += 1
         if self.mood_timer > 30:  # Change mood every 30 ticks
             self.mood_timer = 0
-            self.current_mood = self._calculate_mood(entropy, neural_activity, quantum_coherence, system_load)
+            self.current_mood = self._calculate_mood(entropy, neural_activity, consciousness_unity, system_load)
         
         return {
             'timestamp': int(current_time * 1000),
             'entropy': entropy,
             'neuralActivity': neural_activity,
-            'quantumCoherence': quantum_coherence,
+            'systemUnity': consciousness_unity,
             'systemLoad': system_load,
             'scup': scup,
             'mood': self.current_mood,
@@ -81,9 +81,9 @@ class ConsciousnessDataGenerator:
             }
         }
     
-    def _calculate_mood(self, entropy: float, neural: float, quantum: float, load: float) -> str:
+    def _calculate_mood(self, entropy: float, neural: float, consciousness: float, load: float) -> str:
         """Calculate mood based on consciousness metrics"""
-        activity = (neural + quantum) / 2
+        activity = (neural + consciousness) / 2
         stability = 1 - entropy
         stress = load
         
@@ -107,7 +107,7 @@ class ConsciousnessDataGenerator:
 class ConsciousnessWebSocketServer:
     """WebSocket server for consciousness data streaming"""
     
-    def __init__(self, host: str = 'localhost', port: int = 8000):
+    def __init__(self, host: str = 'localhost', port: int = 8001):
         self.host = host
         self.port = port
         self.clients: List[WebSocketServerProtocol] = []
@@ -259,7 +259,7 @@ class ConsciousnessWebSocketServer:
 
 async def main():
     """Main entry point"""
-    server = ConsciousnessWebSocketServer(host='localhost', port=8000)
+    server = ConsciousnessWebSocketServer(host='localhost', port=8001)
     await server.start_server()
 
 if __name__ == '__main__':

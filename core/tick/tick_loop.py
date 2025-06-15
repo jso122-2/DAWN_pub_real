@@ -12,6 +12,8 @@ from .tick_signals import emit_signal, get_signal, set_signal
 from collections import defaultdict
 from .tick_engine import TickEngine
 import inspect
+from experiments.dawn_letter_processor import DataLogger
+from datetime import datetime
 
 logger = logging.getLogger(__name__)
 
@@ -36,6 +38,11 @@ class TickLoop:
         
         # Register engine as a subsystem
         self.register_subsystem("engine", engine, 0)
+        
+        # --- BEGIN DATA LOGGER INSTANTIATION ---
+        session_id = datetime.now().strftime("%Y%m%d_%H%M%S")
+        self.data_logger = DataLogger(session_id=session_id)
+        # --- END DATA LOGGER INSTANTIATION ---
     
     def register_subsystem(self, name: str, subsystem, priority: int = 0):
         """Register a subsystem with the tick loop"""
@@ -198,6 +205,29 @@ class TickLoop:
         
         # Log tick
         log_tick(ctx)
+        
+        # --- BEGIN VISUAL DATA ROUTING ---
+        try:
+            # Gather/process real arrays for each visual process from ctx or subsystems
+            visual_data = {
+                # Example placeholders; replace with real data extraction
+                'attention_matrix': getattr(ctx, 'attention_matrix', None),
+                'activations': getattr(ctx, 'activations', None),
+                'loss_surface': getattr(ctx, 'loss_surface', None),
+                'spike_trains': getattr(ctx, 'spike_trains', None),
+                'latent_trajectory': getattr(ctx, 'latent_trajectory', None),
+                'correlation_data': getattr(ctx, 'correlation_data', None),
+                'state_transitions': getattr(ctx, 'state_transitions', None),
+                'anomaly_signal': getattr(ctx, 'anomaly_signal', None),
+                'anomaly_flags': getattr(ctx, 'anomaly_flags', None),
+            }
+            # Remove None values
+            visual_data = {k: v for k, v in visual_data.items() if v is not None}
+            if visual_data:
+                self.data_logger.save_visual_data(visual_data)
+        except Exception as e:
+            logger.error(f"Failed to save visual data: {e}")
+        # --- END VISUAL DATA ROUTING ---
     
     def _calculate_interval(self) -> float:
         """Calculate next tick interval based on system state"""

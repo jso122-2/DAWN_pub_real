@@ -7,7 +7,7 @@ import { EventEmitter } from '../../lib/EventEmitter';
 export interface ModuleConfig {
   id: string;
   name: string;
-  category: 'neural' | 'quantum' | 'process' | 'monitoring' | 'diagnostic';
+  category: 'neural' | 'consciousness' | 'process' | 'monitoring' | 'diagnostic';
   position: { x: number; y: number };
   size: { width: number; height: number };
   glowIntensity: number; // 0-1
@@ -54,7 +54,7 @@ const EnergyParticle: React.FC<{ delay: number; duration: number; load: number }
 
   return (
     <motion.div
-      className="absolute w-1 h-1 bg-quantum-400 rounded-full"
+      className="absolute w-1 h-1 bg-consciousness-400 rounded-full"
       style={{
         left: '50%',
         top: '50%',
@@ -115,7 +115,7 @@ const ModuleContainer: React.FC<ModuleContainerProps> = ({
     const baseClass = 'glass-base';
     const categoryClasses = {
       neural: 'glass-neural',
-      quantum: 'glass-quantum',
+      consciousness: 'glass-consciousness',
       process: 'glass-active',
       monitoring: 'glass-base',
       diagnostic: 'glass-critical'

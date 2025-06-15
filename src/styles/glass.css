@@ -1,0 +1,193 @@
+/* ===== DAWN Glass Morphism System ===== */
+/* Migrated from old repository - your signature glass effects! */
+
+/* CSS Variables for Glass System */
+:root {
+  /* Glass effect colors */
+  --glass-bg: rgba(30, 41, 59, 0.5);
+  --glass-border: rgba(148, 163, 184, 0.1);
+  --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  
+  /* Neon glow colors */
+  --neon-cyan: #00fff7;
+  --neon-purple: #a855f7;
+  --neon-blue: #3b82f6;
+  
+  /* Animation timing */
+  --transition-fast: 0.2s;
+  --transition-normal: 0.3s;
+  --transition-slow: 0.5s;
+  --easing-default: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ===== Core Glass Panel ===== */
+.glass-panel {
+  background: var(--glass-bg);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px); /* Safari support */
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: var(--glass-shadow);
+  position: relative;
+  overflow: hidden;
+  transition: all var(--transition-normal) var(--easing-default);
+}
+
+.glass-panel:hover {
+  transform: translateY(-2px);
+  box-shadow: 
+    var(--glass-shadow),
+    0 16px 48px 0 rgba(31, 38, 135, 0.2);
+}
+
+/* ===== Neon Glow Variants ===== */
+.neon-glow-cyan {
+  border-color: rgba(0, 255, 247, 0.3);
+  box-shadow: 
+    var(--glass-shadow),
+    0 0 20px rgba(0, 255, 247, 0.1),
+    inset 0 1px 0 rgba(0, 255, 247, 0.1);
+}
+
+.neon-glow-cyan:hover {
+  box-shadow: 
+    var(--glass-shadow),
+    0 0 32px rgba(0, 255, 247, 0.2),
+    0 16px 48px 0 rgba(31, 38, 135, 0.2),
+    inset 0 1px 0 rgba(0, 255, 247, 0.2);
+}
+
+.neon-glow-purple {
+  border-color: rgba(168, 85, 247, 0.3);
+  box-shadow: 
+    var(--glass-shadow),
+    0 0 20px rgba(168, 85, 247, 0.1),
+    inset 0 1px 0 rgba(168, 85, 247, 0.1);
+}
+
+.neon-glow-purple:hover {
+  box-shadow: 
+    var(--glass-shadow),
+    0 0 32px rgba(168, 85, 247, 0.2),
+    0 16px 48px 0 rgba(31, 38, 135, 0.2),
+    inset 0 1px 0 rgba(168, 85, 247, 0.2);
+}
+
+.neon-glow-mixed {
+  border-image: linear-gradient(45deg, 
+    rgba(0, 255, 247, 0.3), 
+    rgba(168, 85, 247, 0.3), 
+    rgba(0, 255, 247, 0.3)
+  ) 1;
+  box-shadow: 
+    var(--glass-shadow),
+    0 0 20px rgba(0, 255, 247, 0.05),
+    0 0 20px rgba(168, 85, 247, 0.05),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.neon-glow-mixed:hover {
+  box-shadow: 
+    var(--glass-shadow),
+    0 0 32px rgba(0, 255, 247, 0.1),
+    0 0 32px rgba(168, 85, 247, 0.1),
+    0 16px 48px 0 rgba(31, 38, 135, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+/* ===== Animation Classes ===== */
+.fade-in {
+  animation: fadeIn var(--transition-slow) ease-out;
+}
+
+@keyframes fadeIn {
+  from { 
+    opacity: 0; 
+    transform: translateY(10px);
+  }
+  to { 
+    opacity: 1; 
+    transform: translateY(0);
+  }
+}
+
+.scale-in {
+  animation: scaleIn var(--transition-normal) var(--easing-default);
+}
+
+@keyframes scaleIn {
+  from { 
+    transform: scale(0.95); 
+    opacity: 0; 
+  }
+  to { 
+    transform: scale(1); 
+    opacity: 1; 
+  }
+}
+
+/* ===== Neural Terminal Style (your cyberpunk aesthetic) ===== */
+.neural-terminal {
+  user-select: text;
+  transition: box-shadow 0.3s, background 0.3s;
+  border: 2px solid var(--neon-cyan);
+  box-shadow: 
+    0 0 32px 4px var(--neon-cyan), 
+    0 0 64px 8px var(--neon-purple);
+  background: rgba(20, 30, 40, 0.7);
+  font-family: 'JetBrains Mono', 'Courier New', monospace;
+  font-size: 16px;
+  letter-spacing: 1.2px;
+  cursor: grab;
+  border-radius: 12px;
+  padding: 1rem;
+}
+
+.neural-terminal:active {
+  cursor: grabbing;
+  box-shadow: 
+    0 0 48px 8px var(--neon-purple), 
+    0 0 96px 16px var(--neon-cyan);
+}
+
+/* ===== Responsive Design ===== */
+@media (max-width: 768px) {
+  .glass-panel {
+    padding: 1rem;
+    border-radius: 12px;
+  }
+  
+  .neural-terminal {
+    font-size: 14px;
+    letter-spacing: 1px;
+  }
+}
+
+/* ===== Utility Classes ===== */
+.glass-panel.processing {
+  animation: pulse 2s infinite;
+}
+
+.glass-panel.error {
+  border-color: rgba(239, 68, 68, 0.5);
+  box-shadow: 
+    var(--glass-shadow),
+    0 0 20px rgba(239, 68, 68, 0.2);
+}
+
+.glass-panel.success {
+  border-color: rgba(16, 185, 129, 0.5);
+  box-shadow: 
+    var(--glass-shadow),
+    0 0 20px rgba(16, 185, 129, 0.2);
+}
+
+@keyframes pulse {
+  0%, 100% { 
+    opacity: 1; 
+  }
+  50% { 
+    opacity: 0.8; 
+  }
+} 

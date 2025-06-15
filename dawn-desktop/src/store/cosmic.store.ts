@@ -2,19 +2,19 @@ import { create } from 'zustand'
 
 interface CosmicState {
   // Navigation
-  currentView: 'neural' | 'quantum' | 'entropy' | 'system' | 'monitor' | 'processes' | 'neural-monitor'
+  currentView: 'neural' | 'consciousness' | 'entropy' | 'system' | 'monitor' | 'processes' | 'neural-monitor'
   setView: (view: CosmicState['currentView']) => void
 
   // System metrics
   entropy: number
   neuralActivity: number
-  quantumCoherence: number
+  systemUnity: number
   systemLoad: number
 
   // Update functions
   updateEntropy: (value: number) => void
   updateNeuralActivity: (value: number) => void
-  updateQuantumCoherence: (value: number) => void
+  updateConsciousnessCoherence: (value: number) => void
   updateSystemLoad: (value: number) => void
 
   // Features
@@ -43,13 +43,13 @@ export const useCosmicStore = create<CosmicState>((set) => ({
   // System metrics
   entropy: 0.7,
   neuralActivity: 0.85,
-  quantumCoherence: 0.92,
+  systemUnity: 0.92,
   systemLoad: 0.45,
 
   // Update functions
   updateEntropy: (value) => set({ entropy: value }),
   updateNeuralActivity: (value) => set({ neuralActivity: value }),
-  updateQuantumCoherence: (value) => set({ quantumCoherence: value }),
+  updateConsciousnessCoherence: (value) => set({ systemUnity: value }),
   updateSystemLoad: (value) => set({ systemLoad: value }),
 
   // Features
