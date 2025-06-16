@@ -12,8 +12,8 @@ class WebSocketService {
   private baseUrl = 'ws://localhost:8000';
   private endpoints = {
     main: '/ws',
-    talk: '/ws/tick-stream',
-    tick: '/ws/tick'
+    talk: '/ws',
+    tick: '/ws'
   };
   private currentEndpoint: keyof typeof this.endpoints = 'main';
   private callbacks: Set<(data: TickData) => void> = new Set();

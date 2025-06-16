@@ -196,4 +196,7 @@ class DAWNConversation:
             suggestions.append("Reduce processing load")
             
         return suggestions[:3]  # Limit to 3 suggestions
+
+# Alias for backward compatibility
+ConversationModule = DAWNConversation
  

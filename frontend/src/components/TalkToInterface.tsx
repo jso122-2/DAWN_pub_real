@@ -1,255 +1,173 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useWebSocket } from '../hooks/useWebSocket';
 import './TalkToInterface.css';
-import { wsService } from '../services/websocket';
 
 interface Message {
-  id: string;
-  type: 'user' | 'dawn' | 'system';
+  type: string;
   content: string;
   timestamp: number;
-  metadata?: {
-    tick?: number;
-    scup?: number;
-    mood?: string;
-    process?: string;
-    visualization?: string;
-  };
-}
-
-interface SystemState {
-  tick: number;
-  scup: number;
-  mood: string;
-  entropy: number;
 }
 
 export const TalkToInterface: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
-  const [systemState, setSystemState] = useState<SystemState | null>(null);
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [activeVisualizations, setActiveVisualizations] = useState<Set<string>>(new Set());
-  const terminalRef = useRef<HTMLDivElement>(null);
+  const { connected, connect, on, send } = useWebSocket();
 
   useEffect(() => {
-    // Connect to DAWN WebSocket using the service
-    wsService.connect();
-    
-    // Add message handlers
-    wsService.on('tick_update', (data: any) => {
-      setSystemState(data.state);
-    });
-
-    wsService.on('response', (data: any) => {
-      addDAWNMessage(data.content, data.metadata);
-      setIsProcessing(false);
-    });
-
-    wsService.on('visualization', (data: any) => {
-      handleVisualization(data);
-    });
-
-    wsService.on('process_event', (data: any) => {
-      handleProcessEvent(data);
-    });
-
-    wsService.on('consciousness_shift', (data: any) => {
-      addSystemMessage(`Consciousness shift: ${data.from} → ${data.to}`);
-    });
-
-    // Request initial state
-    wsService.send('init', {
-      subsystems: ['all']
-    });
-
-    return () => {
-      wsService.disconnect();
+    const handleTickUpdate = (data: any) => {
+      setMessages(prev => [...prev, {
+        type: 'system',
+        content: `Tick: ${data.tick}`,
+        timestamp: Date.now()
+      }]);
     };
-  }, []);
 
-  const handleVisualization = (data: any) => {
-    // Handle inline visualizations from various components
-    if (data.viz_type === 'inline_ascii') {
-      addVisualizationMessage(data.content, data.source);
-    }
-  };
+    const handleResponse = (data: any) => {
+      setMessages(prev => [...prev, {
+        type: 'system',
+        content: data.message || JSON.stringify(data),
+        timestamp: Date.now()
+      }]);
+    };
 
-  const handleProcessEvent = (data: any) => {
-    // Show important process events in terminal
-    if (data.priority === 'high') {
-      addSystemMessage(`[${data.process}] ${data.event}`);
-    }
-  };
+    const handleVisualization = (data: any) => {
+      setMessages(prev => [...prev, {
+        type: 'system',
+        content: `Visualization: ${data.type}`,
+        timestamp: Date.now()
+      }]);
+    };
 
-  const sendMessage = () => {
-    if (!input.trim() || isProcessing) return;
+    const handleProcessEvent = (data: any) => {
+      setMessages(prev => [...prev, {
+        type: 'system',
+        content: `Process: ${data.event}`,
+        timestamp: Date.now()
+      }]);
+    };
 
+    const handleConsciousnessShift = (data: any) => {
+      setMessages(prev => [...prev, {
+        type: 'system',
+        content: `Consciousness Shift: ${data.state}`,
+        timestamp: Date.now()
+      }]);
+    };
+
+    // Add message handlers
+    on('tick_update', handleTickUpdate);
+    on('response', handleResponse);
+    on('visualization', handleVisualization);
+    on('process_event', handleProcessEvent);
+    on('consciousness_shift', handleConsciousnessShift);
+
+    // Connect to WebSocket
+    connect();
+
+    // Initialize connection
+    send({
+      type: 'init',
+      data: {
+        client: 'web',
+        version: '1.0.0'
+      }
+    });
+
+    // Cleanup
+    return () => {
+      // No need to remove handlers as they are managed by the hook
+    };
+  }, [connect, on, send]);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!input.trim() || !connected) return;
+
+    // Add user message
     const userMessage: Message = {
-      id: Date.now().toString(),
       type: 'user',
       content: input,
       timestamp: Date.now()
     };
-
     setMessages(prev => [...prev, userMessage]);
-    setIsProcessing(true);
 
-    // Send to DAWN with full context
-    wsService.send('message', {
-      content: input,
-      context: {
-        recent_messages: messages.slice(-10),
-        active_visualizations: Array.from(activeVisualizations),
+    // Send to server
+    send({
+      type: 'message',
+      data: {
+        content: input,
         timestamp: Date.now()
       }
     });
 
+    // Clear input
     setInput('');
-  };
 
-  const addSystemMessage = (content: string) => {
-    setMessages(prev => [...prev, {
-      id: Date.now().toString(),
-      type: 'system',
-      content,
-      timestamp: Date.now()
-    }]);
-  };
-
-  const addDAWNMessage = (content: string, metadata?: any) => {
-    setMessages(prev => [...prev, {
-      id: Date.now().toString(),
-      type: 'dawn',
-      content,
-      timestamp: Date.now(),
-      metadata
-    }]);
-  };
-
-  const addVisualizationMessage = (content: string, source: string) => {
-    setMessages(prev => [...prev, {
-      id: Date.now().toString(),
-      type: 'system',
-      content: `\n[${source}]\n${content}\n`,
-      timestamp: Date.now()
-    }]);
-  };
-
-  // Command processing
-  const processCommand = (cmd: string) => {
-    const parts = cmd.split(' ');
-    const command = parts[0].toLowerCase();
-
-    switch (command) {
-      case '/status':
-        wsService.send('get_status', {});
-        break;
-      
-      case '/viz':
-        toggleVisualization(parts[1]);
-        break;
-      
-      case '/process':
-        manageProcess(parts[1], parts[2]);
-        break;
-      
-      case '/entropy':
-        wsService.send('adjust_entropy', { value: parseFloat(parts[1]) });
-        break;
-      
-      case '/mood':
-        wsService.send('set_mood', { mood: parts[1] });
-        break;
-      
-      case '/help':
-        showHelp();
-        break;
+    // Handle special commands
+    const parts = input.toLowerCase().split(' ');
+    if (parts[0] === 'status') {
+      send({
+        type: 'get_status',
+        data: {}
+      });
+    } else if (parts[0] === 'entropy' && parts[1]) {
+      send({
+        type: 'adjust_entropy',
+        data: { value: parseFloat(parts[1]) }
+      });
+    } else if (parts[0] === 'mood' && parts[1]) {
+      send({
+        type: 'set_mood',
+        data: { mood: parts[1] }
+      });
+    } else if (parts[0] === 'disable' && parts[1]) {
+      const vizType = parts[1];
+      send({
+        type: 'disable_viz',
+        data: { viz: vizType }
+      });
+    } else if (parts[0] === 'enable' && parts[1]) {
+      const vizType = parts[1];
+      send({
+        type: 'enable_viz',
+        data: { viz: vizType }
+      });
+    } else if (parts[0] === 'process' && parts[1]) {
+      send({
+        type: 'process_control',
+        data: {
+          action: parts[1],
+          params: parts.slice(2)
+        }
+      });
     }
-  };
-
-  const toggleVisualization = (vizType: string) => {
-    const updated = new Set(activeVisualizations);
-    if (updated.has(vizType)) {
-      updated.delete(vizType);
-      wsService.send('disable_viz', { viz: vizType });
-    } else {
-      updated.add(vizType);
-      wsService.send('enable_viz', { viz: vizType });
-    }
-    setActiveVisualizations(updated);
-  };
-
-  const manageProcess = (action: string, process: string) => {
-    wsService.send('process_control', {
-      action,
-      process
-    });
-  };
-
-  const showHelp = () => {
-    addSystemMessage(`
-Available commands:
-/status - Show system status
-/viz [type] - Toggle visualization
-/process [action] [name] - Control processes
-/entropy [value] - Adjust entropy
-/mood [mood] - Set system mood
-/help - Show this help
-    `);
   };
 
   return (
-    <div className="talk-interface">
-      <div className="messages" ref={terminalRef}>
-        {messages.map(msg => (
-          <div key={msg.id} className={`message ${msg.type}`}>
-            <div className="message-header">
-              <span className="timestamp">
-                {new Date(msg.timestamp).toLocaleTimeString()}
-              </span>
-              {msg.type === 'dawn' && msg.metadata?.tick && (
-                <span className="tick">Tick #{msg.metadata.tick}</span>
-              )}
-            </div>
-            <div className="message-content">{msg.content}</div>
-            {msg.type === 'dawn' && msg.metadata && (
-              <div className="message-metadata">
-                {msg.metadata.scup && (
-                  <span className="scup">SCUP: {msg.metadata.scup}%</span>
-                )}
-                {msg.metadata.mood && (
-                  <span className="mood">Mood: {msg.metadata.mood}</span>
-                )}
-                {msg.metadata.process && (
-                  <span className="process">Process: {msg.metadata.process}</span>
-                )}
-              </div>
-            )}
+    <div className="talk-to-interface">
+      <div className="messages">
+        {messages.map((msg, i) => (
+          <div key={i} className={`message ${msg.type}`}>
+            <span className="timestamp">
+              {new Date(msg.timestamp).toLocaleTimeString()}
+            </span>
+            <span className="content">{msg.content}</span>
           </div>
         ))}
       </div>
-      <div className="input-area">
+
+      <form onSubmit={handleSubmit} className="input-area">
         <input
           type="text"
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          onKeyPress={(e) => {
-            if (e.key === 'Enter') {
-              if (input.startsWith('/')) {
-                processCommand(input);
-                setInput('');
-              } else {
-                sendMessage();
-              }
-            }
-          }}
-          placeholder="Type a message or command..."
-          disabled={isProcessing}
+          placeholder={connected ? "Type a message..." : "Connecting..."}
+          disabled={!connected}
         />
-        <button onClick={sendMessage} disabled={isProcessing || !input.trim()}>
+        <button type="submit" disabled={!connected}>
           Send
         </button>
-      </div>
+      </form>
     </div>
   );
 }; 

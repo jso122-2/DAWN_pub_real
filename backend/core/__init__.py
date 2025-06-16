@@ -1,16 +1,17 @@
 """
-DAWN Core Package
-===============
-Core system components including wiring monitor and diagnostics.
+Core modules for the DAWN system.
 """
 
-import sys
-from pathlib import Path
+from .pattern_detector import create_pattern_detector
+from .state_machine import create_state_machine
+from .fractal_emotions import create_fractal_emotions
+from .memory_manager import create_memory_manager
+from .mood_gradient import create_mood_gradient_plotter
 
-# Add the project root to sys.path if not already there
-project_root = str(Path(__file__).parent.parent.parent)
-if project_root not in sys.path:
-    sys.path.insert(0, project_root)
-
-# Re-export the main core package
-from core import * 
+__all__ = [
+    'create_pattern_detector',
+    'create_state_machine',
+    'create_fractal_emotions',
+    'create_memory_manager',
+    'create_mood_gradient_plotter'
+] 

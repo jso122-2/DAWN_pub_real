@@ -7,6 +7,7 @@ import '../styles/terminal.css';
 export const Terminal: React.FC = () => {
     const [tickData, setTickData] = useState<TickData | null>(null);
     const [connectionStatus, setConnectionStatus] = useState<'connected' | 'disconnected' | 'connecting'>('disconnected');
+    const [error, setError] = useState<string | null>(null);
     const terminalRef = useRef<HTMLDivElement>(null);
     
     // Use the cosmic store
@@ -20,7 +21,10 @@ export const Terminal: React.FC = () => {
     }));
 
     useEffect(() => {
+        console.log('Terminal component mounted, initializing WebSocket connection');
+        
         const handleTickData = (data: TickData | ModuleStatus | string) => {
+            console.log('Received tick data:', data);
             if (typeof data === 'object' && 'tick_number' in data) {
                 const tickData = data as TickData;
                 setTickData(tickData);
@@ -32,22 +36,36 @@ export const Terminal: React.FC = () => {
         };
 
         const handleConnectionStatus = (data: TickData | ModuleStatus | string) => {
+            console.log('Connection status update:', data);
             if (typeof data === 'string' && ['connected', 'disconnected', 'connecting'].includes(data)) {
                 setConnectionStatus(data as 'connected' | 'disconnected' | 'connecting');
             }
         };
 
+        const handleError = (err: Error) => {
+            console.error('WebSocket error in Terminal:', err);
+            setError(err.message);
+            setConnectionStatus('disconnected');
+        };
+
         // Add WebSocket event handlers
         wsService.on('tick_data', handleTickData);
         wsService.on('connection_status', handleConnectionStatus);
+        wsService.on('error', handleError);
 
         // Connect to WebSocket
-        wsService.connect();
+        console.log('Connecting to WebSocket from Terminal component');
+        wsService.connect().catch((err) => {
+            console.error('Failed to connect to WebSocket:', err);
+            setError(err.message);
+            setConnectionStatus('disconnected');
+        });
 
         return () => {
+            console.log('Terminal component unmounting, cleaning up WebSocket connection');
             // Cleanup handlers
-            wsService.off('tick_data', handleTickData);
-            wsService.off('connection_status', handleConnectionStatus);
+            wsService.removeMessageHandler('tick_data', handleTickData);
+            wsService.removeMessageHandler('connection_status', handleConnectionStatus);
             wsService.disconnect();
         };
     }, []);
@@ -70,6 +88,11 @@ export const Terminal: React.FC = () => {
                     {connectionStatus.toUpperCase()}
                 </div>
             </div>
+            {error && (
+                <div className="error-message">
+                    Error: {error}
+                </div>
+            )}
             <div className="terminal-body" ref={terminalRef}>
                 {tickData ? (
                     <div className="tick-data">
@@ -106,7 +129,7 @@ export const Terminal: React.FC = () => {
                     </div>
                 ) : (
                     <div className="no-data">
-                        Waiting for tick data...
+                        {error ? `Error: ${error}` : 'Waiting for tick data...'}
                     </div>
                 )}
             </div>

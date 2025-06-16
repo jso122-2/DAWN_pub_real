@@ -147,3 +147,6 @@ class DAWNCentral:
             "event_bus_stats": self.event_bus.get_stats(),
             "connections": len(self.orchestrator.connections)
         }
+
+# Alias for backward compatibility
+DAWNSuite = DAWNCentral

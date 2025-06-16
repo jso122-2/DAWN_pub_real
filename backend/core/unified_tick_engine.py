@@ -26,7 +26,7 @@ backend_dir = str(Path(__file__).parent.parent)
 if backend_dir not in sys.path:
     sys.path.insert(0, backend_dir)
 
-from semantic.semantic_field import get_current_field
+from semantic.field_initializer import get_current_field
 
 # Configure logging
 logging.basicConfig(
@@ -77,14 +77,14 @@ class UnifiedTickEngine:
     def __init__(self, config_path: str = "config/tick_config.yaml"):
         """Initialize tick engine with configuration"""
         self._state = TickState()
-        self._subsystems = {}  # Add subsystems dictionary
+        self._subsystems = {}  # Dictionary to store subsystems
         
-        # Resolve config path relative to backend directory
-        backend_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        config_path = os.path.join(backend_dir, config_path)
+        # Resolve config path relative to project root
+        project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        config_path = os.path.join(project_root, config_path)
         
         self._config = self._load_config(config_path)
-        self._log_dir = os.path.join(backend_dir, 'logs')
+        self._log_dir = os.path.join(project_root, 'logs')
         self._metrics_dir = os.path.join(self._log_dir, 'metrics')
         os.makedirs(self._log_dir, exist_ok=True)
         os.makedirs(self._metrics_dir, exist_ok=True)
@@ -103,6 +103,7 @@ class UnifiedTickEngine:
             "subsystem_times": {},
             "total_time": 0
         }
+        self.event_queue = []
         
         logger.info("Initialized UnifiedTickEngine")
     
@@ -269,39 +270,26 @@ class UnifiedTickEngine:
             # Record start time
             start_time = time.time()
             
-            # Process subsystems in priority order
-            for priority in sorted(self._subsystems.keys()):
-                subsystem = self._subsystems[priority]
+            # Process subsystems
+            for name, subsystem in self._subsystems.items():
                 try:
                     subsystem_start = time.time()
-                    await subsystem.process_tick()
+                    if hasattr(subsystem, 'process_tick'):
+                        await subsystem.process_tick()
+                    elif hasattr(subsystem, 'tick'):
+                        await subsystem.tick()
                     subsystem_time = time.time() - subsystem_start
-                    self.tick_metrics["subsystem_times"][subsystem.__class__.__name__] = subsystem_time
+                    self._state.performance_metrics[f"{name}_time"] = subsystem_time
                 except Exception as e:
-                    logger.error(f"Error processing subsystem {subsystem.__class__.__name__}: {e}")
+                    logger.error(f"Error processing subsystem {name}: {e}")
             
             # Calculate tick metrics
             total_time = time.time() - start_time
-            self.tick_metrics["total_time"] = total_time
-            self.tick_metrics["tick_rate"] = 1.0 / total_time if total_time > 0 else 0
+            self._state.performance_metrics["total_time"] = total_time
+            self._state.performance_metrics["tick_rate"] = 1.0 / total_time if total_time > 0 else 0
             
-            # Store tick history
-            self.tick_history.append({
-                "tick": self.current_tick,
-                "timestamp": time.time(),
-                "metrics": self.tick_metrics.copy()
-            })
-            
-            # Trim history if needed
-            if len(self.tick_history) > self.max_history_size:
-                self.tick_history = self.tick_history[-self.max_history_size:]
-            
-            # Call tick callbacks
-            for callback in self.tick_callbacks:
-                try:
-                    await callback(self.current_tick, self.tick_metrics)
-                except Exception as e:
-                    logger.error(f"Error in tick callback: {e}")
+            # Update tick count
+            self._state.tick_count += 1
             
             # Broadcast tick state
             await self._broadcast_tick_state()
@@ -313,20 +301,20 @@ class UnifiedTickEngine:
         """Broadcast current tick state to all subscribers"""
         try:
             state = {
-                "tick": self.current_tick,
+                "tick": self._state.tick_count,
                 "timestamp": time.time(),
-                "metrics": self.tick_metrics,
+                "metrics": self._state.performance_metrics,
                 "subsystems": {
                     name: {
                         "active": True,
-                        "priority": priority
+                        "metrics": self._state.performance_metrics.get(f"{name}_time", 0)
                     }
-                    for priority, name in self._subsystems.items()
+                    for name in self._subsystems.keys()
                 }
             }
             
             # Broadcast to all subscribers
-            for callback in self.tick_callbacks:
+            for callback in self._state.event_handlers.get('tick', []):
                 try:
                     await callback(state)
                 except Exception as e:
@@ -337,10 +325,7 @@ class UnifiedTickEngine:
     
     def register_subsystem(self, name: str, subsystem: Any, priority: int = 0) -> None:
         """Register a subsystem with the tick engine"""
-        self._subsystems[name] = {
-            'instance': subsystem,
-            'priority': priority
-        }
+        self._subsystems[name] = subsystem
         logger.info(f"Registered subsystem {name} with priority {priority}")
         
         # Register tick handler for the subsystem
@@ -353,12 +338,12 @@ class UnifiedTickEngine:
 
     def get_subsystem(self, name: str) -> Optional[Any]:
         """Get a registered subsystem by name"""
-        return self._subsystems.get(name, {}).get('instance')
+        return self._subsystems.get(name)
 
     def get_active_processes(self) -> List[str]:
         """Get list of active subsystem processes"""
-        return [name for name, info in self._subsystems.items() 
-                if hasattr(info['instance'], 'is_active') and info['instance'].is_active()]
+        return [name for name, subsystem in self._subsystems.items() 
+                if hasattr(subsystem, 'is_active') and subsystem.is_active()]
 
     def add_tick_callback(self, callback):
         """Add a callback to be called on each tick"""
@@ -381,6 +366,62 @@ class UnifiedTickEngine:
         self.tick_callbacks.clear()
         self._subsystems.clear()
         self.tick_history.clear()
+        self.event_queue.clear()
+
+    async def _process_event_queue(self):
+        """Process events in the queue"""
+        while self.event_queue:
+            event = self.event_queue.pop(0)
+            try:
+                event_type, data = event
+                # Process event based on type
+                if event_type == "tick":
+                    await self._process_tick()
+                elif event_type == "subsystem":
+                    subsystem_name = data.get("name")
+                    if subsystem_name in self._subsystems:
+                        await self._subsystems[subsystem_name].process_tick()
+                # Add more event types as needed
+            except Exception as e:
+                logger.error(f"Error processing event: {e}")
+
+    def _calculate_interval(self) -> float:
+        """Calculate the next tick interval based on system state and performance"""
+        try:
+            # Base interval from config or default
+            base_interval = self._config.get('base_interval', 0.1)
+            
+            # Adjust based on system load
+            cpu_usage = self._state.performance_metrics['cpu_usage']
+            memory_usage = self._state.performance_metrics['memory_usage']
+            
+            # Calculate load factor (0.5 to 2.0)
+            load_factor = 1.0
+            if cpu_usage > 80 or memory_usage > 80:
+                load_factor = 2.0  # Slow down under high load
+            elif cpu_usage < 20 and memory_usage < 20:
+                load_factor = 0.5  # Speed up under low load
+            
+            # Adjust based on thermal state
+            thermal_factor = 1.0
+            if self._state.thermal_state['heat'] > 0.8:
+                thermal_factor = 1.5  # Slow down when hot
+            elif self._state.thermal_state['heat'] < 0.2:
+                thermal_factor = 0.8  # Speed up when cool
+            
+            # Calculate final interval
+            interval = base_interval * load_factor * thermal_factor
+            
+            # Ensure interval stays within bounds
+            min_interval = self._config.get('min_interval', 0.05)
+            max_interval = self._config.get('max_interval', 0.5)
+            interval = max(min_interval, min(max_interval, interval))
+            
+            return interval
+            
+        except Exception as e:
+            logger.error(f"Error calculating interval: {e}")
+            return 0.1  # Default to 100ms on error
 
 # Global instance
 tick_engine = UnifiedTickEngine()

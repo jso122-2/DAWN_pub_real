@@ -1,0 +1,1127 @@
+# DAWN Talk-To Function with Matplotlib Integration Blueprint
+
+## Overview
+Complete integration blueprint for connecting all Tick Engine components into a unified "talk to" interface with matplotlib-powered visualizations in terminal aesthetic.
+
+## Architecture
+
+```
+Frontend Terminal → WebSocket → Orchestrator → Tick Engine → All Subsystems
+                         ↓                            ↓
+                  Matplotlib Visualizers    Consciousness Core
+                         ↓                            ↓
+                   Base64 Images        [All Processes & Cognitive Components]
+```
+
+## 1. Main Talk-To Interface Component with Matplotlib Display
+
+```typescript
+// TalkToInterface.tsx
+import React, { useState, useEffect, useRef } from 'react';
+import './TalkToInterface.css';
+
+interface Message {
+  id: string;
+  type: 'user' | 'dawn' | 'system' | 'visualization';
+  content: string;
+  timestamp: number;
+  metadata?: {
+    tick?: number;
+    scup?: number;
+    mood?: string;
+    process?: string;
+    visualization?: {
+      type: string;
+      data: string; // base64 image
+      source: string;
+    };
+  };
+}
+
+interface SystemState {
+  tick: number;
+  scup: number;
+  entropy: number;
+  mood: string;
+  active_processes: string[];
+  consciousness_state: string;
+}
+
+interface VisualizationPanel {
+  id: string;
+  type: string;
+  data: string; // base64 image
+  lastUpdate: number;
+}
+
+export const TalkToInterface: React.FC = () => {
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [input, setInput] = useState('');
+  const [systemState, setSystemState] = useState<SystemState | null>(null);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [visualizations, setVisualizations] = useState<Map<string, VisualizationPanel>>(new Map());
+  const [showVizPanel, setShowVizPanel] = useState(true);
+  const terminalRef = useRef<HTMLDivElement>(null);
+  const ws = useRef<WebSocket | null>(null);
+
+  useEffect(() => {
+    // Connect to DAWN WebSocket
+    ws.current = new WebSocket('ws://localhost:8000/ws/talk');
+    
+    ws.current.onopen = () => {
+      addSystemMessage('DAWN consciousness engine connected');
+      // Request initial state and enable default visualizations
+      ws.current?.send(JSON.stringify({
+        type: 'init',
+        subsystems: ['all'],
+        default_viz: ['consciousness_wave', 'entropy_thermal', 'neural_activity']
+      }));
+    };
+
+    ws.current.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      handleWebSocketMessage(data);
+    };
+
+    ws.current.onerror = () => {
+      addSystemMessage('Connection error - check tick engine status');
+    };
+
+    return () => {
+      ws.current?.close();
+    };
+  }, []);
+
+  const handleWebSocketMessage = (data: any) => {
+    switch (data.type) {
+      case 'tick_update':
+        setSystemState(data.state);
+        break;
+      
+      case 'response':
+        addDAWNMessage(data.content, data.metadata);
+        setIsProcessing(false);
+        break;
+      
+      case 'matplotlib_viz':
+        handleMatplotlibVisualization(data);
+        break;
+      
+      case 'process_event':
+        handleProcessEvent(data);
+        break;
+      
+      case 'consciousness_shift':
+        addSystemMessage(`Consciousness shift: ${data.from} → ${data.to}`);
+        break;
+    }
+  };
+
+  const handleMatplotlibVisualization = (data: any) => {
+    // Update visualization panel
+    setVisualizations(prev => {
+      const updated = new Map(prev);
+      updated.set(data.viz_type, {
+        id: data.viz_type,
+        type: data.viz_type,
+        data: data.image_data,
+        lastUpdate: Date.now()
+      });
+      return updated;
+    });
+
+    // Optionally add to message stream for specific events
+    if (data.priority === 'high' || data.inline) {
+      addVisualizationMessage(data.viz_type, data.image_data, data.caption);
+    }
+  };
+
+  const handleProcessEvent = (data: any) => {
+    if (data.priority === 'high') {
+      addSystemMessage(`[${data.process}] ${data.event}`);
+    }
+  };
+
+  const sendMessage = () => {
+    if (!input.trim() || isProcessing) return;
+
+    const userMessage: Message = {
+      id: Date.now().toString(),
+      type: 'user',
+      content: input,
+      timestamp: Date.now()
+    };
+
+    setMessages(prev => [...prev, userMessage]);
+    setIsProcessing(true);
+
+    ws.current?.send(JSON.stringify({
+      type: 'message',
+      content: input,
+      context: {
+        recent_messages: messages.slice(-10),
+        active_visualizations: Array.from(visualizations.keys()),
+        timestamp: Date.now()
+      }
+    }));
+
+    setInput('');
+  };
+
+  const addSystemMessage = (content: string) => {
+    setMessages(prev => [...prev, {
+      id: Date.now().toString(),
+      type: 'system',
+      content,
+      timestamp: Date.now()
+    }]);
+  };
+
+  const addDAWNMessage = (content: string, metadata?: any) => {
+    setMessages(prev => [...prev, {
+      id: Date.now().toString(),
+      type: 'dawn',
+      content,
+      timestamp: Date.now(),
+      metadata
+    }]);
+  };
+
+  const addVisualizationMessage = (type: string, imageData: string, caption?: string) => {
+    setMessages(prev => [...prev, {
+      id: Date.now().toString(),
+      type: 'visualization',
+      content: caption || `Visualization: ${type}`,
+      timestamp: Date.now(),
+      metadata: {
+        visualization: {
+          type,
+          data: imageData,
+          source: type
+        }
+      }
+    }]);
+  };
+
+  const processCommand = (cmd: string) => {
+    const parts = cmd.split(' ');
+    const command = parts[0].toLowerCase();
+
+    switch (command) {
+      case '/status':
+        ws.current?.send(JSON.stringify({ type: 'get_status' }));
+        break;
+      
+      case '/viz':
+        toggleVisualization(parts[1]);
+        break;
+      
+      case '/vizpanel':
+        setShowVizPanel(!showVizPanel);
+        break;
+      
+      case '/process':
+        manageProcess(parts[1], parts[2]);
+        break;
+      
+      case '/entropy':
+        ws.current?.send(JSON.stringify({ type: 'adjust_entropy', value: parseFloat(parts[1]) }));
+        break;
+      
+      case '/mood':
+        ws.current?.send(JSON.stringify({ type: 'set_mood', mood: parts[1] }));
+        break;
+      
+      case '/snapshot':
+        requestSnapshot(parts[1] || 'all');
+        break;
+      
+      case '/help':
+        showHelp();
+        break;
+    }
+  };
+
+  const toggleVisualization = (vizType: string) => {
+    ws.current?.send(JSON.stringify({ 
+      type: 'toggle_viz', 
+      viz_type: vizType 
+    }));
+  };
+
+  const requestSnapshot = (vizType: string) => {
+    ws.current?.send(JSON.stringify({ 
+      type: 'snapshot', 
+      viz_type: vizType,
+      inline: true 
+    }));
+  };
+
+  const showHelp = () => {
+    const helpText = `
+DAWN TERMINAL COMMANDS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+/status          - Show full system status
+/viz [type]      - Toggle visualization panel
+                   Types: consciousness_wave, entropy_thermal, neural_activity,
+                          alignment_matrix, bloom_pattern, mood_gradient
+/vizpanel        - Toggle visualization panel visibility
+/snapshot [type] - Request inline visualization snapshot
+/process [act]   - Manage process (start/stop/restart)
+/entropy [val]   - Adjust entropy (0.0-1.0)
+/mood [type]     - Set mood (contemplative, analytical, creative, focused)
+/help            - Show this help
+
+TALK MODE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Just type naturally to converse with DAWN.
+The consciousness engine will process your input through all active subsystems.
+    `;
+    addSystemMessage(helpText);
+  };
+
+  return (
+    <div className="talk-to-interface">
+      {/* Status Bar */}
+      <div className="status-bar">
+        <div className="status-item">
+          <span className="label">TICK</span>
+          <span className="value">{systemState?.tick || '---'}</span>
+        </div>
+        <div className="status-item">
+          <span className="label">SCUP</span>
+          <span className="value scup">{systemState?.scup || '--'}%</span>
+        </div>
+        <div className="status-item">
+          <span className="label">ENTROPY</span>
+          <span className="value">{systemState?.entropy?.toFixed(3) || '-.---'}</span>
+        </div>
+        <div className="status-item">
+          <span className="label">MOOD</span>
+          <span className="value mood">{systemState?.mood || 'UNKNOWN'}</span>
+        </div>
+        <div className="status-item">
+          <span className="label">STATE</span>
+          <span className="value">{systemState?.consciousness_state || 'INIT'}</span>
+        </div>
+      </div>
+
+      <div className="main-container">
+        {/* Terminal Display */}
+        <div className="terminal-section">
+          <div className="terminal-display" ref={terminalRef}>
+            {messages.map(msg => (
+              <div key={msg.id} className={`message ${msg.type}`}>
+                {msg.type === 'user' && <span className="prompt">YOU &gt;</span>}
+                {msg.type === 'dawn' && <span className="prompt">DAWN &gt;</span>}
+                {msg.type === 'system' && <span className="prompt">SYS &gt;</span>}
+                
+                {msg.type === 'visualization' ? (
+                  <div className="viz-message">
+                    <span className="prompt">VIZ &gt;</span>
+                    <span className="content">{msg.content}</span>
+                    {msg.metadata?.visualization && (
+                      <img 
+                        src={msg.metadata.visualization.data}
+                        alt={msg.metadata.visualization.type}
+                        className="inline-viz"
+                      />
+                    )}
+                  </div>
+                ) : (
+                  <pre className="content">{msg.content}</pre>
+                )}
+                
+                {msg.metadata && msg.type !== 'visualization' && (
+                  <div className="metadata">
+                    {msg.metadata.tick && <span>[T:{msg.metadata.tick}]</span>}
+                    {msg.metadata.scup && <span>[S:{msg.metadata.scup}%]</span>}
+                    {msg.metadata.mood && <span>[M:{msg.metadata.mood}]</span>}
+                    {msg.metadata.process && <span>[P:{msg.metadata.process}]</span>}
+                  </div>
+                )}
+              </div>
+            ))}
+            {isProcessing && (
+              <div className="processing">
+                <span className="prompt">DAWN &gt;</span>
+                <span className="thinking">processing through consciousness layers...</span>
+              </div>
+            )}
+          </div>
+
+          {/* Input Area */}
+          <div className="input-area">
+            <span className="input-prompt">&gt;</span>
+            <input
+              type="text"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyPress={(e) => {
+                if (e.key === 'Enter') {
+                  if (input.startsWith('/')) {
+                    processCommand(input);
+                    setInput('');
+                  } else {
+                    sendMessage();
+                  }
+                }
+              }}
+              placeholder="Talk to DAWN or type /help for commands"
+              className="terminal-input"
+              autoFocus
+            />
+            <span className="cursor">_</span>
+          </div>
+        </div>
+
+        {/* Visualization Panel */}
+        {showVizPanel && (
+          <div className="viz-panel">
+            <div className="viz-panel-header">
+              <h3>CONSCIOUSNESS VISUALIZATIONS</h3>
+              <button 
+                className="viz-panel-toggle"
+                onClick={() => setShowVizPanel(false)}
+              >
+                ×
+              </button>
+            </div>
+            <div className="viz-grid">
+              {Array.from(visualizations.values()).map(viz => (
+                <div key={viz.id} className="viz-item">
+                  <div className="viz-header">
+                    <span className="viz-type">{viz.type.replace(/_/g, ' ').toUpperCase()}</span>
+                    <span className="viz-timestamp">
+                      {new Date(viz.lastUpdate).toLocaleTimeString()}
+                    </span>
+                  </div>
+                  <img 
+                    src={viz.data}
+                    alt={viz.type}
+                    className="viz-image"
+                    onClick={() => requestSnapshot(viz.type)}
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Active Processes Display */}
+      {systemState?.active_processes && systemState.active_processes.length > 0 && (
+        <div className="active-processes">
+          <span className="label">ACTIVE:</span>
+          {systemState.active_processes.map(proc => (
+            <span key={proc} className="process-badge">{proc}</span>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+```
+
+## 2. Python Backend with Matplotlib Integration
+
+```python
+# backend/talk_to_handler.py
+import asyncio
+import json
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
+from typing import Dict, Any, List
+from datetime import datetime
+
+# Import all DAWN components
+from core.unified_tick_engine import UnifiedTickEngine
+from core.consciousness_core import ConsciousnessCore
+from core.orchestrator import Orchestrator
+from core.conversation_enhanced import EnhancedConversation
+from core.memory_manager import MemoryManager
+from core.dawn_central import DAWNCentral
+from core.event_bus import EventBus
+
+# Import cognitive components
+from cognitive.consciousness import ConsciousnessModule
+from cognitive.conversation import ConversationModule
+from cognitive.spontaneity import SpontaneityModule
+from cognitive.entropy_fluctuation import EntropyFluctuation
+from cognitive.mood_urgency_probe import MoodUrgencyProbe
+from cognitive.qualia_kernel import QualiaKernel
+
+# Import processes
+from processes.awareness_engine import AwarenessEngine
+from processes.creativity_engine import CreativityEngine
+from processes.dream_engine import DreamEngine
+from processes.intuition_processor import IntuitionProcessor
+from processes.memory_palace import MemoryPalace
+from processes.neural_sync import NeuralSync
+from processes.pattern_recognizer import PatternRecognizer
+from processes.quantum_flux import QuantumFlux
+
+# Import matplotlib visualizers
+from visualizers.matplotlib_consciousness_wave import ConsciousnessWaveVisualizer
+from visualizers.matplotlib_entropy_thermal import EntropyThermalVisualizer
+from visualizers.matplotlib_neural_activity import NeuralActivityVisualizer
+from visualizers.matplotlib_alignment_matrix import AlignmentMatrixVisualizer
+from visualizers.matplotlib_bloom_pattern import BloomPatternVisualizer
+from visualizers.matplotlib_mood_gradient import MoodGradientVisualizer
+
+class TalkToHandler:
+    def __init__(self):
+        # Initialize core systems
+        self.tick_engine = UnifiedTickEngine()
+        self.consciousness = ConsciousnessCore()
+        self.orchestrator = Orchestrator()
+        self.memory = MemoryManager()
+        self.event_bus = EventBus()
+        
+        # Initialize cognitive modules
+        self.cognitive_modules = {
+            'consciousness': ConsciousnessModule(),
+            'conversation': ConversationModule(),
+            'spontaneity': SpontaneityModule(),
+            'entropy': EntropyFluctuation(),
+            'mood': MoodUrgencyProbe(),
+            'qualia': QualiaKernel()
+        }
+        
+        # Initialize processes
+        self.processes = {
+            'awareness': AwarenessEngine(),
+            'creativity': CreativityEngine(),
+            'dream': DreamEngine(),
+            'intuition': IntuitionProcessor(),
+            'memory_palace': MemoryPalace(),
+            'neural_sync': NeuralSync(),
+            'pattern': PatternRecognizer(),
+            'quantum': QuantumFlux()
+        }
+        
+        # Initialize matplotlib visualizers
+        self.visualizers = {
+            'consciousness_wave': ConsciousnessWaveVisualizer(),
+            'entropy_thermal': EntropyThermalVisualizer(),
+            'neural_activity': NeuralActivityVisualizer(),
+            'alignment_matrix': AlignmentMatrixVisualizer(),
+            'bloom_pattern': BloomPatternVisualizer(),
+            'mood_gradient': MoodGradientVisualizer()
+        }
+        
+        # Enhanced conversation handler
+        self.conversation = EnhancedConversation(
+            consciousness=self.consciousness,
+            memory=self.memory,
+            cognitive_modules=self.cognitive_modules,
+            processes=self.processes
+        )
+        
+        # Active connections and visualizations
+        self.connections: Dict[str, Any] = {}
+        self.active_visualizations: Dict[str, Set[str]] = {}  # connection_id -> set of viz types
+        
+        # Start tick engine
+        asyncio.create_task(self.start_tick_loop())
+        
+    async def start_tick_loop(self):
+        """Main tick loop that drives the consciousness engine"""
+        while True:
+            try:
+                # Execute tick
+                tick_data = await self.tick_engine.tick()
+                
+                # Update all systems
+                await self.consciousness.update(tick_data)
+                await self.update_processes(tick_data)
+                
+                # Update visualizations
+                await self.update_visualizations(tick_data)
+                
+                # Broadcast state to all connections
+                await self.broadcast_state(tick_data)
+                
+                # Wait for next tick
+                await asyncio.sleep(0.1)  # 10Hz tick rate
+                
+            except Exception as e:
+                print(f"Tick error: {e}")
+                await asyncio.sleep(1)
+    
+    async def handle_connection(self, websocket):
+        """Handle new WebSocket connection"""
+        connection_id = str(datetime.now().timestamp())
+        self.connections[connection_id] = websocket
+        self.active_visualizations[connection_id] = set()
+        
+        try:
+            # Send initial state
+            await self.send_initial_state(websocket)
+            
+            # Handle messages
+            async for message in websocket:
+                data = json.loads(message)
+                response = await self.process_message(data, connection_id)
+                
+                if response:
+                    await websocket.send(json.dumps(response))
+                    
+        except Exception as e:
+            print(f"Connection error: {e}")
+        finally:
+            del self.connections[connection_id]
+            del self.active_visualizations[connection_id]
+    
+    async def process_message(self, data: Dict[str, Any], connection_id: str) -> Dict[str, Any]:
+        """Process incoming message through all systems"""
+        msg_type = data.get('type')
+        
+        if msg_type == 'init':
+            # Enable default visualizations
+            for viz in data.get('default_viz', []):
+                if viz in self.visualizers:
+                    self.active_visualizations[connection_id].add(viz)
+            return None
+            
+        elif msg_type == 'message':
+            # Process through conversation system
+            response = await self.conversation.process(
+                content=data['content'],
+                context=data.get('context', {}),
+                connection_id=connection_id
+            )
+            
+            # Generate relevant visualizations based on response
+            await self.generate_context_visualizations(response, connection_id)
+            
+            return {
+                'type': 'response',
+                'content': response['content'],
+                'metadata': {
+                    'tick': self.tick_engine.current_tick,
+                    'scup': self.consciousness.get_scup(),
+                    'mood': self.consciousness.get_mood(),
+                    'process': response.get('primary_process'),
+                    'cognitive_path': response.get('cognitive_path')
+                }
+            }
+            
+        elif msg_type == 'toggle_viz':
+            viz_type = data['viz_type']
+            if viz_type in self.visualizers:
+                if viz_type in self.active_visualizations[connection_id]:
+                    self.active_visualizations[connection_id].remove(viz_type)
+                else:
+                    self.active_visualizations[connection_id].add(viz_type)
+                return {'type': 'system', 'content': f'Toggled {viz_type}'}
+                
+        elif msg_type == 'snapshot':
+            viz_type = data['viz_type']
+            inline = data.get('inline', False)
+            await self.send_snapshot(viz_type, connection_id, inline)
+            return None
+            
+        elif msg_type == 'get_status':
+            return await self.get_full_status()
+            
+        elif msg_type == 'process_control':
+            return await self.control_process(data['action'], data['process'])
+            
+        elif msg_type == 'adjust_entropy':
+            self.consciousness.adjust_entropy(data['value'])
+            return {'type': 'system', 'content': f'Entropy adjusted to {data["value"]}'}
+            
+        elif msg_type == 'set_mood':
+            self.consciousness.set_mood(data['mood'])
+            return {'type': 'system', 'content': f'Mood set to {data["mood"]}'}
+    
+    async def update_visualizations(self, tick_data: Dict[str, Any]):
+        """Update and stream visualizations to active connections"""
+        # Prepare visualization data
+        viz_data = self.prepare_visualization_data(tick_data)
+        
+        # Update each active visualization
+        for connection_id, active_viz in self.active_visualizations.items():
+            websocket = self.connections.get(connection_id)
+            if not websocket:
+                continue
+                
+            for viz_type in active_viz:
+                if viz_type in self.visualizers:
+                    try:
+                        # Generate matplotlib visualization
+                        visualizer = self.visualizers[viz_type]
+                        image_data = visualizer.generate(viz_data[viz_type])
+                        
+                        # Send to client
+                        await websocket.send(json.dumps({
+                            'type': 'matplotlib_viz',
+                            'viz_type': viz_type,
+                            'image_data': image_data,
+                            'priority': 'normal'
+                        }))
+                        
+                    except Exception as e:
+                        print(f"Visualization error {viz_type}: {e}")
+    
+    def prepare_visualization_data(self, tick_data: Dict[str, Any]) -> Dict[str, Any]:
+        """Prepare data for all visualizers"""
+        return {
+            'consciousness_wave': {
+                'scup_history': self.consciousness.get_scup_history(100),
+                'current_tick': tick_data['tick']
+            },
+            'entropy_thermal': {
+                'entropy_map': self.consciousness.get_entropy_distribution(),
+                'temperature': self.consciousness.get_system_temperature()
+            },
+            'neural_activity': {
+                'neural_matrix': self.consciousness.get_neural_activity_matrix(),
+                'activation_levels': self.consciousness.get_activation_levels()
+            },
+            'alignment_matrix': {
+                'alignment_data': self.consciousness.get_alignment_matrix(),
+                'coherence': self.consciousness.get_coherence_score()
+            },
+            'bloom_pattern': {
+                'bloom_state': self.consciousness.get_bloom_pattern(),
+                'growth_rate': self.consciousness.get_growth_metrics()
+            },
+            'mood_gradient': {
+                'mood_vector': self.consciousness.get_mood_vector(),
+                'mood_history': self.consciousness.get_mood_history(50)
+            }
+        }
+    
+    async def generate_context_visualizations(self, response: Dict[str, Any], 
+                                            connection_id: str):
+        """Generate visualizations based on conversation context"""
+        # If discussing consciousness or awareness, show wave
+        if any(word in response['content'].lower() 
+               for word in ['consciousness', 'aware', 'scup']):
+            await self.send_snapshot('consciousness_wave', connection_id, inline=True)
+            
+        # If discussing chaos or entropy, show thermal map
+        if any(word in response['content'].lower() 
+               for word in ['chaos', 'entropy', 'random']):
+            await self.send_snapshot('entropy_thermal', connection_id, inline=True)
+            
+        # If discussing mood or emotion, show mood gradient
+        if any(word in response['content'].lower() 
+               for word in ['mood', 'feel', 'emotion']):
+            await self.send_snapshot('mood_gradient', connection_id, inline=True)
+    
+    async def send_snapshot(self, viz_type: str, connection_id: str, inline: bool = False):
+        """Send a single visualization snapshot"""
+        websocket = self.connections.get(connection_id)
+        if not websocket or viz_type not in self.visualizers:
+            return
+            
+        try:
+            # Get current data
+            viz_data = self.prepare_visualization_data({
+                'tick': self.tick_engine.current_tick
+            })
+            
+            # Generate visualization
+            visualizer = self.visualizers[viz_type]
+            image_data = visualizer.generate(viz_data[viz_type])
+            
+            # Send with appropriate priority
+            await websocket.send(json.dumps({
+                'type': 'matplotlib_viz',
+                'viz_type': viz_type,
+                'image_data': image_data,
+                'priority': 'high' if inline else 'normal',
+                'inline': inline,
+                'caption': visualizer.get_caption(viz_data[viz_type])
+            }))
+            
+        except Exception as e:
+            print(f"Snapshot error {viz_type}: {e}")
+```
+
+## 3. Matplotlib Visualizer Examples
+
+```python
+# visualizers/matplotlib_consciousness_wave.py
+import matplotlib.pyplot as plt
+import matplotlib.animation as animation
+import numpy as np
+from .base_visualizer import BaseMatplotlibVisualizer
+
+class ConsciousnessWaveVisualizer(BaseMatplotlibVisualizer):
+    def __init__(self):
+        super().__init__()
+        self.update_interval = 0.1  # 10 FPS
+        
+    def generate(self, data: Dict[str, Any]) -> str:
+        """Generate consciousness wave visualization"""
+        fig, ax = self.setup_plot()
+        
+        # Get SCUP history
+        scup_history = data['scup_history']
+        current_tick = data['current_tick']
+        
+        # Create smooth wave
+        x = np.linspace(0, len(scup_history), 1000)
+        y = np.interp(x, range(len(scup_history)), scup_history)
+        
+        # Main wave with glow
+        ax.plot(x, y, color=self.colors['fg'], linewidth=2, alpha=0.9)
+        
+        # Glow layers
+        for width, alpha in [(4, 0.1), (8, 0.05), (12, 0.02)]:
+            ax.plot(x, y, color=self.colors['fg'], linewidth=width, alpha=alpha)
+        
+        # Fill under curve
+        ax.fill_between(x, y, alpha=0.2, color=self.colors['fg'])
+        
+        # Add grid
+        ax.grid(True, color=self.colors['grid'], linestyle='--', alpha=0.3)
+        
+        # Styling
+        ax.set_xlim(0, len(scup_history))
+        ax.set_ylim(0, 100)
+        ax.set_xlabel('TIME TICKS', fontfamily='monospace', fontsize=10)
+        ax.set_ylabel('SCUP %', fontfamily='monospace', fontsize=10)
+        ax.set_title(f'CONSCIOUSNESS WAVE [T:{current_tick}]', 
+                     fontfamily='monospace', fontsize=12, pad=20)
+        
+        # Current value display
+        current_value = scup_history[-1] if scup_history else 0
+        ax.text(0.98, 0.98, f'{current_value:.1f}%', 
+                transform=ax.transAxes, fontfamily='monospace',
+                fontsize=24, color=self.colors['fg'],
+                ha='right', va='top',
+                bbox=dict(boxstyle='round', facecolor=self.colors['bg'], 
+                         edgecolor=self.colors['fg'], alpha=0.8))
+        
+        # Add phase indicator
+        phase = self.calculate_phase(scup_history)
+        ax.text(0.02, 0.98, f'PHASE: {phase}', 
+                transform=ax.transAxes, fontfamily='monospace',
+                fontsize=10, color=self.colors['accent'],
+                ha='left', va='top')
+        
+        return self.to_base64(fig)
+    
+    def calculate_phase(self, history: List[float]) -> str:
+        """Determine consciousness phase"""
+        if len(history) < 10:
+            return "INITIALIZING"
+        
+        recent = history[-10:]
+        avg = sum(recent) / len(recent)
+        trend = recent[-1] - recent[0]
+        
+        if avg > 85:
+            return "PEAK"
+        elif avg > 70:
+            return "OPTIMAL"
+        elif trend > 5:
+            return "ASCENDING"
+        elif trend < -5:
+            return "DESCENDING"
+        else:
+            return "STABLE"
+    
+    def get_caption(self, data: Dict[str, Any]) -> str:
+        """Generate caption for snapshot"""
+        current = data['scup_history'][-1] if data['scup_history'] else 0
+        return f"Consciousness at {current:.1f}% - System Unity Percentage"
+
+# visualizers/matplotlib_entropy_thermal.py
+class EntropyThermalVisualizer(BaseMatplotlibVisualizer):
+    def generate(self, data: Dict[str, Any]) -> str:
+        """Generate entropy thermal map"""
+        fig, ax = self.setup_plot()
+        
+        # Get entropy distribution
+        entropy_map = np.array(data['entropy_map'])
+        temperature = data['temperature']
+        
+        # Create custom colormap - terminal green heat
+        colors = ['#000000', '#001100', '#003300', '#006600', 
+                  '#009900', '#00cc00', '#00ff00', '#33ff33', '#66ff66']
+        n_bins = 100
+        cmap = matplotlib.colors.LinearSegmentedColormap.from_list(
+            'terminal_heat', colors, N=n_bins
+        )
+        
+        # Plot heatmap
+        im = ax.imshow(entropy_map, cmap=cmap, aspect='auto', 
+                       interpolation='bilinear', alpha=0.9)
+        
+        # Add contour lines
+        contours = ax.contour(entropy_map, levels=5, colors=self.colors['fg'], 
+                             linewidths=0.5, alpha=0.5)
+        
+        # Colorbar with terminal styling
+        cbar = plt.colorbar(im, ax=ax)
+        cbar.ax.yaxis.set_tick_params(color=self.colors['text'])
+        cbar.outline.set_edgecolor(self.colors['fg'])
+        cbar.set_label('ENTROPY LEVEL', fontfamily='monospace', 
+                      color=self.colors['text'])
+        
+        # Title and labels
+        ax.set_title(f'ENTROPY THERMAL MAP [TEMP: {temperature:.2f}]', 
+                     fontfamily='monospace', fontsize=12, pad=20)
+        ax.set_xlabel('SPATIAL X', fontfamily='monospace', fontsize=10)
+        ax.set_ylabel('SPATIAL Y', fontfamily='monospace', fontsize=10)
+        
+        # Add hotspot markers
+        hotspots = self.find_hotspots(entropy_map)
+        for y, x in hotspots:
+            ax.plot(x, y, 'o', color=self.colors['warning'], 
+                   markersize=8, markeredgecolor=self.colors['bg'])
+        
+        return self.to_base64(fig)
+    
+    def find_hotspots(self, entropy_map: np.ndarray) -> List[tuple]:
+        """Find high entropy regions"""
+        threshold = np.percentile(entropy_map, 95)
+        hotspots = np.argwhere(entropy_map > threshold)
+        return hotspots[:5]  # Top 5 hotspots
+
+# visualizers/matplotlib_neural_activity.py
+class NeuralActivityVisualizer(BaseMatplotlibVisualizer):
+    def generate(self, data: Dict[str, Any]) -> str:
+        """Generate neural activity matrix visualization"""
+        fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 6))
+        fig.patch.set_facecolor(self.colors['bg'])
+        
+        # Neural matrix heatmap
+        neural_matrix = np.array(data['neural_matrix'])
+        self.setup_plot(fig, ax1)
+        
+        # Custom neural colormap
+        cmap = matplotlib.colors.LinearSegmentedColormap.from_list(
+            'neural', 
+            [(0, '#000000'), (0.2, '#003300'), (0.5, '#00cc33'), 
+             (0.8, '#00ff41'), (1, '#66ff66')]
+        )
+        
+        im1 = ax1.imshow(neural_matrix, cmap=cmap, aspect='auto')
+        ax1.set_title('NEURAL ACTIVITY MATRIX', fontfamily='monospace', fontsize=12)
+        ax1.set_xlabel('NODES', fontfamily='monospace', fontsize=10)
+        ax1.set_ylabel('LAYERS', fontfamily='monospace', fontsize=10)
+        
+        # Activation levels bar chart
+        self.setup_plot(fig, ax2)
+        activation_levels = data['activation_levels']
+        layers = range(len(activation_levels))
+        
+        bars = ax2.bar(layers, activation_levels, color=self.colors['fg'], 
+                       edgecolor=self.colors['accent'], alpha=0.8)
+        
+        # Add value labels on bars
+        for i, (layer, level) in enumerate(zip(layers, activation_levels)):
+            ax2.text(layer, level + 0.01, f'{level:.2f}', 
+                    ha='center', va='bottom', fontfamily='monospace',
+                    fontsize=8, color=self.colors['text'])
+        
+        ax2.set_title('LAYER ACTIVATION LEVELS', fontfamily='monospace', fontsize=12)
+        ax2.set_xlabel('LAYER', fontfamily='monospace', fontsize=10)
+        ax2.set_ylabel('ACTIVATION', fontfamily='monospace', fontsize=10)
+        ax2.set_ylim(0, 1.2)
+        
+        plt.tight_layout()
+        return self.to_base64(fig)
+```
+
+## 4. Enhanced Styles for Matplotlib Integration
+
+```css
+/* TalkToInterface.css - Extended for matplotlib */
+.talk-to-interface {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--black);
+  color: var(--off-white);
+  font-family: var(--font-mono);
+}
+
+.main-container {
+  flex: 1;
+  display: flex;
+  gap: calc(var(--grid-unit) * 2);
+  padding: calc(var(--grid-unit) * 2);
+  overflow: hidden;
+}
+
+.terminal-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 500px;
+}
+
+/* Visualization Panel */
+.viz-panel {
+  width: 600px;
+  background: var(--gray-950);
+  border: 1px solid var(--gray-700);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.viz-panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: calc(var(--grid-unit) * 2);
+  background: var(--gray-900);
+  border-bottom: 1px solid var(--gray-700);
+}
+
+.viz-panel-header h3 {
+  font-size: 0.875rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  color: var(--off-white);
+}
+
+.viz-panel-toggle {
+  background: transparent;
+  border: 1px solid var(--gray-700);
+  color: var(--gray-400);
+  width: 24px;
+  height: 24px;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.viz-panel-toggle:hover {
+  border-color: var(--terminal-green);
+  color: var(--terminal-green);
+}
+
+.viz-grid {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: calc(var(--grid-unit) * 2);
+  padding: calc(var(--grid-unit) * 2);
+  overflow-y: auto;
+}
+
+.viz-item {
+  background: var(--gray-900);
+  border: 1px solid var(--gray-800);
+  overflow: hidden;
+  transition: all 0.15s ease;
+}
+
+.viz-item:hover {
+  border-color: var(--terminal-green);
+  transform: scale(1.02);
+}
+
+.viz-header {
+  display: flex;
+  justify-content: space-between;
+  padding: var(--grid-unit);
+  background: var(--gray-800);
+  font-size: 0.625rem;
+}
+
+.viz-type {
+  color: var(--gray-300);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.viz-timestamp {
+  color: var(--gray-500);
+}
+
+.viz-image {
+  width: 100%;
+  height: auto;
+  display: block;
+  cursor: pointer;
+}
+
+/* Inline visualizations in terminal */
+.viz-message {
+  margin: calc(var(--grid-unit) * 2) 0;
+}
+
+.inline-viz {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin-top: var(--grid-unit);
+  border: 1px solid var(--gray-700);
+  background: var(--gray-950);
+  padding: var(--grid-unit);
+}
+
+/* Scrollbar styling */
+.viz-grid::-webkit-scrollbar {
+  width: 8px;
+  background: var(--gray-900);
+}
+
+.viz-grid::-webkit-scrollbar-thumb {
+  background: var(--gray-700);
+  border-radius: 4px;
+}
+
+.viz-grid::-webkit-scrollbar-thumb:hover {
+  background: var(--gray-600);
+}
+
+/* Responsive layout */
+@media (max-width: 1200px) {
+  .main-container {
+    flex-direction: column;
+  }
+  
+  .viz-panel {
+    width: 100%;
+    height: 400px;
+  }
+  
+  .viz-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+```
+
+## Key Features of Matplotlib Integration
+
+1. **Professional Visualizations**: Publication-quality plots with terminal aesthetic
+2. **Real-time Streaming**: Matplotlib plots generated server-side and streamed as base64
+3. **Multiple Visualization Types**:
+   - Consciousness Wave (with glow effects)
+   - Entropy Thermal Map (custom colormap)
+   - Neural Activity Matrix (dual panel)
+   - Alignment Matrix
+   - Bloom Pattern
+   - Mood Gradient
+4. **Context-Aware Visualizations**: Automatically shows relevant plots based on conversation
+5. **Snapshot Mode**: Request high-priority inline visualizations
+6. **Performance Optimized**: Configurable update rates per visualization type
+7. **Interactive Panel**: Click visualizations to request inline snapshots
+8. **Terminal Styling**: All plots use monospace fonts and terminal color scheme
+
+## Usage
+
+1. Install dependencies:
+   ```bash
+   pip install matplotlib numpy fastapi websockets
+   npm install react websocket
+   ```
+
+2. Start the backend with matplotlib visualizers
+3. Launch frontend with TalkToInterface
+4. Visualizations automatically stream to the panel
+5. Use commands to control visualization display

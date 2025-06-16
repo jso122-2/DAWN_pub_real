@@ -1,133 +1,64 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { wsService } from '../services/websocket';
+import React, { useState, useEffect, useRef } from 'react';
+import { useWebSocket } from '../hooks/useWebSocket';
+import './MatplotlibVisualizer.css';
 
 interface VisualizationData {
   type: string;
   data: any;
-  timestamp: string;
+  timestamp: number;
 }
 
 export const MatplotlibVisualizer: React.FC = () => {
   const [isConnected, setIsConnected] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [visualizationData, setVisualizationData] = useState<VisualizationData | null>(null);
-  const mounted = useRef(true);
-  const retryTimeout = useRef<NodeJS.Timeout | null>(null);
-
-  const requestVisualization = async () => {
-    if (!mounted.current) return;
-
-    try {
-      await wsService.send('visualization_request', { type: 'matplotlib' });
-    } catch (err) {
-      console.error('Failed to request visualization:', err);
-      if (mounted.current) {
-        setError('Failed to request visualization');
-        setIsLoading(false);
-      }
-    }
-  };
+  const { connected, connect, on, send } = useWebSocket();
+  const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
-    mounted.current = true;
-
-    const handleConnectionState = (connected: boolean) => {
-      if (!mounted.current) return;
-      
-      setIsConnected(connected);
-      if (connected) {
-        setIsLoading(true);
-        setError(null);
-        requestVisualization();
-      } else {
-        // If disconnected, retry connection after a delay
-        if (retryTimeout.current) {
-          clearTimeout(retryTimeout.current);
-        }
-        retryTimeout.current = setTimeout(() => {
-          if (mounted.current) {
-            requestVisualization();
-          }
-        }, 5000); // Retry after 5 seconds
-      }
+    const handleConnectionStatus = (data: any) => {
+      setIsConnected(data.status === 'connected');
+      setError(null);
     };
 
-    const handleMessage = (message: any) => {
-      if (!mounted.current) return;
-
-      if (message.type === 'visualization') {
-        try {
-          const data = JSON.parse(message.content);
-          setVisualizationData(data);
-          setIsLoading(false);
-          setError(null);
-        } catch (err) {
-          console.error('Failed to parse visualization data:', err);
-          setError('Failed to parse visualization data');
-          setIsLoading(false);
+    const handleMessage = (data: VisualizationData) => {
+      if (data.type === 'matplotlib' && canvasRef.current) {
+        const ctx = canvasRef.current.getContext('2d');
+        if (ctx) {
+          // Handle matplotlib data rendering
+          // This is a placeholder - actual rendering logic will depend on the data format
+          console.log('Received visualization data:', data);
         }
       }
     };
 
-    // Subscribe to connection changes
-    wsService.on('connection_status', (status: string) => {
-      handleConnectionState(status === 'connected');
+    // Add message handlers
+    on('connection_status', handleConnectionStatus);
+    on('visualization', handleMessage);
+
+    // Connect to WebSocket
+    connect();
+
+    // Request visualization data
+    send({
+      type: 'visualization_request',
+      data: { type: 'matplotlib' }
     });
 
-    // Subscribe to visualization messages
-    wsService.on('visualization', handleMessage);
-
-    // Request initial visualization data
-    requestVisualization();
-
-    // Cleanup function
+    // Cleanup
     return () => {
-      mounted.current = false;
-
-      // Clear any pending retry timeout
-      if (retryTimeout.current) {
-        clearTimeout(retryTimeout.current);
-        retryTimeout.current = null;
-      }
-
-      // Unsubscribe from messages
-      wsService.off('visualization', handleMessage);
-      wsService.off('connection_status', handleConnectionState);
+      // No need to remove handlers as they are managed by the hook
     };
-  }, []);
-
-  if (error) {
-    return (
-      <div style={{ padding: '1rem', textAlign: 'center' }}>
-        <div style={{ color: 'red' }}>{error}</div>
-        {!isConnected && (
-          <div style={{ marginTop: '1rem' }}>
-            <button onClick={requestVisualization}>Retry Connection</button>
-          </div>
-        )}
-      </div>
-    );
-  }
-
-  if (isLoading) {
-    return (
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
-        <div>Loading...</div>
-      </div>
-    );
-  }
+  }, [connect, on, send]);
 
   return (
-    <div style={{ padding: '1rem' }}>
-      {visualizationData ? (
-        <div>
-          <h3>Visualization</h3>
-          <pre>{JSON.stringify(visualizationData, null, 2)}</pre>
-        </div>
-      ) : (
-        <div>No visualization data available</div>
-      )}
+    <div className="matplotlib-visualizer">
+      <div className="status-bar">
+        <span className={`status-indicator ${isConnected ? 'connected' : 'disconnected'}`}>
+          {isConnected ? 'Connected' : 'Disconnected'}
+        </span>
+        {error && <span className="error-message">{error}</span>}
+      </div>
+      <canvas ref={canvasRef} className="visualization-canvas" />
     </div>
   );
 };

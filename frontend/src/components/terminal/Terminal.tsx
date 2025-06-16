@@ -1,21 +1,49 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Terminal as XTerm } from 'xterm';
 import { FitAddon } from 'xterm-addon-fit';
 import { WebLinksAddon } from 'xterm-addon-web-links';
 import 'xterm/css/xterm.css';
-import { useWebSocket } from '../../hooks/useWebSocket';
-import { Command } from './types';
+import { wsService } from '../../utils/websocketCompatibility';
+import { TerminalProps } from './types';
 import './Terminal.css';
 
-interface TerminalProps {
-  commands?: Command[];
+interface TerminalMessage {
+  message: string;
+  type?: string;
+  timestamp?: number;
 }
 
-export const Terminal: React.FC<TerminalProps> = ({ commands }) => {
+// Debug function to test backend connectivity
+const testBackend = async () => {
+  try {
+    // Test HTTP endpoint
+    const response = await fetch('http://localhost:8000/health');
+    console.log('Backend HTTP status:', response.status);
+    
+    // Test direct WebSocket
+    const ws = new WebSocket('ws://localhost:8000/ws');
+    ws.onopen = () => {
+      console.log('✅ Backend WebSocket is running!');
+      ws.close();
+    };
+    ws.onerror = (e) => {
+      console.error('❌ Backend WebSocket error:', e);
+      console.log('Make sure your Python backend is running on port 8000');
+    };
+  } catch (error) {
+    console.error('Backend test failed:', error);
+  }
+};
+
+export const Terminal: React.FC<TerminalProps> = () => {
+  const [input, setInput] = useState('');
+  const [output, setOutput] = useState<string[]>([]);
+  const inputRef = useRef<HTMLInputElement>(null);
   const terminalRef = useRef<HTMLDivElement>(null);
   const terminal = useRef<XTerm | null>(null);
-  const { connected, connect, on } = useWebSocket();
+  const connectionPromiseRef = useRef<Promise<void> | null>(null);
 
+  // Initialize terminal
   useEffect(() => {
     if (terminalRef.current && !terminal.current) {
       // Initialize terminal
@@ -75,26 +103,104 @@ export const Terminal: React.FC<TerminalProps> = ({ commands }) => {
 
   // Connect to WebSocket on mount
   useEffect(() => {
-    connect();
-  }, [connect]);
+    let mounted = true;
 
-  // Print any backend messages to the terminal
+    const initConnection = async () => {
+      if (!mounted) return;
+      
+      console.log('Terminal: Initializing connection');
+      try {
+        // Only connect if not already connected
+        if (!wsService.isConnected && !connectionPromiseRef.current) {
+          connectionPromiseRef.current = wsService.connect();
+          await connectionPromiseRef.current;
+          connectionPromiseRef.current = null;
+        }
+      } catch (error) {
+        console.error('Terminal: Connection failed:', error);
+        connectionPromiseRef.current = null;
+      }
+    };
+
+    initConnection();
+
+    return () => {
+      mounted = false;
+      console.log('Terminal: Cleanup');
+      // Don't disconnect on unmount in development
+      if (!import.meta.env.DEV) {
+        wsService.disconnect();
+      }
+    };
+  }, []);
+
+  // Test backend connectivity on mount
+  useEffect(() => {
+    testBackend();
+  }, []);
+
+  // Handle backend messages
   useEffect(() => {
     if (!terminal.current) return;
-    const handler = (payload: any) => {
+
+    const handleBackendMessage = (payload: any) => {
       terminal.current?.writeln(`\x1b[32m[Backend]\x1b[0m ${typeof payload === 'string' ? payload : JSON.stringify(payload)}`);
     };
-    on('message', handler);
-    return () => {
-      // No off() method for now, but could be added for cleanup
+
+    const handleTerminalOutput = (data: TerminalMessage) => {
+      setOutput(prev => [...prev, data.message]);
+      terminal.current?.writeln(`\x1b[33m[Output]\x1b[0m ${data.message}`);
     };
-  }, [on]);
+
+    const handleError = (error: any) => {
+      terminal.current?.writeln(`\x1b[31m[Error]\x1b[0m ${error.message || 'An error occurred'}`);
+    };
+
+    // Add message handlers
+    wsService.on(handleBackendMessage);
+    wsService.on(handleTerminalOutput);
+    wsService.on(handleError);
+
+    // Cleanup
+    return () => {
+      wsService.removeMessageHandler(handleBackendMessage);
+      wsService.removeMessageHandler(handleTerminalOutput);
+      wsService.removeMessageHandler(handleError);
+    };
+  }, []);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (input.trim()) {
+      const command = input.trim();
+      setOutput(prev => [...prev, `> ${command}`]);
+      terminal.current?.writeln(`\x1b[36m[Command]\x1b[0m ${command}`);
+      wsService.send({ type: 'command', data: command });
+      setInput('');
+    }
+  };
 
   return (
     <div className="terminal-wrapper">
-      <div ref={terminalRef} className="terminal-container" />
+      <div ref={terminalRef} className="terminal-container">
+        <div className="terminal-output">
+          {output.map((line, i) => (
+            <div key={i} className="terminal-line">{line}</div>
+          ))}
+        </div>
+        <form onSubmit={handleSubmit} className="terminal-input">
+          <input
+            ref={inputRef}
+            type="text"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            placeholder={wsService.isConnected ? "Enter command..." : "Connecting..."}
+            disabled={!wsService.isConnected}
+          />
+        </form>
+      </div>
       <div className="terminal-status">
-        {connected ? (
+        {wsService.isConnected ? (
           <span className="status-connected">Connected</span>
         ) : (
           <span className="status-disconnected">Disconnected</span>

@@ -1,30 +1,66 @@
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi_cors import CORS
 from contextlib import asynccontextmanager
 import asyncio
 import uvicorn
-from typing import Dict, Any
+from typing import Dict, Any, List
 from datetime import datetime
 import signal
 import sys
 import os
+from pydantic import BaseModel
 
-# Add the current directory to Python path
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+# Add the root directory to Python path
+root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, root_dir)
 
 # Import routers
 from backend.api.routes import consciousness_router, visualization_router, talk_router
 
 # Import managers
 from backend.api.websocket_manager import WebSocketManager
-from backend.core.unified_tick_engine import UnifiedTickEngine
-from backend.core.dawn_central import DAWNCentral
+from core.unified_tick_engine import UnifiedTickEngine
+from core.dawn_central import DAWNCentral
 
 # Global instances
 tick_engine = None
 dawn_central = None
 ws_manager = None
 shutdown_event = asyncio.Event()
+
+# Add new models for process management
+class ProcessStatus(BaseModel):
+    name: str
+    is_running: bool
+    start_time: str | None
+    last_tick: int | None
+    error: str | None
+
+class ProcessResponse(BaseModel):
+    success: bool
+    message: str
+    process_name: str
+    status: ProcessStatus | None = None
+
+# Add tick data broadcasting
+async def broadcast_tick_data():
+    tick = 0
+    while not shutdown_event.is_set():
+        tick += 1
+        tick_data = {
+            "type": "tick",
+            "tick_number": tick,
+            "scup": 75 + (tick % 25),  # Oscillating SCUP
+            "entropy": 0.3 + (0.2 * (tick % 10) / 10),
+            "mood": ["calm", "focused", "energetic", "chaotic"][tick % 4]
+        }
+        
+        # Broadcast to all connected clients
+        for connection in ws_manager.active_connections:
+            await ws_manager.send_personal_message(tick_data, connection)
+        
+        await asyncio.sleep(1)  # Send tick every second
 
 def signal_handler(sig, frame):
     """Handle shutdown signals"""
@@ -50,8 +86,9 @@ async def lifespan(app: FastAPI):
     # Start tick loop
     tick_task = asyncio.create_task(tick_engine.start())
     
-    # Start WebSocket broadcast loop
+    # Start WebSocket broadcast loops
     broadcast_task = asyncio.create_task(ws_manager.broadcast_loop())
+    tick_broadcast_task = asyncio.create_task(broadcast_tick_data())
     
     print("[DAWN] Consciousness engine online")
     
@@ -61,6 +98,7 @@ async def lifespan(app: FastAPI):
     print("[DAWN] Shutting down consciousness engine...")
     tick_task.cancel()
     broadcast_task.cancel()
+    tick_broadcast_task.cancel()
     await tick_engine.shutdown()
     await ws_manager.disconnect_all()
     print("[DAWN] Shutdown complete")
@@ -75,7 +113,7 @@ app = FastAPI(
 # CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://localhost:3000"],
+    allow_origins=["*"],  # In production, replace with specific origins
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -115,28 +153,7 @@ async def websocket_endpoint(websocket: WebSocket):
     await ws_manager.connect(websocket)
     
     try:
-        while not shutdown_event.is_set():
-            # Receive and process messages
-            data = await websocket.receive_json()
-            response = await ws_manager.handle_message(websocket, data)
-            
-            if response:
-                await websocket.send_json(response)
-                
-    except WebSocketDisconnect:
-        ws_manager.disconnect(websocket)
-    except Exception as e:
-        print(f"WebSocket error: {e}")
-        ws_manager.disconnect(websocket)
-
-# Tick stream WebSocket endpoint
-@app.websocket("/ws/tick-stream")
-async def tick_stream_endpoint(websocket: WebSocket):
-    """Dedicated WebSocket for tick stream updates"""
-    await ws_manager.connect(websocket)
-    
-    try:
-        # Subscribe to tick updates
+        # Get client ID
         client_id = None
         for cid, conn_info in ws_manager.connections.items():
             if conn_info.websocket == websocket:
@@ -144,24 +161,34 @@ async def tick_stream_endpoint(websocket: WebSocket):
                 break
         
         if client_id:
-            await ws_manager.subscribe_client(client_id, ["tick_update"])
+            # Subscribe to all updates by default
+            await ws_manager.subscribe_client(client_id, ["tick_update", "talk", "consciousness"])
         
         while not shutdown_event.is_set():
-            # Keep connection alive and handle any messages
+            # Receive and process messages
             try:
                 data = await websocket.receive_json()
+                
+                # Handle ping/pong
                 if data.get("type") == "ping":
                     await websocket.send_json({"type": "pong", "timestamp": datetime.now().isoformat()})
+                    continue
+                
+                # Process other messages
+                response = await ws_manager.handle_message(websocket, data)
+                if response:
+                    await websocket.send_json(response)
+                    
             except WebSocketDisconnect:
                 break
             except Exception as e:
-                print(f"Tick stream error: {e}")
+                print(f"WebSocket error: {e}")
                 break
                 
     except WebSocketDisconnect:
         ws_manager.disconnect(websocket)
     except Exception as e:
-        print(f"Tick stream error: {e}")
+        print(f"WebSocket error: {e}")
         ws_manager.disconnect(websocket)
 
 # Talk WebSocket endpoint
@@ -172,6 +199,38 @@ async def talk_websocket_endpoint(websocket: WebSocket):
     
     handler = TalkHandler(tick_engine, dawn_central, ws_manager)
     await handler.handle_connection(websocket)
+
+# Process management endpoints
+@app.get("/processes/status")
+async def get_processes_status():
+    return {
+        "processes": [
+            {"name": "activation_histogram", "status": "available", "description": "Neural activation patterns"},
+            {"name": "memory_stream", "status": "available", "description": "Memory formation visualizer"},
+            {"name": "entropy_cascade", "status": "available", "description": "Chaos dynamics monitor"},
+            {"name": "consciousness_map", "status": "available", "description": "Consciousness state mapper"},
+            {"name": "quantum_flux", "status": "available", "description": "Quantum coherence analyzer"}
+        ]
+    }
+
+@app.post("/processes/{process_name}/start")
+async def start_process(process_name: str):
+    # TODO: Actually start the Python process
+    return {"status": "started", "process": process_name}
+
+@app.post("/processes/{process_name}/stop")
+async def stop_process(process_name: str):
+    # TODO: Actually stop the Python process
+    return {"status": "stopped", "process": process_name}
+
+@app.get("/tick-snapshot/{process_name}")
+async def get_tick_snapshot(process_name: str):
+    # TODO: Get actual data from the process
+    return {
+        "process": process_name,
+        "tick": 42,
+        "data": {"value": 0.75, "timestamp": "2024-01-01T00:00:00Z"}
+    }
 
 if __name__ == "__main__":
     try:

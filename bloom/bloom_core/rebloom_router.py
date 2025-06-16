@@ -1,6 +1,6 @@
 import os
 from bloom.juliet_flower import JulietFlower
-from reflection.owl.owl_tracer_log import log_tracer_activation
+from reflection.owl.owl_tracer_log import owl_log
 
 REFRACTOR_QUEUE = []
 
@@ -9,6 +9,18 @@ ENTROPY_THRESHOLD = 0.75
 SEAL_ENTROPY_THRESHOLD = 0.85
 DRIFT_THRESHOLD = 0.5
 SHAPE_BLACKLIST = {"chaotic", "collapsed", "unstable"}
+
+def activate_bloom(bloom: JulietFlower):
+    """
+    Activates a stable bloom by initializing its core processes.
+    """
+    try:
+        bloom.initialize()
+        bloom.activate()
+        return True
+    except Exception as e:
+        owl_log(f"[RebloomRouter] ❌ Failed to activate bloom {bloom.seed_id}: {str(e)}", level="error")
+        return False
 
 def is_rebloom_unstable(bloom: JulietFlower):
     """
@@ -51,10 +63,10 @@ def route_rebloom(bloom: JulietFlower):
     if is_rebloom_unstable(bloom):
         if entropy > SEAL_ENTROPY_THRESHOLD or shape in SHAPE_BLACKLIST:
             seal_bloom(bloom)
-            log_tracer_activation(f"[RebloomRouter] 🔒 Auto-sealed unstable rebloom: {bloom.seed_id} | shape={shape} | entropy={entropy:.2f}")
+            owl_log(f"[RebloomRouter] 🔒 Auto-sealed unstable rebloom: {bloom.seed_id} | shape={shape} | entropy={entropy:.2f}")
         else:
             REFRACTOR_QUEUE.append(bloom)
-            log_tracer_activation(f"[RebloomRouter] 🔁 Routed {bloom.seed_id} to refactor queue (shape={shape}, entropy={entropy:.2f})")
+            owl_log(f"[RebloomRouter] 🔁 Routed {bloom.seed_id} to refactor queue (shape={shape}, entropy={entropy:.2f})")
     else:
         activate_bloom(bloom)
-        log_tracer_activation(f"[RebloomRouter] ✅ {bloom.seed_id} activated (stable)")
+        owl_log(f"[RebloomRouter] ✅ {bloom.seed_id} activated (stable)")

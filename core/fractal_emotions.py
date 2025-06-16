@@ -579,8 +579,13 @@ def test_fractal_emotions():
 
 
 def create_fractal_emotion_system():
-    """Factory function to create an EmotionalFractalEngine instance"""
+    """Create and return a new instance of the emotional fractal engine"""
     return EmotionalFractalEngine()
+
+
+def create_fractal_emotions():
+    """Alias for create_fractal_emotion_system for backward compatibility"""
+    return create_fractal_emotion_system()
 
 
 if __name__ == "__main__":

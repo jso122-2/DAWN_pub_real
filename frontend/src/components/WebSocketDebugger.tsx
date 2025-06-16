@@ -10,12 +10,9 @@ const WebSocketDebugger: React.FC = () => {
     setLogs(prev => [...prev, `[${new Date().toLocaleTimeString()}] ${message}`]);
   };
 
-  const testEndpoints = [
-    'ws://localhost:8000/ws/tick-stream',
-    'ws://localhost:8000/ws',
-    'ws://localhost:8000/websocket',
-    'ws://localhost:8000/consciousness/stream',
-    'ws://127.0.0.1:8000/ws/tick-stream'
+  const TEST_URLS = [
+    'ws://localhost:8000/ws',  // Direct backend
+    'ws://127.0.0.1:8000/ws'  // Alternative direct backend
   ];
 
   const testConnection = async (url: string) => {
@@ -45,7 +42,7 @@ const WebSocketDebugger: React.FC = () => {
     
     // Test if backend is running
     try {
-      const response = await fetch('http://localhost:8000/');
+      const response = await fetch('http://localhost:8000/health');
       addLog(`Backend HTTP check: ${response.ok ? 'OK' : 'Failed'} (Status: ${response.status})`);
     } catch (error) {
       addLog('Backend HTTP check: Failed - Is your backend running?');
@@ -53,7 +50,7 @@ const WebSocketDebugger: React.FC = () => {
     }
 
     // Test each endpoint
-    for (const endpoint of testEndpoints) {
+    for (const endpoint of TEST_URLS) {
       const success = await testConnection(endpoint);
       if (success) break;
     }

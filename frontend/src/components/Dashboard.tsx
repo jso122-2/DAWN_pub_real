@@ -1,27 +1,23 @@
-import React, { useEffect, useState } from 'react';
-import { wsService } from '../services/websocket';
+import React, { useState, useEffect } from 'react';
+import { useWebSocket } from '../hooks/useWebSocket';
+import { ConnectionStatus } from './ConnectionStatus';
 import './Dashboard.css';
 
-interface Message {
-  id: string;
-  content: string;
-  timestamp: number;
-  type: 'user' | 'system';
-}
-
 interface SystemState {
-  consciousness_state: string;
+  tick: number;
+  scup: number;
+  entropy: number;
+  mood: string;
 }
 
 export const Dashboard: React.FC = () => {
-  const [isConnected, setIsConnected] = useState(false);
   const [systemState, setSystemState] = useState<SystemState | null>(null);
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [input, setInput] = useState('');
+  const [response, setResponse] = useState<string | null>(null);
+  const { connected, connect, on, send } = useWebSocket();
 
   useEffect(() => {
-    const handleConnectionStatus = (status: string) => {
-      setIsConnected(status === 'connected');
+    const handleConnectionStatus = (data: any) => {
+      console.log('Connection status:', data);
     };
 
     const handleSystemState = (data: any) => {
@@ -31,85 +27,66 @@ export const Dashboard: React.FC = () => {
     };
 
     const handleResponse = (data: any) => {
-      setMessages(prev => [...prev, {
-        id: Date.now().toString(),
-        content: data.content,
-        timestamp: Date.now(),
-        type: 'system'
-      }]);
+      setResponse(data.message || JSON.stringify(data));
     };
 
-    // Subscribe to events
-    wsService.on('connection_status', handleConnectionStatus);
-    wsService.on('system_state', handleSystemState);
-    wsService.on('response', handleResponse);
+    // Add message handlers
+    on('connection_status', handleConnectionStatus);
+    on('system_state', handleSystemState);
+    on('response', handleResponse);
 
     // Connect to WebSocket
-    wsService.connect();
+    connect();
 
+    // Cleanup
     return () => {
-      // Cleanup
-      wsService.off('connection_status', handleConnectionStatus);
-      wsService.off('system_state', handleSystemState);
-      wsService.off('response', handleResponse);
-      wsService.disconnect();
+      // No need to remove handlers as they are managed by the hook
     };
-  }, []);
+  }, [connect, on]);
 
-  const sendMessage = () => {
-    if (!isConnected || !input.trim()) return;
+  const handleCommand = (command: string) => {
+    if (!connected) return;
 
-    // Add user message to display
-    setMessages(prev => [...prev, {
-      id: Date.now().toString(),
-      content: input,
-      timestamp: Date.now(),
-      type: 'user'
-    }]);
-
-    // Send to server
-    wsService.send('message', {
-      content: input,
+    send({
+      type: 'command',
+      content: command,
       timestamp: Date.now()
     });
-
-    setInput('');
   };
 
   return (
     <div className="dashboard">
-      <div className="dashboard-header">
-        <h1>DAWN Dashboard</h1>
-        {systemState && (
-          <div className="state-info">
-            State: {systemState.consciousness_state}
+      <ConnectionStatus />
+      
+      <div className="dashboard-content">
+        <div className="system-metrics">
+          {systemState && (
+            <>
+              <div className="metric">
+                <span className="label">TICK:</span>
+                <span className="value">{systemState.tick}</span>
+              </div>
+              <div className="metric">
+                <span className="label">SCUP:</span>
+                <span className="value">{systemState.scup}%</span>
+              </div>
+              <div className="metric">
+                <span className="label">ENTROPY:</span>
+                <span className="value">{systemState.entropy.toFixed(3)}</span>
+              </div>
+              <div className="metric">
+                <span className="label">MOOD:</span>
+                <span className="value">{systemState.mood}</span>
+              </div>
+            </>
+          )}
+        </div>
+
+        {response && (
+          <div className="response-container">
+            <pre className="response">{response}</pre>
           </div>
         )}
-      </div>
-
-      <div className="messages">
-        {messages.map(msg => (
-          <div key={msg.id} className={`message ${msg.type}`}>
-            <span className="timestamp">
-              {new Date(msg.timestamp).toLocaleTimeString()}
-            </span>
-            <span className="content">{msg.content}</span>
-          </div>
-        ))}
-      </div>
-
-      <div className="input-area">
-        <input
-          type="text"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
-          placeholder="Send a message..."
-          disabled={!isConnected}
-        />
-        <button onClick={sendMessage} disabled={!isConnected}>
-          Send
-        </button>
       </div>
     </div>
   );

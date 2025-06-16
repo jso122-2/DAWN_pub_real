@@ -105,7 +105,7 @@ class IntuitionProcessor:
             confidence: Confidence level (0-1)
             
         Returns:
-            Prediction ID
+            Prediction IDG
         """
         if confidence < self.config['confidence_threshold']:
             logger.warning(f"Prediction confidence {confidence} below threshold")

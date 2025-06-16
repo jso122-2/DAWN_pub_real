@@ -30,7 +30,7 @@ import uvicorn
 import numpy as np
 
 # Local application imports
-from semantic.semantic_field import RhizomicSemanticField, NodeCharge
+from semantic import NodeCharge, get_current_field, initialize_field
 from backend.core.unified_tick_engine import UnifiedTickEngine
 from core.consciousness_core import DAWNConsciousness
 from core.event_bus import EventBus
@@ -68,8 +68,11 @@ def initialize_semantic_field() -> None:
     """Initialize the semantic field with foundational consciousness concepts."""
     logger.info("Initializing semantic field with consciousness concepts...")
     
+    # Initialize the field
+    initialize_field()
+    
     # Get the singleton instance
-    semantic_field = RhizomicSemanticField.get_current_field()
+    semantic_field = get_current_field()
     
     consciousness_concepts = [
         {"content": "consciousness", "charge": NodeCharge.ACTIVE_POSITIVE},
@@ -161,11 +164,96 @@ class DAWNCentral:
         """Check if the engine is active"""
         return self.tick_engine.is_running and self.consciousness.is_active
 
+    async def shutdown(self) -> None:
+        """Comprehensive shutdown of all DAWN components"""
+        logger.info("Starting comprehensive DAWN shutdown...")
+        
+        try:
+            # 1. Stop the tick engine first
+            logger.info("Stopping tick engine...")
+            await self.tick_engine.stop()
+            
+            # 2. Stop all visualizers
+            logger.info("Stopping visualizers...")
+            for name, visualizer in self.visualizers.items():
+                try:
+                    if hasattr(visualizer, 'stop'):
+                        await visualizer.stop()
+                    logger.info(f"Stopped {name} visualizer")
+                except Exception as e:
+                    logger.error(f"Error stopping {name} visualizer: {e}")
+            
+            # 3. Stop consciousness
+            logger.info("Stopping consciousness...")
+            try:
+                if hasattr(self.consciousness, 'shutdown'):
+                    await self.consciousness.shutdown()
+            except Exception as e:
+                logger.error(f"Error stopping consciousness: {e}")
+            
+            # 4. Stop schema engine
+            logger.info("Stopping schema engine...")
+            try:
+                if hasattr(self.schema_engine, 'shutdown'):
+                    await self.schema_engine.shutdown()
+            except Exception as e:
+                logger.error(f"Error stopping schema engine: {e}")
+            
+            # 5. Stop qualia kernel
+            logger.info("Stopping qualia kernel...")
+            try:
+                if hasattr(self.qualia_kernel, 'shutdown'):
+                    await self.qualia_kernel.shutdown()
+            except Exception as e:
+                logger.error(f"Error stopping qualia kernel: {e}")
+            
+            # 6. Stop mood probe
+            logger.info("Stopping mood probe...")
+            try:
+                if hasattr(self.mood_probe, 'shutdown'):
+                    await self.mood_probe.shutdown()
+            except Exception as e:
+                logger.error(f"Error stopping mood probe: {e}")
+            
+            # 7. Stop pulse layer
+            logger.info("Stopping pulse layer...")
+            try:
+                if hasattr(self.pulse_layer, 'shutdown'):
+                    await self.pulse_layer.shutdown()
+            except Exception as e:
+                logger.error(f"Error stopping pulse layer: {e}")
+            
+            # 8. Stop event bus
+            logger.info("Stopping event bus...")
+            try:
+                if hasattr(self.event_bus, 'shutdown'):
+                    await self.event_bus.shutdown()
+            except Exception as e:
+                logger.error(f"Error stopping event bus: {e}")
+            
+            # 9. Stop handlers
+            logger.info("Stopping handlers...")
+            try:
+                if hasattr(self.talk_handler, 'shutdown'):
+                    await self.talk_handler.shutdown()
+                if hasattr(self.visual_handler, 'shutdown'):
+                    await self.visual_handler.shutdown()
+            except Exception as e:
+                logger.error(f"Error stopping handlers: {e}")
+            
+            logger.info("DAWN shutdown complete")
+            
+        except Exception as e:
+            logger.error(f"Error during DAWN shutdown: {e}", exc_info=True)
+            raise
+
 # Create FastAPI app
 app = FastAPI()
+
+# Configure CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["http://localhost:3000", "http://172.30.234.157:3000"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -195,138 +283,107 @@ active_tick_clients = set()
 # Base WebSocket endpoint
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
-    """Base WebSocket endpoint for general communication"""
+    """Base WebSocket endpoint for all DAWN communications"""
     logger.info("New WebSocket connection request")
     try:
-        await ws_manager.connect(websocket)
+        await websocket.accept()
+        active_tick_clients.add(websocket)
         logger.info(f"WebSocket connected: {websocket.client}")
+        
+        # Send initial state
+        state = dawn_central.get_state()
+        await websocket.send_json({
+            "type": "tick",
+            "data": state
+        })
         
         while True:
             try:
                 data = await websocket.receive_text()
                 message = json.loads(data)
                 logger.debug(f"Received message: {message}")
-                await ws_manager.handle_message(message, websocket)
+                
+                # Handle different message types
+                if message.get("type") == "subscribe":
+                    # Client wants to subscribe to tick updates
+                    active_tick_clients.add(websocket)
+                    await websocket.send_json({
+                        "type": "subscribed",
+                        "data": {"message": "Subscribed to tick updates"}
+                    })
+                elif message.get("type") == "unsubscribe":
+                    # Client wants to unsubscribe from tick updates
+                    active_tick_clients.discard(websocket)
+                    await websocket.send_json({
+                        "type": "unsubscribed",
+                        "data": {"message": "Unsubscribed from tick updates"}
+                    })
+                else:
+                    # Handle other message types
+                    await ws_manager.handle_message(message, websocket)
+                    
             except json.JSONDecodeError as e:
                 logger.error(f"Failed to parse message: {data}")
-                await ws_manager.send_personal_message({
+                await websocket.send_json({
                     "type": "error",
                     "data": {"message": "Invalid JSON format"}
-                }, websocket)
+                })
             except WebSocketDisconnect:
                 logger.info("WebSocket disconnected")
-                ws_manager.disconnect(websocket)
+                active_tick_clients.discard(websocket)
                 break
             except Exception as e:
                 logger.error(f"Error processing message: {e}")
-                await ws_manager.send_personal_message({
+                await websocket.send_json({
                     "type": "error",
                     "data": {"message": f"Processing error: {str(e)}"}
-                }, websocket)
+                })
     except Exception as e:
         logger.error(f"WebSocket error: {e}")
-        ws_manager.disconnect(websocket)
+        active_tick_clients.discard(websocket)
 
-# Talk endpoint
-@app.websocket("/ws/talk")
-async def websocket_talk_endpoint(websocket: WebSocket):
-    """WebSocket endpoint for DAWN communication"""
-    logger.info("New talk WebSocket connection request")
-    try:
-        await ws_manager.connect(websocket)
-        logger.info(f"Talk WebSocket connected: {websocket.client}")
+# Add a function to broadcast tick updates
+async def broadcast_tick_update():
+    """Broadcast tick updates to all connected clients"""
+    if not active_tick_clients:
+        return
         
-        while True:
-            try:
-                data = await websocket.receive_text()
-                message = json.loads(data)
-                logger.debug(f"Received talk message: {message}")
-                
-                if message.get('type') == 'talk':
-                    await talk_handler.handle_message(message.get('data', {}), websocket)
-                else:
-                    await ws_manager.handle_message(message, websocket)
-            except json.JSONDecodeError as e:
-                logger.error(f"Failed to parse talk message: {data}")
-                await ws_manager.send_personal_message({
-                    "type": "error",
-                    "data": {"message": "Invalid JSON format"}
-                }, websocket)
-            except WebSocketDisconnect:
-                logger.info("Talk WebSocket disconnected")
-                ws_manager.disconnect(websocket)
-                break
-            except Exception as e:
-                logger.error(f"Error processing talk message: {e}")
-                await ws_manager.send_personal_message({
-                    "type": "error",
-                    "data": {"message": f"Processing error: {str(e)}"}
-                }, websocket)
-    except Exception as e:
-        logger.error(f"Talk WebSocket error: {e}")
-        ws_manager.disconnect(websocket)
-
-# Tick engine state streaming endpoint
-@app.websocket("/ws/tick")
-async def websocket_tick_endpoint(websocket: WebSocket):
-    """WebSocket endpoint for tick engine state streaming"""
-    logger.info("New tick WebSocket connection request")
-    try:
-        await ws_manager.connect(websocket)
-        logger.info(f"Tick WebSocket connected: {websocket.client}")
-        
-        while True:
-            try:
-                state = dawn_central.get_state()
-                await ws_manager.send_personal_message({
-                    "type": "tick",
-                    "data": state,
-                    "timestamp": time.time()
-                }, websocket)
-                await asyncio.sleep(1)
-            except WebSocketDisconnect:
-                logger.info("Tick WebSocket disconnected")
-                ws_manager.disconnect(websocket)
-                break
-            except Exception as e:
-                logger.error(f"Error sending tick state: {e}")
-                await ws_manager.send_personal_message({
-                    "type": "error",
-                    "data": {"message": f"Error sending tick state: {str(e)}"}
-                }, websocket)
-                break
-    except Exception as e:
-        logger.error(f"Tick WebSocket error: {e}")
-        ws_manager.disconnect(websocket)
-
-@app.websocket("/ws/visualization")
-async def websocket_visualization_endpoint(websocket: WebSocket):
-    """WebSocket endpoint for streaming visualizations to the frontend"""
-    logger.info("New visualization WebSocket connection request")
-    try:
-        await visual_handler.stream_visualizations(websocket)
-    except WebSocketDisconnect:
-        logger.info("Visualization WebSocket disconnected")
-    except Exception as e:
-        logger.error(f"Error in visualization WebSocket: {e}")
-
-@app.websocket("/ws/tick-stream")
-async def tick_stream(websocket: WebSocket):
-    await websocket.accept()
-    active_tick_clients.add(websocket)
-    try:
-        while True:
-            await asyncio.sleep(60)  # Keep connection alive, actual sending is done elsewhere
-    except WebSocketDisconnect:
-        active_tick_clients.remove(websocket)
-
-async def broadcast_tick_state(state: dict):
-    data = json.dumps(state, default=str)
-    for ws in list(active_tick_clients):
+    state = dawn_central.get_state()
+    message = {
+        "type": "tick",
+        "data": state
+    }
+    
+    for client in active_tick_clients.copy():
         try:
-            await ws.send_text(data)
-        except Exception:
-            active_tick_clients.remove(ws)
+            await client.send_json(message)
+        except Exception as e:
+            logger.error(f"Error sending tick update to client: {e}")
+            active_tick_clients.discard(client)
+
+# Add a root endpoint for health check
+@app.get("/")
+async def root():
+    """Root endpoint for health check"""
+    return {
+        "status": "healthy",
+        "message": "DAWN Tick Engine is running",
+        "timestamp": datetime.now().isoformat()
+    }
+
+# Add an API health check endpoint
+@app.get("/api/health")
+async def api_health_check():
+    """API health check endpoint"""
+    return {
+        "status": "healthy" if dawn_central.is_active() else "unhealthy",
+        "timestamp": datetime.now().isoformat(),
+        "tick": tick_engine.current_tick if tick_engine else None,
+        "scup": dawn_central.scup_tracker.get_scup() if dawn_central.scup_tracker else None,
+        "entropy": dawn_central.visualizers['entropy'].get_entropy() if 'entropy' in dawn_central.visualizers else None,
+        "mood": dawn_central.mood_probe.get_mood() if dawn_central.mood_probe else None,
+        "consciousness_state": dawn_central.consciousness.get_state() if dawn_central.consciousness else None
+    }
 
 @app.on_event("startup")
 async def startup_event():
@@ -345,6 +402,15 @@ async def startup_event():
         logger.info("Starting consciousness wave visualization...")
         await consciousness_wave.start()
         
+        # Set up tick broadcasting
+        async def broadcast_ticks():
+            while True:
+                await broadcast_tick_update()
+                await asyncio.sleep(0.1)  # 10Hz update rate
+        
+        # Start the broadcast task
+        asyncio.create_task(broadcast_ticks())
+        
         logger.info("Server startup complete")
     except Exception as e:
         logger.error(f"Error during startup: {e}", exc_info=True)
@@ -360,11 +426,11 @@ async def shutdown_event():
     """Cleanup on server shutdown"""
     logger.info("Shutting down server...")
     try:
-        # Stop the tick engine
-        await tick_engine.stop()
-        
         # Stop consciousness wave visualization
         await consciousness_wave.stop()
+        
+        # Perform comprehensive DAWN shutdown
+        await dawn_central.shutdown()
         
         logger.info("Server shutdown complete")
     except Exception as e:
@@ -399,4 +465,66 @@ async def get_tick_snapshot(process_id: str):
         raise HTTPException(status_code=500, detail=str(e))
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000) 
+    import signal
+    import sys
+    
+    # Create a shutdown event
+    shutdown_event = asyncio.Event()
+    
+    def signal_handler(sig, frame):
+        """Handle shutdown signals"""
+        print("\n🛑 Shutdown signal received. Starting graceful shutdown...")
+        shutdown_event.set()
+    
+    # Register signal handlers
+    signal.signal(signal.SIGINT, signal_handler)
+    signal.signal(signal.SIGTERM, signal_handler)
+    
+    # Create the server
+    config = uvicorn.Config(app, host="0.0.0.0", port=8000, log_level="info")
+    server = uvicorn.Server(config)
+    
+    async def shutdown_server():
+        """Gracefully shutdown the server"""
+        print("\n🔄 Shutting down DAWN system...")
+        try:
+            # Stop the tick engine
+            if tick_engine:
+                await tick_engine.stop()
+            
+            # Stop consciousness wave visualization
+            if consciousness_wave:
+                await consciousness_wave.stop()
+            
+            # Perform comprehensive DAWN shutdown
+            if dawn_central:
+                await dawn_central.shutdown()
+            
+            print("✅ DAWN system shutdown complete")
+        except Exception as e:
+            print(f"❌ Error during shutdown: {e}")
+        finally:
+            # Force exit after cleanup
+            sys.exit(0)
+    
+    async def run_server():
+        """Run the server with graceful shutdown"""
+        try:
+            # Start the server
+            await server.serve()
+        except Exception as e:
+            print(f"❌ Server error: {e}")
+        finally:
+            # Ensure cleanup happens
+            await shutdown_server()
+    
+    # Run the server with graceful shutdown
+    try:
+        asyncio.run(run_server())
+    except KeyboardInterrupt:
+        print("\n👋 Goodbye!")
+    except Exception as e:
+        print(f"❌ Fatal error: {e}")
+    finally:
+        # Ensure we exit cleanly
+        sys.exit(0) 

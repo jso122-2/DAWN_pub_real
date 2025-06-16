@@ -439,9 +439,11 @@ class DAWNSpontaneity:
 
 # Factory function for easy integration
 def create_spontaneity_system() -> DAWNSpontaneity:
-    """Create a new spontaneity system with default consciousness"""
-    consciousness = DAWNConsciousness()
-    return DAWNSpontaneity(consciousness)
+    """Create and return a new spontaneity system instance"""
+    return DAWNSpontaneity()
+
+# Alias for backward compatibility
+SpontaneityModule = DAWNSpontaneity
 
 
 # Example usage and testing

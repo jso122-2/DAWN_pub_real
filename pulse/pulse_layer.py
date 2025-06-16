@@ -82,6 +82,10 @@ class PulseLayer:
         except Exception as e:
             logger.error(f"Error in run_tick: {e}")
             
+    async def process_tick(self) -> None:
+        """Async version of run_tick for compatibility with tick engine"""
+        self.run_tick()
+            
     def add_heat(self, amount: float) -> None:
         """Add heat to the system"""
         try:

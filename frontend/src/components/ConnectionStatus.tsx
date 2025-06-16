@@ -1,72 +1,62 @@
 import React, { useState, useEffect } from 'react';
-import { wsService } from '../services/websocket';
+import { useWebSocket } from '../hooks/useWebSocket';
 import './ConnectionStatus.css';
 
-interface SystemState {
-  tick: number;
-  scup: number;
-  entropy: number;
-  mood: string;
+interface ConnectionStatusProps {
+  className?: string;
 }
 
-export const ConnectionStatus: React.FC = () => {
-  const [isConnected, setIsConnected] = useState(false);
-  const [systemState, setSystemState] = useState<SystemState | null>(null);
+export const ConnectionStatus: React.FC<ConnectionStatusProps> = ({ className }) => {
+  const [status, setStatus] = useState<'connected' | 'disconnected' | 'connecting'>('disconnected');
+  const [systemState, setSystemState] = useState<string>('initializing');
   const [error, setError] = useState<string | null>(null);
+  const { connected, connect, on } = useWebSocket();
 
   useEffect(() => {
-    const handleConnectionStatus = (status: string) => {
-      setIsConnected(status === 'connected');
+    const handleConnectionStatus = (data: any) => {
+      setStatus(data.status);
+      setError(null);
     };
 
     const handleSystemState = (data: any) => {
-      if (data && typeof data === 'object') {
-        setSystemState(data);
-      }
+      setSystemState(data.state);
     };
 
-    const handleError = (err: any) => {
-      setError(err.message || 'Connection error');
+    const handleError = (data: any) => {
+      setError(data.message);
+      setStatus('disconnected');
     };
 
-    // Subscribe to events
-    wsService.on('connection_status', handleConnectionStatus);
-    wsService.on('system_state', handleSystemState);
-    wsService.on('error', handleError);
+    // Add message handlers
+    on('connection_status', handleConnectionStatus);
+    on('system_state', handleSystemState);
+    on('error', handleError);
 
     // Connect to WebSocket
-    wsService.connect();
+    connect();
 
+    // Cleanup
     return () => {
-      // Cleanup
-      wsService.off('connection_status', handleConnectionStatus);
-      wsService.off('system_state', handleSystemState);
-      wsService.off('error', handleError);
-      wsService.disconnect();
+      // No need to remove handlers as they are managed by the hook
     };
-  }, []);
+  }, [connect, on]);
 
   return (
-    <div className={`connection-status ${isConnected ? 'connected' : 'disconnected'}`}>
+    <div className={`connection-status ${className || ''}`}>
       <div className="status-indicator">
-        <span className="status-dot"></span>
-        <span className="status-text">
-          {isConnected ? 'CONNECTED' : 'DISCONNECTED'}
-        </span>
+        <span className={`status-dot ${status}`} />
+        <span className="status-text">{status}</span>
       </div>
-      
-      {isConnected && systemState && (
-        <div className="system-metrics">
-          <span>TICK: {systemState.tick}</span>
-          <span>SCUP: {systemState.scup}%</span>
-          <span>ENTROPY: {systemState.entropy.toFixed(3)}</span>
-          <span>MOOD: {systemState.mood}</span>
+      {systemState && (
+        <div className="system-state">
+          <span className="state-label">System State:</span>
+          <span className="state-value">{systemState}</span>
         </div>
       )}
-      
       {error && (
         <div className="error-message">
-          Error: {error}
+          <span className="error-icon">⚠️</span>
+          <span className="error-text">{error}</span>
         </div>
       )}
     </div>

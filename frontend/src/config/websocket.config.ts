@@ -1,13 +1,13 @@
 export const WS_CONFIG = {
   development: {
-    url: 'ws://localhost:8000/ws/tick-stream',
+    url: 'ws://localhost:8000/ws',
     reconnect: true,
     reconnectInterval: 1000,
     maxReconnectAttempts: 10,
     heartbeatInterval: 30000
   },
   production: {
-    url: 'wss://your-production-server.com/ws/tick-stream',
+    url: 'ws://localhost:8000/ws',
     reconnect: true,
     reconnectInterval: 2000,
     maxReconnectAttempts: 20,

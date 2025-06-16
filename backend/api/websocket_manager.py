@@ -5,8 +5,15 @@ import json
 from datetime import datetime
 from collections import defaultdict
 import logging
+import time
 
 logger = logging.getLogger(__name__)
+
+class SetEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, set):
+            return list(obj)
+        return super().default(obj)
 
 class ConnectionInfo:
     def __init__(self, websocket: WebSocket, client_id: str):
@@ -99,14 +106,14 @@ class WebSocketManager:
         self.topic_subscribers.clear()
     
     async def send_personal_message(self, message: Dict[str, Any], websocket: WebSocket):
-        """Send message to specific WebSocket"""
+        """Send message to specific WebSocket with proper JSON serialization"""
         try:
-            await websocket.send_json(message)
+            await websocket.send_text(json.dumps(message))
         except Exception as e:
             logger.error(f"Error sending message: {e}")
     
     async def broadcast(self, message: Dict[str, Any], topic: Optional[str] = None):
-        """Broadcast message to all connected clients or topic subscribers"""
+        """Broadcast message to all connected clients or topic subscribers with proper JSON serialization"""
         if topic:
             # Send to topic subscribers only
             subscriber_ids = self.topic_subscribers.get(topic, set())
@@ -172,46 +179,43 @@ class WebSocketManager:
         return await self.handle_message(websocket, message)
     
     async def broadcast_loop(self):
-        """Main broadcast loop for system updates"""
+        """Background task to broadcast system state"""
         while True:
             try:
-                # Get current state
-                state_data = {
-                    "type": "tick_update",
-                    "timestamp": datetime.now().isoformat(),
-                    "data": {
-                        "tick": self.tick_engine.current_tick,
-                        "scup": self.dawn_central.get_scup(),
-                        "entropy": self.dawn_central.get_entropy(),
-                        "mood": self.dawn_central.get_mood(),
-                        "active_processes": self.dawn_central.get_active_processes(),
-                        "consciousness_state": self.dawn_central.get_state(),
-                        "neural_metrics": self.neural_metrics
+                # Get current tick state
+                tick_state = self.tick_engine.get_state()
+                
+                # Get active subsystems from dawn_central
+                active_subsystems = self.dawn_central.get_active_processes() if hasattr(self.dawn_central, 'get_active_processes') else []
+                
+                # Get subsystems from tick engine state
+                subsystems = tick_state.get("event_types", [])  # Use event_types as a proxy for subsystems
+                
+                # Prepare broadcast data
+                data = {
+                    "type": "tick",
+                    "tick": tick_state["tick_count"],
+                    "timestamp": time.time(),
+                    "metrics": tick_state["performance_metrics"],
+                    "thermal": tick_state["thermal_state"],
+                    "subsystems": {
+                        name: {
+                            "active": name in active_subsystems,
+                            "metrics": tick_state["performance_metrics"].get(f"{name}_time", 0)
+                        }
+                        for name in subsystems
                     }
                 }
                 
-                # Broadcast to tick_update subscribers
-                await self.broadcast(state_data, "tick_update")
+                # Broadcast to all connected clients
+                await self.broadcast(data)
                 
-                # Check for consciousness state changes
-                if self.dawn_central.has_state_changed():
-                    consciousness_data = {
-                        "type": "consciousness_update",
-                        "timestamp": datetime.now().isoformat(),
-                        "data": {
-                            "state": self.dawn_central.get_state(),
-                            "metrics": self.dawn_central.get_consciousness_metrics(),
-                            "neural_metrics": self.neural_metrics
-                        }
-                    }
-                    await self.broadcast(consciousness_data, "consciousness_update")
-                
-                # Wait for next update
-                await asyncio.sleep(0.1)  # 10Hz update rate
+                # Wait for next tick
+                await asyncio.sleep(0.1)  # 100ms update interval
                 
             except Exception as e:
                 logger.error(f"Broadcast loop error: {e}")
-                await asyncio.sleep(1)
+                await asyncio.sleep(1)  # Wait a bit longer on error
     
     # Message handlers
     async def _handle_user_input(self, data: Dict[str, Any]) -> Dict[str, Any]:

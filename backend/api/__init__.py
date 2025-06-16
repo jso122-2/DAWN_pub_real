@@ -1,5 +1,7 @@
 """
-DAWN API Package
-==============
-FastAPI-based REST and WebSocket endpoints for the DAWN system.
-""" 
+API package for the DAWN system.
+"""
+
+from .dawn_api import app, websocket_manager
+
+__all__ = ['app', 'websocket_manager'] 

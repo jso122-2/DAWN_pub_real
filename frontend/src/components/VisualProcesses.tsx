@@ -19,6 +19,10 @@ interface VisualProcess {
   visualType: 'canvas' | 'ascii' | 'matrix' | 'graph';
 }
 
+interface CaptureIntervals {
+  [key: string]: NodeJS.Timeout;
+}
+
 // Define all 12 visual processes
 const VISUAL_PROCESSES: Omit<VisualProcess, 'status' | 'lastCapture'>[] = [
   {
@@ -122,7 +126,7 @@ const VISUAL_PROCESSES: Omit<VisualProcess, 'status' | 'lastCapture'>[] = [
 const VisualProcesses: React.FC = () => {
   const [processes, setProcesses] = useState<VisualProcess[]>([]);
   const [selectedProcess, setSelectedProcess] = useState<string | null>(null);
-  const captureIntervals = useRef<{ [key: string]: NodeJS.Timer }>({});
+  const captureIntervals = useRef<CaptureIntervals>({});
   const canvasRefs = useRef<{ [key: string]: HTMLCanvasElement | null }>({});
 
   // Initialize processes
@@ -137,7 +141,9 @@ const VisualProcesses: React.FC = () => {
   // Cleanup intervals on unmount
   useEffect(() => {
     return () => {
-      Object.values(captureIntervals.current).forEach((interval) => window.clearInterval(interval));
+      Object.values(captureIntervals.current).forEach((interval) => {
+        if (interval) clearInterval(interval);
+      });
     };
   }, []);
 
@@ -147,10 +153,7 @@ const VisualProcesses: React.FC = () => {
 
     if (process.status === 'running') {
       // Stop the process
-      if (captureIntervals.current[processId]) {
-        clearInterval(captureIntervals.current[processId]);
-        delete captureIntervals.current[processId];
-      }
+      stopCapture(processId);
       
       setProcesses(prev => prev.map(p => 
         p.id === processId ? { ...p, status: 'stopped' } : p
@@ -440,6 +443,13 @@ TICK: ${data.tick_number} | MEM: ${(data.memory_usage || 0).toFixed(2)}%`;
     graph += ` TICK: ${data.tick_number}`;
     
     return graph;
+  };
+
+  const stopCapture = (processId: string) => {
+    if (captureIntervals.current[processId]) {
+      clearInterval(captureIntervals.current[processId]);
+      delete captureIntervals.current[processId];
+    }
   };
 
   return (

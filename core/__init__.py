@@ -26,7 +26,7 @@ from .fractal_emotions import *
 from .mood_gradient import *
 from .consciousness_state import *
 from .conversation_enhanced import *
-from .consciousness_core import DAWNConsciousness
+from .consciousness_core import ConsciousnessCore, DAWNConsciousness
 
 __all__ = [
     # Core modules
@@ -41,6 +41,7 @@ __all__ = [
     'mood_gradient',
     'consciousness_state',
     'conversation_enhanced',
+    'ConsciousnessCore',
     'DAWNConsciousness',
 ]
 

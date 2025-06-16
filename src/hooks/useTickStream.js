@@ -10,7 +10,7 @@ export function useTickStream(onTick, wsUrl) {
 
   useEffect(() => {
     // Default to local backend if not provided
-    const url = wsUrl || `ws://${window.location.hostname}:8000/ws/tick-stream`;
+    const url = wsUrl || `ws://${window.location.hostname}:8000/ws`;
     const ws = new window.WebSocket(url);
     wsRef.current = ws;
 

@@ -672,4 +672,7 @@ class DAWNConsciousness:
             else:
                 self.emotional_sigils[emotion] = EmotionalSigil(emotion, strength)
         
-        logger.info(f"External pattern injected: {pattern_type} (strength: {strength}) - {context}") 
+        logger.info(f"External pattern injected: {pattern_type} (strength: {strength}) - {context}")
+
+# Alias for backward compatibility
+ConsciousnessModule = DAWNConsciousness 

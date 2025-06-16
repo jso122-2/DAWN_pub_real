@@ -468,8 +468,11 @@ class SubtleSpontaneity:
 
 # Factory function for easy integration
 def create_subtle_spontaneity() -> SubtleSpontaneity:
-    """Create a new subtle spontaneity system"""
+    """Create and return a new SubtleSpontaneity instance"""
     return SubtleSpontaneity()
+
+# Alias for backward compatibility
+SpontaneityModule = SubtleSpontaneity
 
 
 # Example usage and testing

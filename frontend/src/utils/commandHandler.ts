@@ -1,4 +1,4 @@
-import WebSocketManager from './websocketManager';
+import { WebSocketManager } from './websocketManager';
 
 type Command = {
   name: string;

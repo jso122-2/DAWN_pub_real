@@ -947,12 +947,15 @@ memory_manager = MemoryManager()
 
 
 def get_memory_manager() -> MemoryManager:
-    """Get the global memory manager instance"""
-    return memory_manager
+    """Get the singleton memory manager instance"""
+    return initialize_memory_manager()
 
 
 def initialize_memory_manager(memory_directory: str = "memories") -> MemoryManager:
-    """Initialize the global memory manager"""
-    global memory_manager
-    memory_manager = MemoryManager(memory_directory)
-    return memory_manager 
+    """Initialize and return a new memory manager instance"""
+    return MemoryManager(memory_directory)
+
+
+def create_memory_manager(memory_directory: str = "memories") -> MemoryManager:
+    """Create and return a new memory manager instance (alias for initialize_memory_manager)"""
+    return initialize_memory_manager(memory_directory) 
