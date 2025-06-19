@@ -1,0 +1,210 @@
+# Build DAWN Visualization #5: Mood-Entropy Phase Space
+
+## Overview
+Create **DAWN Visualization #5** - a real-time scatter plot showing the dynamic relationship between DAWN's emotional state (mood) and information processing (entropy). This is a **Relational Tier** visualization in the curriculum.
+
+## Technical Specifications
+**File:** `dawn_mood_entropy_phase.py`  
+**Core Concept:** 2D phase space where:
+- **X-axis:** Entropy (information flow intensity)
+- **Y-axis:** Mood (emotional intensity/valence)
+- **Points:** Real-time cognitive states with trails showing trajectory
+- **Colors:** Heat-based coloring showing cognitive load
+
+## JSON Input Structure
+```json
+{
+  "tick": 2847,
+  "pulse": 0.73,
+  "heat": 67,
+  "mood": 0.68,
+  "entropy": 0.42,
+  "scup": {
+    "schema_pressure": 0.73,
+    "coherence": 0.91,
+    "utility": 0.58,
+    "pressure": 0.84
+  },
+  "drift": "contemplative",
+  "sigil_triggers": ["⟐", "◊"]
+}
+```
+
+**Key Data Extraction:**
+```python
+# Extract from DAWN JSON:
+mood_value = json_data.get('mood', 0.5)
+entropy_value = json_data.get('entropy', 0.5)
+heat_value = json_data.get('heat', 30) / 100.0  # Normalize for color mapping
+```
+
+## Key Features to Implement
+
+### 1. Phase Space Plot
+- **Scatter plot** with mood (Y) vs entropy (X)
+- **Animated trail** of recent cognitive states (last 50 points)
+- **Color mapping** based on cognitive heat/intensity
+- **Quadrant labels:**
+  - High Entropy + High Mood = "Creative Flow"
+  - High Entropy + Low Mood = "Information Overload"
+  - Low Entropy + High Mood = "Peaceful Clarity"
+  - Low Entropy + Low Mood = "Dormant State"
+
+### 2. Visual Elements
+- **Current position:** Large glowing dot (size 100-150)
+- **Historical trail:** Fading line with decreasing opacity
+- **Attractor regions:** Subtle circular regions showing typical cognitive states
+- **Phase annotations:** Text labels in quadrants
+- **Real-time metrics:** Display current coordinates and trajectory
+
+### 3. Animation Logic
+- **Trail fading:** Exponential decay in point opacity/size
+- **Smooth transitions:** Interpolated movement between states
+- **Color dynamics:** Heat-based colormap (cool blue → hot red)
+- **Trajectory analysis:** Calculate velocity vectors and curvature
+
+## Required Libraries
+```python
+import matplotlib.pyplot as plt
+import matplotlib.animation as animation
+import numpy as np
+import json
+import sys
+import argparse
+import time
+from collections import deque
+from matplotlib.colors import LinearSegmentedColormap
+```
+
+## Code Structure Template
+```python
+class MoodEntropyPhaseSpace:
+    def __init__(self, trail_length=50):
+        # Phase space parameters
+        self.mood_range = (0, 1)
+        self.entropy_range = (0, 1) 
+        self.trail_length = trail_length
+        
+        # Trail storage
+        self.mood_history = deque(maxlen=self.trail_length)
+        self.entropy_history = deque(maxlen=self.trail_length)
+        self.heat_history = deque(maxlen=self.trail_length)
+        
+        # Matplotlib setup
+        self.fig, self.ax = plt.subplots(figsize=(10, 8))
+        self.setup_phase_plot()
+        
+    def setup_phase_plot(self):
+        # Create scatter plot with trails
+        # Add quadrant regions and labels
+        # Setup colormaps and styling
+        pass
+        
+    def update_phase_space(self, frame):
+        # Read new JSON data
+        # Update historical trails
+        # Calculate trajectory dynamics
+        # Update scatter plot and trails
+        pass
+    
+    def add_quadrant_labels(self):
+        # Add semantic labels to each quadrant
+        pass
+    
+    def simulate_dawn_data(self):
+        # Generate realistic test data
+        pass
+```
+
+## Styling Requirements
+- **Dark theme** (`#0a0a0f` background)
+- **Heat colormap:** Blue (cold) → Cyan → Yellow → Red (hot)
+- **Semantic quadrant labels** (not generic "High/Low")
+- **Grid:** Subtle gray grid lines for reference
+- **Professional scientific visualization** aesthetic
+- **Smooth animations** with trail persistence
+- **Font:** Clean, readable (Arial or similar)
+
+## Visual Layout
+```
+┌─────────────────────────────────────┐
+│ DAWN | Mood-Entropy Phase Space    │
+├─────────────────────────────────────┤
+│  High Mood                          │
+│  ┌─────────────┬─────────────┐      │
+│  │ Peaceful    │ Creative    │ 1.0  │
+│  │ Clarity     │ Flow        │      │
+│  ├─────────────┼─────────────┤ 0.5  │
+│  │ Dormant     │ Information │      │
+│  │ State       │ Overload    │ 0.0  │
+│  └─────────────┴─────────────┘      │
+│  0.0          0.5          1.0      │
+│            Entropy →                │
+└─────────────────────────────────────┘
+```
+
+## Command Line Interface
+```bash
+python dawn_mood_entropy_phase.py --source stdin
+python dawn_mood_entropy_phase.py --source demo --trail-length 100
+```
+
+## Implementation Requirements
+
+### Data Input Handling
+```python
+def read_dawn_data(source='stdin'):
+    """Read DAWN JSON data from specified source"""
+    if source == 'stdin':
+        # Read from stdin (real DAWN data)
+        pass
+    elif source == 'demo':
+        # Generate simulated data for testing
+        pass
+```
+
+### Trail Animation
+```python
+def update_trail_visualization(self):
+    """Update the fading trail of cognitive states"""
+    # Calculate opacity fade for trail points
+    # Update scatter plot colors and sizes
+    # Smooth interpolation between points
+```
+
+### Quadrant Analysis
+```python
+def analyze_current_quadrant(self, mood, entropy):
+    """Determine which cognitive quadrant DAWN is currently in"""
+    if mood > 0.5 and entropy > 0.5:
+        return "Creative Flow"
+    elif mood > 0.5 and entropy <= 0.5:
+        return "Peaceful Clarity"
+    elif mood <= 0.5 and entropy > 0.5:
+        return "Information Overload"
+    else:
+        return "Dormant State"
+```
+
+## Educational Goal
+Help users understand the **relationship between emotion and information processing** in DAWN's cognitive system. Show how mood and entropy interact dynamically rather than as isolated metrics.
+
+This visualization reveals DAWN's **cognitive phase space** - the landscape of possible emotional-informational states she can occupy.
+
+## Success Criteria
+- [ ] Real-time 2D scatter plot with smooth animation
+- [ ] Fading trail showing cognitive trajectory over time
+- [ ] Heat-based color mapping for cognitive intensity
+- [ ] Clear quadrant labels with semantic meaning
+- [ ] Runs standalone: `python dawn_mood_entropy_phase.py`
+- [ ] Educational value - shows emotion/information dynamics
+- [ ] Professional scientific visualization aesthetic
+- [ ] Smooth performance with 10+ FPS animation
+
+## Testing
+Include demo mode with realistic simulated data that shows:
+- Transitions between different cognitive quadrants
+- Varying levels of cognitive heat/intensity
+- Natural-looking mood and entropy trajectories
+
+Build this as a complete, runnable Python script ready for terminal execution.

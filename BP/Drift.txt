@@ -1,0 +1,286 @@
+# Build DAWN Visualization #7: Drift State Transitions
+
+## Overview
+Create **DAWN Visualization #7** - a real-time state transition graph showing how DAWN moves between different cognitive modes or "drift states." This **Relational Tier** visualization reveals the dynamic switching between cognitive operational modes.
+
+## Technical Specifications
+**File:** `dawn_drift_transitions.py`  
+**Core Concept:** Interactive network graph where:
+- **Nodes:** Different cognitive drift states (modes of operation)
+- **Edges:** Transition pathways between states  
+- **Node size:** Time spent in each state
+- **Edge thickness:** Transition frequency/probability
+- **Colors:** Current active state + recent transition history
+
+## JSON Input Structure
+```json
+{
+  "tick": 2847,
+  "pulse": 0.73,
+  "heat": 67,
+  "mood": 0.68,
+  "entropy": 0.42,
+  "scup": {
+    "schema_pressure": 0.73,
+    "coherence": 0.91,
+    "utility": 0.58,
+    "pressure": 0.84
+  },
+  "drift": "contemplative",
+  "sigil_triggers": ["⟐", "◊"]
+}
+```
+
+**Key Data Extraction:**
+```python
+# Extract cognitive metrics for state detection:
+current_drift = json_data.get('drift', 'dormant')
+mood_value = json_data.get('mood', 0.5)
+entropy_value = json_data.get('entropy', 0.5)
+heat_value = json_data.get('heat', 30)
+scup_data = json_data.get('scup', {})
+```
+
+## Key Features to Implement
+
+### 1. Drift State Categories
+```python
+# Cognitive drift states (DAWN's operational modes)
+DRIFT_STATES = {
+    'contemplative': {
+        'color': '#4a90e2', 
+        'position': (0, 1), 
+        'description': 'Deep reflection and analysis'
+    },
+    'exploratory': {
+        'color': '#7ed321', 
+        'position': (1, 0.5), 
+        'description': 'Active discovery and search'
+    }, 
+    'integrative': {
+        'color': '#f5a623', 
+        'position': (0, 0), 
+        'description': 'Synthesis and consolidation'
+    },
+    'creative': {
+        'color': '#d0021b', 
+        'position': (-1, 0.5), 
+        'description': 'Generative and novel thinking'
+    },
+    'analytical': {
+        'color': '#9013fe', 
+        'position': (0.5, -1), 
+        'description': 'Logical processing and reasoning'
+    },
+    'intuitive': {
+        'color': '#50e3c2', 
+        'position': (-0.5, -1), 
+        'description': 'Pattern sensing and insight'
+    },
+    'dormant': {
+        'color': '#4a4a4a', 
+        'position': (0, -0.5), 
+        'description': 'Low activity and rest'
+    },
+    'emergent': {
+        'color': '#ff6b6b', 
+        'position': (0, 0.5), 
+        'description': 'Novel pattern emergence'
+    }
+}
+```
+
+### 2. State Detection Logic
+```python
+def detect_current_drift_state(json_data):
+    """Analyze DAWN's cognitive metrics to determine current drift state"""
+    
+    # Extract metrics
+    mood = json_data.get('mood', 0.5)
+    entropy = json_data.get('entropy', 0.5)
+    heat = json_data.get('heat', 30) / 100.0
+    scup = json_data.get('scup', {})
+    coherence = scup.get('coherence', 0.5)
+    schema_pressure = scup.get('schema_pressure', 0.5)
+    
+    # State detection heuristics:
+    if entropy > 0.7 and mood > 0.6:
+        return 'exploratory', 0.8
+    elif coherence > 0.8 and entropy < 0.4:
+        return 'contemplative', 0.9
+    elif heat > 0.8 and schema_pressure > 0.7:
+        return 'creative', 0.7
+    elif schema_pressure > 0.8 and coherence > 0.7:
+        return 'analytical', 0.8
+    elif mood > 0.7 and entropy > 0.5:
+        return 'integrative', 0.6
+    elif heat < 0.3:
+        return 'dormant', 0.9
+    else:
+        return 'emergent', 0.5
+```
+
+### 3. Network Graph Implementation
+- **NetworkX graph** with drift states as nodes
+- **Force-directed layout** with fixed positions for stability
+- **Animated transitions** showing real-time state changes
+- **Transition probability matrix** updated from historical data
+- **Path highlighting** showing recent transition sequence
+
+### 4. Visual Elements
+- **Current State:** Large glowing node with pulsing animation (size 500-800)
+- **Recent Path:** Highlighted edge trail showing last 5-10 transitions  
+- **Transition Arrows:** Directed edges with animated flow
+- **State Labels:** Semantic names with descriptive text
+- **Dwell Timer:** Display time spent in current state
+- **Transition Statistics:** Side panel with probability matrix
+
+## Required Libraries
+```python
+import matplotlib.pyplot as plt
+import matplotlib.animation as animation
+import networkx as nx
+import numpy as np
+import json
+import sys
+import argparse
+import time
+from collections import deque, defaultdict
+from matplotlib.patches import FancyBboxPatch
+```
+
+## Code Structure Template
+```python
+class DriftStateTransitions:
+    def __init__(self, history_length=100):
+        # State management
+        self.current_state = 'dormant'
+        self.previous_state = 'dormant' 
+        self.state_history = deque(maxlen=history_length)
+        self.transition_counts = defaultdict(int)
+        self.dwell_times = defaultdict(list)
+        self.current_dwell_start = time.time()
+        
+        # Network setup
+        self.graph = nx.DiGraph()
+        self.node_positions = {}
+        self.transition_matrix = np.zeros((len(DRIFT_STATES), len(DRIFT_STATES)))
+        
+        # Matplotlib setup
+        self.fig, (self.ax_main, self.ax_stats) = plt.subplots(1, 2, figsize=(15, 8))
+        self.setup_transition_graph()
+        
+    def setup_transition_graph(self):
+        # Create network graph with drift states
+        # Setup fixed positions for stability
+        # Initialize transition matrix
+        pass
+        
+    def update_state_transition(self, frame):
+        # Read new JSON data
+        # Detect current drift state
+        # Update transition statistics
+        # Animate network changes
+        pass
+    
+    def detect_drift_state(self, json_data):
+        # Implement state detection logic
+        pass
+    
+    def update_transition_matrix(self):
+        # Calculate transition probabilities
+        pass
+    
+    def animate_network(self):
+        # Update node sizes and colors
+        # Animate edge weights
+        # Highlight current path
+        pass
+```
+
+## Advanced Features
+
+### Real-time Metrics Panel
+```python
+def update_statistics_panel(self):
+    """Display transition analytics in side panel"""
+    # Current state + confidence level
+    # Time in current state  
+    # Most likely next states (top 3)
+    # Transition frequency statistics
+    # State diversity index
+    # Recent transition sequence
+```
+
+### Transition Analysis
+```python
+def analyze_transition_patterns(self):
+    """Advanced analytics for cognitive state patterns"""
+    # Markov chain steady-state probabilities
+    # Transition clustering analysis
+    # Anomaly detection for unusual sequences
+    # Cyclical pattern detection
+    # Cognitive entropy calculation
+```
+
+## Styling Requirements
+- **Dark theme** (`#0a0a0f` background) for main network
+- **Semantic state colors** reflecting cognitive character
+- **Node styling:** Circular with glowing borders for active state
+- **Edge styling:** Arrows with thickness proportional to frequency
+- **Smooth animations** for all transitions (no jarring jumps)
+- **Professional network visualization** aesthetic
+- **Clear typography** for labels and statistics
+
+## Visual Layout
+```
+┌─────────────────────────────────┬─────────────────┐
+│ DAWN | Drift State Transitions │ Transition Stats│
+├─────────────────────────────────┼─────────────────┤
+│                                 │ Current State:  │
+│     ○ contemplative             │ contemplative   │
+│    /│\                          │ Confidence: 89% │
+│   / │ \                         │ Dwell Time: 12s │
+│  ○  │  ○ exploratory            │                 │
+│ creative                        │ Next Likely:    │
+│    \│/                          │ • analytical    │
+│     ○ analytical                │ • integrative   │
+│                                 │ • exploratory   │
+│                                 │                 │
+│                                 │ Transition Rate:│
+│                                 │ [Heat Map]      │
+└─────────────────────────────────┴─────────────────┘
+```
+
+## Command Line Interface
+```bash
+python dawn_drift_transitions.py --source stdin
+python dawn_drift_transitions.py --source demo --history-length 200
+python dawn_drift_transitions.py --layout circular  # alternative layouts
+```
+
+## Educational Goal
+Help users understand DAWN's **cognitive mode switching** - how the system dynamically transitions between different operational states based on internal pressures and external inputs. Show the **rhythm and patterns** of cognitive state changes.
+
+This visualization reveals DAWN's **cognitive state space** - the landscape of different thinking modes and how consciousness flows between them.
+
+## Success Criteria
+- [ ] Real-time network graph with smooth state transitions
+- [ ] Clear visualization of current cognitive mode and transitions
+- [ ] Transition probability matrix with historical analysis
+- [ ] Semantic state labels with meaningful descriptions
+- [ ] Animated path highlighting for recent transitions
+- [ ] Statistics panel with dwell times and predictions
+- [ ] Runs standalone: `python dawn_drift_transitions.py`
+- [ ] Educational value - shows cognitive mode dynamics
+- [ ] Professional network visualization aesthetic
+- [ ] Smooth performance with real-time updates
+
+## Testing
+Include demo mode with realistic data showing:
+- Natural transitions between cognitive states
+- Varying dwell times in different modes
+- Realistic transition patterns and probabilities
+- State detection logic responding to cognitive metrics
+
+Build this as a complete, runnable Python script that reveals DAWN's dynamic cognitive mode switching through an intuitive network visualization.

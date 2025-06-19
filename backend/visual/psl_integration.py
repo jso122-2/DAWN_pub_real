@@ -13,6 +13,10 @@ import statistics
 import collections
 import itertools
 import functools
+import signal
+import atexit
+import io
+import base64
 from pathlib import Path
 from typing import Dict, List, Tuple, Optional, Any, Union
 from dataclasses import dataclass
@@ -22,6 +26,12 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 from matplotlib.colors import LinearSegmentedColormap
+
+# Import GIF saver
+try:
+    from .gif_saver import setup_gif_saver
+except ImportError:
+    from gif_saver import setup_gif_saver
 
 # Configure logging
 logging.basicConfig(
@@ -89,7 +99,39 @@ class PSLVisualizer:
         self.performance_stats = defaultdict(list)
         self.start_time = time.time()
         
+        # Setup GIF saver
+        self.gif_saver = setup_gif_saver("psl_integration")
+        
+        # Setup signal handlers for GIF saving
+        signal.signal(signal.SIGINT, self.signal_handler)
+        signal.signal(signal.SIGTERM, self.signal_handler)
+        atexit.register(self.cleanup)
+        
         logger.info("Initialized PSL Visualizer")
+    
+    def save_animation_gif(self):
+        """Save the animation as GIF"""
+        try:
+            if hasattr(self, 'animation'):
+                gif_path = self.gif_saver.save_animation_as_gif(self.animation, fps=10, dpi=100)
+                if gif_path:
+                    print(f"\nAnimation GIF saved: {gif_path}", file=sys.stderr)
+                else:
+                    print("\nFailed to save animation GIF", file=sys.stderr)
+            else:
+                print("\nNo animation to save", file=sys.stderr)
+        except Exception as e:
+            print(f"\nError saving animation GIF: {e}", file=sys.stderr)
+
+    def cleanup(self):
+        """Cleanup function to save GIF"""
+        self.save_animation_gif()
+
+    def signal_handler(self, signum, frame):
+        """Signal handler to save GIF on termination"""
+        print(f"\nReceived signal {signum}, saving GIF...", file=sys.stderr)
+        self.save_animation_gif()
+        sys.exit(0)
     
     def collect_metrics(self) -> None:
         """Collect system metrics using PSL"""
@@ -283,4 +325,4 @@ if __name__ == "__main__":
     try:
         visualizer.start_monitoring()
     except KeyboardInterrupt:
-        visualizer.close() 
+        visualizer.close()

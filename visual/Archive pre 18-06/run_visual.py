@@ -9,7 +9,7 @@ import os
 from pathlib import Path
 
 # Add all required paths
-base_path = Path(r"/mnt/c/Users/Admin/Documents/DAWN_vault/Tick_engine/visual")
+base_path = Path(r"/root/DAWN_Vault/Tick_engine/Tick_engine/visual")
 sys.path.insert(0, str(base_path))
 sys.path.insert(0, str(base_path / "visual"))
 

@@ -45,6 +45,18 @@ class MoodUrgencyProbe:
     
     def get_activation(self) -> float:
         return self.mood_state["activation"]
+    
+    def get_mood(self) -> Dict[str, Any]:
+        """Get mood data in format compatible with mood state visualizer"""
+        return {
+            "base_level": self.mood_state["intensity"],
+            "vector": [
+                self.mood_state["valence"],  # Positive/negative
+                self.mood_state["activation"],  # Energy level
+                self.mood_state["urgency"],  # Urgency level
+                1.0 - self.mood_state["urgency"]  # Stability (inverse of urgency)
+            ]
+        }
 
 # Singleton instance
 _mood_probe = None

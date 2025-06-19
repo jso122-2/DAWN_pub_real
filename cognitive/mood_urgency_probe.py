@@ -5,6 +5,7 @@ from typing import Dict, Optional, Tuple, List
 import logging
 import time
 from dataclasses import dataclass, field
+from core.schema_anomaly_logger import log_anomaly
 
 logger = logging.getLogger(__name__)
 

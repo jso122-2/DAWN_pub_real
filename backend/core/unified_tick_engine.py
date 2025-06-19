@@ -291,6 +291,25 @@ class UnifiedTickEngine:
             # Update tick count
             self._state.tick_count += 1
             
+            # Output tick data to stdout for visualizer scripts
+            tick_data = {
+                "tick": self._state.tick_count,
+                "timestamp": time.time(),
+                "metrics": self._state.performance_metrics,
+                "subsystems": {
+                    name: {
+                        "active": True,
+                        "metrics": self._state.performance_metrics.get(f"{name}_time", 0)
+                    }
+                    for name in self._subsystems.keys()
+                },
+                "thermal_state": self._state.thermal_state,
+                "scup": getattr(self, 'scup_tracker', {}).get_scup() if hasattr(self, 'scup_tracker') else 0.5,
+                "mood": getattr(self, 'mood_probe', {}).get_mood() if hasattr(self, 'mood_probe') else {"base_level": 0.5},
+                "entropy": 0.5  # Default entropy value
+            }
+            self.output_tick_data_to_stdout(tick_data)
+            
             # Broadcast tick state
             await self._broadcast_tick_state()
             
@@ -422,6 +441,19 @@ class UnifiedTickEngine:
         except Exception as e:
             logger.error(f"Error calculating interval: {e}")
             return 0.1  # Default to 100ms on error
+
+    def output_tick_data_to_stdout(self, tick_data: Dict[str, Any]) -> None:
+        """Output tick data as JSON to stdout for visualizer scripts"""
+        try:
+            # Ensure the data is JSON serializable
+            json_data = json.dumps(tick_data, default=str)
+            print(json_data, flush=True)
+        except BrokenPipeError:
+            # Visualizer scripts are not running or not reading from stdin
+            # This is normal when running backend standalone
+            pass
+        except Exception as e:
+            logger.error(f"Error outputting tick data to stdout: {e}")
 
 # Global instance
 tick_engine = UnifiedTickEngine()

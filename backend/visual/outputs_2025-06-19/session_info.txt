@@ -1,0 +1,6 @@
+Visualization session started: Thu Jun 19 21:29:49 AEST 2025
+Data source: stdin
+Animation interval: 100ms
+Buffer size: 100
+Output directory: backend/visual/outputs_2025-06-19
+Debug mode: false
