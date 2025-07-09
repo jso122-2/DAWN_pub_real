@@ -60,6 +60,18 @@ outputs/
 archive/
 sacred/
 
+# Visual outputs and generated content
+visual_outputs_master/
+backend/visual/outputs_*/
+**/outputs_*/
+visual/C:/*
+**/visual_output/
+
+# Virtual environments
+venv*/
+**/venv*/
+scripts/venv*/
+
 # System files
 *.bat
 *.sh

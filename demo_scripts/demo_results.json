@@ -1,0 +1,77 @@
+{
+  "timestamp": "2025-07-10T03:44:14.579779",
+  "global_stats": {
+    "total_blooms": 127,
+    "total_roots": 3,
+    "total_reblooms": 124,
+    "max_depth": 5,
+    "average_depth": 3.2598425196850394,
+    "entropy_stats": {
+      "max_positive_drift": 0.8176613031669359,
+      "max_negative_drift": -0.19986393900469396,
+      "average_drift": 0.06981882085741967
+    },
+    "depth_distribution": {
+      "0": 3,
+      "1": 11,
+      "2": 28,
+      "3": 26,
+      "4": 26,
+      "5": 33
+    },
+    "largest_family_size": 108,
+    "integration_stats": {
+      "blooms_tracked": 2,
+      "reblooms_processed": 120,
+      "genealogy_events": 120,
+      "vault_syncs": 3
+    },
+    "connected_systems": {
+      "bloom_garden": false,
+      "bloom_manager": true,
+      "bloom_engine": true,
+      "vault_manager": true
+    }
+  },
+  "patterns": {
+    "increasing_entropy": 13,
+    "decreasing_entropy": 7,
+    "stable_entropy": 11,
+    "high_volatility": 0,
+    "average_diff": 0.041430651461809034,
+    "entropy_trend": "increasing",
+    "average_rebloom_interval": 0.0012104736842105262,
+    "rebloom_acceleration": "True",
+    "source_distribution": {
+      "performance_test": 20
+    },
+    "integration_health": {
+      "total_events": 245,
+      "tracking_active": true,
+      "genealogy_depth": 5,
+      "family_trees": 3,
+      "last_activity": "2025-07-10T03:44:14.579779",
+      "connectivity_score": 0.75,
+      "activity_score": 1.0,
+      "overall_health": 0.875
+    }
+  },
+  "integration_health": {
+    "total_events": 245,
+    "tracking_active": true,
+    "genealogy_depth": 5,
+    "family_trees": 3,
+    "last_activity": "2025-07-10T03:44:14.579779",
+    "connectivity_score": 0.75,
+    "activity_score": 1.0,
+    "overall_health": 0.875
+  },
+  "demo_metadata": {
+    "simulation_steps": 20,
+    "total_demo_blooms": 127,
+    "available_systems": {
+      "bloom_manager": true,
+      "bloom_engine": true
+    }
+  }
+}
