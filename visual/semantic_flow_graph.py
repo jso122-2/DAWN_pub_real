@@ -7,6 +7,7 @@ cognitive system with semantic relationships, concept activation, and emergence.
 
 import sys
 import json
+import os
 import math
 import random
 import time
@@ -1031,7 +1032,6 @@ class SemanticFlowVisualization:
                             if math.sqrt(dx*dx + dy*dy) <= concept.size:
                                 self.selected_concept = concept.id
                                 break
-            
             # Process data
             if data_source == 'demo':
                 demo_timer += dt
@@ -1039,18 +1039,10 @@ class SemanticFlowVisualization:
                     demo_timer = 0
                     demo_data = self.generate_demo_data()
                     self.process_dawn_state(demo_data)
-            else:
-                # Read from stdin
-                import select
-                if sys.stdin in select.select([sys.stdin], [], [], 0)[0]:
-                    line = sys.stdin.readline()
-                    if line:
-                        try:
-                            json_data = json.loads(line.strip())
-                            self.process_dawn_state(json_data)
-                        except json.JSONDecodeError:
-                            pass
-            
+            # (stdin mode not implemented in this block)
+            # else:
+            #     # Read from stdin or file if needed
+            #     pass
             # Update and draw
             self.update(dt)
             self.draw()
@@ -1102,6 +1094,10 @@ def main():
                        help='Window width (default: 1600)')
     parser.add_argument('--height', type=int, default=900,
                        help='Window height (default: 900)')
+    parser.add_argument('--interval', type=int, default=1000,
+                       help='Update interval in milliseconds (default: 1000)')
+    parser.add_argument('--buffer', type=int, default=1000,
+                       help='Buffer size (default: 1000)')
     parser.add_argument('--emergence-detection', action='store_true',
                        help='Enable emergence detection')
     parser.add_argument('--cluster-analysis', action='store_true',
@@ -1122,11 +1118,9 @@ def main():
     if args.flow_particles:
         viz.show_flow = True
     
-    try:
-        viz.run(data_source=args.source)
-    except KeyboardInterrupt:
-        print("\nVisualization terminated by user")
-        sys.exit(0)
+    viz.run(data_source=args.source)
+    print("\nVisualization terminated by user")
+    sys.exit(0)
 
 if __name__ == "__main__":
     main()

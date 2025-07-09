@@ -3,12 +3,20 @@ import time
 import numpy as np
 import signal
 import atexit
+import sys
 
 # Import GIF saver
 try:
     from .gif_saver import setup_gif_saver
 except ImportError:
-    from gif_saver import setup_gif_saver
+    try:
+        from gif_saver import setup_gif_saver
+    except ImportError:
+        def setup_gif_saver(name):
+            class DummyGifSaver:
+                def save_animation_as_gif(self, animation, fps=5, dpi=100):
+                    return None
+            return DummyGifSaver()
 
 RECURSION_LEVELS = {
     0: {'name': 'Direct Cognition', 'z_position': 0},
@@ -28,6 +36,14 @@ class RecursiveDepthExplorerVisualizer:
         self._animation_thread = None
         self.frame_count = 0
 
+        # Setup GIF saver
+        self.gif_saver = setup_gif_saver("recursivedepthexplorervisualizer")
+
+        # Register cleanup function
+        atexit.register(self.cleanup)
+        signal.signal(signal.SIGINT, self.signal_handler)
+        signal.signal(signal.SIGTERM, self.signal_handler)
+    
     def start_animation(self):
         if not self.running:
             self.running = True
@@ -143,6 +159,28 @@ class RecursiveDepthExplorerVisualizer:
         while self.running:
             self.frame_count += 1
             time.sleep(0.1)
+
+    def save_animation_gif(self):
+        """Save the animation as GIF"""
+        try:
+            if hasattr(self, 'animation'):
+                gif_path = self.gif_saver.save_animation_as_gif(self.animation, fps=5, dpi=100)
+                if gif_path:
+                    print(f'\nAnimation GIF saved: {gif_path}', file=sys.stderr)
+                else:
+                    print('\nFailed to save animation GIF', file=sys.stderr)
+            else:
+                print('\nNo animation to save', file=sys.stderr)
+            print(f'\nError saving animation GIF: {e}', file=sys.stderr)
+    def cleanup(self):
+        """Cleanup function to save GIF"""
+        self.save_animation_gif()
+
+    def signal_handler(self, signum, frame):
+        """Signal handler to save GIF on termination"""
+        print(f'\nReceived signal {signum}, saving GIF...', file=sys.stderr)
+        self.save_animation_gif()
+        sys.exit(0)
 
 def get_recursive_depth_explorer_visualizer():
     return RecursiveDepthExplorerVisualizer(max_depth=5)

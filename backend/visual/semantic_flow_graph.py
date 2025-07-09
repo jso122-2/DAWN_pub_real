@@ -10,6 +10,7 @@ matplotlib.use('Agg')  # Use non-interactive backend
 
 import sys
 import json
+import os
 import math
 import random
 import time
@@ -24,6 +25,7 @@ import select
 import atexit
 import signal
 
+# Optional: import pygame if needed for your visualization
 try:
     import pygame
     import pygame.gfxdraw
@@ -31,6 +33,7 @@ except ImportError:
     print("Error: pygame is required. Install with: pip install pygame")
     sys.exit(1)
 
+# Import GIF saver
 try:
     from .gif_saver import setup_gif_saver
 except ImportError:
@@ -163,7 +166,15 @@ class SemanticCluster:
 class SemanticFlowNetwork:
     """Manages the semantic flow network and dynamics"""
     
-    def __init__(self, width: int, height: int):
+    def __init__(self, width: int, height: int, save_frames=False, output_dir="./visual_output"):
+        self.save_frames = save_frames
+        self.output_dir = output_dir
+        self.frame_count = 0
+        
+        # Create output directory if saving
+        if self.save_frames:
+            os.makedirs(self.output_dir, exist_ok=True)
+        
         self.width = width
         self.height = height
         self.center_x = width // 2
@@ -609,80 +620,79 @@ class SemanticFlowNetwork:
 class SemanticFlowVisualization:
     """Handles the visual rendering of the semantic flow network"""
     
-    def __init__(self, width: int = 1600, height: int = 900, data_source='stdin'):
-        self.data_source = data_source
-        pygame.init()
+    def __init__(self, width: int = 1600, height: int = 900, data_source='stdin', save_frames=False, output_dir="./visual_output"):
         self.width = width
         self.height = height
+        self.data_source = data_source
+        
+        # Initialize pygame
+        pygame.init()
         self.screen = pygame.display.set_mode((width, height))
-        pygame.display.set_caption("DAWN Visualization #11: Semantic Flow Graph")
-        
+        pygame.display.set_caption("DAWN Semantic Flow Graph")
         self.clock = pygame.time.Clock()
-        self.font_tiny = pygame.font.Font(None, 12)
-        self.font_small = pygame.font.Font(None, 16)
-        self.font_medium = pygame.font.Font(None, 20)
-        self.font_large = pygame.font.Font(None, 28)
         
-        # Colors
-        self.bg_color = (10, 10, 15)
-        self.grid_color = (25, 25, 35)
-        self.text_color = (200, 200, 210)
-        self.edge_color = (60, 60, 80)
+        # Initialize network
+        self.network = SemanticFlowNetwork(width, height)
         
-        # Network
-        self.network = SemanticFlowNetwork(width - 350, height)
-        
-        # Visualization settings
+        # UI state
         self.show_labels = True
-        self.show_flow = True
+        self.show_connections = True
         self.show_clusters = True
-        self.emergence_detection = True
+        self.show_flow = True
+        self.paused = False
         self.selected_concept = None
         
-        # Animation state
-        self.time = 0
-        self.frame_count = 0
+        # Demo mode
+        self.demo_timer = 0
+        self.emergence_detection = False
         
-        # Visual effects
-        self.emergence_pulses = []
-        
-        # Data queue and background thread for stdin
-        self.data_queue = queue.Queue()
-        self.stdin_thread = None
-        self.stop_event = threading.Event()
-        if self.data_source == 'stdin':
-            self.stdin_thread = threading.Thread(target=self.read_stdin_data, daemon=True)
-            self.stdin_thread.start()
+        # Create matplotlib figure for compatibility
+        self.fig = plt.figure(figsize=(16, 9))
         
         # Setup GIF saver
-        self.gif_saver = setup_gif_saver("flowparticle")
-
-        # Register cleanup function
-        atexit.register(self.cleanup)
+        self.gif_saver = setup_gif_saver("semanticflowgraph")
+        
+        # Setup signal handlers for GIF saving
         signal.signal(signal.SIGINT, self.signal_handler)
         signal.signal(signal.SIGTERM, self.signal_handler)
+        atexit.register(self.cleanup)
     
-    def read_stdin_data(self):
-        """Background thread to read lines from stdin and put them in the queue"""
-        while not self.stop_event.is_set():
-            try:
-                line = sys.stdin.readline()
-                if line == '':
-                    print("[semantic_flow_graph] Waiting for input...")
-                    time.sleep(0.1)
-                    continue
+    def read_json_data(self):
+        import sys
+        if getattr(self, 'data_source', None) == 'stdin':
+            for line in sys.stdin:
                 line = line.strip()
                 if not line:
                     continue
                 try:
                     data = json.loads(line)
+                    self.data_queue.put(data)
                 except Exception as e:
-                    print(f"JSON decode error: {e}")
-                    continue
-                self.data_queue.put(data)
-            except Exception as e:
-                print(f"Error reading stdin: {e}", file=sys.stderr)
-                break
+                    print(f"Error parsing JSON: {e}", file=sys.stderr)
+        else:
+            json_file = "/tmp/dawn_tick_data.json"
+            last_position = 0
+            while not self.stop_event.is_set():
+                try:
+                    if not os.path.exists(json_file):
+                        time.sleep(0.1)
+                        continue
+                    with open(json_file, 'r') as f:
+                        f.seek(last_position)
+                        lines = f.readlines()
+                        last_position = f.tell()
+                        for line in lines:
+                            line = line.strip()
+                            if not line:
+                                continue
+                            try:
+                                data = json.loads(line)
+                                self.data_queue.put(data)
+                            except json.JSONDecodeError as e:
+                                continue
+                    time.sleep(0.1)
+                except Exception as e:
+                    time.sleep(1.0)
 
     def detect_semantic_activation(self, json_data: dict) -> Dict[str, float]:
         """Analyze DAWN state to detect active semantic concepts"""
@@ -1006,10 +1016,10 @@ class SemanticFlowVisualization:
         """Update the visualization state"""
         data = None
         if self.data_source == 'stdin':
-            while not self.data_queue.empty():
-                data = self.data_queue.get()
+            if not self.data_queue.empty():
+                data = self.data_queue.get_nowait()
         else:
-            data = self.generate_demo_data()
+            data = self.read_latest_json_data()
         if data is not None:
             self.process_dawn_state(data)
         self.time += dt
@@ -1069,61 +1079,49 @@ class SemanticFlowVisualization:
         elif key == pygame.K_e:
             self.emergence_detection = not self.emergence_detection
     
-    def run(self, data_source='demo'):
-        """Main visualization loop"""
-        running = True
-        last_time = time.time()
-        demo_timer = 0
-        
-        while running:
-            current_time = time.time()
-            dt = current_time - last_time
-            last_time = current_time
-            
-            # Handle events
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    running = False
-                elif event.type == pygame.KEYDOWN:
-                    self.handle_keypress(event.key)
-                elif event.type == pygame.MOUSEBUTTONDOWN:
-                    if event.button == 1:  # Left click
-                        x, y = event.pos
-                        # Find clicked concept
-                        for concept in self.network.concepts.values():
-                            dx = concept.x - x
-                            dy = concept.y - y
-                            if math.sqrt(dx*dx + dy*dy) <= concept.size:
-                                self.selected_concept = concept.id
-                                break
-            
-            # Process data
-            if data_source == 'demo':
-                demo_timer += dt
-                if demo_timer > 0.3:  # Update every 0.3 seconds
-                    demo_timer = 0
-                    demo_data = self.generate_demo_data()
-                    self.process_dawn_state(demo_data)
+    def run(self, interval=200):
+        """Start the visualization"""
+        try:
+            import matplotlib
+            if matplotlib.get_backend() == 'Agg':
+                self.animation = animation.FuncAnimation(
+                    self.fig,
+                    self.update_visualization,
+                    interval=interval,
+                    blit=False,
+                    cache_frame_data=False,
+                    repeat=False,
+                    frames=20
+                )
+                for i in range(20):
+                    self.update_visualization(i)
+                print(f"DEBUG: Generated 20 frames, saving GIF...", file=sys.stderr)
+                self.save_animation_gif()
+                print(f"DEBUG: GIF save completed", file=sys.stderr)
+                return
             else:
-                # Read from stdin
-                import select
-                if sys.stdin in select.select([sys.stdin], [], [], 0)[0]:
-                    line = sys.stdin.readline()
-                    if line:
-                        try:
-                            json_data = json.loads(line.strip())
-                            self.process_dawn_state(json_data)
-                        except json.JSONDecodeError:
-                            pass
-            
-            # Update and draw
-            self.update(dt)
-            self.draw()
-            self.clock.tick(60)
-        
-        pygame.quit()
+                self.animation = animation.FuncAnimation(
+                    self.fig,
+                    self.update_visualization,
+                    interval=interval,
+                    blit=False,
+                    cache_frame_data=False
+                )
+                if self.save_frames:
+                    # Headless mode: run limited frames
+                    for frame in range(1000):
+                        self.update_visualization(frame)
+                        if frame % 50 == 0:
+                            print(f"Processed frame {frame}", file=sys.stderr)
+                    print(f"Frames saved to: {self.output_dir}")
+                else:
+                    # Interactive mode
+                plt.show()
+        except Exception as e:
+            print(f"Runtime error: {e}", file=sys.stderr)
+            self.save_animation_gif()
     
-    def generate_demo_data(self) -> dict:
+    def generate_demo_data(self, frame: int) -> dict:
         """Generate demo DAWN data"""
         # Create interesting patterns
         t = self.time * 0.5
@@ -1153,7 +1151,7 @@ class SemanticFlowVisualization:
                 'utility': 0.5 + 0.2 * math.sin(t * 0.7),
                 'schema': 0.5 + 0.25 * math.cos(t * 0.3)
             },
-            'tick': self.frame_count
+            'tick': frame
         }
 
     def cleanup(self):
@@ -1166,6 +1164,63 @@ class SemanticFlowVisualization:
         print(f"Received signal {signum}, exiting gracefully.")
         self.cleanup()
         sys.exit(0)
+
+    def read_latest_json_data(self):
+        """Read the latest data from JSON file"""
+        json_file = "/tmp/dawn_tick_data.json"
+        if os.path.exists(json_file):
+            with open(json_file, 'r') as f:
+                lines = f.readlines()
+                if lines:
+                    last_line = lines[-1].strip()
+                    if last_line:
+                        return json.loads(last_line)
+                print(f"Error reading JSON: {e}", file=sys.stderr)
+        return None
+
+    def update_visualization(self, frame):
+        data = None
+        if self.data_source == 'stdin':
+            if not self.data_queue.empty():
+                data = self.data_queue.get_nowait()
+        else:
+            data = self.read_latest_json_data()
+        if data is None:
+            data = self.generate_demo_data(frame)
+        self.process_dawn_state(data)
+        self.time += 0.016  # 60 FPS equivalent
+        self.frame_count += 1
+        
+        # Update network
+        self.network.update_physics(0.016)
+        self.network.update_flow_particles(0.016)
+        
+        # Periodic clustering update
+        if self.frame_count % 30 == 0:
+            self.network.detect_clusters()
+        
+        # Save frame if requested
+        if self.save_frames and self.frame_count % 10 == 0:
+            filename = f"{self.output_dir}/semantic_flow_graph_frame_{self.frame_count:06d}.png"
+            self.fig.savefig(filename, dpi=100, bbox_inches='tight',
+                           facecolor='#0a0a0a', edgecolor='none')
+        
+        # Return empty list for matplotlib compatibility
+        return []
+
+    def save_animation_gif(self):
+        """Save the animation as GIF"""
+        try:
+            if hasattr(self, 'animation') and self.animation is not None:
+                gif_path = self.gif_saver.save_animation_as_gif(self.animation, fps=5, dpi=100)
+                if gif_path:
+                    print(f"\nAnimation GIF saved: {gif_path}", file=sys.stderr)
+                else:
+                    print("\nFailed to save animation GIF", file=sys.stderr)
+            else:
+                print("\nNo animation to save", file=sys.stderr)
+        except Exception as e:
+            print(f"\nError saving animation GIF: {e}", file=sys.stderr)
 
 def main():
     parser = argparse.ArgumentParser(
@@ -1188,6 +1243,11 @@ def main():
     parser.add_argument('--buffer', type=int, default=100,
                        help='Buffer size for visualizations')
     
+    parser.add_argument('--save', action='store_true',
+                       help='Save visualization frames as PNG files')
+    parser.add_argument('--output-dir', default='./visual_output',
+                       help='Directory to save output frames')
+    
     args = parser.parse_args()
     
     # Create and run visualization
@@ -1200,12 +1260,10 @@ def main():
         viz.show_clusters = True
     if args.flow_particles:
         viz.show_flow = True
-    
-    try:
-        viz.run(data_source=args.source)
-    except KeyboardInterrupt:
-        print("\nVisualization terminated by user")
-        sys.exit(0)
+
+    viz.run(data_source=args.source)
+    print("\nVisualization terminated by user")
+    sys.exit(0)
 
 if __name__ == "__main__":
     main()

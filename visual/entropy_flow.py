@@ -9,7 +9,13 @@ intensity of information processing across cognitive space.
 """
 
 import json
+import os
+import os
+import os
+import os
 import numpy as np
+import matplotlib
+matplotlib.use('Agg')  # Use non-interactive backend for headless mode
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 from matplotlib.patches import FancyArrowPatch
@@ -20,9 +26,17 @@ import argparse
 import math
 
 class EntropyFlowVisualizer:
-    def __init__(self, data_source="stdin", buffer_size=30):
+    def __init__(self, data_source="stdin", buffer_size=30, save_frames=False, output_dir='./visual_output/entropy_flow'):
         self.data_source = data_source
         self.buffer_size = buffer_size
+        self.save_frames = save_frames
+        self.output_dir = output_dir
+        self.frame_count = 0
+        
+        # Create output directory if saving
+        if self.save_frames:
+            import os
+            os.makedirs(self.output_dir, exist_ok=True)
         
         # Flow field parameters
         self.grid_size = 12
@@ -181,7 +195,6 @@ class EntropyFlowVisualizer:
             }
             
             return flow_data
-            
         except Exception as e:
             print(f"Error parsing entropy data: {e}", file=sys.stderr)
             return {'entropy': 0.5, 'tick': 0, 'heat': 0.3, 'mood_influence': 0.5, 'scup_pressure': 0.5}
@@ -247,36 +260,34 @@ class EntropyFlowVisualizer:
         
         return stream_intensities
     
+    def read_latest_json_data(self):
+        """Read the latest data from JSON file"""
+        json_file = "/tmp/dawn_tick_data.json"
+        if os.path.exists(json_file):
+            with open(json_file, 'r') as f:
+                lines = f.readlines()
+                if lines:
+                    last_line = lines[-1].strip()
+                    if last_line:
+                        return json.loads(last_line)
+            print(f"Error reading JSON: {e}", file=sys.stderr)
+        return None
+
     def update_visualization(self, frame):
         """Animation update function"""
         try:
-            # Read new data
-            if self.data_source == "stdin":
-                line = sys.stdin.readline().strip()
-                if not line:
-                    return []
-                
-                data = json.loads(line)
-            else:
-                # Simulated data for testing
+            self.frame_count = frame
+            # Read data from JSON file
+            data = self.read_latest_json_data()
+            
+            if data is None:
+                # Use simulated data if no real data available
                 data = {
                     'tick': frame,
-                    'entropy': 0.5 + 0.3 * np.sin(frame * 0.02) + 0.1 * np.random.random(),
-                    'heat': 0.4 + 0.2 * np.sin(frame * 0.03),
-                    'mood': {
-                        'vector': [
-                            0.5 + 0.2 * np.sin(frame * 0.015),
-                            0.5 + 0.2 * np.cos(frame * 0.02),
-                            0.5 + 0.1 * np.sin(frame * 0.025),
-                            0.5 + 0.1 * np.cos(frame * 0.01)
-                        ]
-                    },
-                    'scup': {
-                        'schema': 0.5 + 0.1 * np.sin(frame * 0.01),
-                        'coherence': 0.5 + 0.1 * np.cos(frame * 0.015),
-                        'utility': 0.5 + 0.1 * np.sin(frame * 0.02),
-                        'pressure': 0.4 + 0.2 * np.cos(frame * 0.008)
-                    }
+                    'mood': {'valence': 0.5 + 0.2 * np.sin(frame * 0.05)},
+                    'entropy': {'total_entropy': 0.5 + 0.2 * np.sin(frame * 0.03)},
+                    'thermal_state': {'heat_level': 0.3 + 0.1 * np.cos(frame * 0.04)},
+                    'scup': {'schema': 0.5, 'coherence': 0.5, 'utility': 0.5, 'pressure': 0.5}
                 }
             
             # Parse and process data
@@ -291,8 +302,12 @@ class EntropyFlowVisualizer:
             self.quiver.set_UVC(self.U, self.V, self.magnitude)
             
             # Update contours
-            for collection in self.contour.collections:
-                collection.remove()
+            try:
+                for collection in self.contour.collections:
+                    collection.remove()
+            except AttributeError:
+                # Handle Agg backend compatibility issue
+                pass
             self.contour = self.ax_main.contour(self.X, self.Y, self.information_density,
                                                levels=8, colors='white', alpha=0.2, linewidths=0.5)
             
@@ -323,34 +338,55 @@ class EntropyFlowVisualizer:
                 if stream_type in self.stream_indicators:
                     self.stream_indicators[stream_type].set_text(f"{stream_type.title()}: {intensity:.3f}")
             
-            return [self.quiver]
+            # Save frame if requested
+            if self.save_frames and self.frame_count % 10 == 0:  # Save every 10th frame
+                filename = f"{self.output_dir}/entropy_flow_frame_{self.frame_count:06d}.png"
+                self.fig.savefig(filename, dpi=100, bbox_inches='tight', 
+                               facecolor='#0a0a0a', edgecolor='none')
             
-        except json.JSONDecodeError as e:
-            print(f"JSON decode error: {e}", file=sys.stderr)
-            return []
+            return [self.quiver]
         except Exception as e:
-            print(f"Update error: {e}", file=sys.stderr)
+            print(f"JSON decode error: {e}", file=sys.stderr)
             return []
     
     def run(self, interval=100):
         """Start the real-time visualization"""
         try:
-            ani = animation.FuncAnimation(self.fig, self.update_visualization,
-                                        interval=interval, blit=False, cache_frame_data=False)
-            plt.show()
-        except KeyboardInterrupt:
-            print("\nEntropy Flow Visualizer terminated by user.")
+            if self.save_frames:
+                # For saving mode, run a limited number of frames
+                for frame in range(1000):  # Process up to 1000 frames
+                    self.update_visualization(frame)
+                    if frame % 50 == 0:  # Print progress every 50 frames
+                        print(f"Processed frame {frame}", file=sys.stderr)
+                    # Check if there's more data to read
+                    try:
+                        import select
+                        if not select.select([sys.stdin], [], [], 0)[0]:
+                            break  # No more data available
+                    except:
+                        pass
+                print(f"Entropy Flow saved frames to: {self.output_dir}")
+            else:
+                # Interactive mode
+                ani = animation.FuncAnimation(self.fig, self.update_visualization,
+                                            interval=interval, blit=False, cache_frame_data=False)
+                plt.show()
+                print("\nEntropy Flow Visualizer terminated by user.")
         except Exception as e:
             print(f"Runtime error: {e}", file=sys.stderr)
 
 def main():
     parser = argparse.ArgumentParser(description='DAWN Entropy Flow Visualizer')
-    parser.add_argument('--source', choices=['stdin', 'demo'], default='stdin',
+    parser.add_argument('--data-source', choices=['stdin', 'demo'], default='stdin',
                        help='Data source: stdin for live DAWN data, demo for testing')
     parser.add_argument('--interval', type=int, default=100,
                        help='Animation update interval in milliseconds')
     parser.add_argument('--buffer', type=int, default=30,
                        help='Entropy history buffer size')
+    parser.add_argument('--save', action='store_true',
+                       help='Save visualization frames as PNG files')
+    parser.add_argument('--output-dir', default='./visual_output/entropy_flow',
+                       help='Directory to save output frames')
     
     args = parser.parse_args()
     
@@ -358,13 +394,18 @@ def main():
     print("Information Vector Field Visualization")
     print("=" * 50)
     
-    if args.source == 'stdin':
+    if args.data_source == 'stdin':
         print("Waiting for DAWN JSON data on stdin...")
         print("Visualizing information entropy flows and cognitive vector fields...")
     else:
         print("Running in demo mode with simulated entropy data...")
     
-    visualizer = EntropyFlowVisualizer(data_source=args.source, buffer_size=args.buffer)
+    visualizer = EntropyFlowVisualizer(
+        data_source=args.data_source, 
+        buffer_size=args.buffer,
+        save_frames=args.save,
+        output_dir=args.output_dir
+    )
     visualizer.run(interval=args.interval)
 
 if __name__ == "__main__":

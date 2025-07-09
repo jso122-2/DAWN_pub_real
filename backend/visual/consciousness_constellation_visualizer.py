@@ -17,9 +17,15 @@ import atexit
 import sys
 
 # Import GIF saver
-try:
+
     from .gif_saver import setup_gif_saver
-except ImportError:
+    from gif_saver import setup_gif_saver
+import signal
+import atexit
+
+# Import GIF saver
+
+    from .gif_saver import setup_gif_saver
     from gif_saver import setup_gif_saver
 
 logger = logging.getLogger(__name__)
@@ -330,8 +336,7 @@ class ConsciousnessConstellationBackend:
         """Calculate convex hull volume in 4D SCUP space"""
         if len(scup_history) < 5:
             return 0
-        
-        try:
+
             # Use PCA to project to 3D for hull calculation
             scup_array = np.array(scup_history)
             centered = scup_array - scup_array.mean(axis=0)
@@ -339,7 +344,6 @@ class ConsciousnessConstellationBackend:
             # Simple volume estimate using spread
             volume = np.prod(np.std(centered, axis=0)) * len(scup_history)
             return np.clip(volume, 0, 1)
-        except:
             return 0
 
     def calculate_trajectory_length(self, scup_history: List[Tuple[float, float, float, float]]) -> float:
@@ -710,16 +714,15 @@ class ConsciousnessConstellationBackend:
 
     def save_animation_gif(self):
         """Save the animation as GIF"""
-        try:
+
             if hasattr(self, 'animation'):
-                gif_path = self.gif_saver.save_animation_as_gif(self.animation, fps=10, dpi=100)
+                gif_path = self.gif_saver.save_animation_as_gif(self.animation, fps=5, dpi=100)
                 if gif_path:
                     print(f"\nAnimation GIF saved: {gif_path}", file=sys.stderr)
                 else:
                     print("\nFailed to save animation GIF", file=sys.stderr)
             else:
                 print("\nNo animation to save", file=sys.stderr)
-        except Exception as e:
             print(f"\nError saving animation GIF: {e}", file=sys.stderr)
 
     def cleanup(self):

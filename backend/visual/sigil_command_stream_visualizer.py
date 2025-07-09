@@ -9,6 +9,14 @@ import threading
 import time
 from collections import deque, defaultdict
 import random
+import signal
+import atexit
+
+# Import GIF saver
+
+    from .gif_saver import setup_gif_saver
+    from gif_saver import setup_gif_saver
+import sys
 
 # Sigil command categories and their properties
 SIGIL_CATEGORIES = {
@@ -113,7 +121,14 @@ class SigilCommandStreamVisualizer:
         
         # Initialize visualization
         self._init_visualization()
-        
+
+        # Setup GIF saver
+        self.gif_saver = setup_gif_saver("sigilcommandstreamvisualizer")
+
+        # Register cleanup function
+        atexit.register(self.cleanup)
+        signal.signal(signal.SIGINT, self.signal_handler)
+        signal.signal(signal.SIGTERM, self.signal_handler)
     def _init_visualization(self):
         """Initialize matplotlib components"""
         self.fig, self.ax = plt.subplots(figsize=(12, 8), facecolor='#0a0a0a')
@@ -436,6 +451,28 @@ class SigilCommandStreamVisualizer:
             self.frame_count += 1
             time.sleep(0.1)  # Update every 100ms
 
+    def save_animation_gif(self):
+        """Save the animation as GIF"""
+
+            if hasattr(self, 'animation'):
+                gif_path = self.gif_saver.save_animation_as_gif(self.animation, fps=5, dpi=100)
+                if gif_path:
+                    print(f'\nAnimation GIF saved: {gif_path}', file=sys.stderr)
+                else:
+                    print('\nFailed to save animation GIF', file=sys.stderr)
+            else:
+                print('\nNo animation to save', file=sys.stderr)
+            print(f'\nError saving animation GIF: {e}', file=sys.stderr)
+
+    def cleanup(self):
+        """Cleanup function to save GIF"""
+        self.save_animation_gif()
+
+    def signal_handler(self, signum, frame):
+        """Signal handler to save GIF on termination"""
+        print(f'\nReceived signal {signum}, saving GIF...', file=sys.stderr)
+        self.save_animation_gif()
+        sys.exit(0)
 # Factory function for backend integration
 def get_sigil_command_stream_visualizer():
     return SigilCommandStreamVisualizer(timeline_width=100) 

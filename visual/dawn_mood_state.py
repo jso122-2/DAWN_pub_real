@@ -9,6 +9,10 @@ emotional intensities across different affective dimensions.
 """
 
 import json
+import os
+import os
+import os
+import os
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
@@ -96,17 +100,13 @@ class MoodStateVisualizer:
         """Extract and process mood state from DAWN JSON output"""
         try:
             mood_raw = json_data.get('mood', {})
-            
             # Map mood components to emotional landscape grid
             # This is a simplified mapping - in reality, DAWN's mood system
             # would provide more detailed emotional vectors
-            
             base_intensity = mood_raw.get('base_level', 0.1)
             emotional_vector = mood_raw.get('vector', [0.5, 0.5, 0.5, 0.5])
-            
             # Generate mood matrix based on emotional dimensions
             mood_matrix = np.random.random((8, 8)) * 0.1  # Base noise
-            
             # Apply emotional vector influences
             if len(emotional_vector) >= 4:
                 # Map emotional dimensions to grid regions
@@ -114,20 +114,15 @@ class MoodStateVisualizer:
                 mood_matrix[2:4, :] += emotional_vector[1] * 0.6  # Serene/Curious  
                 mood_matrix[4:6, :] += emotional_vector[2] * 0.7  # Focused/Contemplative
                 mood_matrix[6:8, :] += emotional_vector[3] * 0.5  # Uncertain/Turbulent
-                
             # Add temporal patterns
             tick = json_data.get('tick', 0)
             wave_pattern = np.sin(tick * 0.1) * 0.2
             mood_matrix += wave_pattern
-            
             # Apply base intensity scaling
             mood_matrix *= (base_intensity + 0.2)
-            
             # Clamp values
             mood_matrix = np.clip(mood_matrix, 0, 1)
-            
             return mood_matrix
-            
         except Exception as e:
             print(f"Error parsing mood data: {e}", file=sys.stderr)
             return self.mood_matrix
@@ -137,18 +132,28 @@ class MoodStateVisualizer:
         self.mood_smoothed = alpha * new_mood + (1 - alpha) * self.mood_smoothed
         return self.mood_smoothed
     
+    def read_latest_json_data(self):
+        """Read the latest data from JSON file"""
+        json_file = "/tmp/dawn_tick_data.json"
+        if os.path.exists(json_file):
+            try:
+                with open(json_file, 'r') as f:
+                    lines = f.readlines()
+                    if lines:
+                        last_line = lines[-1].strip()
+                        if last_line:
+                            return json.loads(last_line)
+            except Exception as e:
+                print(f"Error reading JSON: {e}", file=sys.stderr)
+        return None
+
     def update_visualization(self, frame):
         """Animation update function"""
         try:
-            # Read new data
-            if self.data_source == "stdin":
-                line = sys.stdin.readline().strip()
-                if not line:
-                    return [self.im]
-                
-                data = json.loads(line)
-            else:
-                # Simulated data for testing
+            # Read data from JSON file
+            data = self.read_latest_json_data()
+            if data is None:
+                # Use simulated data if no real data available
                 data = {
                     'tick': frame,
                     'mood': {
@@ -161,37 +166,26 @@ class MoodStateVisualizer:
                         ]
                     }
                 }
-            
             # Update mood state
             new_mood = self.parse_mood_data(data)
             self.mood_matrix = self.smooth_mood_transition(new_mood)
-            
             # Store in history
             self.mood_history.append(self.mood_matrix.copy())
-            
             # Update heatmap
             self.im.set_array(self.mood_matrix)
-            
             # Update info display
             tick = data.get('tick', frame)
             mood_info = data.get('mood', {})
             base_level = mood_info.get('base_level', 0)
-            
             info_text = f"Tick: {tick:06d}\nBase Affect: {base_level:.3f}\nEmotional Flux: {np.std(self.mood_matrix):.3f}"
             self.info_text.set_text(info_text)
-            
             # Update text annotations with intensity-based opacity
             for i in range(8):
                 for j in range(8):
                     intensity = self.mood_matrix[i, j]
                     alpha = 0.4 + 0.6 * intensity  # Scale opacity with intensity
                     self.text_annotations[i][j].set_alpha(alpha)
-            
             return [self.im, self.info_text] + [text for row in self.text_annotations for text in row]
-            
-        except json.JSONDecodeError as e:
-            print(f"JSON decode error: {e}", file=sys.stderr)
-            return [self.im]
         except Exception as e:
             print(f"Update error: {e}", file=sys.stderr)
             return [self.im]
@@ -202,7 +196,6 @@ class MoodStateVisualizer:
             ani = animation.FuncAnimation(self.fig, self.update_visualization, 
                                         interval=interval, blit=True, cache_frame_data=False)
             plt.show()
-        except KeyboardInterrupt:
             print("\nMood State Visualizer terminated by user.")
         except Exception as e:
             print(f"Runtime error: {e}", file=sys.stderr)

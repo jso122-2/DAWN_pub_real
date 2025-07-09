@@ -11,6 +11,7 @@ matplotlib.use('Agg')  # Use non-interactive backend
 
 import sys
 import json
+import os
 import math
 import random
 import time
@@ -23,8 +24,6 @@ import queue
 import threading
 import signal
 import atexit
-import pygame
-import pygame.gfxdraw
 import select
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
@@ -34,9 +33,15 @@ try:
     from .gif_saver import setup_gif_saver
 except ImportError:
     from gif_saver import setup_gif_saver
+
+# Try to import pygame, but don't fail if not available
+try:
+    import pygame
+    import pygame.gfxdraw
+    PYGAME_AVAILABLE = True
 except ImportError:
-    print("Error: pygame is required. Install with: pip install pygame")
-    sys.exit(1)
+    PYGAME_AVAILABLE = False
+    print("Warning: pygame not available, using matplotlib backend only")
 
 # Bloom type definitions with inheritance patterns
 BLOOM_TYPES = {
@@ -152,7 +157,15 @@ class MemoryBloom:
 class BloomGenealogyNetwork:
     """Manages the bloom genealogy network and force simulation"""
     
-    def __init__(self, width: int, height: int):
+    def __init__(self, width: int, height: int, save_frames=False, output_dir="./visual_output"):
+        self.save_frames = save_frames
+        self.output_dir = output_dir
+        self.frame_count = 0
+        
+        # Create output directory if saving
+        if self.save_frames:
+            os.makedirs(self.output_dir, exist_ok=True)
+        
         self.width = width
         self.height = height
         self.center_x = width // 2
@@ -413,70 +426,99 @@ class BloomGenealogyNetwork:
 class BloomVisualization:
     """Handles the visual rendering of the bloom genealogy network"""
     
-    def __init__(self, width: int = 1400, height: int = 900, data_source='stdin'):
-        self.data_source = data_source
-        pygame.init()
+    def __init__(self, width: int = 1600, height: int = 900, data_source='stdin', save_frames=False, output_dir="./visual_output"):
         self.width = width
         self.height = height
-        self.screen = pygame.display.set_mode((width, height))
-        pygame.display.set_caption("DAWN Visualization #9: Bloom Genealogy Network")
+        self.data_source = data_source
+        self.save_frames = save_frames
+        self.output_dir = output_dir
+        self.frame_count = 0
+        self.time = 0.0
         
-        self.clock = pygame.time.Clock()
-        self.font_small = pygame.font.Font(None, 14)
-        self.font_medium = pygame.font.Font(None, 18)
-        self.font_large = pygame.font.Font(None, 24)
+        # Create output directory if saving
+        if self.save_frames:
+            os.makedirs(self.output_dir, exist_ok=True)
         
-        # Colors
-        self.bg_color = (10, 10, 15)
-        self.grid_color = (20, 20, 30)
-        self.text_color = (200, 200, 210)
-        self.edge_color = (80, 80, 100)
+        # Initialize pygame if available
+        if PYGAME_AVAILABLE:
+            pygame.init()
+            self.screen = pygame.display.set_mode((width, height))
+            pygame.display.set_caption("DAWN Bloom Genealogy Network")
+            self.clock = pygame.time.Clock()
+            
+            # Colors
+            self.bg_color = (10, 10, 15)
+            self.text_color = (200, 200, 210)
+            self.grid_color = (30, 30, 35)
+            self.edge_color = (120, 120, 130)
+            
+            # Fonts
+            self.font_large = pygame.font.Font(None, 24)
+            self.font_medium = pygame.font.Font(None, 18)
+            self.font_small = pygame.font.Font(None, 14)
         
-        # Network
-        self.network = BloomGenealogyNetwork(width - 300, height)
+        # Initialize network
+        self.network = BloomGenealogyNetwork(width, height, save_frames=save_frames, output_dir=output_dir)
         
-        # Visualization state
+        # UI state
         self.show_labels = True
         self.show_connections = True
-        self.highlight_families = True
+        self.highlight_families = False
         self.selected_bloom = None
         
-        # Animation state
-        self.time = 0
-        self.frame_count = 0
-        
-        # Data queue and background thread for stdin
+        # Data handling
         self.data_queue = queue.Queue()
-        self.stdin_thread = None
         self.stop_event = threading.Event()
-        if self.data_source == 'stdin':
-            self.stdin_thread = threading.Thread(target=self.read_stdin_data, daemon=True)
-            self.stdin_thread.start()
+        
+        # Create matplotlib figure for compatibility
+        self.fig = plt.figure(figsize=(16, 9))
+        self.ax = self.fig.add_subplot(111)
+        self.ax.set_facecolor('#0a0a0a')
         
         # Setup GIF saver
-        self.gif_saver = setup_gif_saver("memorybloom")
-
-        # Register cleanup function
-        atexit.register(self.cleanup)
+        self.gif_saver = setup_gif_saver("bloomgenealogynetwork")
+        
+        # Setup signal handlers for GIF saving
         signal.signal(signal.SIGINT, self.signal_handler)
         signal.signal(signal.SIGTERM, self.signal_handler)
+        atexit.register(self.cleanup)
 
-    def read_stdin_data(self):
-        """Background thread to read lines from stdin and put them in the queue"""
-        while not self.stop_event.is_set():
-            try:
-                line = sys.stdin.readline()
-                if line == '':
-                    print("[bloom_genealogy_network] Waiting for input...")
-                    time.sleep(0.1)
-                    continue
+    def read_json_data(self):
+        import sys
+        if getattr(self, 'data_source', None) == 'stdin':
+            for line in sys.stdin:
                 line = line.strip()
                 if not line:
                     continue
-                self.data_queue.put(line)
-            except Exception as e:
-                print(f"Error reading stdin: {e}", file=sys.stderr)
-                break
+                try:
+                    data = json.loads(line)
+                    self.data_queue.put(data)
+                except Exception as e:
+                    print(f"Error parsing JSON: {e}", file=sys.stderr)
+        else:
+            json_file = "/tmp/dawn_tick_data.json"
+            last_position = 0
+            while not self.stop_event.is_set():
+                try:
+                    if not os.path.exists(json_file):
+                        time.sleep(0.1)
+                        continue
+                    with open(json_file, 'r') as f:
+                        f.seek(last_position)
+                        lines = f.readlines()
+                        last_position = f.tell()
+                        for line in lines:
+                            line = line.strip()
+                            if not line:
+                                continue
+                            try:
+                                data = json.loads(line)
+                                self.data_queue.put(data)
+                            except json.JSONDecodeError as e:
+                                continue
+                    time.sleep(0.1)
+                except Exception as e:
+                    time.sleep(1.0)
 
     def detect_bloom_creation(self, json_data: dict) -> List[Dict]:
         """Analyze DAWN state to detect new memory bloom formation"""
@@ -863,59 +905,44 @@ class BloomVisualization:
         
         pygame.display.flip()
     
-    def run(self, data_source='demo'):
-        """Main visualization loop"""
-        running = True
-        last_time = time.time()
-        
-        # For demo mode
-        demo_timer = 0
-        
-        while running:
-            current_time = time.time()
-            dt = current_time - last_time
-            last_time = current_time
-            
-            # Handle events
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    running = False
-                elif event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_l:
-                        self.show_labels = not self.show_labels
-                    elif event.key == pygame.K_c:
-                        self.show_connections = not self.show_connections
-                    elif event.key == pygame.K_f:
-                        self.highlight_families = not self.highlight_families
-                elif event.type == pygame.MOUSEBUTTONDOWN:
-                    if event.button == 1:  # Left click
-                        self.handle_click(event.pos)
-            
-            # Process data
-            if data_source == 'demo':
-                demo_timer += dt
-                if demo_timer > 0.5:  # Generate demo data every 0.5 seconds
-                    demo_timer = 0
-                    demo_data = self.generate_demo_data()
-                    self.process_dawn_state(demo_data)
-            else:
-                # Read from stdin
-                if sys.stdin in select.select([sys.stdin], [], [], 0)[0]:
-                    line = sys.stdin.readline()
-                    if line:
-                        try:
-                            json_data = json.loads(line.strip())
-                            self.process_dawn_state(json_data)
-                        except json.JSONDecodeError:
-                            pass
-            
-            # Update and draw
-            self.update(dt)
-            self.draw()
-            self.clock.tick(60)  # 60 FPS
-        
-        pygame.quit()
-    
+    def run(self, interval=200):
+        """Start the visualization"""
+        if self.save_frames:
+            # Headless mode: process stdin and save frames
+            frame_count = 0
+            try:
+                for line in sys.stdin:
+                    line = line.strip()
+                    if not line:
+                        continue
+                    try:
+                        data = json.loads(line)
+                        self.data_queue.put(data)
+                        self.update_visualization(frame_count)
+                        frame_count += 1
+                        if frame_count % 50 == 0:
+                            print(f"Processed frame {frame_count}", file=sys.stderr)
+                        if frame_count >= 1000:
+                            break
+                    except json.JSONDecodeError:
+                        continue
+            except KeyboardInterrupt:
+                pass
+            print(f"Bloom Genealogy Network saved {frame_count} frames to: {self.output_dir}")
+        else:
+            # Interactive mode 
+            try:
+                self.animation = animation.FuncAnimation(
+                    self.fig,
+                    self.update_visualization,
+                    interval=interval,
+                    blit=False,
+                    cache_frame_data=False
+                )
+                plt.show()
+            except Exception as e:
+                print(f"Runtime error: {e}", file=sys.stderr)
+
     def generate_demo_data(self) -> dict:
         """Generate demo DAWN data for testing"""
         return {
@@ -934,8 +961,8 @@ class BloomVisualization:
     def save_animation_gif(self):
         """Save the animation as GIF"""
         try:
-            if hasattr(self, 'animation'):
-                gif_path = self.gif_saver.save_animation_as_gif(self.animation, fps=10, dpi=100)
+            if hasattr(self, 'animation') and self.animation is not None:
+                gif_path = self.gif_saver.save_animation_as_gif(self.animation, fps=5, dpi=100)
                 if gif_path:
                     print(f"\nAnimation GIF saved: {gif_path}", file=sys.stderr)
                 else:
@@ -955,6 +982,56 @@ class BloomVisualization:
         self.save_animation_gif()
         sys.exit(0)
 
+    def read_latest_json_data(self):
+        """Read the latest data from JSON file"""
+        json_file = "/tmp/dawn_tick_data.json"
+        if os.path.exists(json_file):
+            try:
+                with open(json_file, 'r') as f:
+                    lines = f.readlines()
+                    if lines:
+                        last_line = lines[-1].strip()
+                        if last_line:
+                            return json.loads(last_line)
+            except Exception as e:
+                print(f"Error reading JSON: {e}", file=sys.stderr)
+        return None
+
+    def update_visualization(self, frame):
+        """Animation update function"""
+        try:
+            data = None
+            if self.data_source == 'stdin':
+                if not self.data_queue.empty():
+                    data = self.data_queue.get_nowait()
+            else:
+                data = self.read_latest_json_data()
+            
+            if data is None:
+                data = self.generate_demo_data()
+            
+            # Process the data
+            self.process_dawn_state(data)
+            
+            # Update physics
+            self.network.update_physics(0.016)  # 60 FPS equivalent
+            
+            # Save frame if requested
+            if self.save_frames and self.frame_count % 10 == 0:  # Save every 10th frame
+                filename = f"{self.output_dir}/{self.__class__.__name__.lower()}_frame_{self.frame_count:06d}.png"
+                self.fig.savefig(filename, dpi=100, bbox_inches='tight',
+                               facecolor='#0a0a0a', edgecolor='none')
+            
+            self.frame_count += 1
+            
+            # Return empty list for matplotlib compatibility
+            return []
+            
+        except Exception as e:
+            print(f"Error in update_visualization: {e}", file=sys.stderr)
+            self.frame_count += 1
+            return []
+
 def main():
     parser = argparse.ArgumentParser(
         description='DAWN Visualization #9: Bloom Genealogy Network'
@@ -971,13 +1048,18 @@ def main():
                        help='Animation update interval in milliseconds')
     parser.add_argument('--buffer', type=int, default=100,
                        help='Buffer size for visualizations')
+    parser.add_argument('--save', action='store_true',
+                       help='Save visualization frames as PNG files')
+    parser.add_argument('--output-dir', default='./visual_output',
+                       help='Directory to save output frames')
+    
     args = parser.parse_args()
-    viz = BloomVisualization(args.width, args.height, data_source=args.source)
-    try:
-        viz.run(data_source=args.source)
-    except KeyboardInterrupt:
-        print("\nVisualization terminated by user")
-        sys.exit(0)
+    viz = BloomVisualization(args.width, args.height, data_source=args.source, 
+                           save_frames=args.save, output_dir=args.output_dir)
+
+    viz.run(interval=args.interval)
+    print("\nVisualization terminated by user")
+    sys.exit(0)
 
 if __name__ == "__main__":
     main()

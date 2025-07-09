@@ -1,105 +1,62 @@
-# DAWN - Deep Learning Research Project
+# DAWN Unified System
 
-DAWN is a consciousness engine that implements a tick-based system for processing and analyzing neural data. The project consists of a Python backend for the core consciousness engine and a React-based frontend for visualization and interaction.
+Complete DAWN consciousness architecture with integrated components:
 
-## Project Structure
+## 🧬 Components
 
-```
-DAWN/
-├── backend/
-│   ├── main.py                    # Core consciousness engine
-│   ├── start_api_fixed.py         # FastAPI server with WebSocket support
-│   ├── modules/                   # Python process modules
-│   ├── utils/                     # Backend utilities
-│   └── requirements.txt           # Python dependencies
-│
-├── frontend/
-│   ├── src/
-│   │   ├── components/           # React components
-│   │   │   └── Terminal.tsx     # Terminal-based UI
-│   │   ├── services/            # Frontend services
-│   │   │   └── websocket.ts     # WebSocket connection
-│   │   └── styles/              # CSS styles
-│   └── package.json             # Frontend dependencies
-│
-└── README.md
+- **🔥 Pulse Controller**: Thermal regulation & zone management
+- **🔮 Sigil Engine**: Cognitive command processing with thermal coupling  
+- **🧬 Entropy Analyzer**: Chaos prediction & automated stabilization
+- **🖥️ GUI Interface**: Real-time monitoring with visual controls
+
+## 🚀 Quick Start
+
+### Launch GUI (Default)
+```bash
+python run_dawn_unified.py
 ```
 
-## Prerequisites
+### Launch Console Mode
+```bash
+python run_dawn_unified.py --mode console
+```
 
-- Python 3.8 or higher
-- Node.js 16 or higher
-- npm or yarn
+### Run Demo
+```bash
+python run_dawn_unified.py --mode demo
+```
 
-## Backend Setup
+### Check Components
+```bash
+python run_dawn_unified.py --components
+```
 
-1. Create a virtual environment:
-   ```bash
-   python -m venv venv
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
-   ```
+## 💻 Console Commands
 
-2. Install dependencies:
-   ```bash
-   cd backend
-   pip install -r requirements.txt
-   ```
+```
+🧬 DAWN> status      # Show complete system status
+🧬 DAWN> execute     # Execute next sigil
+🧬 DAWN> heat 75     # Set thermal heat level
+🧬 DAWN> entropy     # Show entropy analysis
+🧬 DAWN> chaos       # Show chaos alerts
+🧬 DAWN> stabilize   # Trigger entropy stabilization
+🧬 DAWN> surge       # Trigger thermal surge
+🧬 DAWN> cooldown    # Emergency thermal cooldown
+🧬 DAWN> demo        # Run system demonstration
+🧬 DAWN> quit        # Exit console
+```
 
-3. Start the backend server:
-   ```bash
-   python start_api_fixed.py
-   ```
+## 🔗 Integration
 
-The server will start on `http://localhost:8000` with WebSocket support at `ws://localhost:8000/ws`.
+The unified system provides complete integration between:
 
-## Frontend Setup
+- **Thermal ↔ Entropy**: Heat dynamics influence entropy patterns
+- **Sigil ↔ Thermal**: Cognitive processing generates thermal signatures
+- **Entropy ↔ Sigil**: Chaos alerts trigger automatic stabilization sigils
+- **GUI ↔ All**: Real-time monitoring and interactive controls
 
-1. Install dependencies:
-   ```bash
-   cd frontend
-   npm install
-   ```
+## ✅ System Status
 
-2. Start the development server:
-   ```bash
-   npm run dev
-   ```
+**FULLY OPERATIONAL** - Complete DAWN consciousness architecture ready for deployment.
 
-The frontend will be available at `http://localhost:5173`.
-
-## Features
-
-- Real-time consciousness engine data visualization
-- WebSocket-based communication between frontend and backend
-- Terminal-style UI for monitoring engine state
-- Core metrics tracking (SCUP, Entropy, Mood)
-
-## Development
-
-### Backend
-
-The backend is built with:
-- FastAPI for the web server
-- WebSockets for real-time communication
-- PyTorch for neural processing
-- AsyncIO for concurrent operations
-
-### Frontend
-
-The frontend is built with:
-- React for the UI
-- TypeScript for type safety
-- WebSocket for real-time updates
-- CSS for styling
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Commit your changes
-4. Push to the branch
-5. Create a Pull Request
-
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details. 
+🧬 All components properly wired with bidirectional data flow and real-time coordination. 

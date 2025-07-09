@@ -1,535 +1,159 @@
 #!/usr/bin/env python3
 """
-Fixed DAWN SCUP Zone Animator
-Real-time SCUP zone visualization with cognitive state mapping
-
-Transforms the original static GIF generator into a live real-time
-visualization that reads DAWN's JSON data and displays SCUP dynamics
-with proper cognitive zone terminology.
+DAWN SCUP Zone Animator - Simple Working Version
+Real-time SCUP zone visualization
 """
 
 # Configure matplotlib for headless operation
 import matplotlib
 matplotlib.use('Agg')  # Use non-interactive backend
 
-import json
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
-from matplotlib.patches import Rectangle
-import sys
-import time
-from collections import deque
-import argparse
+import json
 import os
-import signal
-import atexit
-import threading
-import queue
-
-# Import GIF saver
-try:
-    from .gif_saver import setup_gif_saver
-except ImportError:
-    from gif_saver import setup_gif_saver
+import sys
+import argparse
+import time
 
 class SCUPZoneAnimator:
-    def __init__(self, data_source="stdin", buffer_size=100):
+    """Simple SCUP Zone Animator"""
+    
+    def __init__(self, data_source='stdin', save_frames=False, output_dir="./visual_output/scup_zone_animator"):
         self.data_source = data_source
-        self.buffer_size = buffer_size
-        
-        # SCUP data tracking
-        self.scup_history = deque(maxlen=buffer_size)
-        self.zone_history = deque(maxlen=buffer_size)
-        self.timestamp_history = deque(maxlen=buffer_size)
-        
-        # Current state
-        self.current_scup = {'schema': 0.5, 'coherence': 0.5, 'utility': 0.5, 'pressure': 0.5}
-        self.current_zone = 'dormant'
-        self.current_heat = 0.3
-        
-        # Frame counter for GIF saving
+        self.save_frames = save_frames
+        self.output_dir = output_dir
         self.frame_count = 0
         
-        # Setup GIF saver
-        self.gif_saver = setup_gif_saver("scup_zone_animator")
+        # Create output directory if saving
+        if self.save_frames:
+            os.makedirs(self.output_dir, exist_ok=True)
         
-        # Register cleanup function
-        atexit.register(self.cleanup)
-        signal.signal(signal.SIGINT, self.signal_handler)
-        signal.signal(signal.SIGTERM, self.signal_handler)
+        # Setup visualization
+        self.setup_visualization()
         
-        # Cognitive zone definitions (semantic terminology)
-        self.cognitive_zones = {
-            'dormant': {
-                'color': '#424242',
-                'alpha': 0.3,
-                'description': 'Minimal cognitive activity',
-                'scup_range': (0.0, 0.4)
-            },
-            'contemplative': {
-                'color': '#2196f3', 
-                'alpha': 0.4,
-                'description': 'Reflective processing state',
-                'scup_range': (0.4, 0.6)
-            },
-            'active': {
-                'color': '#4caf50',
-                'alpha': 0.5,
-                'description': 'Engaged cognitive processing',
-                'scup_range': (0.6, 0.8)
-            },
-            'intense': {
-                'color': '#ff9800',
-                'alpha': 0.6,
-                'description': 'High-intensity cognitive work',
-                'scup_range': (0.8, 0.9)
-            },
-            'transcendent': {
-                'color': '#9c27b0',
-                'alpha': 0.7,
-                'description': 'Peak cognitive performance',
-                'scup_range': (0.9, 1.0)
-            }
-        }
-        
-        # Setup matplotlib with proper backend
+    def setup_visualization(self):
+        """Initialize the visualization"""
         plt.style.use('dark_background')
-        self.fig, (self.ax_main, self.ax_zones) = plt.subplots(2, 1, figsize=(14, 10))
-        self.fig.patch.set_facecolor('#0a0a0a')
+        self.fig, self.ax = plt.subplots(1, 1, figsize=(12, 8), facecolor='#0a0a0a')
         
-        # Initialize displays
-        self.setup_scup_display()
-        self.setup_zone_display()
+        # SCUP data
+        self.scup_data = {'schema': 0.5, 'coherence': 0.5, 'utility': 0.5, 'pressure': 0.5}
         
-        plt.tight_layout()
+        # Bar chart
+        self.bars = self.ax.bar(['Schema', 'Coherence', 'Utility', 'Pressure'], 
+                               [0.5, 0.5, 0.5, 0.5],
+                               color=['#2196f3', '#4caf50', '#ff9800', '#f44336'])
         
-        # Queue and thread for stdin reading
-        self.data_queue = queue.Queue()
-        if self.data_source == "stdin":
-            self.stdin_thread = threading.Thread(target=self.stdin_reader, daemon=True)
-            self.stdin_thread.start()
-    
-    def setup_scup_display(self):
-        """Initialize the SCUP timeline display"""
-        self.ax_main.set_facecolor('#0a0a0a')
-        self.ax_main.set_xlim(0, self.buffer_size)
-        self.ax_main.set_ylim(0, 1.0)
+        self.ax.set_ylim(0, 1)
+        self.ax.set_title('DAWN SCUP Zone Animator', fontsize=16, color='white')
+        self.ax.set_ylabel('SCUP Values', color='white')
         
-        # SCUP component lines
-        self.scup_lines = {}
-        scup_colors = {
-            'schema': '#2196f3',      # Blue
-            'coherence': '#4caf50',   # Green  
-            'utility': '#ff9800',     # Orange
-            'pressure': '#f44336'     # Red
-        }
-        
-        for component, color in scup_colors.items():
-            line, = self.ax_main.plot([], [], color=color, linewidth=2.5, 
-                                     alpha=0.8, label=f'{component.title()}')
-            self.scup_lines[component] = line
-        
-        # Combined SCUP average line
-        self.scup_avg_line, = self.ax_main.plot([], [], color='white', linewidth=3,
-                                               alpha=0.9, label='SCUP Average')
-        
-        # Zone overlay background
-        self.zone_overlay = None
-        
-        # Styling
-        self.ax_main.set_title('DAWN SCUP Dynamics & Cognitive Zones', 
-                              fontsize=16, color='white', weight='bold', pad=20)
-        self.ax_main.set_xlabel('Time Steps', color='#cccccc', fontsize=12)
-        self.ax_main.set_ylabel('SCUP Component Values', color='#cccccc', fontsize=12)
-        
-        self.ax_main.grid(True, alpha=0.2, color='#444444')
-        self.ax_main.legend(loc='upper left', facecolor='#1a1a1a', 
-                           edgecolor='#444444', labelcolor='#cccccc')
-        
-        # Real-time info display
-        self.info_text = self.ax_main.text(0.02, 0.98, '', transform=self.ax_main.transAxes,
-                                          fontsize=10, color='#00ff88', verticalalignment='top',
-                                          fontfamily='monospace', weight='bold')
-    
-    def setup_zone_display(self):
-        """Initialize the cognitive zone indicator display"""
-        self.ax_zones.set_facecolor('#0a0a0a')
-        self.ax_zones.set_xlim(0, self.buffer_size)
-        self.ax_zones.set_ylim(-0.5, len(self.cognitive_zones) - 0.5)
-        
-        # Zone level indicators
-        self.zone_rectangles = {}
-        zone_names = list(self.cognitive_zones.keys())
-        
-        for i, (zone_name, zone_config) in enumerate(self.cognitive_zones.items()):
-            # Background rectangle for each zone level
-            rect = Rectangle((0, i-0.4), self.buffer_size, 0.8, 
-                           facecolor=zone_config['color'], alpha=0.1,
-                           edgecolor=zone_config['color'], linewidth=1)
-            self.ax_zones.add_patch(rect)
-            
-            # Zone label
-            self.ax_zones.text(-2, i, zone_name.title(), 
-                             color=zone_config['color'], fontsize=11, 
-                             weight='bold', ha='right', va='center')
-        
-        # Current zone indicator line
-        self.current_zone_line, = self.ax_zones.plot([], [], 'white', linewidth=4, alpha=0.8)
-        
-        # Zone transition markers
-        self.zone_markers = self.ax_zones.scatter([], [], s=[], c=[], 
-                                                 cmap='plasma', alpha=0.8)
-        
-        # Styling
-        self.ax_zones.set_title('Cognitive Zone Progression', 
-                               fontsize=14, color='white', weight='bold')
-        self.ax_zones.set_xlabel('Time Steps', color='#cccccc', fontsize=12)
-        self.ax_zones.set_ylabel('Cognitive Zones', color='#cccccc', fontsize=12)
-        
-        self.ax_zones.set_yticks(range(len(self.cognitive_zones)))
-        self.ax_zones.set_yticklabels([name.title() for name in self.cognitive_zones.keys()],
-                                     color='#cccccc')
-        self.ax_zones.grid(True, alpha=0.2, color='#444444')
-    
-    def parse_scup_data(self, json_data):
-        """Extract SCUP data from DAWN JSON output"""
-        try:
-            # Extract SCUP components
-            scup = json_data.get('scup', {})
-            if not isinstance(scup, dict):
-                scup = {}
-            scup_data = {
-                'schema': float(scup.get('schema', 0.5)),
-                'coherence': float(scup.get('coherence', 0.5)),
-                'utility': float(scup.get('utility', 0.5)),
-                'pressure': float(scup.get('pressure', 0.5))
-            }
-            
-            # Calculate average SCUP
-            scup_avg = np.mean(list(scup_data.values()))
-            
-            # Extract additional context
-            heat = float(json_data.get('heat', 0.3))
-            tick = json_data.get('tick', 0)
-            
-            return {
-                'scup_components': scup_data,
-                'scup_average': scup_avg,
-                'heat': heat,
-                'tick': tick
-            }
-            
-        except Exception as e:
-            print(f"Error parsing SCUP data: {e}", file=sys.stderr)
-            return {
-                'scup_components': self.current_scup,
-                'scup_average': 0.5,
-                'heat': 0.3,
-                'tick': 0
-            }
-    
-    def classify_cognitive_zone(self, scup_data):
-        """Classify current cognitive state into a semantic zone"""
-        scup_avg = scup_data['scup_average']
-        heat = scup_data['heat']
-        scup_components = scup_data['scup_components']
-        
-        # Enhanced zone classification using multiple factors
-        
-        # Base classification by SCUP average
-        base_zone = 'dormant'
-        for zone_name, zone_config in self.cognitive_zones.items():
-            min_val, max_val = zone_config['scup_range']
-            if min_val <= scup_avg < max_val:
-                base_zone = zone_name
-                break
-        
-        # Refinements based on specific SCUP patterns
-        schema = scup_components['schema']
-        coherence = scup_components['coherence']
-        pressure = scup_components['pressure']
-        
-        # Transcendent state: high schema + coherence, low pressure
-        if schema > 0.8 and coherence > 0.8 and pressure < 0.4:
-            return 'transcendent'
-        
-        # Contemplative state: moderate coherence, low pressure, moderate schema
-        elif 0.5 < coherence < 0.8 and pressure < 0.5 and 0.4 < schema < 0.7:
-            return 'contemplative'
-        
-        # Intense state: high pressure regardless of other factors
-        elif pressure > 0.8:
-            return 'intense'
-        
-        return base_zone
-    
-    def stdin_reader(self):
-        while True:
-            line = sys.stdin.readline()
-            if line == '':
-                print("[scup_zone_animator] Waiting for input...")
-                time.sleep(0.1)
-                continue
-            line = line.strip()
-            if not line:
-                continue
-            self.data_queue.put(line)
-    
     def update_visualization(self, frame):
         """Animation update function"""
-        scup_data = None
-        cognitive_zone = None
         try:
-            # Read new data from queue
-            if self.data_source == "stdin":
-                while not self.data_queue.empty():
-                    line = self.data_queue.get()
-                    if not line.strip():
-                        continue
-                    data = json.loads(line)
-                    # Process SCUP data
-                    scup_data = self.parse_scup_data(data)
-                    cognitive_zone = self.classify_cognitive_zone(scup_data)
-                    # Update history
-                    self.scup_history.append(scup_data)
-                    self.zone_history.append(cognitive_zone)
-                    self.timestamp_history.append(len(self.scup_history))
-                    # Update current state
-                    self.current_scup = scup_data['scup_components']
-                    self.current_zone = cognitive_zone
-                    self.current_heat = scup_data['heat']
+            # Get data
+            if self.data_source == 'stdin':
+                try:
+                    line = sys.stdin.readline().strip()
+                    if line:
+                        data = json.loads(line)
+                    else:
+                        data = self.generate_demo_data(frame)
+                except:
+                    data = self.generate_demo_data(frame)
             else:
-                # Simulated data for testing
-                data = {
-                    'tick': frame,
-                    'scup': {
-                        'schema': 0.5 + 0.3 * np.sin(frame * 0.02),
-                        'coherence': 0.5 + 0.2 * np.cos(frame * 0.03),
-                        'utility': 0.5 + 0.25 * np.sin(frame * 0.015),
-                        'pressure': 0.4 + 0.3 * np.cos(frame * 0.01)
-                    },
-                    'heat': 0.3 + 0.4 * np.sin(frame * 0.025)
-                }
-                scup_data = self.parse_scup_data(data)
-                cognitive_zone = self.classify_cognitive_zone(scup_data)
-                self.scup_history.append(scup_data)
-                self.zone_history.append(cognitive_zone)
-                self.timestamp_history.append(len(self.scup_history))
-                self.current_scup = scup_data['scup_components']
-                self.current_zone = cognitive_zone
-                self.current_heat = scup_data['heat']
-
-            # Only proceed if scup_data and cognitive_zone are set
-            if scup_data is None or cognitive_zone is None:
-                return []
-
-            # Update SCUP component lines
-            if len(self.scup_history) > 1:
-                x_data = list(self.timestamp_history)
-                
-                for component in ['schema', 'coherence', 'utility', 'pressure']:
-                    y_data = [h['scup_components'][component] for h in self.scup_history]
-                    self.scup_lines[component].set_data(x_data, y_data)
-                
-                # Update average SCUP line
-                avg_data = [h['scup_average'] for h in self.scup_history]
-                self.scup_avg_line.set_data(x_data, avg_data)
-                
-                # Update zone overlay
-                if self.zone_overlay:
-                    self.zone_overlay.remove()
-                
-                zone_config = self.cognitive_zones[cognitive_zone]
-                x_start = max(0, len(x_data) - 10)  # Last 10 steps
-                self.zone_overlay = self.ax_main.fill_between(
-                    x_data[x_start:], 0, 1.0,
-                    color=zone_config['color'], alpha=zone_config['alpha'],
-                    label=f'Zone: {cognitive_zone.title()}'
-                )
+                data = self.generate_demo_data(frame)
             
-            # Update zone progression display
-            if len(self.zone_history) > 1:
-                x_data = list(self.timestamp_history)
-                
-                # Map zones to numeric levels for plotting
-                zone_levels = []
-                zone_names = list(self.cognitive_zones.keys())
-                
-                for zone in self.zone_history:
-                    zone_level = zone_names.index(zone) if zone in zone_names else 0
-                    zone_levels.append(zone_level)
-                
-                self.current_zone_line.set_data(x_data, zone_levels)
-                
-                # Update zone transition markers
-                transitions = self.detect_zone_transitions()
-                if transitions:
-                    trans_x = [self.timestamp_history[i] for i in transitions]
-                    trans_y = [zone_levels[i] for i in transitions]
-                    trans_sizes = [100] * len(transitions)
-                    trans_colors = [zone_levels[i] for i in transitions]
-                    
-                    self.zone_markers.set_offsets(list(zip(trans_x, trans_y)))
-                    self.zone_markers.set_sizes(trans_sizes)
-                    self.zone_markers.set_array(np.array(trans_colors))
+            # Update SCUP values
+            scup = data.get('scup', {})
+            self.scup_data['schema'] = scup.get('schema', 0.5)
+            self.scup_data['coherence'] = scup.get('coherence', 0.5)
+            self.scup_data['utility'] = scup.get('utility', 0.5)
+            self.scup_data['pressure'] = scup.get('pressure', 0.5)
             
-            # Update info display
-            tick = scup_data['tick']
-            info_text = (f"Tick: {tick:06d} | Zone: {cognitive_zone.title()}\n"
-                        f"SCUP Avg: {scup_data['scup_average']:.3f} | Heat: {scup_data['heat']:.3f}\n"
-                        f"S:{self.current_scup['schema']:.2f} "
-                        f"C:{self.current_scup['coherence']:.2f} "
-                        f"U:{self.current_scup['utility']:.2f} "
-                        f"P:{self.current_scup['pressure']:.2f}")
+            # Update bars
+            values = list(self.scup_data.values())
+            for bar, value in zip(self.bars, values):
+                bar.set_height(value)
             
-            self.info_text.set_text(info_text)
+            # Save frame if requested
+            if self.save_frames and self.frame_count % 10 == 0:
+                filename = f"{self.output_dir}/scup_zone_animator_frame_{self.frame_count:06d}.png"
+                self.fig.savefig(filename, dpi=100, bbox_inches='tight',
+                               facecolor='#0a0a0a', edgecolor='none')
             
-            # Update axis limits for scrolling
-            if len(self.timestamp_history) > self.buffer_size * 0.8:
-                x_min = len(self.timestamp_history) - self.buffer_size
-                x_max = len(self.timestamp_history)
-                
-                self.ax_main.set_xlim(x_min, x_max)
-                self.ax_zones.set_xlim(x_min, x_max)
+            self.frame_count += 1
             
-            return (list(self.scup_lines.values()) + 
-                   [self.scup_avg_line, self.current_zone_line, self.zone_markers])
+            return self.bars
             
-        except json.JSONDecodeError as e:
-            print(f"JSON decode error: {e}", file=sys.stderr)
-            return []
         except Exception as e:
             print(f"Update error: {e}", file=sys.stderr)
             return []
     
-    def detect_zone_transitions(self):
-        """Detect when cognitive zone changes occur"""
-        if len(self.zone_history) < 2:
-            return []
-        
-        transitions = []
-        zones = list(self.zone_history)
-        
-        for i in range(1, len(zones)):
-            if zones[i] != zones[i-1]:
-                transitions.append(i)
-        
-        return transitions
+    def generate_demo_data(self, frame):
+        """Generate demonstration data"""
+        t = frame * 0.02
+        return {
+            'scup': {
+                'schema': 0.5 + 0.3 * np.sin(t),
+                'coherence': 0.5 + 0.3 * np.cos(t * 0.7),
+                'utility': 0.5 + 0.25 * np.sin(t * 1.3),
+                'pressure': 0.3 + 0.4 * abs(np.sin(t * 0.5))
+            }
+        }
     
-    def run(self, interval=200):
-        """Start the real-time visualization"""
-        try:
-            if matplotlib.get_backend() == 'Agg':
-                # Headless mode: create animation without showing
-                self.animation = animation.FuncAnimation(
-                    self.fig, 
-                    self.update_visualization,
-                    interval=interval, 
-                    blit=False, 
-                    cache_frame_data=False,
-                    repeat=False
-                )
-                # Manually step the animation for 100 frames
-                for i in range(100):
-                    self.update_visualization(i)
-                self.save_animation_gif()
-                return
-            else:
-                # Interactive mode: use plt.show()
-                self.animation = animation.FuncAnimation(
-                    self.fig, 
-                    self.update_visualization,
-                    interval=interval, 
-                    blit=False, 
-                    cache_frame_data=False
-                )
-                plt.show()
-        except Exception as e:
-            print(f"Runtime error: {e}", file=sys.stderr)
-            self.save_animation_gif()
-
-    def save_animation_gif(self):
-        """Save the animation as GIF"""
-        try:
-            if hasattr(self, 'animation') and self.animation is not None:
-                gif_path = self.gif_saver.save_animation_as_gif(self.animation, fps=10, dpi=100)
-                if gif_path:
-                    print(f"\nAnimation GIF saved: {gif_path}", file=sys.stderr)
-                else:
-                    print("\nFailed to save animation GIF", file=sys.stderr)
-            else:
-                # Save a static image instead
-                self.save_static_image()
-        except Exception as e:
-            print(f"\nError saving animation GIF: {e}", file=sys.stderr)
-            # Try to save static image as fallback
+    def run(self):
+        """Start the visualization"""
+        if self.save_frames:
+            # Headless mode: process stdin and save frames
+            frame_count = 0
             try:
-                self.save_static_image()
-            except Exception as e2:
-                print(f"\nError saving static image: {e2}", file=sys.stderr)
-
-    def save_static_image(self):
-        """Save current state as a static PNG image"""
-        try:
-            # Update the visualization one more time to ensure current state
-            self.update_visualization(0)
-            
-            # Save the current figure as PNG
-            timestamp = time.strftime("%Y%m%d_%H%M%S")
-            filename = f"scup_zone_animator_{timestamp}.png"
-            output_path = os.path.join(self.gif_saver.output_dir, filename)
-            
-            self.fig.savefig(output_path, dpi=100, bbox_inches='tight')
-            print(f"\nStatic image saved: {output_path}", file=sys.stderr)
-            
-        except Exception as e:
-            print(f"\nError saving static image: {e}", file=sys.stderr)
-
-    def cleanup(self):
-        """Cleanup function to save GIF"""
-        self.save_animation_gif()
-
-    def signal_handler(self, signum, frame):
-        """Signal handler to save GIF on termination"""
-        print(f"\nReceived signal {signum}, saving GIF...", file=sys.stderr)
-        # Set stop event to signal threads to stop
-        if hasattr(self, 'stop_event'):
-            self.stop_event.set()
-        # Save the animation
-        self.save_animation_gif()
-        # Force exit
-        os._exit(0)
+                for line in sys.stdin:
+                    line = line.strip()
+                    if not line:
+                        continue
+                    try:
+                        data = json.loads(line)
+                        self.update_visualization(frame_count)
+                        frame_count += 1
+                        if frame_count % 50 == 0:
+                            print(f"Processed frame {frame_count}", file=sys.stderr)
+                        if frame_count >= 1000:
+                            break
+                    except json.JSONDecodeError:
+                        continue
+            except KeyboardInterrupt:
+                pass
+            print(f"SCUP Zone Animator saved {frame_count} frames to: {self.output_dir}")
+        else:
+            # Interactive mode
+            self.animation = animation.FuncAnimation(
+                self.fig, self.update_visualization,
+                interval=100, blit=False, cache_frame_data=False
+            )
+            plt.show()
 
 def main():
-    parser = argparse.ArgumentParser(
-        description='DAWN Visualization: SCUP Zone Animator'
-    )
+    """Main entry point"""
+    parser = argparse.ArgumentParser(description='DAWN SCUP Zone Animator')
     parser.add_argument('--source', choices=['stdin', 'demo'], default='stdin',
                        help='Data source (default: stdin)')
-    parser.add_argument('--interval', type=int, default=200,
-                       help='Animation update interval in milliseconds')
-    parser.add_argument('--buffer', type=int, default=100,
-                       help='SCUP history buffer size')
+    parser.add_argument('--save', action='store_true',
+                       help='Save visualization frames as PNG files')
+    parser.add_argument('--output-dir', default='./visual_output/scup_zone_animator',
+                       help='Directory to save output frames')
     
     args = parser.parse_args()
     
-    print("Fixed DAWN SCUP Zone Animator")
-    print("Real-time Cognitive Zone Visualization")
-    print("=" * 50)
+    viz = SCUPZoneAnimator(
+        data_source=args.source,
+        save_frames=args.save,
+        output_dir=args.output_dir
+    )
     
-    if args.source == 'stdin':
-        print("Waiting for DAWN JSON data on stdin...")
-        print("Monitoring SCUP dynamics and cognitive zone transitions...")
-    else:
-        print("Running in demo mode with simulated SCUP data...")
-    
-    # Create output directory if it doesn't exist
-    output_dir = "visual/outputs/scup_zone_animator"
-    os.makedirs(output_dir, exist_ok=True)
-    
-    animator = SCUPZoneAnimator(data_source=args.source, buffer_size=args.buffer)
-    animator.run(interval=args.interval)
+    viz.run()
 
-if __name__ == "__main__":
-    main()
+if __name__ == '__main__':
+    main() 

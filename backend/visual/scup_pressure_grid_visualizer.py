@@ -4,14 +4,13 @@ DAWN Backend SCUP Pressure Grid Visualizer
 Integrated version for backend tick engine with multi-process support
 """
 
+import logging
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 from matplotlib.colors import LinearSegmentedColormap
-import asyncio
-import logging
 from collections import deque
-from typing import Dict, Any, Optional, List
+from typing import Dict, Any, List
 from datetime import datetime
 import time
 import signal
@@ -22,7 +21,14 @@ import sys
 try:
     from .gif_saver import setup_gif_saver
 except ImportError:
-    from gif_saver import setup_gif_saver
+    try:
+        from gif_saver import setup_gif_saver
+    except ImportError:
+        def setup_gif_saver(name):
+            class DummyGifSaver:
+                def save_animation_as_gif(self, animation, fps=5, dpi=100):
+                    return None
+            return DummyGifSaver()
 
 logger = logging.getLogger(__name__)
 
@@ -111,14 +117,13 @@ class SCUPPressureGridVisualizer:
         """Save the animation as GIF"""
         try:
             if hasattr(self, 'ani'):
-                gif_path = self.gif_saver.save_animation_as_gif(self.ani, fps=10, dpi=100)
+                gif_path = self.gif_saver.save_animation_as_gif(self.ani, fps=5, dpi=100)
                 if gif_path:
                     print(f"\nAnimation GIF saved: {gif_path}", file=sys.stderr)
                 else:
                     print("\nFailed to save animation GIF", file=sys.stderr)
             else:
                 print("\nNo animation to save", file=sys.stderr)
-        except Exception as e:
             print(f"\nError saving animation GIF: {e}", file=sys.stderr)
 
     def cleanup(self):
@@ -293,39 +298,37 @@ class SCUPPressureGridVisualizer:
                 decay = self.wave_decay ** age
                 radius = age * 2  # Wave speed
                 
+                # Apply wave to nearby cells
                 for i in range(4):
                     for j in range(4):
-                        dist = np.sqrt((i - row)**2 + (j - col)**2)
-                        if dist <= radius:
-                            wave_intensity = intensity * decay * np.exp(-dist/2)
-                            wave_matrix[i, j] += wave_intensity
-                
+                        distance = np.sqrt((i - row)**2 + (j - col)**2)
+                        if distance <= radius:
+                            wave_intensity = intensity * decay * (1 - distance/radius)
+                            wave_matrix[i, j] = max(wave_matrix[i, j], wave_intensity)
                 active_waves.append((row, col, intensity, start_time))
         
         self.wave_sources[process_id] = active_waves
-        return np.clip(wave_matrix, 0, 1)
+        return wave_matrix
     
     def detect_critical_states(self, process_id: int):
-        """Detect cells in critical pressure states for a specific process"""
+        """Detect critical pressure states for a specific process"""
         self.critical_cells[process_id].clear()
         
         for i in range(4):
             for j in range(4):
                 if self.pressure_matrix[process_id][i, j] > self.critical_threshold:
                     self.critical_cells[process_id].add((i, j))
-                    # Trigger pressure wave from critical cell
-                    if np.random.random() < 0.3:  # Probabilistic wave generation
-                        self.wave_sources[process_id].append((i, j, self.pressure_matrix[process_id][i, j], 
-                                                            time.time()))
+                    
+                    # Trigger wave if new critical state
+                    if len(self.wave_sources[process_id]) < 3:  # Limit concurrent waves
+                        self.wave_sources[process_id].append((i, j, 0.8, time.time()))
     
     def update_visualization(self, process_data: Dict[str, Any], process_id: int = 0, tick: int = 0) -> None:
-        """Update the visualization with new process data"""
+        """Update visualization for a specific process"""
         try:
             # Extract SCUP data
             scup_data = process_data.get('scup', {})
-            
-            # Extract SCUP values
-            processed_data = {
+            scup_values = {
                 'schema': scup_data.get('schema', 0.5),
                 'coherence': scup_data.get('coherence', 0.5),
                 'utility': scup_data.get('utility', 0.5),
@@ -333,135 +336,87 @@ class SCUPPressureGridVisualizer:
             }
             
             # Calculate pressure matrix
-            self.calculate_pressure_matrix(processed_data, process_id)
+            self.calculate_pressure_matrix(scup_values, process_id)
             
             # Update heatmap
-            self.ims[process_id].set_array(self.pressure_matrix[process_id])
+            if process_id < len(self.ims):
+                self.ims[process_id].set_array(self.pressure_matrix[process_id])
+                
+                # Update cell colors based on intensity
+                for i in range(4):
+                    for j in range(4):
+                        intensity = self.pressure_matrix[process_id][i, j]
+                        text = self.cell_texts[process_id][i][j]
+                        
+                        # Adjust text color for readability
+                        if intensity > 0.6:
+                            text.set_color('black')
+                        else:
+                            text.set_color('white')
+                        
+                        # Highlight critical cells
+                        if (i, j) in self.critical_cells[process_id]:
+                            text.set_fontweight('bold')
+                            text.set_fontsize(10 if i == j else 8)
+                        else:
+                            text.set_fontweight('normal')
+                            text.set_fontsize(8 if i == j else 6)
             
-            # Update cell colors based on intensity
-            for i in range(4):
-                for j in range(4):
-                    intensity = self.pressure_matrix[process_id][i, j]
-                    text = self.cell_texts[process_id][i][j]
-                    
-                    # Adjust text color for readability
-                    if intensity > 0.6:
-                        text.set_color('black')
-                    else:
-                        text.set_color('white')
-                    
-                    # Highlight critical cells
-                    if (i, j) in self.critical_cells[process_id]:
-                        text.set_fontweight('bold')
-                        text.set_fontsize(10 if process_id == 0 else 8)
-                    else:
-                        text.set_fontweight('normal')
-                        text.set_fontsize(8 if process_id == 0 else 6)
+            self.current_tick = tick
             
-            # Update metadata
-            if self.time_stamps[process_id]:
-                fps = len(self.time_stamps[process_id]) / max(1, self.time_stamps[process_id][-1] - self.time_stamps[process_id][0])
-                self.axes[process_id].metadata_text.set_text(
-                    f'Model: {self.interaction_model_name} | FPS: {fps:.1f}'
-                )
-            
-            # Update critical state indicator
-            if self.critical_cells[process_id]:
-                self.axes[process_id].critical_text.set_text('⚠ CRITICAL ⚠')
-                self.axes[process_id].critical_text.set_alpha(0.8)
-            else:
-                self.axes[process_id].critical_text.set_alpha(0)
-            
-        except Exception as e:
-            logger.error(f"Update error for process {process_id}: {e}")
+            logger.error(f"Error updating visualization for process {process_id}: {e}")
     
     def update_all_processes(self, all_process_data: Dict[int, Dict[str, Any]], tick: int) -> None:
         """Update visualization for all processes"""
-        for process_id in range(self.max_processes):
-            if process_id in all_process_data:
-                self.update_visualization(all_process_data[process_id], process_id, tick)
-            else:
-                # Use default data for inactive processes
-                default_data = {
-                    'tick': tick,
-                    'scup': {
-                        'schema': 0.3 + 0.1 * np.sin(tick * 0.01 + process_id * 0.5),
-                        'coherence': 0.4 + 0.1 * np.cos(tick * 0.015 + process_id * 0.3),
-                        'utility': 0.5 + 0.1 * np.sin(tick * 0.02 + process_id * 0.7),
-                        'pressure': 0.2 + 0.1 * np.cos(tick * 0.025 + process_id * 0.4)
-                    }
-                }
-                self.update_visualization(default_data, process_id, tick)
-        
-        # Redraw
-        self.fig.canvas.draw_idle()
-        self.fig.canvas.flush_events()
+        for process_id, process_data in all_process_data.items():
+            if process_id < self.max_processes:
+                self.update_visualization(process_data, process_id, tick)
     
     def get_visualization_data(self) -> Dict[str, Any]:
-        """Get current visualization data for API/WebSocket transmission"""
+        """Get current visualization data"""
         return {
-            'scup_pressure_data': {
-                process_id: {
-                    'pressure_matrix': self.pressure_matrix[process_id].tolist(),
-                    'critical_cells': list(self.critical_cells[process_id]),
-                    'scup_history': {
-                        dim: list(self.scup_history[process_id][dim]) 
-                        for dim in self.dimensions
-                    },
-                    'wave_sources_count': len(self.wave_sources[process_id])
-                } for process_id in range(self.max_processes)
-            },
+            'pressure_matrices': {pid: matrix.tolist() for pid, matrix in self.pressure_matrix.items()},
+            'critical_cells': {pid: list(cells) for pid, cells in self.critical_cells.items()},
             'current_tick': self.current_tick,
             'interaction_model': self.interaction_model_name,
-            'timestamp': datetime.now().isoformat()
+            'smoothing': self.smoothing
         }
     
     def start_animation(self) -> None:
-        """Start the animation loop"""
+        """Start the animation"""
         if self.ani is None:
-            self.ani = animation.FuncAnimation(
-                self.fig, 
-                lambda frame: self._animation_frame(frame), 
-                interval=50,  # 20 FPS
-                blit=False, 
+            self.ani = animation.FuncAnimation(frames=1000, 
+                self.fig, self._animation_frame,
+                interval=100,  # 10 FPS
+                blit=False,
                 cache_frame_data=False
             )
-            logger.info("SCUP pressure grid animation started")
     
     def _animation_frame(self, frame) -> None:
-        """Animation frame update (called by matplotlib)"""
-        # This will be called by matplotlib animation
-        # The actual updates are handled by update_visualization()
+        """Animation frame update function"""
+        # This can be overridden for custom animation logic
         pass
     
     def stop_animation(self) -> None:
         """Stop the animation"""
-        if self.ani is not None:
+        if self.ani:
             self.ani.event_source.stop()
             self.ani = None
-            logger.info("SCUP pressure grid animation stopped")
     
     def show(self) -> None:
-        """Show the visualization window"""
+        """Show the visualization"""
         plt.show()
     
     def close(self) -> None:
         """Close the visualization"""
-        if self.fig:
-            plt.close(self.fig)
+        self.stop_animation()
+        plt.close(self.fig)
         self._active = False
-        logger.info("SCUP pressure grid visualizer closed")
     
     async def shutdown(self) -> None:
-        """Async shutdown"""
+        """Async shutdown method"""
         self.close()
-
-# Global instance for backend integration
-_scup_pressure_grid = None
+        logger.info("SCUPPressureGridVisualizer shutdown complete")
 
 def get_scup_pressure_grid() -> SCUPPressureGridVisualizer:
-    """Get or create the global SCUP pressure grid instance"""
-    global _scup_pressure_grid
-    if _scup_pressure_grid is None:
-        _scup_pressure_grid = SCUPPressureGridVisualizer()
-    return _scup_pressure_grid
+    return SCUPPressureGridVisualizer()

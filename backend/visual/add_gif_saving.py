@@ -8,8 +8,21 @@ import re
 import glob
 from pathlib import Path
 
+def ensure_import(content, import_line):
+    """Ensure a specific import is present in the file."""
+    if import_line not in content:
+        # Insert after last import
+        lines = content.split('\n')
+        last_import = 0
+        for i, line in enumerate(lines):
+            if line.strip().startswith('import ') or line.strip().startswith('from '):
+                last_import = i
+        lines.insert(last_import + 1, import_line)
+        return '\n'.join(lines)
+    return content
+
 def add_gif_imports(content):
-    """Add GIF saver imports to the top of the file"""
+    """Add GIF saver imports to the top of the file, and ensure sys is imported."""
     imports = [
         "import signal",
         "import atexit",
@@ -20,52 +33,52 @@ def add_gif_imports(content):
         "except ImportError:",
         "    from gif_saver import setup_gif_saver"
     ]
-    
     # Find the last import statement
     lines = content.split('\n')
     last_import = 0
-    
     for i, line in enumerate(lines):
         if line.strip().startswith('import ') or line.strip().startswith('from '):
             last_import = i
-    
-    # Insert new imports after the last import
     lines.insert(last_import + 1, '\n'.join(imports))
-    return '\n'.join(lines)
+    content = '\n'.join(lines)
+    # Ensure sys is imported
+    content = ensure_import(content, 'import sys')
+    return content
 
 def add_gif_saver_to_class(content, class_name):
-    """Add GIF saver initialization to the class __init__ method"""
-    # Find the class definition
+    """Add GIF saver initialization to the class __init__ method, if not present."""
     class_pattern = rf'class {class_name}:'
     class_match = re.search(class_pattern, content)
-    
     if not class_match:
+        print(f"  [WARN] No class '{class_name}' found.")
         return content
-    
     # Find the __init__ method
     init_pattern = r'def __init__\(self[^)]*\):'
     init_match = re.search(init_pattern, content)
-    
     if not init_match:
+        print(f"  [WARN] No __init__ found in class '{class_name}'.")
         return content
-    
+    # Check if gif_saver is already present
+    if 'self.gif_saver' in content:
+        return content
     # Find the end of __init__ method (indentation level)
     init_start = init_match.start()
     lines = content.split('\n')
-    
-    # Find the end of __init__ method
-    init_end = init_start
-    init_indent = None
-    
-    for i, line in enumerate(lines[init_start:], init_start):
-        if init_indent is None and line.strip():
-            init_indent = len(line) - len(line.lstrip())
-        elif init_indent is not None:
-            if line.strip() and len(line) - len(line.lstrip()) <= init_indent:
-                init_end = i
-                break
-    
-    # Add GIF saver initialization
+    # Find the line number of __init__
+    init_line = None
+    for i, line in enumerate(lines):
+        if 'def __init__(' in line:
+            init_line = i
+            break
+    if init_line is None:
+        return content
+    # Find the end of __init__ by indentation
+    init_indent = len(lines[init_line]) - len(lines[init_line].lstrip())
+    insert_line = init_line + 1
+    for i in range(init_line + 1, len(lines)):
+        if lines[i].strip() and (len(lines[i]) - len(lines[i].lstrip())) <= init_indent:
+            insert_line = i
+            break
     gif_init = [
         "",
         "        # Setup GIF saver",
@@ -76,28 +89,28 @@ def add_gif_saver_to_class(content, class_name):
         "        signal.signal(signal.SIGINT, self.signal_handler)",
         "        signal.signal(signal.SIGTERM, self.signal_handler)"
     ]
-    
-    # Insert before the end of __init__
-    lines.insert(init_end, '\n'.join(gif_init))
+    lines.insert(insert_line, '\n'.join(gif_init))
     return '\n'.join(lines)
 
 def add_gif_methods(content, class_name):
-    """Add GIF saving methods to the class"""
+    """Add GIF saving methods to the class if not present."""
+    if 'def save_animation_gif' in content:
+        return content
     methods = [
         "",
         "    def save_animation_gif(self):",
         "        \"\"\"Save the animation as GIF\"\"\"",
         "        try:",
         "            if hasattr(self, 'animation'):",
-        "                gif_path = self.gif_saver.save_animation_as_gif(self.animation, fps=10, dpi=100)",
+        "                gif_path = self.gif_saver.save_animation_as_gif(self.animation, fps=5, dpi=100)",
         "                if gif_path:",
-        "                    print(f\"\\nAnimation GIF saved: {gif_path}\", file=sys.stderr)",
+        "                    print(f'\\nAnimation GIF saved: {gif_path}', file=sys.stderr)",
         "                else:",
-        "                    print(\"\\nFailed to save animation GIF\", file=sys.stderr)",
+        "                    print('\\nFailed to save animation GIF', file=sys.stderr)",
         "            else:",
-        "                print(\"\\nNo animation to save\", file=sys.stderr)",
+        "                print('\\nNo animation to save', file=sys.stderr)",
         "        except Exception as e:",
-        "            print(f\"\\nError saving animation GIF: {e}\", file=sys.stderr)",
+        "            print(f'\\nError saving animation GIF: {e}', file=sys.stderr)",
         "",
         "    def cleanup(self):",
         "        \"\"\"Cleanup function to save GIF\"\"\"",
@@ -105,23 +118,28 @@ def add_gif_methods(content, class_name):
         "",
         "    def signal_handler(self, signum, frame):",
         "        \"\"\"Signal handler to save GIF on termination\"\"\"",
-        "        print(f\"\\nReceived signal {signum}, saving GIF...\", file=sys.stderr)",
+        "        print(f'\\nReceived signal {signum}, saving GIF...', file=sys.stderr)",
         "        self.save_animation_gif()",
         "        sys.exit(0)"
     ]
-    
     # Add methods at the end of the class
     lines = content.split('\n')
-    class_end = len(lines)
-    
-    # Find the end of the class
+    # Find the last line of the class by indentation
+    class_start = None
     for i, line in enumerate(lines):
-        if line.strip() and not line.startswith(' ') and not line.startswith('\t'):
-            if i > 0 and lines[i-1].strip() == '':
-                class_end = i - 1
-                break
-    
-    lines.insert(class_end, '\n'.join(methods))
+        if f'class {class_name}:' in line:
+            class_start = i
+            break
+    if class_start is None:
+        return content
+    # Find where the next class or function starts at the same or less indentation
+    class_indent = len(lines[class_start]) - len(lines[class_start].lstrip())
+    insert_line = len(lines)
+    for i in range(class_start + 1, len(lines)):
+        if lines[i].strip() and not lines[i].startswith(' ') and not lines[i].startswith('\t'):
+            insert_line = i
+            break
+    lines.insert(insert_line, '\n'.join(methods))
     return '\n'.join(lines)
 
 def modify_run_method(content):
@@ -137,14 +155,12 @@ def modify_run_method(content):
     old_run = r'def run\(self[^)]*\):.*?plt\.show\(\)'
     new_run = '''def run(self, interval=200):
         """Start the real-time visualization"""
-        try:
-            self.animation = animation.FuncAnimation(self.fig, self.update_visualization,
+
+            self.animation = animation.FuncAnimation(frames=1000, self.fig, self.update_visualization,
                                                    interval=interval, blit=False, cache_frame_data=False)
             plt.show()
-        except KeyboardInterrupt:
             print("\\nVisualization terminated by user.")
             self.save_animation_gif()
-        except Exception as e:
             print(f"Runtime error: {e}", file=sys.stderr)
             self.save_animation_gif()'''
     
@@ -154,35 +170,26 @@ def modify_run_method(content):
 def process_script(file_path):
     """Process a single visualization script"""
     print(f"Processing: {file_path}")
-    
     with open(file_path, 'r') as f:
         content = f.read()
-    
     # Get the main class name
     class_match = re.search(r'class (\w+):', content)
     if not class_match:
-        print(f"  No class found in {file_path}")
+        print(f"  [WARN] No class found in {file_path}")
         return
-    
     class_name = class_match.group(1)
     print(f"  Found class: {class_name}")
-    
     # Add imports
     content = add_gif_imports(content)
-    
     # Add GIF saver to class
     content = add_gif_saver_to_class(content, class_name)
-    
     # Add GIF methods
     content = add_gif_methods(content, class_name)
-    
-    # Modify run method
-    content = modify_run_method(content)
-    
+    # Modify run method (optional, not robust for all cases)
+    # content = modify_run_method(content)
     # Write back to file
     with open(file_path, 'w') as f:
         f.write(content)
-    
     print(f"  Updated: {file_path}")
 
 def main():
@@ -202,9 +209,8 @@ def main():
     
     print("\nProcessing scripts...")
     for script_file in script_files:
-        try:
+
             process_script(script_file)
-        except Exception as e:
             print(f"Error processing {script_file}: {e}")
     
     print("\nDone! All scripts have been updated with GIF saving functionality.")

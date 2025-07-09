@@ -13,6 +13,7 @@ import matplotlib
 matplotlib.use('Agg')  # Use non-interactive backend
 
 import json
+import os
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
@@ -33,9 +34,16 @@ except ImportError:
     from gif_saver import setup_gif_saver
 
 class MoodStateVisualizer:
-    def __init__(self, data_source="stdin", buffer_size=100):
+    def __init__(self, data_source="stdin", buffer_size=100, save_frames=False, output_dir="./visual_output/dawn_mood_state"):
         self.data_source = data_source
         self.buffer_size = buffer_size
+        self.save_frames = save_frames
+        self.output_dir = output_dir
+        self.frame_count = 0
+        
+        # Create output directory if saving
+        if self.save_frames:
+            os.makedirs(self.output_dir, exist_ok=True)
         
         # Mood state buffer for temporal smoothing
         self.mood_history = deque(maxlen=buffer_size)
@@ -118,7 +126,7 @@ class MoodStateVisualizer:
         """Save the animation as GIF"""
         try:
             if hasattr(self, 'animation'):
-                gif_path = self.gif_saver.save_animation_as_gif(self.animation, fps=10, dpi=100)
+                gif_path = self.gif_saver.save_animation_as_gif(self.animation, fps=5, dpi=100)
                 if gif_path:
                     print(f"\nAnimation GIF saved: {gif_path}", file=sys.stderr)
                 else:
@@ -142,32 +150,59 @@ class MoodStateVisualizer:
         """Extract and process mood state from DAWN JSON output"""
         try:
             mood_raw = json_data.get('mood', {})
+            thermal = json_data.get('thermal', {})
+            heat = thermal.get('heat', 0.0)
+            entropy = json_data.get('entropy', 0.5)
+            scup = json_data.get('scup', {})
             
-            # Map mood components to emotional landscape grid
-            # This is a simplified mapping - in reality, DAWN's mood system
-            # would provide more detailed emotional vectors
+            # Extract mood data
+            base_intensity = mood_raw.get('base_level', 0.3)
             
-            base_intensity = mood_raw.get('base_level', 0.1)
-            emotional_vector = mood_raw.get('vector', [0.5, 0.5, 0.5, 0.5])
+            # Generate realistic mood matrix based on actual DAWN data
+            mood_matrix = np.zeros((8, 8))
             
-            # Generate mood matrix based on emotional dimensions
-            mood_matrix = np.random.random((8, 8)) * 0.1  # Base noise
+            # Map heat to emotional intensity (transcendent/ecstatic regions)
+            if heat > 0.5:
+                mood_matrix[0:2, :] = heat * 0.8
             
-            # Apply emotional vector influences
-            if len(emotional_vector) >= 4:
-                # Map emotional dimensions to grid regions
-                mood_matrix[0:2, :] += emotional_vector[0] * 0.8  # Transcendent/Ecstatic
-                mood_matrix[2:4, :] += emotional_vector[1] * 0.6  # Serene/Curious  
-                mood_matrix[4:6, :] += emotional_vector[2] * 0.7  # Focused/Contemplative
-                mood_matrix[6:8, :] += emotional_vector[3] * 0.5  # Uncertain/Turbulent
-                
-            # Add temporal patterns
-            tick = json_data.get('tick', 0)
-            wave_pattern = np.sin(tick * 0.1) * 0.2
-            mood_matrix += wave_pattern
+            # Map entropy to curiosity/exploration
+            mood_matrix[2:4, :] = entropy * 0.6
+            
+            # Map SCUP coherence to focus/contemplation
+            coherence = scup.get('coherence', 0.5)
+            mood_matrix[4:6, :] = coherence * 0.7
+            
+            # Map SCUP pressure to uncertainty/turbulence
+            pressure = scup.get('pressure', 0.5)
+            mood_matrix[6:8, :] = pressure * 0.6
+            
+            # Add cross-dimensional influences
+            schema = scup.get('schema', 0.5)
+            utility = scup.get('utility', 0.5)
+            
+            # Create patterns across the grid
+            for i in range(8):
+                for j in range(8):
+                    # Add some variance based on position
+                    position_factor = (i + j) / 14.0
+                    mood_matrix[i, j] += schema * position_factor * 0.3
+                    mood_matrix[i, j] += utility * (1 - position_factor) * 0.3
+            
+            # Add temporal wave patterns
+            tick = json_data.get('tick_count', 0)
+            if tick > 0:
+                wave_x = np.sin(tick * 0.01) * 0.2
+                wave_y = np.cos(tick * 0.007) * 0.2
+                for i in range(8):
+                    for j in range(8):
+                        mood_matrix[i, j] += wave_x * np.sin(i * 0.5) + wave_y * np.cos(j * 0.5)
             
             # Apply base intensity scaling
-            mood_matrix *= (base_intensity + 0.2)
+            mood_matrix = mood_matrix * (base_intensity + 0.3)
+            
+            # Add some controlled randomness for dynamic feel
+            noise = np.random.random((8, 8)) * 0.1
+            mood_matrix += noise
             
             # Clamp values
             mood_matrix = np.clip(mood_matrix, 0, 1)
@@ -183,39 +218,52 @@ class MoodStateVisualizer:
         self.mood_smoothed = alpha * new_mood + (1 - alpha) * self.mood_smoothed
         return self.mood_smoothed
     
+    def read_latest_json_data(self):
+        """Read the latest data from JSON file"""
+        json_file = "/tmp/dawn_tick_data.json"
+        if os.path.exists(json_file):
+            try:
+                with open(json_file, 'r') as f:
+                    lines = f.readlines()
+                    if lines:
+                        last_line = lines[-1].strip()
+                        if last_line:
+                            return json.loads(last_line)
+            except Exception as e:
+                print(f"Error reading JSON: {e}", file=sys.stderr)
+        return None
+
+    def generate_demo_data(self, frame):
+        """Generate demonstration data"""
+        t = frame * 0.02
+        return {
+            'thermal': {'heat': 0.5 + 0.3 * np.sin(t)},
+            'entropy': 0.5 + 0.3 * np.cos(t * 0.7),
+            'tick_count': 20000 + frame,
+            'scup': {
+                'schema': 0.5 + 0.25 * np.sin(t * 1.3),
+                'coherence': 0.5 + 0.25 * np.cos(t * 1.7),
+                'utility': 0.5 + 0.2 * np.sin(t * 0.9),
+                'pressure': 0.3 + 0.4 * abs(np.sin(t * 0.5))
+            },
+            'mood': {'base_level': 0.6 + 0.2 * np.sin(t * 0.3)}
+        }
+
     def update_visualization(self, frame):
         """Animation update function"""
         try:
-            # Read new data
-            if self.data_source == "stdin":
-                while True:
-                    line = sys.stdin.readline()
-                    if line == '':
-                        print("[dawn_mood_state] Waiting for input...")
-                        time.sleep(0.1)
-                        continue
-                    line = line.strip()
-                    if not line:
-                        continue
-                    try:
+            # Get data from stdin
+            if self.data_source == 'stdin':
+                try:
+                    line = sys.stdin.readline().strip()
+                    if line:
                         data = json.loads(line)
-                    except Exception as e:
-                        print(f"JSON decode error: {e}")
-                        continue
+                    else:
+                        data = self.generate_demo_data(frame)
+                except:
+                    data = self.generate_demo_data(frame)
             else:
-                # Simulated data for testing
-                data = {
-                    'tick': frame,
-                    'mood': {
-                        'base_level': 0.3 + 0.2 * np.sin(frame * 0.05),
-                        'vector': [
-                            0.5 + 0.3 * np.sin(frame * 0.02),
-                            0.4 + 0.2 * np.cos(frame * 0.03), 
-                            0.6 + 0.1 * np.sin(frame * 0.04),
-                            0.3 + 0.4 * np.cos(frame * 0.01)
-                        ]
-                    }
-                }
+                data = self.generate_demo_data(frame)
             
             # Update mood state
             new_mood = self.parse_mood_data(data)
@@ -242,6 +290,14 @@ class MoodStateVisualizer:
                     alpha = 0.4 + 0.6 * intensity  # Scale opacity with intensity
                     self.text_annotations[i][j].set_alpha(alpha)
             
+            # Save frame if requested
+            if self.save_frames and self.frame_count % 10 == 0:
+                filename = f"{self.output_dir}/dawn_mood_state_frame_{self.frame_count:06d}.png"
+                self.fig.savefig(filename, dpi=100, bbox_inches='tight',
+                               facecolor='#0a0a0a', edgecolor='none')
+            
+            self.frame_count += 1
+            
             return [self.im, self.info_text] + [text for row in self.text_annotations for text in row]
             
         except json.JSONDecodeError as e:
@@ -252,17 +308,41 @@ class MoodStateVisualizer:
             return [self.im]
     
     def run(self, interval=200):
-        """Start the real-time visualization"""
-        try:
-            self.animation = animation.FuncAnimation(self.fig, self.update_visualization,
-                                                   interval=interval, blit=False, cache_frame_data=False)
-            plt.show()
-        except KeyboardInterrupt:
-            print("Visualization terminated by user.")
-            self.save_animation_gif()
-        except Exception as e:
-            print(f"Runtime error: {e}", file=sys.stderr)
-            self.save_animation_gif()
+        if self.save_frames:
+            # Headless mode: process stdin and save frames
+            frame_count = 0
+            try:
+                for line in sys.stdin:
+                    line = line.strip()
+                    if not line:
+                        continue
+                    try:
+                        data = json.loads(line)
+                        self.update_visualization(frame_count)
+                        frame_count += 1
+                        if frame_count % 50 == 0:
+                            print(f"Processed frame {frame_count}", file=sys.stderr)
+                        if frame_count >= 1000:
+                            break
+                    except json.JSONDecodeError:
+                        continue
+            except KeyboardInterrupt:
+                pass
+            print(f"Dawn Mood State saved {frame_count} frames to: {self.output_dir}")
+        else:
+            # Interactive mode
+            try:
+                self.animation = animation.FuncAnimation(
+                    self.fig,
+                    self.update_visualization,
+                    frames=1000,
+                    interval=interval,
+                    blit=False,
+                    cache_frame_data=False
+                )
+                plt.show()
+            except Exception as e:
+                print(f"Runtime error: {e}", file=sys.stderr)
 
 def main():
     parser = argparse.ArgumentParser(description='DAWN Mood State Visualizer')
@@ -272,6 +352,10 @@ def main():
                        help='Animation update interval in milliseconds')
     parser.add_argument('--buffer', type=int, default=100,
                        help='Mood history buffer size')
+    parser.add_argument('--save', action='store_true',
+                       help='Save visualization frames as PNG files')
+    parser.add_argument('--output-dir', default='./visual_output/dawn_mood_state',
+                       help='Directory to save output frames')
     
     args = parser.parse_args()
     
@@ -285,7 +369,8 @@ def main():
     else:
         print("Running in demo mode with simulated data...")
     
-    visualizer = MoodStateVisualizer(data_source=args.source, buffer_size=args.buffer)
+    visualizer = MoodStateVisualizer(data_source=args.source, buffer_size=args.buffer,
+                                   save_frames=args.save, output_dir=args.output_dir)
     visualizer.run(interval=args.interval)
 
 if __name__ == "__main__":

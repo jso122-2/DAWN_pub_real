@@ -9,6 +9,10 @@ with proper cognitive zone terminology.
 """
 
 import json
+import os
+import os
+import os
+import os
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
@@ -187,7 +191,6 @@ class SCUPZoneAnimator:
                 'heat': heat,
                 'tick': tick
             }
-            
         except Exception as e:
             print(f"Error parsing SCUP data: {e}", file=sys.stderr)
             return {
@@ -232,29 +235,39 @@ class SCUPZoneAnimator:
         
         return base_zone
     
+    def read_latest_json_data(self):
+        """Read the latest data from JSON file"""
+        json_file = "/tmp/dawn_tick_data.json"
+        if os.path.exists(json_file):
+            with open(json_file, 'r') as f:
+                lines = f.readlines()
+                if lines:
+                    last_line = lines[-1].strip()
+                    if last_line:
+                        return json.loads(last_line)
+            print(f"Error reading JSON: {e}", file=sys.stderr)
+        return None
+
     def update_visualization(self, frame):
         """Animation update function"""
         try:
-            # Read new data
-            if self.data_source == "stdin":
-                line = sys.stdin.readline().strip()
-                if not line:
-                    return []
-                
-                data = json.loads(line)
-            else:
-                # Simulated data for testing
+            # Read data from JSON file
+            data = self.read_latest_json_data()
+            
+            if data is None:
+                # Use simulated data if no real data available
                 data = {
                     'tick': frame,
-                    'scup': {
-                        'schema': 0.5 + 0.3 * np.sin(frame * 0.02),
-                        'coherence': 0.5 + 0.2 * np.cos(frame * 0.03),
-                        'utility': 0.5 + 0.25 * np.sin(frame * 0.015),
-                        'pressure': 0.4 + 0.3 * np.cos(frame * 0.01)
-                    },
-                    'heat': 0.3 + 0.4 * np.sin(frame * 0.025)
+                    'mood': {'valence': 0.5 + 0.2 * np.sin(frame * 0.05)},
+                    'entropy': {'total_entropy': 0.5 + 0.2 * np.sin(frame * 0.03)},
+                    'thermal_state': {'heat_level': 0.3 + 0.1 * np.cos(frame * 0.04)},
+                    'scup': {'schema': 0.5, 'coherence': 0.5, 'utility': 0.5, 'pressure': 0.5}
                 }
-            
+        except Exception as e:
+            print(f"JSON decode error: {e}", file=sys.stderr)
+            return []
+
+        try:
             # Process SCUP data
             scup_data = self.parse_scup_data(data)
             cognitive_zone = self.classify_cognitive_zone(scup_data)
@@ -340,10 +353,6 @@ class SCUPZoneAnimator:
             
             return (list(self.scup_lines.values()) + 
                    [self.scup_avg_line, self.current_zone_line, self.zone_markers])
-            
-        except json.JSONDecodeError as e:
-            print(f"JSON decode error: {e}", file=sys.stderr)
-            return []
         except Exception as e:
             print(f"Update error: {e}", file=sys.stderr)
             return []
@@ -368,7 +377,6 @@ class SCUPZoneAnimator:
             ani = animation.FuncAnimation(self.fig, self.update_visualization,
                                         interval=interval, blit=False, cache_frame_data=False)
             plt.show()
-        except KeyboardInterrupt:
             print("\nSCUP Zone Animator terminated by user.")
         except Exception as e:
             print(f"Runtime error: {e}", file=sys.stderr)

@@ -5,6 +5,10 @@ Integrated version for backend tick engine with multi-process support
 """
 
 import json
+import os
+import os
+import os
+import os
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
@@ -20,9 +24,15 @@ import atexit
 import sys
 
 # Import GIF saver
-try:
+
     from .gif_saver import setup_gif_saver
-except ImportError:
+    from gif_saver import setup_gif_saver
+import signal
+import atexit
+
+# Import GIF saver
+
+    from .gif_saver import setup_gif_saver
     from gif_saver import setup_gif_saver
 
 logger = logging.getLogger(__name__)
@@ -89,16 +99,15 @@ class EntropyFlowVisualizer:
     
     def save_animation_gif(self):
         """Save the animation as GIF"""
-        try:
+
             if hasattr(self, 'ani'):
-                gif_path = self.gif_saver.save_animation_as_gif(self.ani, fps=10, dpi=100)
+                gif_path = self.gif_saver.save_animation_as_gif(self.ani, fps=5, dpi=100)
                 if gif_path:
                     print(f"\nAnimation GIF saved: {gif_path}", file=sys.stderr)
                 else:
                     print("\nFailed to save animation GIF", file=sys.stderr)
             else:
                 print("\nNo animation to save", file=sys.stderr)
-        except Exception as e:
             print(f"\nError saving animation GIF: {e}", file=sys.stderr)
 
     def cleanup(self):
@@ -202,7 +211,7 @@ class EntropyFlowVisualizer:
     
     def parse_entropy_data(self, process_data: Dict[str, Any], process_id: int = 0) -> Dict[str, Any]:
         """Extract and process entropy flow from DAWN process data"""
-        try:
+
             # Main entropy value
             entropy_raw = process_data.get('entropy', 0.5)
             entropy_val = float(entropy_raw) if isinstance(entropy_raw, (int, float)) else 0.5
@@ -234,7 +243,6 @@ class EntropyFlowVisualizer:
             
             return flow_data
             
-        except Exception as e:
             logger.error(f"Error parsing entropy data for process {process_id}: {e}")
             return {'entropy': 0.5, 'tick': 0, 'heat': 0.3, 'mood_influence': 0.5, 'scup_pressure': 0.5}
     
@@ -301,7 +309,7 @@ class EntropyFlowVisualizer:
     
     def update_visualization(self, process_data: Dict[str, Any], process_id: int = 0, tick: int = 0) -> None:
         """Update the visualization with new process data"""
-        try:
+
             # Parse and process data
             flow_data = self.parse_entropy_data(process_data, process_id)
             stream_intensities = self.calculate_flow_field(flow_data, process_id)
@@ -331,7 +339,6 @@ class EntropyFlowVisualizer:
                         f"Avg Flow: {avg_magnitude:.3f}")
             components['flow_text'].set_text(flow_info)
             
-        except Exception as e:
             logger.error(f"Update error for process {process_id}: {e}")
     
     def update_all_processes(self, all_process_data: Dict[int, Dict[str, Any]], tick: int) -> None:
@@ -380,7 +387,7 @@ class EntropyFlowVisualizer:
     def start_animation(self) -> None:
         """Start the animation loop"""
         if self.ani is None:
-            self.ani = animation.FuncAnimation(
+            self.ani = animation.FuncAnimation(frames=1000, 
                 self.fig, 
                 lambda frame: self._animation_frame(frame), 
                 interval=self.update_interval, 

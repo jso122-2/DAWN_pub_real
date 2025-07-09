@@ -7,6 +7,10 @@ import os
 import sys
 import time
 import json
+import os
+import os
+import os
+import os
 import logging
 import datetime
 import statistics
@@ -28,9 +32,10 @@ import matplotlib.animation as animation
 from matplotlib.colors import LinearSegmentedColormap
 
 # Import GIF saver
-try:
+import signal
+import atexit
+
     from .gif_saver import setup_gif_saver
-except ImportError:
     from gif_saver import setup_gif_saver
 
 # Configure logging
@@ -111,16 +116,15 @@ class PSLVisualizer:
     
     def save_animation_gif(self):
         """Save the animation as GIF"""
-        try:
-            if hasattr(self, 'animation'):
-                gif_path = self.gif_saver.save_animation_as_gif(self.animation, fps=10, dpi=100)
+
+            if hasattr(self, 'animation') and self.animation is not None:
+                gif_path = self.gif_saver.save_animation_as_gif(self.animation, fps=5, dpi=100)
                 if gif_path:
                     print(f"\nAnimation GIF saved: {gif_path}", file=sys.stderr)
                 else:
                     print("\nFailed to save animation GIF", file=sys.stderr)
             else:
                 print("\nNo animation to save", file=sys.stderr)
-        except Exception as e:
             print(f"\nError saving animation GIF: {e}", file=sys.stderr)
 
     def cleanup(self):
@@ -131,24 +135,21 @@ class PSLVisualizer:
         """Signal handler to save GIF on termination"""
         print(f"\nReceived signal {signum}, saving GIF...", file=sys.stderr)
         self.save_animation_gif()
-        sys.exit(0)
     
     def collect_metrics(self) -> None:
         """Collect system metrics using PSL"""
-        try:
+
             # CPU usage (using psutil if available, otherwise estimate)
-            try:
+
                 import psutil
                 cpu_percent = psutil.cpu_percent()
-            except ImportError:
                 cpu_percent = 0.0  # Placeholder if psutil not available
             
             # Memory usage
-            try:
+
                 import psutil
                 memory = psutil.virtual_memory()
                 memory_percent = memory.percent
-            except ImportError:
                 memory_percent = 0.0
             
             # Process count
@@ -175,12 +176,11 @@ class PSLVisualizer:
                 if len(values) > self.window_size:
                     setattr(self.metrics, attr, values[-self.window_size:])
             
-        except Exception as e:
             logger.error(f"Error collecting metrics: {e}")
     
     def generate_visualization(self) -> str:
         """Generate system metrics visualization"""
-        try:
+
             if self.fig is None:
                 self.fig, self.ax = plt.subplots(figsize=(12, 6))
             
@@ -254,18 +254,17 @@ class PSLVisualizer:
             
             return f"data:image/png;base64,{image_base64}"
             
-        except Exception as e:
             logger.error(f"Error generating visualization: {e}")
             return None
     
     def start_monitoring(self) -> None:
         """Start continuous monitoring and visualization"""
-        try:
+
             def update(frame):
                 self.collect_metrics()
                 return self.generate_visualization()
             
-            self.animation = animation.FuncAnimation(
+            self.animation = animation.FuncAnimation(frames=1000, 
                 self.fig, update,
                 interval=self.update_interval * 1000,
                 blit=False
@@ -273,12 +272,11 @@ class PSLVisualizer:
             
             plt.show()
             
-        except Exception as e:
             logger.error(f"Error starting monitoring: {e}")
     
     def save_snapshot(self, filename: str = None) -> Optional[Path]:
         """Save current visualization as image"""
-        try:
+
             if filename is None:
                 timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
                 filename = f"psl_metrics_{timestamp}.png"
@@ -293,7 +291,6 @@ class PSLVisualizer:
             logger.info(f"Saved snapshot to {output_path}")
             return output_path
             
-        except Exception as e:
             logger.error(f"Error saving snapshot: {e}")
             return None
     
@@ -322,7 +319,6 @@ class PSLVisualizer:
 
 if __name__ == "__main__":
     visualizer = PSLVisualizer()
-    try:
+
         visualizer.start_monitoring()
-    except KeyboardInterrupt:
         visualizer.close()

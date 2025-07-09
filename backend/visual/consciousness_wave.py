@@ -127,7 +127,7 @@ class ConsciousnessWaveVisualizer(BaseVisualizer):
         # Start update loop
         def update_loop():
             while self._stream_active:
-                try:
+
                     # Get current parameters from data source if provided
                     if self._data_source:
                         params = self._data_source()
@@ -150,7 +150,6 @@ class ConsciousnessWaveVisualizer(BaseVisualizer):
                     
                     time.sleep(0.1)  # Update every 100ms
                     
-                except Exception as e:
                     print(f"Error in consciousness wave update: {e}")
                     time.sleep(1)  # Wait before retrying
         

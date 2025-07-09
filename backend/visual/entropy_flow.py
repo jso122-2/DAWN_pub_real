@@ -13,6 +13,9 @@ import matplotlib
 matplotlib.use('Agg')  # Use non-interactive backend
 
 import json
+import os
+import os
+import os
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
@@ -84,8 +87,8 @@ class EntropyFlowVisualizer:
         self.data_queue = queue.Queue()
         self.stdin_thread = None
         self.stop_event = threading.Event()
-        if self.data_source == "stdin":
-            self.stdin_thread = threading.Thread(target=self.read_stdin_data, daemon=True)
+        if True:  # Always read from JSON file
+            self.stdin_thread = threading.Thread(target=self.read_json_data, daemon=True)
             self.stdin_thread.start()
         
         # Setup GIF saver
@@ -211,7 +214,6 @@ class EntropyFlowVisualizer:
             }
             
             return flow_data
-            
         except Exception as e:
             print(f"Error parsing entropy data: {e}", file=sys.stderr)
             return {'entropy': 0.5, 'tick': 0, 'heat': 0.3, 'mood_influence': 0.5, 'scup_pressure': 0.5}
@@ -277,45 +279,83 @@ class EntropyFlowVisualizer:
         
         return stream_intensities
     
-    def read_stdin_data(self):
-        """Background thread to read lines from stdin and put them in the queue"""
+    def read_json_data(self):
+        """Background thread to read data from JSON file"""
+        json_file = "/tmp/dawn_tick_data.json"
+        last_position = 0
+        
         while not self.stop_event.is_set():
             try:
-                while True:
-                    line = sys.stdin.readline()
-                    if line == '':
-                        print("[entropy_flow] Waiting for input...")
-                        time.sleep(0.1)
-                        continue
-                    line = line.strip()
-                    if not line:
-                        continue
-                    try:
-                        data = json.loads(line)
-                    except Exception as e:
-                        print(f"JSON decode error: {e}")
-                        continue
-                    self.data_queue.put(data)
+                if not os.path.exists(json_file):
+                    time.sleep(0.1)
+                    continue
+                
+                with open(json_file, 'r') as f:
+                    f.seek(last_position)
+                    lines = f.readlines()
+                    last_position = f.tell()
+                    
+                    for line in lines:
+                        line = line.strip()
+                        if not line:
+                            continue
+                        try:
+                            data = json.loads(line)
+                            self.data_queue.put(data)
+                        except json.JSONDecodeError as e:
+                            print(f"Error parsing JSON: {e}", file=sys.stderr)
+                            continue
+                
+                time.sleep(0.1)  # Small delay to avoid excessive CPU usage
+                
             except Exception as e:
-                print(f"Error reading stdin: {e}", file=sys.stderr)
-                break
+                print(f"Error reading JSON file: {e}", file=sys.stderr)
+                time.sleep(1.0)  # Longer delay on error
     
+    def read_latest_json_data(self):
+        """Read the latest data from JSON file"""
+        json_file = "/tmp/dawn_tick_data.json"
+        if os.path.exists(json_file):
+            try:
+                with open(json_file, 'r') as f:
+                    lines = f.readlines()
+                    if lines:
+                        last_line = lines[-1].strip()
+                        if last_line:
+                            return json.loads(last_line)
+            except Exception as e:
+                print(f"Error reading JSON: {e}", file=sys.stderr)
+        return None
+
+    def generate_demo_data(self, frame):
+        """Generate demo data for testing"""
+        t = frame * 0.03
+        return {
+            'entropy': 0.5 + 0.3 * np.sin(t),
+            'heat': 0.4 + 0.3 * np.cos(t * 0.7),
+            'tick': frame,
+            'mood': {'vector': [0.5 + 0.2 * np.sin(t * 0.5)] * 4},
+            'scup': {
+                'schema': 0.5 + 0.3 * np.sin(t * 0.3),
+                'coherence': 0.5 + 0.25 * np.cos(t * 0.4),
+                'utility': 0.5 + 0.2 * np.sin(t * 0.6),
+                'pressure': 0.3 + 0.4 * abs(np.sin(t * 0.2))
+            }
+        }
+
     def update_visualization(self, frame):
         """Animation update function"""
         try:
             data = None
-            if self.data_source == "stdin":
-                while not self.data_queue.empty():
-                    data = self.data_queue.get()
+            if self.data_source == 'stdin':
+                if not self.data_queue.empty():
+                    data = self.data_queue.get_nowait()
             else:
-                # Simulated data for testing
-                data = {
-                    'tick': frame,
-                    'entropy': 0.5 + 0.2 * np.sin(frame * 0.04),
-                    'mood': {'base_level': 0.3 + 0.2 * np.sin(frame * 0.03)},
-                    'heat': 0.3 + 0.1 * np.cos(frame * 0.04),
-                    'scup': {'schema': 0.5, 'coherence': 0.5, 'utility': 0.5, 'pressure': 0.5}
-                }
+                data = self.read_latest_json_data()
+            
+            if data is None:
+                data = self.generate_demo_data(frame)
+            
             if data is None:
                 return [self.entropy_line, self.flow_magnitude_line]
             
@@ -371,14 +411,34 @@ class EntropyFlowVisualizer:
             return [self.entropy_line, self.flow_magnitude_line]
     
     def run(self, interval=200):
-        """Start the real-time visualization"""
+        """Start the visualization"""
         try:
-            self.animation = animation.FuncAnimation(self.fig, self.update_visualization,
-                                                   interval=interval, blit=False, cache_frame_data=False)
-            plt.show()
-        except KeyboardInterrupt:
-            print("\nVisualization terminated by user.")
-            self.save_animation_gif()
+            import matplotlib
+            if matplotlib.get_backend() == 'Agg':
+                self.animation = animation.FuncAnimation(
+                    self.fig,
+                    self.update_visualization,
+                    interval=interval,
+                    blit=False,
+                    cache_frame_data=False,
+                    repeat=False,
+                    frames=20
+                )
+                for i in range(20):
+                    self.update_visualization(i)
+                print(f"DEBUG: Generated 20 frames, saving GIF...", file=sys.stderr)
+                self.save_animation_gif()
+                print(f"DEBUG: GIF save completed", file=sys.stderr)
+                return
+            else:
+                self.animation = animation.FuncAnimation(
+                    self.fig,
+                    self.update_visualization,
+                    interval=interval,
+                    blit=False,
+                    cache_frame_data=False
+                )
+                plt.show()
         except Exception as e:
             print(f"Runtime error: {e}", file=sys.stderr)
             self.save_animation_gif()
@@ -391,6 +451,20 @@ class EntropyFlowVisualizer:
         print(f"Received signal {signum}, exiting gracefully.")
         self.cleanup()
         sys.exit(0)
+
+    def save_animation_gif(self):
+        """Save the animation as GIF"""
+        try:
+            if hasattr(self, 'animation'):
+                gif_path = self.gif_saver.save_animation_as_gif(self.animation, fps=5, dpi=100)
+                if gif_path:
+                    print(f'\nAnimation GIF saved: {gif_path}', file=sys.stderr)
+                else:
+                    print('\nFailed to save animation GIF', file=sys.stderr)
+            else:
+                print('\nNo animation to save', file=sys.stderr)
+        except Exception as e:
+            print(f'\nError saving animation GIF: {e}', file=sys.stderr)
 
 def main():
     parser = argparse.ArgumentParser(description='DAWN Entropy Flow Visualizer')

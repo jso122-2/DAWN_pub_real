@@ -5,6 +5,10 @@ Integrated version for backend tick engine
 """
 
 import json
+import os
+import os
+import os
+import os
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
@@ -19,9 +23,15 @@ import atexit
 import sys
 
 # Import GIF saver
-try:
+
     from .gif_saver import setup_gif_saver
-except ImportError:
+    from gif_saver import setup_gif_saver
+import signal
+import atexit
+
+# Import GIF saver
+
+    from .gif_saver import setup_gif_saver
     from gif_saver import setup_gif_saver
 
 logger = logging.getLogger(__name__)
@@ -119,16 +129,15 @@ class MoodStateVisualizer:
     
     def save_animation_gif(self):
         """Save the animation as GIF"""
-        try:
+
             if hasattr(self, 'ani'):
-                gif_path = self.gif_saver.save_animation_as_gif(self.ani, fps=10, dpi=100)
+                gif_path = self.gif_saver.save_animation_as_gif(self.ani, fps=5, dpi=100)
                 if gif_path:
                     print(f"\nAnimation GIF saved: {gif_path}", file=sys.stderr)
                 else:
                     print("\nFailed to save animation GIF", file=sys.stderr)
             else:
                 print("\nNo animation to save", file=sys.stderr)
-        except Exception as e:
             print(f"\nError saving animation GIF: {e}", file=sys.stderr)
 
     def cleanup(self):
@@ -147,7 +156,7 @@ class MoodStateVisualizer:
     
     def parse_mood_data(self, mood_data: Dict[str, Any], tick: int = 0) -> np.ndarray:
         """Extract and process mood state from DAWN mood data"""
-        try:
+
             base_intensity = mood_data.get('base_level', 0.1)
             emotional_vector = mood_data.get('vector', [0.5, 0.5, 0.5, 0.5])
             
@@ -174,7 +183,6 @@ class MoodStateVisualizer:
             
             return mood_matrix
             
-        except Exception as e:
             logger.error(f"Error parsing mood data: {e}")
             return self.mood_matrix
     
@@ -185,7 +193,7 @@ class MoodStateVisualizer:
     
     def update_visualization(self, mood_data: Dict[str, Any], tick: int) -> None:
         """Update the visualization with new mood data"""
-        try:
+
             # Update mood state
             new_mood = self.parse_mood_data(mood_data, tick)
             self.mood_matrix = self.smooth_mood_transition(new_mood)
@@ -212,7 +220,6 @@ class MoodStateVisualizer:
             self.fig.canvas.draw_idle()
             self.fig.canvas.flush_events()
             
-        except Exception as e:
             logger.error(f"Update error: {e}")
     
     def get_visualization_data(self) -> Dict[str, Any]:
@@ -228,7 +235,7 @@ class MoodStateVisualizer:
     def start_animation(self) -> None:
         """Start the animation loop"""
         if self.ani is None:
-            self.ani = animation.FuncAnimation(
+            self.ani = animation.FuncAnimation(frames=1000, 
                 self.fig, 
                 lambda frame: self._animation_frame(frame), 
                 interval=self.update_interval, 

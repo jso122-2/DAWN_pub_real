@@ -9,10 +9,7 @@ import atexit
 import sys
 
 # Import GIF saver
-try:
-    from .gif_saver import setup_gif_saver
-except ImportError:
-    from gif_saver import setup_gif_saver
+from .gif_saver import setup_gif_saver
 
 logger = logging.getLogger(__name__)
 
@@ -149,7 +146,7 @@ class VisualManager:
                 if filename.endswith('.py') and not filename.startswith('__'):
                     module_name = filename[:-3]
                     try:
-                        module = importlib.import_module(f"{directory.replace('/', '.')}.{module_name}")
+                        module = importlib.import_module(f"{directory.replace('/', '.')}.", module_name)
                         if hasattr(module, 'VisualProcess'):
                             self._process_classes[module_name] = module.VisualProcess
                             logger.info(f"Loaded visual process module: {module_name}")
@@ -180,8 +177,8 @@ class VisualManager:
     def save_animation_gif(self):
         """Save the animation as GIF"""
         try:
-            if hasattr(self, 'animation'):
-                gif_path = self.gif_saver.save_animation_as_gif(self.animation, fps=10, dpi=100)
+            if hasattr(self, 'animation') and self.animation is not None:
+                gif_path = self.gif_saver.save_animation_as_gif(self.animation, fps=5, dpi=100)
                 if gif_path:
                     print(f"\nAnimation GIF saved: {gif_path}", file=sys.stderr)
                 else:

@@ -9,6 +9,9 @@ import matplotlib
 matplotlib.use('Agg')  # Use non-interactive backend
 
 import json
+import os
+import os
+import os
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
@@ -28,7 +31,7 @@ from scipy.spatial import ConvexHull
 from scipy.interpolate import interp1d
 import signal
 import atexit
-import os
+import random
 
 # Import GIF saver
 try:
@@ -120,9 +123,16 @@ TEMPORAL_SCALES = {
 class ConsciousnessConstellation:
     """4D SCUP Consciousness Constellation Visualization"""
     
-    def __init__(self, data_source='stdin', projection_mode='sphere'):
+    def __init__(self, data_source='stdin', projection_mode='sphere', save_frames=False, output_dir='./visual_output/consciousness_constellation'):
         self.data_source = data_source
         self.projection_mode = projection_mode
+        self.save_frames = save_frames
+        self.output_dir = output_dir
+        
+        # Create output directory if saving
+        if self.save_frames:
+            import os
+            os.makedirs(self.output_dir, exist_ok=True)
         
         # SCUP space configuration
         self.dimensions = {
@@ -143,7 +153,7 @@ class ConsciousnessConstellation:
         self.stdin_thread = None
         self.stop_event = threading.Event()
         if self.data_source == 'stdin':
-            self.stdin_thread = threading.Thread(target=self.read_stdin_data, daemon=True)
+            self.stdin_thread = threading.Thread(target=self.read_json_data, daemon=True)
             self.stdin_thread.start()
         
         # Consciousness analysis
@@ -178,12 +188,12 @@ class ConsciousnessConstellation:
         try:
             print(f"DEBUG: save_animation_gif called", file=sys.stderr)
             print(f"DEBUG: hasattr(self, 'animation') = {hasattr(self, 'animation')}", file=sys.stderr)
-            if hasattr(self, 'animation'):
+            if hasattr(self, 'animation') and self.animation is not None:
                 print(f"DEBUG: self.animation is {self.animation}", file=sys.stderr)
             
             if hasattr(self, 'animation') and self.animation is not None:
                 print(f"DEBUG: Trying to save animation GIF...", file=sys.stderr)
-                gif_path = self.gif_saver.save_animation_as_gif(self.animation, fps=10, dpi=100)
+                gif_path = self.gif_saver.save_animation_as_gif(self.animation, fps=5, dpi=100)
                 if gif_path:
                     print(f"\nAnimation GIF saved: {gif_path}", file=sys.stderr)
                 else:
@@ -549,8 +559,7 @@ class ConsciousnessConstellation:
         """Calculate convex hull volume in 4D SCUP space"""
         if len(scup_history) < 5:
             return 0
-        
-        try:
+
             # Use PCA to project to 3D for hull calculation
             scup_array = np.array(scup_history)
             centered = scup_array - scup_array.mean(axis=0)
@@ -558,7 +567,6 @@ class ConsciousnessConstellation:
             # Simple volume estimate using spread
             volume = np.prod(np.std(centered, axis=0)) * len(scup_history)
             return np.clip(volume, 0, 1)
-        except:
             return 0
     
     def calculate_trajectory_length(self, scup_history):
@@ -803,24 +811,186 @@ class ConsciousnessConstellation:
         
         self.phase_transitions = transitions[-10:]  # Keep last 10 transitions
     
+    def read_json_data(self):
+        """Background thread to read data from JSON file"""
+        json_file = "/tmp/dawn_tick_data.json"
+        last_position = 0
+        
+        while not self.stop_event.is_set():
+            try:
+                if not os.path.exists(json_file):
+                    time.sleep(0.1)
+                    continue
+                
+                with open(json_file, 'r') as f:
+                    f.seek(last_position)
+                    lines = f.readlines()
+                    last_position = f.tell()
+                    
+                    for line in lines:
+                        line = line.strip()
+                        if not line:
+                            continue
+                        try:
+                            data = json.loads(line)
+                            self.data_queue.put(data)
+                        except json.JSONDecodeError as e:
+                            print(f"Error parsing JSON: {e}", file=sys.stderr)
+                            continue
+                
+                time.sleep(0.1)  # Small delay to avoid excessive CPU usage
+                
+            except Exception as e:
+                print(f"Error reading JSON file: {e}", file=sys.stderr)
+                time.sleep(1.0)  # Longer delay on error
+
+    def run(self, interval=100):
+        """Start the visualization"""
+        print(f"DEBUG: run() method called with interval={interval}", file=sys.stderr)
+        try:
+            if self.save_frames:
+                # For saving mode, run a limited number of frames
+                for frame in range(1000):  # Process up to 1000 frames
+                    self.update_visualization(frame)
+                    if frame % 50 == 0:  # Print progress every 50 frames
+                        print(f"Processed frame {frame}", file=sys.stderr)
+                    # Check if there's more data to read
+                    try:
+                        import select
+                        if not select.select([sys.stdin], [], [], 0)[0]:
+                            break  # No more data available
+                    except:
+                        pass
+                print(f"Consciousness Constellation saved frames to: {self.output_dir}")
+            else:
+                # Interactive mode
+                print(f"DEBUG: Using interactive backend", file=sys.stderr)
+                self.animation = animation.FuncAnimation(
+                    self.fig, 
+                    self.update_visualization,
+                    interval=interval, 
+                    blit=False, 
+                    cache_frame_data=False
+                )
+                plt.show()
+        except Exception as e:
+            print(f"Runtime error: {e}", file=sys.stderr)
+
+    def save_static_image(self):
+        """Save current state as a static PNG image"""
+        try:
+            # Update the visualization one more time to ensure current state
+            self.update_visualization(0)
+            
+            # Save the current figure as PNG
+            timestamp = time.strftime("%Y%m%d_%H%M%S")
+            filename = f"consciousness_constellation_{timestamp}.png"
+            output_path = os.path.join(self.gif_saver.output_dir, filename)
+            
+            self.fig.savefig(output_path, dpi=100, bbox_inches='tight')
+            print(f"\nStatic image saved: {output_path}", file=sys.stderr)
+        except Exception as e:
+            print(f"\nError saving static image: {e}", file=sys.stderr)
+
+    def read_latest_json_data(self):
+        """Read the latest data from JSON file"""
+        json_file = "/tmp/dawn_tick_data.json"
+        if os.path.exists(json_file):
+            try:
+                with open(json_file, 'r') as f:
+                    lines = f.readlines()
+                    if lines:
+                        last_line = lines[-1].strip()
+                        if last_line:
+                            return json.loads(last_line)
+            except Exception as e:
+                print(f"Error reading JSON: {e}", file=sys.stderr)
+        return None
+
     def update_visualization(self, frame):
         """Animation update function"""
         try:
             data = None
             if self.data_source == 'stdin':
-                while not self.data_queue.empty():
-                    line = self.data_queue.get()
-                    if line:
-                        data = json.loads(line)
+                if not self.data_queue.empty():
+                    data = self.data_queue.get_nowait()
             else:
+                data = self.read_latest_json_data()
+            
+            if data is None:
                 data = self.generate_demo_data(frame)
+            
             if data is None:
                 return [self.ax_constellation]
-            # ... rest of update logic using 'data' ...
+            
+            # Analyze consciousness state
+            scup_state = self.analyze_consciousness_state(data)
+            
+            # Update consciousness trajectory
+            timestamp = time.time()
+            self.consciousness_trajectory.append({
+                'timestamp': timestamp,
+                'scup': scup_state,
+                'data': data
+            })
+            
+            # Keep only recent history
+            if len(self.consciousness_trajectory) > 1000:
+                self.consciousness_trajectory = self.consciousness_trajectory[-500:]
+            
+            # Update temporal segments
+            self.update_temporal_segments()
+            
+            # Calculate consciousness metrics
+            self.consciousness_metrics = self.calculate_consciousness_metrics()
+            
+            # Update current archetype
+            self.current_archetype = self.classify_consciousness_state(scup_state)
+            
+            # Update trajectory visualization
+            self.update_trajectory_visualization()
+            
+            # Update SCUP radar
+            self.update_scup_radar(scup_state)
+            
+            # Update metric panels
+            self.update_metric_panels()
+            
+            # Update temporal analysis
+            self.update_temporal_analysis()
+            
+            # Add consciousness particle effect
+            self.add_consciousness_particle(scup_state)
+            
+            # Auto-rotate 3D view
+            self.ax_constellation.view_init(elev=20, azim=frame * 2)
+            
+            # Update particle systems
+            current_time = time.time()
+            for particle_system in self.particle_systems:
+                age = current_time - particle_system['birth_time']
+                if age < particle_system['lifetime']:
+                    alpha = 0.6 * (1 - age / particle_system['lifetime'])
+                    particle_system['particle'].set_alpha(alpha)
+            
+            # Clean up old particles
+            self.particle_systems = [p for p in self.particle_systems
+                                   if current_time - p['birth_time'] < p['lifetime']]
+            
+            # Save frame if requested
+            if self.save_frames and self.frame_count % 10 == 0:  # Save every 10th frame
+                filename = f"{self.output_dir}/consciousness_constellation_frame_{self.frame_count:06d}.png"
+                self.fig.savefig(filename, dpi=100, bbox_inches='tight', 
+                               facecolor='#000011', edgecolor='none')
+            
+            return [self.ax_constellation, self.ax_scup, self.ax_exploration, 
+                   self.ax_stability, self.ax_intelligence, self.ax_transcendence, 
+                   self.ax_temporal]
+            
         except Exception as e:
             print(f"Error in update_visualization: {e}", file=sys.stderr)
             return [self.ax_constellation]
-    
+
     def update_trajectory_visualization(self):
         """Update 3D trajectory lines for each temporal scale"""
         for scale_name, points in self.trajectory_segments.items():
@@ -843,7 +1013,7 @@ class ConsciousnessConstellation:
                         c='white', s=100, alpha=0.8,
                         edgecolors='none'
                     )
-    
+
     def update_scup_radar(self, current_scup):
         """Update SCUP dimensions radar chart"""
         # Clear previous plot
@@ -873,7 +1043,7 @@ class ConsciousnessConstellation:
         # Title
         self.ax_scup.set_title(f'SCUP State | {self.current_archetype.replace("_", " ").title()}',
                               fontsize=11, color='white', pad=10)
-    
+
     def update_metric_panels(self):
         """Update consciousness metric visualization panels"""
         if not self.consciousness_metrics:
@@ -924,7 +1094,7 @@ class ConsciousnessConstellation:
         self.ax_transcendence.set_title('Transcendence', fontsize=10, color='white')
         self.ax_transcendence.text(0, transcendence + 2, f'{transcendence:.1f}%',
                                   ha='center', fontsize=9, color='white')
-    
+
     def update_temporal_analysis(self):
         """Update temporal consciousness evolution panel"""
         if len(self.consciousness_trajectory) < 10:
@@ -971,7 +1141,7 @@ class ConsciousnessConstellation:
             self.ax_temporal.set_xlabel('Time (seconds)', fontsize=9, color='white')
             self.ax_temporal.set_title('Consciousness Evolution', fontsize=10, color='white')
             self.ax_temporal.grid(True, alpha=0.2, color='#2a2a3e')
-    
+
     def add_consciousness_particle(self, scup_state):
         """Add particle effect at current consciousness position"""
         pos_3d, pressure = self.project_4d_to_sphere(scup_state)
@@ -993,7 +1163,7 @@ class ConsciousnessConstellation:
         current_time = time.time()
         self.particle_systems = [p for p in self.particle_systems
                                if current_time - p['birth_time'] < p['lifetime']]
-    
+
     def generate_demo_data(self, frame):
         """Generate demonstration data with consciousness patterns"""
         t = frame * 0.02
@@ -1034,69 +1204,6 @@ class ConsciousnessConstellation:
             data['scup'][key] = np.clip(data['scup'][key], 0, 1)
         
         return data
-    
-    def read_stdin_data(self):
-        """Background thread to read lines from stdin and put them in the queue"""
-        while not self.stop_event.is_set():
-            try:
-                line = sys.stdin.readline()
-                if not line:
-                    time.sleep(0.01)
-                    continue
-                self.data_queue.put(line.strip())
-            except Exception as e:
-                print(f"Error reading stdin: {e}", file=sys.stderr)
-                break
-
-    def run(self, interval=100):
-        print(f"DEBUG: run() method called with interval={interval}", file=sys.stderr)
-        try:
-            if matplotlib.get_backend() == 'Agg':
-                print(f"DEBUG: Using Agg backend (headless mode)", file=sys.stderr)
-                self.animation = animation.FuncAnimation(
-                    self.fig, 
-                    self.update_visualization,
-                    interval=interval, 
-                    blit=False, 
-                    cache_frame_data=False,
-                    repeat=False
-                )
-                print(f"DEBUG: Animation created: {self.animation}", file=sys.stderr)
-                # Manually step the animation for 100 frames
-                for i in range(100):
-                    self.update_visualization(i)
-                self.save_animation_gif()
-                return
-            else:
-                print(f"DEBUG: Using interactive backend", file=sys.stderr)
-                self.animation = animation.FuncAnimation(
-                    self.fig, 
-                    self.update_visualization,
-                    interval=interval, 
-                    blit=False, 
-                    cache_frame_data=False
-                )
-                plt.show()
-        except Exception as e:
-            print(f"Runtime error: {e}", file=sys.stderr)
-            self.save_animation_gif()
-
-    def save_static_image(self):
-        """Save current state as a static PNG image"""
-        try:
-            # Update the visualization one more time to ensure current state
-            self.update_visualization(0)
-            
-            # Save the current figure as PNG
-            timestamp = time.strftime("%Y%m%d_%H%M%S")
-            filename = f"consciousness_constellation_{timestamp}.png"
-            output_path = os.path.join(self.gif_saver.output_dir, filename)
-            
-            self.fig.savefig(output_path, dpi=100, bbox_inches='tight')
-            print(f"\nStatic image saved: {output_path}", file=sys.stderr)
-            
-        except Exception as e:
-            print(f"\nError saving static image: {e}", file=sys.stderr)
 
 def main():
     """Main entry point"""
@@ -1117,6 +1224,10 @@ def main():
                        help='Animation update interval in milliseconds')
     parser.add_argument('--buffer', type=int, default=100,
                        help='Buffer size for visualizations')
+    parser.add_argument('--save', action='store_true',
+                       help='Save visualization frames as PNG files')
+    parser.add_argument('--output-dir', default='./visual_output/consciousness_constellation',
+                       help='Directory to save output frames')
     
     args = parser.parse_args()
     print(f"DEBUG: Arguments parsed: {args}", file=sys.stderr)
@@ -1125,7 +1236,9 @@ def main():
     print(f"DEBUG: Creating ConsciousnessConstellation instance...", file=sys.stderr)
     viz = ConsciousnessConstellation(
         data_source=args.source,
-        projection_mode=args.projection
+        projection_mode=args.projection,
+        save_frames=args.save,
+        output_dir=args.output_dir
     )
     print(f"DEBUG: Instance created successfully", file=sys.stderr)
     

@@ -9,7 +9,13 @@ that drive the recursive symbolic engine's processing cycles.
 """
 
 import json
+import os
+import os
+import os
+import os
 import numpy as np
+import matplotlib
+matplotlib.use('Agg')  # Use non-interactive backend for headless mode
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 from matplotlib.patches import Circle
@@ -20,9 +26,16 @@ import argparse
 import math
 
 class TickPulseVisualizer:
-    def __init__(self, data_source="stdin", buffer_size=200):
+    def __init__(self, data_source="stdin", buffer_size=200, save_frames=False, output_dir='./visual_output/tick_pulse'):
         self.data_source = data_source
         self.buffer_size = buffer_size
+        self.save_frames = save_frames
+        self.output_dir = output_dir
+        
+        # Create output directory if saving
+        if self.save_frames:
+            import os
+            os.makedirs(self.output_dir, exist_ok=True)
         
         # Tick tracking
         self.tick_history = deque(maxlen=buffer_size)
@@ -278,36 +291,35 @@ class TickPulseVisualizer:
         
         return band_intensities
     
+    def read_latest_json_data(self):
+        """Read the latest data from JSON file"""
+        json_file = "/tmp/dawn_tick_data.json"
+        if os.path.exists(json_file):
+            try:
+                with open(json_file, 'r') as f:
+                    lines = f.readlines()
+                    if lines:
+                        last_line = lines[-1].strip()
+                        if last_line:
+                            return json.loads(last_line)
+            except Exception as e:
+                print(f"Error reading JSON: {e}", file=sys.stderr)
+        return None
+
     def update_visualization(self, frame):
         """Animation update function"""
         try:
-            # Read new data
-            if self.data_source == "stdin":
-                line = sys.stdin.readline().strip()
-                if not line:
-                    return []
-                
-                data = json.loads(line)
-            else:
-                # Simulated data for testing
+            # Read data from JSON file
+            data = self.read_latest_json_data()
+            
+            if data is None:
+                # Use simulated data if no real data available
                 data = {
                     'tick': frame,
-                    'mood': {
-                        'vector': [
-                            0.5 + 0.3 * np.sin(frame * 0.02),
-                            0.5 + 0.2 * np.cos(frame * 0.03),
-                            0.5 + 0.1 * np.sin(frame * 0.015),
-                            0.5 + 0.2 * np.cos(frame * 0.025)
-                        ]
-                    },
-                    'entropy': 0.5 + 0.2 * np.sin(frame * 0.04),
-                    'heat': 0.4 + 0.3 * np.sin(frame * 0.01),
-                    'scup': {
-                        'schema': 0.5 + 0.1 * np.sin(frame * 0.008),
-                        'coherence': 0.5 + 0.15 * np.cos(frame * 0.012),
-                        'utility': 0.5 + 0.1 * np.sin(frame * 0.02),
-                        'pressure': 0.4 + 0.2 * np.cos(frame * 0.005)
-                    }
+                    'mood': {'valence': 0.5 + 0.2 * np.sin(frame * 0.05)},
+                    'entropy': {'total_entropy': 0.5 + 0.2 * np.sin(frame * 0.03)},
+                    'thermal_state': {'heat_level': 0.3 + 0.1 * np.cos(frame * 0.04)},
+                    'scup': {'schema': 0.5, 'coherence': 0.5, 'utility': 0.5, 'pressure': 0.5}
                 }
             
             # Process tick data
@@ -393,15 +405,17 @@ class TickPulseVisualizer:
                 self.ax_rhythm.set_xlim(len(self.rhythm_amplitude) - self.buffer_size, 
                                        len(self.rhythm_amplitude))
             
+            # Save frame if requested
+            if self.save_frames and frame % 10 == 0:  # Save every 10th frame
+                filename = f"{self.output_dir}/tick_pulse_frame_{frame:06d}.png"
+                self.fig.savefig(filename, dpi=100, bbox_inches='tight', 
+                               facecolor='#0a0a0a', edgecolor='none')
+            
             return [self.pulse_line, self.tick_line, self.heartbeat_markers, 
                    self.current_pulse_indicator, self.rhythm_line] + self.rhythm_bands
             
-        except json.JSONDecodeError as e:
-            print(f"JSON decode error: {e}", file=sys.stderr)
-            return []
         except Exception as e:
-            print(f"Update error: {e}", file=sys.stderr)
-            return []
+            return [self.pulse_line, self.tick_line, self.heartbeat_markers]
     
     def detect_pulse_peaks(self, pulse_data, min_prominence=0.1):
         """Detect heartbeat peaks in pulse data"""
@@ -444,9 +458,25 @@ class TickPulseVisualizer:
     def run(self, interval=100):
         """Start the real-time visualization"""
         try:
-            ani = animation.FuncAnimation(self.fig, self.update_visualization,
-                                        interval=interval, blit=False, cache_frame_data=False)
-            plt.show()
+            if self.save_frames:
+                # For saving mode, run a limited number of frames
+                for frame in range(1000):  # Process up to 1000 frames
+                    self.update_visualization(frame)
+                    if frame % 50 == 0:  # Print progress every 50 frames
+                        print(f"Processed frame {frame}", file=sys.stderr)
+                    # Check if there's more data to read
+                    try:
+                        import select
+                        if not select.select([sys.stdin], [], [], 0)[0]:
+                            break  # No more data available
+                    except:
+                        pass
+                print(f"Tick Pulse saved frames to: {self.output_dir}")
+            else:
+                # Interactive mode
+                ani = animation.FuncAnimation(self.fig, self.update_visualization,
+                                            interval=interval, blit=False, cache_frame_data=False)
+                plt.show()
         except KeyboardInterrupt:
             print("\nTick Pulse Visualizer terminated by user.")
         except Exception as e:
@@ -460,6 +490,10 @@ def main():
                        help='Animation update interval in milliseconds')
     parser.add_argument('--buffer', type=int, default=200,
                        help='Pulse history buffer size')
+    parser.add_argument('--save', action='store_true',
+                       help='Save visualization frames as PNG files')
+    parser.add_argument('--output-dir', default='./visual_output/tick_pulse',
+                       help='Directory to save output frames')
     
     args = parser.parse_args()
     
@@ -473,7 +507,11 @@ def main():
     else:
         print("Running in demo mode with simulated tick data...")
     
-    visualizer = TickPulseVisualizer(data_source=args.source, buffer_size=args.buffer)
+    if args.save:
+        print(f"Saving frames to: {args.output_dir}")
+    
+    visualizer = TickPulseVisualizer(data_source=args.source, buffer_size=args.buffer,
+                                   save_frames=args.save, output_dir=args.output_dir)
     visualizer.run(interval=args.interval)
 
 if __name__ == "__main__":

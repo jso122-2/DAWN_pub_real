@@ -4,6 +4,10 @@ Real-time cognitive heartbeat visualization integrated with the backend system.
 """
 
 import json
+import os
+import os
+import os
+import os
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
@@ -139,7 +143,7 @@ class TickPulseVisualizer(BaseVisualizer):
     
     def parse_tick_data(self, data: Dict[str, Any]) -> Dict[str, Any]:
         """Extract and process tick information from DAWN data"""
-        try:
+
             # Extract tick count
             tick = data.get('tick', 0)
             
@@ -189,7 +193,6 @@ class TickPulseVisualizer(BaseVisualizer):
                 'heartbeat_phase': self.heartbeat_phase
             }
             
-        except Exception as e:
             logger.error(f"Error parsing tick data: {e}")
             return {
                 'tick': self.current_tick,
@@ -326,7 +329,7 @@ class TickPulseVisualizer(BaseVisualizer):
     
     def update(self, data: Dict[str, Any]) -> None:
         """Update the visualization with new data"""
-        try:
+
             # Process tick data
             tick_data = self.parse_tick_data(data)
             
@@ -410,21 +413,19 @@ class TickPulseVisualizer(BaseVisualizer):
                 self.ax_rhythm.set_xlim(len(self.rhythm_amplitude) - self.buffer_size, 
                                        len(self.rhythm_amplitude))
             
-        except Exception as e:
             logger.error(f"Error updating tick pulse visualization: {e}")
     
     def render(self) -> None:
         """Render the current visualization state"""
-        try:
+
             if self.fig:
                 self.fig.canvas.draw()
                 self.fig.canvas.flush_events()
-        except Exception as e:
             logger.error(f"Error rendering tick pulse visualization: {e}")
     
     def get_visualization_data(self) -> Dict[str, Any]:
         """Get current visualization data for API responses"""
-        try:
+
             return {
                 'tick': self.current_tick,
                 'pulse_intensity': self.pulse_strength,
@@ -435,15 +436,14 @@ class TickPulseVisualizer(BaseVisualizer):
                 'buffer_size': len(self.pulse_intensity),
                 'timestamp': time.time()
             }
-        except Exception as e:
             logger.error(f"Error getting visualization data: {e}")
             return {}
     
     def start_animation(self) -> None:
         """Start the animation loop"""
-        try:
+
             if not self.animation:
-                self.animation = animation.FuncAnimation(
+                self.animation = animation.FuncAnimation(frames=1000, 
                     self.fig, 
                     lambda frame: self.render(), 
                     interval=100, 
@@ -452,30 +452,26 @@ class TickPulseVisualizer(BaseVisualizer):
                 )
             self.is_active = True
             logger.info("TickPulseVisualizer animation started")
-        except Exception as e:
             logger.error(f"Error starting animation: {e}")
     
     def stop_animation(self) -> None:
         """Stop the animation loop"""
-        try:
+
             if self.animation:
                 self.animation.event_source.stop()
                 self.animation = None
             self.is_active = False
             logger.info("TickPulseVisualizer animation stopped")
-        except Exception as e:
             logger.error(f"Error stopping animation: {e}")
     
     def cleanup(self) -> None:
         """Clean up resources"""
-        try:
+
             self.stop_animation()
             if self.fig:
                 plt.close(self.fig)
             logger.info("TickPulseVisualizer cleaned up")
-        except Exception as e:
             logger.error(f"Error cleaning up: {e}")
-
 
 def get_tick_pulse_visualizer() -> TickPulseVisualizer:
     """Factory function to create and return a TickPulseVisualizer instance"""

@@ -16,6 +16,7 @@ from mpl_toolkits.mplot3d import Axes3D
 from matplotlib.patches import FancyArrowPatch
 from mpl_toolkits.mplot3d import proj3d
 import json
+import os
 import sys
 import argparse
 import time
@@ -26,13 +27,16 @@ import queue
 import random
 import signal
 import atexit
-import select
 
 # Import GIF saver
 try:
     from .gif_saver import setup_gif_saver
 except ImportError:
-    from gif_saver import setup_gif_saver
+    try:
+        from gif_saver import setup_gif_saver
+    except ImportError:
+        def setup_gif_saver(name):
+            return None
 
 # Recursive layer definitions
 RECURSION_LEVELS = {
@@ -100,6 +104,13 @@ class Arrow3D(FancyArrowPatch):
         xs, ys, zs = proj3d.proj_transform(xs3d, ys3d, zs3d, renderer.M)
         self.set_positions((xs[0], ys[0]), (xs[1], ys[1]))
         FancyArrowPatch.draw(self, renderer)
+    
+    def do_3d_projection(self, renderer=None):
+        """Required method for matplotlib 3D compatibility"""
+        xs3d, ys3d, zs3d = self._verts3d
+        xs, ys, zs = proj3d.proj_transform(xs3d, ys3d, zs3d, self.axes.M)
+        self.set_positions((xs[0], ys[0]), (xs[1], ys[1]))
+        return np.min(zs)
 
 class RecursiveDepthExplorer:
     """3D Recursive Depth Explorer Visualization"""
@@ -140,8 +151,16 @@ class RecursiveDepthExplorer:
         self.stdin_thread = None
         self.stop_event = threading.Event()
         if self.data_source == 'stdin':
-            self.stdin_thread = threading.Thread(target=self.read_stdin_data, daemon=True)
+            self.stdin_thread = threading.Thread(target=self.read_json_data, daemon=True)
             self.stdin_thread.start()
+        
+        # Setup GIF saver
+        self.gif_saver = setup_gif_saver("recursivedepthexplorer")
+        
+        # Register cleanup function
+        atexit.register(self.cleanup)
+        signal.signal(signal.SIGINT, self.signal_handler)
+        signal.signal(signal.SIGTERM, self.signal_handler)
         
         # Setup visualization
         self.setup_visualization()
@@ -248,8 +267,6 @@ class RecursiveDepthExplorer:
         """Detect active recursion levels from DAWN's cognitive state"""
         mood = json_data.get('mood', {})
         entropy = json_data.get('entropy', 0.5)
-        if isinstance(entropy, dict):
-            entropy = entropy.get('total_entropy', 0.5)
         heat = json_data.get('heat', 0.3)
         scup = json_data.get('scup', {})
         
@@ -266,288 +283,256 @@ class RecursiveDepthExplorer:
         
         # Level 1: Meta-cognition
         coherence = scup.get('coherence', 0.5)
-        utility = scup.get('utility', 0.5)
-        meta_trigger = coherence * utility
-        
-        if meta_trigger > 0.3:
+        meta_intensity = coherence * 0.7 + entropy * 0.3
+        if meta_intensity > 0.2:
             active_levels[1] = {
-                'intensity': meta_trigger,
+                'intensity': meta_intensity,
                 'processes': self.detect_meta_processes(json_data),
-                'focus_point': (coherence * 10 - 5, utility * 10 - 5, 2),
-                'cloud_points': self.generate_process_cloud(1, meta_trigger)
+                'focus_point': (coherence * 8 - 4, entropy * 8 - 4, 2),
+                'cloud_points': self.generate_process_cloud(1, meta_intensity)
             }
         
-        # Level 2: Meta-meta
-        schema_pressure = scup.get('schema', 0.5)
-        if meta_trigger > 0.4 and schema_pressure > 0.5:
-            meta_meta_intensity = meta_trigger * schema_pressure
+        # Level 2: Meta-meta-cognition
+        schema = scup.get('schema', 0.5)
+        meta_meta_intensity = schema * 0.6 + coherence * 0.4
+        if meta_meta_intensity > 0.3:
             active_levels[2] = {
                 'intensity': meta_meta_intensity,
                 'processes': self.detect_meta_meta_processes(json_data),
-                'focus_point': (schema_pressure * 10 - 5, meta_trigger * 10 - 5, 4),
+                'focus_point': (schema * 6 - 3, coherence * 6 - 3, 4),
                 'cloud_points': self.generate_process_cloud(2, meta_meta_intensity)
             }
         
         # Level 3: Abstract recursion
-        if len(active_levels) >= 3 and np.mean(list(scup.values())) > 0.6:
-            abstract_intensity = np.std(list(scup.values()))
+        utility = scup.get('utility', 0.5)
+        abstract_intensity = utility * 0.5 + schema * 0.5
+        if abstract_intensity > 0.4:
             active_levels[3] = {
                 'intensity': abstract_intensity,
-                'processes': ['abstract-pattern-recognition', 'recursive-synthesis'],
-                'focus_point': (0, 0, 6),
+                'processes': ['abstract-meta', 'pattern-patterns'],
+                'focus_point': (utility * 4 - 2, schema * 4 - 2, 6),
                 'cloud_points': self.generate_process_cloud(3, abstract_intensity)
             }
         
-        # Level 4: Transcendent (rare)
+        # Level 4: Transcendent recursion
         pressure = scup.get('pressure', 0.5)
-        if len(active_levels) >= 4 and pressure > 0.7 and entropy > 0.7:
-            transcendent_intensity = pressure * entropy * 0.5
+        transcendent_intensity = pressure * 0.4 + utility * 0.6
+        if transcendent_intensity > 0.5:
             active_levels[4] = {
                 'intensity': transcendent_intensity,
-                'processes': ['transcendent-awareness', 'infinite-recursion'],
-                'focus_point': (0, 0, 8),
+                'processes': ['transcendent', 'self-awareness'],
+                'focus_point': (pressure * 2 - 1, utility * 2 - 1, 8),
                 'cloud_points': self.generate_process_cloud(4, transcendent_intensity)
             }
         
         return active_levels
     
     def detect_direct_processes(self, json_data):
-        """Identify direct cognitive processes"""
+        """Detect direct cognitive processes"""
         processes = []
-        heat = json_data.get('heat', 0.3)
-        entropy = json_data.get('entropy', 0.5)
-        
-        if heat > 0.6:
-            processes.append('focused-attention')
-        if entropy > 0.6:
-            processes.append('exploratory-processing')
-        if heat < 0.3:
-            processes.append('diffuse-cognition')
-            
-        return processes
+        if json_data.get('heat', 0) > 0.6:
+            processes.append('high_heat_processing')
+        if json_data.get('entropy', 0) > 0.7:
+            processes.append('high_entropy_processing')
+        return processes or ['sensory_processing']
     
     def detect_meta_processes(self, json_data):
-        """Identify meta-cognitive processes"""
+        """Detect meta-cognitive processes"""
         processes = []
         scup = json_data.get('scup', {})
-        
-        if scup.get('coherence', 0.5) > 0.6:
-            processes.append('cognitive_monitoring')
-        if scup.get('utility', 0.5) > 0.6:
-            processes.append('strategy_evaluation')
-            
-        return processes
+        if scup.get('coherence', 0) > 0.6:
+            processes.append('coherence_monitoring')
+        if scup.get('schema', 0) > 0.5:
+            processes.append('pattern_recognition')
+        return processes or ['reflection']
     
     def detect_meta_meta_processes(self, json_data):
-        """Identify meta-meta-cognitive processes"""
+        """Detect meta-meta-cognitive processes"""
         processes = []
         scup = json_data.get('scup', {})
-        
-        if scup.get('schema', 0.5) > 0.6:
-            processes.append('meta_learning')
-        if scup.get('pressure', 0.5) > 0.5:
-            processes.append('recursive_planning')
-            
-        return processes
+        if scup.get('schema', 0) > 0.7:
+            processes.append('meta_pattern_analysis')
+        if scup.get('coherence', 0) > 0.7:
+            processes.append('cognitive_control')
+        return processes or ['meta_reflection']
     
     def generate_process_cloud(self, level, intensity):
-        """Generate 3D point cloud for process visualization"""
-        n_points = int(50 * intensity)
-        if n_points < 5:
-            return np.array([[], [], []]).T
+        """Generate cloud of process points for a recursion level"""
+        if intensity < 0.1:
+            return np.array([]).reshape(0, 3)
         
-        # Generate points in a sphere around focus area
-        theta = np.random.uniform(0, 2*np.pi, n_points)
-        phi = np.random.uniform(0, np.pi, n_points)
-        r = np.random.normal(2, 0.5, n_points) * intensity
+        # Number of points based on intensity
+        n_points = int(intensity * self.processing_cloud_size)
+        if n_points == 0:
+            return np.array([]).reshape(0, 3)
         
-        x = r * np.sin(phi) * np.cos(theta)
-        y = r * np.sin(phi) * np.sin(theta)
-        z = np.full(n_points, RECURSION_LEVELS[level]['z_position']) + \
-            np.random.normal(0, 0.2, n_points)
+        # Generate points around the level's center
+        center = RECURSION_LEVELS[level]['z_position']
+        x = np.random.normal(0, 2, n_points)
+        y = np.random.normal(0, 2, n_points)
+        z = np.random.normal(center, 0.5, n_points)
         
-        return np.column_stack((x, y, z))
+        return np.column_stack([x, y, z])
     
     def detect_recursive_loops(self, active_levels):
-        """Identify recursive processing loops between levels"""
+        """Detect recursive loops between levels"""
         loops = []
         
-        # Self-recursion detection
+        # Self-recursion loops
         for level, data in active_levels.items():
             if data['intensity'] > 0.6:
                 loops.append({
                     'type': 'self_recursion',
-                    'levels': [level, level],
+                    'levels': [level],
                     'strength': data['intensity'],
-                    'description': f'Self-referential at L{level}'
+                    'processes': data['processes']
                 })
         
         # Cross-level recursion
-        level_list = list(active_levels.keys())
-        for i, level1 in enumerate(level_list):
-            for level2 in level_list[i+1:]:
+        levels = list(active_levels.keys())
+        for i, level1 in enumerate(levels):
+            for level2 in levels[i+1:]:
+                # Check for cross-level influence
                 influence = self.calculate_cross_level_influence(
                     active_levels[level1], active_levels[level2]
                 )
-                
-                if influence > 0.3:
+                if influence > 0.4:
                     loops.append({
                         'type': 'cross_recursion',
                         'levels': [level1, level2],
                         'strength': influence,
-                        'description': f'L{level1} ↔ L{level2}'
+                        'processes': active_levels[level1]['processes'] + 
+                                   active_levels[level2]['processes']
                     })
-        
-        # Meta-recursive cycles
-        if len(active_levels) >= 3:
-            cycle_strength = self.detect_recursive_cycles(active_levels)
-            if cycle_strength > 0.2:
-                loops.append({
-                    'type': 'recursive_cycle',
-                    'levels': level_list,
-                    'strength': cycle_strength,
-                    'description': 'Multi-level cycle'
-                })
         
         return loops
     
     def calculate_cross_level_influence(self, level1_data, level2_data):
-        """Calculate influence strength between two levels"""
-        # Simple influence model based on intensity and proximity
-        intensity_product = level1_data['intensity'] * level2_data['intensity']
-        
-        # Add some randomness for dynamic effects
-        noise = np.random.normal(0, 0.1)
-        
-        return np.clip(intensity_product + noise, 0, 1)
+        """Calculate influence between two recursion levels"""
+        # Simple correlation-based influence
+        intensity_diff = abs(level1_data['intensity'] - level2_data['intensity'])
+        return max(0, 1 - intensity_diff)
     
     def detect_recursive_cycles(self, active_levels):
-        """Detect multi-level recursive cycles"""
-        if len(active_levels) < 3:
-            return 0
+        """Detect longer recursive cycles"""
+        cycles = []
+        levels = list(active_levels.keys())
         
-        # Calculate cycle strength based on balanced activity
-        intensities = [data['intensity'] for data in active_levels.values()]
-        mean_intensity = np.mean(intensities)
-        std_intensity = np.std(intensities)
+        if len(levels) >= 3:
+            # Check for 3+ level cycles
+            for i in range(len(levels) - 2):
+                cycle_levels = levels[i:i+3]
+                cycle_strength = np.mean([active_levels[l]['intensity'] for l in cycle_levels])
+                if cycle_strength > 0.5:
+                    cycles.append({
+                        'type': 'cycle',
+                        'levels': cycle_levels,
+                        'strength': cycle_strength
+                    })
         
-        # Strong cycles have high mean intensity and low variance
-        cycle_strength = mean_intensity * (1 - std_intensity)
-        
-        return np.clip(cycle_strength, 0, 1)
+        return cycles
     
     def analyze_recursive_patterns(self):
-        """Deep analysis of recursive processing patterns"""
+        """Analyze overall recursive patterns"""
         if not self.active_processes:
             return self.recursive_analysis
         
-        active_depths = list(self.active_processes.keys())
+        # Calculate metrics
+        active_levels = list(self.active_processes.keys())
+        self.recursive_analysis['max_active_depth'] = max(active_levels) if active_levels else 0
+        self.recursive_analysis['average_depth'] = np.mean(active_levels) if active_levels else 0
+        self.recursive_analysis['recursive_loops_count'] = len(self.recursion_loops)
         
-        analysis = {
-            'max_active_depth': max(active_depths),
-            'average_depth': np.mean(active_depths),
-            'depth_distribution': len(active_depths) / self.max_depth,
-            'recursive_loops_count': len(self.recursion_loops),
-            'self_recursion_strength': self.measure_self_recursion(),
-            'cross_level_connectivity': self.measure_cross_connectivity(),
-            'recursive_complexity_index': self.calculate_recursive_complexity(),
-            'meta_cognitive_load': self.measure_meta_load(),
-            'transcendence_score': self.calculate_transcendence_score()
-        }
+        # Calculate complexity index
+        complexity = self.calculate_recursive_complexity()
+        self.recursive_analysis['recursive_complexity_index'] = complexity
         
-        self.recursive_analysis = analysis
-        return analysis
+        # Calculate meta-cognitive load
+        meta_load = self.measure_meta_load()
+        self.recursive_analysis['meta_cognitive_load'] = meta_load
+        
+        # Calculate transcendence score
+        transcendence = self.calculate_transcendence_score()
+        self.recursive_analysis['transcendence_score'] = transcendence
+        
+        return self.recursive_analysis
     
     def measure_self_recursion(self):
-        """Measure strength of self-referential processing"""
-        self_loops = [loop for loop in self.recursion_loops 
-                     if loop['type'] == 'self_recursion']
-        
-        if not self_loops:
-            return 0
-        
-        return np.mean([loop['strength'] for loop in self_loops])
+        """Measure self-recursion intensity"""
+        self_loops = [loop for loop in self.recursion_loops if loop['type'] == 'self_recursion']
+        return np.mean([loop['strength'] for loop in self_loops]) if self_loops else 0
     
     def measure_cross_connectivity(self):
-        """Measure connectivity between different levels"""
-        cross_loops = [loop for loop in self.recursion_loops 
-                      if loop['type'] == 'cross_recursion']
-        
-        if not cross_loops:
-            return 0
-        
-        return len(cross_loops) / (len(self.active_processes) * (len(self.active_processes) - 1) / 2)
+        """Measure cross-level connectivity"""
+        cross_loops = [loop for loop in self.recursion_loops if loop['type'] == 'cross_recursion']
+        return len(cross_loops) / max(1, len(self.active_processes))
     
     def calculate_recursive_complexity(self):
-        """Calculate overall recursive complexity"""
+        """Calculate recursive complexity index"""
         if not self.active_processes:
             return 0
         
         # Factors: number of active levels, loop count, intensity variance
         n_levels = len(self.active_processes)
         n_loops = len(self.recursion_loops)
-        intensities = [data['intensity'] for data in self.active_processes.values()]
-        intensity_variance = np.var(intensities)
+        intensity_variance = np.var([data['intensity'] for data in self.active_processes.values()])
         
-        complexity = (n_levels / self.max_depth) * 0.3 + \
-                    (min(n_loops, 10) / 10) * 0.4 + \
-                    intensity_variance * 0.3
-        
-        return np.clip(complexity, 0, 1)
+        complexity = (n_levels / 5) * 0.4 + (n_loops / 10) * 0.3 + intensity_variance * 0.3
+        return min(1.0, complexity)
     
     def measure_meta_load(self):
-        """Measure cognitive load from meta-processing"""
-        meta_levels = [level for level in self.active_processes if level > 0]
-        
-        if not meta_levels:
+        """Measure meta-cognitive load"""
+        if not self.active_processes:
             return 0
         
-        # Higher levels contribute more to load
-        load = sum(self.active_processes[level]['intensity'] * (level / self.max_depth) 
-                  for level in meta_levels)
+        # Weight by recursion depth
+        total_load = 0
+        for level, data in self.active_processes.items():
+            weight = level + 1  # Higher levels have more weight
+            total_load += data['intensity'] * weight
         
-        return np.clip(load / len(meta_levels), 0, 1)
+        return min(1.0, total_load / 15)  # Normalize
     
     def calculate_transcendence_score(self):
-        """Calculate transcendent awareness score"""
-        if len(self.active_processes) < 3:
+        """Calculate transcendence score"""
+        if not self.active_processes:
             return 0
         
-        # Transcendence indicators
-        max_depth = max(self.active_processes.keys())
-        depth_coverage = len(self.active_processes) / self.max_depth
-        loop_harmony = 1 - np.std([loop['strength'] for loop in self.recursion_loops]) \
-                      if self.recursion_loops else 0
+        # Focus on higher recursion levels
+        transcendence = 0
+        for level, data in self.active_processes.items():
+            if level >= 3:  # Abstract and transcendent levels
+                transcendence += data['intensity'] * (level - 2)
         
-        score = (max_depth / self.max_depth) * 0.3 + \
-                depth_coverage * 0.3 + \
-                loop_harmony * 0.4
-        
-        return np.clip(score, 0, 1)
+        return min(1.0, transcendence / 10)
     
+    def read_latest_json_data(self):
+        """Read the latest data from JSON file"""
+        json_file = "/tmp/dawn_tick_data.json"
+        if os.path.exists(json_file):
+            try:
+                with open(json_file, 'r') as f:
+                    lines = f.readlines()
+                    if lines:
+                        last_line = lines[-1].strip()
+                        if last_line:
+                            return json.loads(last_line)
+            except Exception as e:
+                pass
+        return None
+
     def update_visualization(self, frame):
         """Animation update function"""
         try:
-            data = None
-            if self.data_source == 'stdin':
-                while True:
-                    line = sys.stdin.readline()
-                    if line == '':
-                        print("[recursive_depth_explorer] Waiting for input...")
-                        time.sleep(0.1)
-                        continue
-                    line = line.strip()
-                    if not line:
-                        continue
-                    try:
-                        data = json.loads(line)
-                    except Exception as e:
-                        print(f"JSON decode error: {e}")
-                        continue
-            else:
+            self.frame_count = frame
+            
+            # Get new data
+            if not self.data_queue.empty():
+                data = self.data_queue.get_nowait()
+            elif self.data_source == 'demo':
                 data = self.generate_demo_data(frame)
-            if data is None:
-                return [self.ax]
+            else:
+                return []
             
             # Analyze recursive depth
             self.active_processes = self.analyze_recursive_depth(data)
@@ -594,8 +579,7 @@ class RecursiveDepthExplorer:
             self.ax.view_init(elev=20, azim=self.rotation_angle)
             
         except Exception as e:
-            print(f"Error in update_visualization: {e}", file=sys.stderr)
-            return [self.ax]
+            pass
         
         return []
     
@@ -707,76 +691,112 @@ class RecursiveDepthExplorer:
         data = {
             'entropy': 0.5 + 0.3 * np.sin(t) + 0.1 * np.sin(t * 5),
             'heat': 0.4 + 0.3 * np.cos(t * 0.7) + 0.1 * np.cos(t * 3),
-            'mood': {
-                'base_level': 0.6 + 0.2 * np.sin(t * 0.5)
-            },
+            'mood': {'valence': 0.5 + 0.2 * np.sin(t * 0.5)},
             'scup': {
-                'schema': 0.5 + 0.25 * np.sin(t * 0.8),
-                'coherence': 0.5 + 0.25 * np.cos(t * 0.6),
-                'utility': 0.5 + 0.2 * np.sin(t * 1.2),
-                'pressure': 0.4 + 0.3 * abs(np.sin(t * 0.4))
+                'schema': 0.5 + 0.3 * np.sin(t * 0.3) + 0.1 * np.sin(t * 7),
+                'coherence': 0.5 + 0.25 * np.cos(t * 0.4) + 0.1 * np.cos(t * 6),
+                'utility': 0.5 + 0.2 * np.sin(t * 0.6) + 0.1 * np.sin(t * 8),
+                'pressure': 0.3 + 0.4 * abs(np.sin(t * 0.2)) + 0.2 * np.random.random()
             }
         }
         
-        # Create recursive depth waves
-        if frame % 100 < 50:
-            # Deep recursion phase
-            boost = (frame % 100) / 50
-            data['scup']['coherence'] *= (1 + boost * 0.5)
-            data['scup']['schema'] *= (1 + boost * 0.3)
-            data['entropy'] *= (1 + boost * 0.2)
-        
-        # Ensure values are in [0, 1]
-        for key in data['scup']:
-            data['scup'][key] = np.clip(data['scup'][key], 0, 1)
-        data['entropy'] = np.clip(data['entropy'], 0, 1)
-        data['heat'] = np.clip(data['heat'], 0, 1)
+        # Add recursive patterns
+        if np.random.random() < 0.05:
+            # Occasional recursive spikes
+            data['scup']['schema'] = min(1.0, data['scup']['schema'] + 0.3)
+            data['scup']['coherence'] = min(1.0, data['scup']['coherence'] + 0.2)
         
         return data
     
-    def read_stdin_data(self):
-        """Background thread to read lines from stdin and put them in the queue"""
-        while not self.stop_event.is_set():
-            try:
-                line = sys.stdin.readline()
+    def read_json_data(self):
+        """Background thread to read data from JSON file"""
+        import sys
+        if getattr(self, 'data_source', None) == 'stdin':
+            for line in sys.stdin:
+                line = line.strip()
                 if not line:
-                    time.sleep(0.01)
                     continue
-                self.data_queue.put(line.strip())
-            except Exception as e:
-                print(f"Error reading stdin: {e}", file=sys.stderr)
-                break
-
+                try:
+                    data = json.loads(line)
+                    self.data_queue.put(data)
+                except Exception as e:
+                    print(f"Error parsing JSON: {e}", file=sys.stderr)
+        else:
+            json_file = "/tmp/dawn_tick_data.json"
+            last_position = 0
+            while not hasattr(self, 'stop_event') or not self.stop_event.is_set():
+                try:
+                    if not os.path.exists(json_file):
+                        time.sleep(0.1)
+                        continue
+                    with open(json_file, 'r') as f:
+                        f.seek(last_position)
+                        lines = f.readlines()
+                        last_position = f.tell()
+                        for line in lines:
+                            line = line.strip()
+                            if not line:
+                                continue
+                            try:
+                                data = json.loads(line)
+                                self.data_queue.put(data)
+                            except json.JSONDecodeError as e:
+                                continue
+                    time.sleep(0.1)
+                except Exception as e:
+                    time.sleep(1.0)
+    
     def run(self, interval=200):
-        """Start the real-time visualization"""
-        try:
-            self.animation = animation.FuncAnimation(self.fig, self.update_visualization,
-                                                   interval=interval, blit=False, cache_frame_data=False)
-            plt.show()
-        except KeyboardInterrupt:
-            print("Visualization terminated by user.")
-            self.save_animation_gif()
-        except Exception as e:
-            print(f"Runtime error: {e}", file=sys.stderr)
-            self.save_animation_gif()
+        """Start the visualization"""
+        # Create animation
+        self.ani = animation.FuncAnimation(
+            self.fig, self.update_visualization,
+            interval=interval,  # 5 FPS for backend
+            blit=False,
+            cache_frame_data=False
+        )
+        
+        # Save animation as GIF
+        self.save_animation_gif()
+        
+        # Don't show in backend mode - it's non-interactive
+        # plt.show()
+        
+        # Keep the process alive for a moment to ensure saving completes
+        time.sleep(2)
+    
+    def save_animation_gif(self):
+        """Save the animation as a GIF"""
+        if hasattr(self, 'gif_saver') and self.gif_saver:
+            try:
+                gif_path = self.gif_saver.save_animation_as_gif(self.ani, fps=5, dpi=100)
+                if gif_path:
+                    print(f"Animation saved: {gif_path}")
+            except Exception as e:
+                print(f"Failed to save animation: {e}")
+        else:
+            print("GIF saver not available")
+    
+    def cleanup(self):
+        """Cleanup function"""
+        if hasattr(self, 'stop_event'):
+            self.stop_event.set()
+        if hasattr(self, 'stdin_thread') and self.stdin_thread:
+            self.stdin_thread.join(timeout=1.0)
+    
+    def signal_handler(self, signum, frame):
+        """Signal handler for graceful shutdown"""
+        self.cleanup()
+        sys.exit(0)
 
 def main():
     """Main entry point"""
-    parser = argparse.ArgumentParser(
-        description='DAWN Visualization #10: Recursive Depth Explorer'
-    )
-    parser.add_argument('--source', choices=['stdin', 'demo'], default='stdin',
-                       help='Data source (default: stdin)')
+    parser = argparse.ArgumentParser(description='Recursive Depth Explorer Visualization')
+    parser.add_argument('--source', default='stdin', 
+                       choices=['demo', 'stdin'],
+                       help='Data source (demo or stdin)')
     parser.add_argument('--max-depth', type=int, default=5,
-                       help='Maximum recursion depth (default: 5)')
-    parser.add_argument('--3d-mode', action='store_true',
-                       help='Enable enhanced 3D effects')
-    parser.add_argument('--recursive-analysis', action='store_true',
-                       help='Show detailed recursive analysis')
-    parser.add_argument('--interval', type=int, default=100,
-                       help='Animation update interval in milliseconds')
-    parser.add_argument('--buffer', type=int, default=100,
-                       help='Buffer size for visualizations')
+                       help='Maximum recursion depth to visualize')
     
     args = parser.parse_args()
     
@@ -785,14 +805,6 @@ def main():
         data_source=args.source,
         max_depth=args.max_depth
     )
-    
-    print(f"Starting DAWN Recursive Depth Explorer...")
-    print(f"Data source: {args.source}")
-    print(f"Max depth: {args.max_depth}")
-    print(f"Controls: Use mouse to rotate view")
-    
-    if args.source == 'stdin':
-        print("Waiting for JSON data on stdin...")
     
     viz.run()
 

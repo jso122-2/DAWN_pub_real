@@ -11,6 +11,10 @@ import matplotlib.animation as animation
 from matplotlib.patches import FancyBboxPatch, ConnectionPatch
 from matplotlib.collections import LineCollection
 import json
+import os
+import os
+import os
+import os
 import sys
 import argparse
 import time
@@ -100,6 +104,9 @@ class SigilCommandStream:
         # Data source
         self.data_source = data_source
         self.data_queue = queue.Queue()
+        
+        # Thread control
+        self.stop_event = threading.Event()
         
         # Active sigil tracking
         self.active_sigils = []
@@ -645,11 +652,39 @@ class SigilCommandStream:
             ax.text(0.5, 0.5, 'Gathering rhythm data...', ha='center', va='center',
                    transform=ax.transAxes, color='gray')
     
+    def read_latest_json_data(self):
+        """Read the latest data from JSON file"""
+        json_file = "/tmp/dawn_tick_data.json"
+        if os.path.exists(json_file):
+            try:
+                with open(json_file, 'r') as f:
+                    lines = f.readlines()
+                    if lines:
+                        last_line = lines[-1].strip()
+                        if last_line:
+                            return json.loads(last_line)
+            except Exception as e:
+                print(f"Error reading JSON: {e}", file=sys.stderr)
+        return None
+
     def update_visualization(self, frame):
         """Animation update function"""
         self.frame_count = frame
         
         try:
+            # Read data from JSON file
+            data = self.read_latest_json_data()
+            
+            if data is None:
+                # Use simulated data if no real data available
+                data = {
+                    'tick': frame,
+                    'mood': {'valence': 0.5 + 0.2 * np.sin(frame * 0.05)},
+                    'entropy': {'total_entropy': 0.5 + 0.2 * np.sin(frame * 0.03)},
+                    'thermal_state': {'heat_level': 0.3 + 0.1 * np.cos(frame * 0.04)},
+                    'scup': {'schema': 0.5, 'coherence': 0.5, 'utility': 0.5, 'pressure': 0.5}
+                }
+            
             # Get new data
             if not self.data_queue.empty():
                 data = self.data_queue.get_nowait()
@@ -716,27 +751,44 @@ class SigilCommandStream:
         
         return data
     
-    def read_stdin_data(self):
-        """Read JSON data from stdin"""
-        while True:
+    def read_json_data(self):
+        """Background thread to read data from JSON file"""
+        json_file = "/tmp/dawn_tick_data.json"
+        last_position = 0
+        
+        while not getattr(self, 'stop_event', None) or not self.stop_event.is_set():
             try:
-                line = sys.stdin.readline()
-                if not line:
-                    break
+                if not os.path.exists(json_file):
+                    time.sleep(0.1)
+                    continue
                 
-                data = json.loads(line.strip())
-                self.data_queue.put(data)
+                with open(json_file, 'r') as f:
+                    f.seek(last_position)
+                    lines = f.readlines()
+                    last_position = f.tell()
+                    
+                    for line in lines:
+                        line = line.strip()
+                        if not line:
+                            continue
+                        try:
+                            data = json.loads(line)
+                            self.data_queue.put(data)
+                        except json.JSONDecodeError as e:
+                            print(f"Error parsing JSON: {e}", file=sys.stderr)
+                            continue
                 
-            except json.JSONDecodeError:
-                continue
+                time.sleep(0.1)  # Small delay to avoid excessive CPU usage
+                
             except Exception as e:
-                print(f"Error reading data: {e}", file=sys.stderr)
-    
+                print(f"Error reading JSON file: {e}", file=sys.stderr)
+                time.sleep(1.0)  # Longer delay on error
+
     def run(self):
         """Start the visualization"""
         # Start stdin reader thread if needed
         if self.data_source == 'stdin':
-            reader_thread = threading.Thread(target=self.read_stdin_data, daemon=True)
+            reader_thread = threading.Thread(target=self.read_json_data, daemon=True)
             reader_thread.start()
         
         # Create animation

@@ -15,6 +15,10 @@ from mpl_toolkits.mplot3d import proj3d
 from matplotlib.cm import ScalarMappable
 from matplotlib.colors import LinearSegmentedColormap
 import json
+import os
+import os
+import os
+import os
 import sys
 import argparse
 import time
@@ -483,7 +487,6 @@ class ConsciousnessConstellation:
         if len(scup_history) < 5:
             return 0
         
-        try:
             # Use PCA to project to 3D for hull calculation
             scup_array = np.array(scup_history)
             centered = scup_array - scup_array.mean(axis=0)
@@ -491,7 +494,6 @@ class ConsciousnessConstellation:
             # Simple volume estimate using spread
             volume = np.prod(np.std(centered, axis=0)) * len(scup_history)
             return np.clip(volume, 0, 1)
-        except:
             return 0
     
     def calculate_trajectory_length(self, scup_history):
@@ -736,44 +738,53 @@ class ConsciousnessConstellation:
         
         self.phase_transitions = transitions[-10:]  # Keep last 10 transitions
     
+    def read_latest_json_data(self):
+        """Read the latest data from JSON file"""
+        json_file = "/tmp/dawn_tick_data.json"
+        if os.path.exists(json_file):
+                with open(json_file, 'r') as f:
+                    lines = f.readlines()
+                    if lines:
+                        last_line = lines[-1].strip()
+                        if last_line:
+                            return json.loads(last_line)
+                print(f"Error reading JSON: {e}", file=sys.stderr)
+        return None
+
     def update_visualization(self, frame):
         """Animation update function"""
         self.frame_count = frame
         
-        try:
-            # Get new data
-            if not self.data_queue.empty():
-                data = self.data_queue.get_nowait()
-            elif self.data_source == 'demo':
-                data = self.generate_demo_data(frame)
-            else:
-                return []
-            
-            # Analyze consciousness state
-            current_scup = self.analyze_consciousness_state(data)
-            
-            # Update trajectory visualizations
-            self.update_trajectory_visualization()
-            
-            # Update SCUP radar
-            self.update_scup_radar(current_scup)
-            
-            # Update metric panels
-            self.update_metric_panels()
-            
-            # Update temporal analysis
-            self.update_temporal_analysis()
-            
-            # Rotate view slowly
-            self.rotation_angle = (self.rotation_angle + 0.3) % 360
-            self.ax_constellation.view_init(elev=20, azim=self.rotation_angle)
-            
-            # Add particle effects for current position
-            if frame % 5 == 0:
-                self.add_consciousness_particle(current_scup)
-            
-        except Exception as e:
-            print(f"Update error: {e}", file=sys.stderr)
+        # Get new data
+        if not self.data_queue.empty():
+            data = self.data_queue.get_nowait()
+        elif self.data_source == 'demo':
+            data = self.generate_demo_data(frame)
+        else:
+            return []
+        
+        # Analyze consciousness state
+        current_scup = self.analyze_consciousness_state(data)
+        
+        # Update trajectory visualizations
+        self.update_trajectory_visualization()
+        
+        # Update SCUP radar
+        self.update_scup_radar(current_scup)
+        
+        # Update metric panels
+        self.update_metric_panels()
+        
+        # Update temporal analysis
+        self.update_temporal_analysis()
+        
+        # Rotate view slowly
+        self.rotation_angle = (self.rotation_angle + 0.3) % 360
+        self.ax_constellation.view_init(elev=20, azim=self.rotation_angle)
+        
+        # Add particle effects for current position
+        if frame % 5 == 0:
+            self.add_consciousness_particle(current_scup)
         
         return list(self.trajectory_lines.values())
     
@@ -991,27 +1002,69 @@ class ConsciousnessConstellation:
         
         return data
     
-    def read_stdin_data(self):
+    def read_json_data(self):
+        """Background thread to read data from JSON file"""
+        json_file = "/tmp/dawn_tick_data.json"
+        last_position = 0
+        
+        while not self.stop_event.is_set():
+                if not os.path.exists(json_file):
+                    time.sleep(0.1)
+                    continue
+                
+                with open(json_file, 'r') as f:
+                    f.seek(last_position)
+                    lines = f.readlines()
+                    last_position = f.tell()
+                    
+                    for line in lines:
+                        line = line.strip()
+                        if not line:
+                            continue
+                            data = json.loads(line)
+                            self.data_queue.put(data)
+                            continue
+                            print(f"Error parsing JSON: {e}", file=sys.stderr)
+                            continue
+                
+                time.sleep(0.1)  # Small delay to avoid excessive CPU usage
+                
+                print(f"Error reading JSON file: {e}", file=sys.stderr)
+                time.sleep(1.0)  # Longer delay on error
         """Read JSON data from stdin"""
         while True:
-            try:
-                line = sys.stdin.readline()
+                # Read from JSON file instead of stdin
+                json_file = "/tmp/dawn_tick_data.json"
+                if not os.path.exists(json_file):
+                    time.sleep(0.1)
+                    continue
+                
+                with open(json_file, 'r') as f:
+                    f.seek(0, 2)  # Seek to end
+                    file_size = f.tell()
+                    if file_size == 0:
+                        time.sleep(0.1)
+                        continue
+                    
+                    # Read last line
+                    f.seek(max(0, file_size - 1024))  # Read last 1KB
+                    lines = f.readlines()
+                    if lines:
+                        line = lines[-1].strip()
                 if not line:
                     break
                 
                 data = json.loads(line.strip())
                 self.data_queue.put(data)
                 
-            except json.JSONDecodeError:
                 continue
-            except Exception as e:
                 print(f"Error reading data: {e}", file=sys.stderr)
     
     def run(self):
         """Start the visualization"""
         # Start stdin reader thread if needed
         if self.data_source == 'stdin':
-            reader_thread = threading.Thread(target=self.read_stdin_data, daemon=True)
+            reader_thread = threading.Thread(target=self.read_json_data, daemon=True)
             reader_thread.start()
         
         # Create animation

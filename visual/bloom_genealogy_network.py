@@ -7,6 +7,7 @@ with genealogical inheritance relationships.
 
 import sys
 import json
+import os
 import math
 import random
 import time
@@ -15,6 +16,8 @@ from collections import defaultdict, deque
 from dataclasses import dataclass, field
 from typing import List, Dict, Set, Tuple, Optional
 import numpy as np
+import threading
+import queue
 
 try:
     import pygame
@@ -398,7 +401,7 @@ class BloomGenealogyNetwork:
 class BloomVisualization:
     """Handles the visual rendering of the bloom genealogy network"""
     
-    def __init__(self, width: int = 1400, height: int = 900):
+    def __init__(self, width: int = 1400, height: int = 900, data_source='demo'):
         pygame.init()
         self.width = width
         self.height = height
@@ -429,6 +432,40 @@ class BloomVisualization:
         self.time = 0
         self.frame_count = 0
         
+        # Data source
+        self.data_source = data_source
+        self.data_queue = queue.Queue()
+        self.stop_event = threading.Event()
+        if self.data_source == 'stdin':
+            self.reader_thread = threading.Thread(target=self.read_json_data, daemon=True)
+            self.reader_thread.start()
+
+    def read_json_data(self):
+        """Background thread to read data from /tmp/dawn_tick_data.json"""
+        json_file = "/tmp/dawn_tick_data.json"
+        last_position = 0
+        while not self.stop_event.is_set():
+            try:
+                if not os.path.exists(json_file):
+                    time.sleep(0.1)
+                    continue
+                with open(json_file, 'r') as f:
+                    f.seek(last_position)
+                    lines = f.readlines()
+                    last_position = f.tell()
+                    for line in lines:
+                        line = line.strip()
+                        if not line:
+                            continue
+                        try:
+                            data = json.loads(line)
+                            self.data_queue.put(data)
+                        except json.JSONDecodeError:
+                            continue
+                time.sleep(0.1)
+            except Exception:
+                time.sleep(1.0)
+
     def detect_bloom_creation(self, json_data: dict) -> List[Dict]:
         """Analyze DAWN state to detect new memory bloom formation"""
         mood = json_data.get('mood', {})
@@ -798,16 +835,11 @@ class BloomVisualization:
         """Main visualization loop"""
         running = True
         last_time = time.time()
-        
-        # For demo mode
         demo_timer = 0
-        
         while running:
             current_time = time.time()
             dt = current_time - last_time
             last_time = current_time
-            
-            # Handle events
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
@@ -821,30 +853,25 @@ class BloomVisualization:
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     if event.button == 1:  # Left click
                         self.handle_click(event.pos)
-            
             # Process data
-            if data_source == 'demo':
+            if self.data_source == 'stdin':
+                # Process new data from queue if available
+                try:
+                    while not self.data_queue.empty():
+                        data = self.data_queue.get_nowait()
+                        self.process_dawn_state(data)
+                except Exception:
+                    pass
+            else:
                 demo_timer += dt
-                if demo_timer > 0.5:  # Generate demo data every 0.5 seconds
+                if demo_timer > 0.5:
                     demo_timer = 0
                     demo_data = self.generate_demo_data()
                     self.process_dawn_state(demo_data)
-            else:
-                # Read from stdin
-                if sys.stdin in select.select([sys.stdin], [], [], 0)[0]:
-                    line = sys.stdin.readline()
-                    if line:
-                        try:
-                            json_data = json.loads(line.strip())
-                            self.process_dawn_state(json_data)
-                        except json.JSONDecodeError:
-                            pass
-            
-            # Update and draw
             self.update(dt)
             self.draw()
             self.clock.tick(60)  # 60 FPS
-        
+        self.stop_event.set()
         pygame.quit()
     
     def generate_demo_data(self) -> dict:
@@ -875,17 +902,12 @@ def main():
                        help='Window height (default: 900)')
     parser.add_argument('--max-blooms', type=int, default=200,
                        help='Maximum number of blooms (default: 200)')
-    
     args = parser.parse_args()
-    
     # Create and run visualization
     viz = BloomVisualization(args.width, args.height)
-    
-    try:
-        viz.run(data_source=args.source)
-    except KeyboardInterrupt:
-        print("\nVisualization terminated by user")
-        sys.exit(0)
+    viz.run(data_source=args.source)
+    print("\nVisualization terminated by user")
+    sys.exit(0)
 
 if __name__ == "__main__":
     main()

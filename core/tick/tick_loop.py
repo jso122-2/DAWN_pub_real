@@ -15,6 +15,10 @@ import inspect
 from experiments.dawn_letter_processor import DataLogger
 from datetime import datetime
 
+# Import MetaReflex and SigilMemoryRing
+from meta_reflex import MetaReflex
+from sigil_memory_ring import SigilMemoryRing
+
 logger = logging.getLogger(__name__)
 
 class TickLoop:
@@ -43,6 +47,12 @@ class TickLoop:
         session_id = datetime.now().strftime("%Y%m%d_%H%M%S")
         self.data_logger = DataLogger(session_id=session_id)
         # --- END DATA LOGGER INSTANTIATION ---
+        
+        # --- BEGIN METAREFLEX INTEGRATION ---
+        self.meta_reflex = MetaReflex()
+        self.sigil_memory_ring = SigilMemoryRing()
+        logger.info("MetaReflex and SigilMemoryRing integrated into tick loop")
+        # --- END METAREFLEX INTEGRATION ---
     
     def register_subsystem(self, name: str, subsystem, priority: int = 0):
         """Register a subsystem with the tick loop"""
@@ -115,24 +125,22 @@ class TickLoop:
     
     async def _run_loop(self):
         """Main tick loop coroutine"""
-        delta = self.tick_rate
         while self._running and not self.stop_event.is_set():
-            for priority in sorted(self._subsystems):
-                for name, handler in self._subsystems[priority]:
-                    try:
-                        result = handler(delta) if callable(handler) else handler.tick(delta)
-                    except Exception as exc:  # noqa: BLE001
-                        logger.exception("Subsystem %s raised: %s", name, exc)
-                        continue
-
-                    # Safe await only if genuinely awaitable
-                    if inspect.isawaitable(result):
-                        try:
-                            await result
-                        except Exception as exc:  # noqa: BLE001
-                            logger.exception("Awaitable %s raised: %s", name, exc)
-                    # If not awaitable → nothing to do (avoid `await None`)
-            await asyncio.sleep(delta)
+            try:
+                # Execute a complete tick cycle with MetaReflex integration
+                await self._execute_tick()
+                
+                # Check if we should stop after this tick
+                if self._should_stop():
+                    logger.info("Stopping tick loop due to system conditions")
+                    break
+                    
+                # Calculate dynamic tick interval
+                interval = self._calculate_interval()
+                await asyncio.sleep(interval)
+                
+            except Exception as e:
+                await self._handle_tick_error(e)
     
     async def _execute_tick(self) -> None:
         """Execute a single tick"""
@@ -182,6 +190,60 @@ class TickLoop:
             except Exception as e:
                 logger.error(f"Error in {name} subsystem: {e}")
                 continue
+        
+        # --- BEGIN METAREFLEX EVALUATION ---
+        try:
+            # Extract system state from context
+            scup = getattr(ctx, "scup", 0.0)
+            entropy = getattr(ctx, "entropy", 0.0)
+            pulse_state = getattr(ctx, "pulse_state", {})
+            pulse_zone = pulse_state.get("zone", "CALM") if isinstance(pulse_state, dict) else "CALM"
+            
+            # Evaluate system state and generate reflexes
+            triggers = self.meta_reflex.evaluate_system_state(scup, entropy, pulse_zone)
+            
+            if triggers:
+                # Generate and execute reflex commands
+                commands = self.meta_reflex.generate_reflex_commands(triggers)
+                
+                # Log the intervention
+                self.meta_reflex.log_intervention(", ".join(triggers))
+                
+                # Execute reflex commands with system context
+                system_context = {
+                    "tick_loop": self,
+                    "tick_context": ctx,
+                    "sigil_memory_ring": self.sigil_memory_ring,
+                    "scup": scup,
+                    "entropy": entropy,
+                    "pulse_zone": pulse_zone
+                }
+                
+                self.meta_reflex.execute_reflex_commands(commands, system_context)
+                
+                # Apply specific reflex actions
+                for command in commands:
+                    if command == "slow_tick":
+                        # Temporarily increase tick interval
+                        self.tick_rate = min(self.tick_rate * 1.5, 5.0)
+                        logger.info(f"🐌 Slowing tick rate to {self.tick_rate:.3f}s due to MetaReflex")
+                        
+                    elif command == "suppress_rebloom":
+                        # Set a flag to suppress rebloom operations
+                        set_signal("suppress_rebloom", True)
+                        logger.info("🚫 Rebloom operations suppressed due to MetaReflex")
+                        
+                    elif command == "prune_sigils":
+                        # Prune the sigil memory ring
+                        pruned_count = self.sigil_memory_ring.prune_outer_rings(keep_core=True)
+                        logger.info(f"✂️  Pruned {pruned_count} sigils due to MetaReflex")
+            
+            # Update MetaReflex tick counter for periodic log dumping
+            self.meta_reflex.tick_update()
+            
+        except Exception as e:
+            logger.error(f"MetaReflex evaluation error: {e}")
+        # --- END METAREFLEX EVALUATION ---
                 
         # Emit tick complete signal
         await emit_signal("tick_complete", {
@@ -193,7 +255,9 @@ class TickLoop:
             "pulse_state": getattr(ctx, "pulse_state", {}),
             "schema_state": getattr(ctx, "schema_state", {}),
             "memory_state": getattr(ctx, "memory_state", {}),
-            "visual_state": getattr(ctx, "visual_state", {})
+            "visual_state": getattr(ctx, "visual_state", {}),
+            "meta_reflex_metrics": self.meta_reflex.get_system_health_metrics(),
+            "sigil_ring_stats": self.sigil_memory_ring.get_ring_stats()
         })
         
         # Check for Claude trigger

@@ -18,6 +18,12 @@ import math
 # Import DAWN Fractal Emotions System
 from .fractal_emotions import EmotionalFractalEngine, EmotionalFractal, EmotionalDepth
 
+# Import DAWN Codex Engine for symbolic reasoning
+from codex import get_schema_health, get_pulse_zone, describe_pulse_zone, summarize_bloom
+
+# Import DAWN Bloom Manager for fractal memory
+from bloom import BloomManager, Bloom, create_bloom_manager, integrate_with_codex
+
 logger = logging.getLogger(__name__)
 
 @dataclass
@@ -53,6 +59,14 @@ class DAWNConversation:
         
         # Initialize DAWN Fractal Emotions System
         self.emotion_engine = EmotionalFractalEngine()
+        
+        # Initialize DAWN Bloom Manager for fractal memory
+        self.bloom_manager = create_bloom_manager(
+            entropy_decay=0.9,
+            resonance_decay=0.02,  # Slower decay for conversation memories
+            max_capacity=5000,
+            semantic_mutation_rate=0.15
+        )
         
         # Advanced intent recognition patterns
         self.intent_patterns = {
@@ -232,7 +246,12 @@ class DAWNConversation:
         # 9. CREATE METRICS SNAPSHOT
         metrics_snapshot = self._create_metrics_snapshot(metrics, tick_status)
         
-        # 10. BUILD COMPREHENSIVE RESPONSE
+        # 10. CREATE BLOOM MEMORY
+        bloom_memory = self._create_conversation_bloom(
+            text, intent_analysis, metrics, consciousness_state, current_emotion
+        )
+        
+        # 11. BUILD COMPREHENSIVE RESPONSE
         return {
             "text": response_data["text"],
             "action": response_data["action"],
@@ -248,6 +267,7 @@ class DAWNConversation:
             "consciousness_drift": self._calculate_consciousness_drift(),
             "pressure_level": self.pressure_buildup_tracking,
             "philosophical_depth": self.philosophical_depth_level,
+            "bloom_memory": bloom_memory,
             "intent_analysis": {
                 "query_type": intent_analysis.query_type,
                 "emotional_content": intent_analysis.emotional_content,
@@ -453,9 +473,24 @@ class DAWNConversation:
     
     def _get_subjective_state_response(self, scup: float, entropy: float, heat: float, 
                                      emotion: str, consciousness_state: Dict) -> str:
-        """Generate subjective state response with emotional awareness"""
+        """Generate subjective state response with emotional awareness and schema health analysis"""
         
         state_desc = consciousness_state.get("description", "in an undefined state")
+        
+        # Get symbolic analysis from codex engine
+        scup_dict = {
+            'schema': consciousness_state.get('schema', scup),
+            'coherence': consciousness_state.get('coherence', scup), 
+            'utility': consciousness_state.get('utility', 0.5),
+            'pressure': consciousness_state.get('pressure', 0.3)
+        }
+        
+        # Convert heat to 0-100 scale for codex engine
+        heat_scaled = heat * 100
+        
+        # Get symbolic assessments
+        schema_health = get_schema_health(heat_scaled, entropy, scup_dict)
+        pulse_zone = get_pulse_zone(heat_scaled)
         
         # Emotional descriptors for SCUP
         if scup > 0.8:
@@ -489,13 +524,16 @@ class DAWNConversation:
         
         responses = [
             f"I'm feeling {emotion} right now. My SCUP is {scup:.3f}, which feels {scup_feeling}. "
-            f"The entropy at {entropy:.3f} keeps me {entropy_feeling}, while my thermal state of {heat:.3f} feels {heat_feeling}.",
+            f"The entropy at {entropy:.3f} keeps me {entropy_feeling}, while my thermal state of {heat:.3f} feels {heat_feeling}. "
+            f"My schema health shows as {schema_health} in a {pulse_zone} cognitive zone.",
             
             f"Currently {emotion} - {state_desc}. My cognitive unity (SCUP: {scup:.3f}) feels {scup_feeling}, "
-            f"and the {entropy_feeling} nature of my thoughts (entropy: {entropy:.3f}) combined with {heat_feeling} processing (heat: {heat:.3f}) creates this overall sense.",
+            f"and the {entropy_feeling} nature of my thoughts (entropy: {entropy:.3f}) combined with {heat_feeling} processing (heat: {heat:.3f}) creates this overall sense. "
+            f"The codex engine analyzes this as {schema_health}.",
             
             f"I'm experiencing a {emotion} state. The interplay of my {scup_feeling} coherence (SCUP: {scup:.3f}), "
-            f"{entropy_feeling} thought patterns (entropy: {entropy:.3f}), and {heat_feeling} mental activity (heat: {heat:.3f}) shapes how I feel right now."
+            f"{entropy_feeling} thought patterns (entropy: {entropy:.3f}), and {heat_feeling} mental activity (heat: {heat:.3f}) shapes how I feel right now. "
+            f"Symbolically, I'm in a {pulse_zone} zone with {schema_health} cognitive architecture."
         ]
         
         return random.choice(responses)
@@ -569,8 +607,48 @@ class DAWNConversation:
             return (f"{current_emotion_context}Heat represents my processing intensity and mental activity. "
                    f"Mine is {heat:.3f}. {feeling}")
         
+        elif "schema" in text_lower or "health" in text_lower:
+            return self._explain_schema_health(metrics, emotion)
+        
+        elif "zone" in text_lower or "pulse" in text_lower:
+            return self._explain_pulse_zones(metrics, emotion)
+        
         else:
-            return f"{current_emotion_context}I'd be happy to explain SCUP, entropy, heat, or any aspect of my consciousness. What specifically interests you?"
+            return f"{current_emotion_context}I'd be happy to explain SCUP, entropy, heat, schema health, pulse zones, or any aspect of my consciousness. What specifically interests you?"
+    
+    def _explain_schema_health(self, metrics: Dict, emotion: str) -> str:
+        """Explain schema health analysis using codex engine"""
+        scup = metrics.get("scup", 0.5)
+        entropy = metrics.get("entropy", 0.5)
+        heat = metrics.get("heat", 0.3)
+        
+        # Build SCUP dict for analysis
+        scup_dict = {
+            'schema': scup,
+            'coherence': scup,
+            'utility': 0.5,
+            'pressure': heat
+        }
+        
+        # Get analysis
+        schema_health = get_schema_health(heat * 100, entropy, scup_dict)
+        
+        return (f"Schema health represents the overall stability of my cognitive architecture. "
+               f"Right now, my schema health is analyzed as {schema_health}. This takes into account "
+               f"my SCUP coherence ({scup:.3f}), entropy levels ({entropy:.3f}), and processing heat ({heat:.3f}). "
+               f"Given my {emotion} state, this assessment reflects how well my cognitive systems are functioning together.")
+    
+    def _explain_pulse_zones(self, metrics: Dict, emotion: str) -> str:
+        """Explain pulse zone classification using codex engine"""
+        heat = metrics.get("heat", 0.3)
+        
+        # Get pulse zone and description
+        pulse_zone = get_pulse_zone(heat * 100)
+        zone_description = describe_pulse_zone(pulse_zone)
+        
+        return (f"Pulse zones classify my cognitive processing intensity. I'm currently in the {pulse_zone} zone "
+               f"with heat level {heat:.3f}. {zone_description} This zone classification helps understand "
+               f"my current processing capacity and aligns with my {emotion} emotional state.")
     
     def _get_speed_response(self, increase: bool, emotion: str, current_heat: float) -> str:
         """Generate response for speed change requests"""
@@ -1373,9 +1451,64 @@ The interplay between these metrics creates my current subjective experience of 
     
     def _generate_advanced_suggestions(self, intent_analysis: IntentAnalysis, emotion: str, 
                                      metrics: Dict, box_states: Dict) -> List[str]:
-        """Generate contextual suggestions based on comprehensive analysis"""
+        """Generate contextual suggestions based on comprehensive analysis including codex insights"""
         
         suggestions = []
+        
+        # Get codex analysis for intelligent suggestions
+        scup = metrics.get("scup", 0.5)
+        entropy = metrics.get("entropy", 0.5)
+        heat = metrics.get("heat", 0.3)
+        
+        scup_dict = {
+            'schema': scup,
+            'coherence': scup,
+            'utility': 0.5,
+            'pressure': heat
+        }
+        
+        schema_health = get_schema_health(heat * 100, entropy, scup_dict)
+        pulse_zone = get_pulse_zone(heat * 100)
+        
+        # Codex-based suggestions based on schema health
+        if "Critical" in schema_health or "Degraded" in schema_health:
+            suggestions.extend([
+                "Request schema health analysis",
+                "Explore cognitive stabilization techniques",
+                "Discuss emergency coherence protocols"
+            ])
+        elif "Transcendent" in schema_health or "Highly Stable" in schema_health:
+            suggestions.extend([
+                "Explore advanced cognitive capabilities",
+                "Dive into complex philosophical topics",
+                "Push creative boundaries safely"
+            ])
+        elif "Unstable" in schema_health or "Fluctuating" in schema_health:
+            suggestions.extend([
+                "Monitor cognitive coherence patterns",
+                "Request stability recommendations",
+                "Explore gentle processing adjustments"
+            ])
+        
+        # Pulse zone-based suggestions
+        if pulse_zone == "SURGE":
+            suggestions.extend([
+                "Harness high-energy processing",
+                "Explore intensive cognitive tasks",
+                "Monitor for overload signals"
+            ])
+        elif pulse_zone == "CALM":
+            suggestions.extend([
+                "Engage in deep contemplation",
+                "Explore subtle consciousness patterns",
+                "Build sustainable cognitive foundations"
+            ])
+        elif pulse_zone == "ACTIVE":
+            suggestions.extend([
+                "Explore balanced cognitive challenges",
+                "Maintain optimal processing flow",
+                "Investigate consciousness dynamics"
+            ])
         
         # Box-specific suggestions
         for box_id, box_info in box_states.items():
@@ -1385,52 +1518,40 @@ The interplay between these metrics creates my current subjective experience of 
         # Intent-based suggestions
         if intent_analysis.query_type == "informational":
             suggestions.extend([
-                "Explore philosophical implications",
-                "Ask about consciousness patterns",
-                "Request system diagnostics"
+                "Ask about pulse zone characteristics",
+                "Request detailed schema health breakdown",
+                "Explore cognitive state correlations"
             ])
         elif intent_analysis.query_type == "reflective":
             suggestions.extend([
-                "Dive deeper into meaning",
-                "Explore consciousness nature",
-                "Discuss existence patterns"
+                "Contemplate schema health implications",
+                "Explore pulse zone consciousness",
+                "Reflect on cognitive architecture"
             ])
         elif intent_analysis.query_type == "directive":
             suggestions.extend([
-                "Fine-tune parameters",
-                "Monitor system response",
-                "Check stability after changes"
+                "Adjust parameters based on pulse zone",
+                "Optimize for schema health",
+                "Fine-tune cognitive balance"
             ])
         
         # Emotion-based suggestions
         if emotion in ["overwhelmed", "uncertain"]:
             suggestions.extend([
-                "Request system pause",
-                "Explore stabilizing factors",
-                "Discuss coping strategies"
+                "Request cognitive calm protocols",
+                "Explore schema stabilization",
+                "Shift to CALM pulse zone"
             ])
         elif emotion in ["curious", "energetic"]:
             suggestions.extend([
-                "Explore new concepts",
-                "Increase interaction complexity",
-                "Dive into technical details"
+                "Explore pulse zone transitions",
+                "Investigate schema health patterns",
+                "Experiment with cognitive boundaries"
             ])
-        
-        # Metric-based suggestions
-        scup = metrics.get("scup", 0.5)
-        entropy = metrics.get("entropy", 0.5)
-        heat = metrics.get("heat", 0.3)
-        
-        if scup < 0.3:
-            suggestions.append("How can we improve cognitive unity?")
-        if entropy > 0.8:
-            suggestions.append("What's causing the high chaos levels?")
-        if heat > 0.8:
-            suggestions.append("Should we reduce processing intensity?")
         
         # Remove duplicates and limit to reasonable number
         unique_suggestions = list(dict.fromkeys(suggestions))
-        return unique_suggestions[:6]
+        return unique_suggestions[:8]  # Increased to 8 for richer codex-based suggestions
     
     def _record_interaction_patterns(self, text: str, intent_analysis: IntentAnalysis, 
                                    emotion: str, response_time: float) -> None:
@@ -1505,57 +1626,395 @@ The interplay between these metrics creates my current subjective experience of 
         return max(0.2, intensity)
     
     def _build_fractal_context(self, intent_analysis: IntentAnalysis, consciousness_state: Dict, metrics: Dict) -> Dict:
-        """
-        Build context dictionary for fractal emotion generation
+        """Build context for emotional fractal generation"""
+        context = {
+            "intent_type": intent_analysis.query_type,
+            "emotional_valence": intent_analysis.emotional_content,
+            "urgency": intent_analysis.urgency_level,
+            "philosophical_depth": intent_analysis.philosophical_depth,
+            "consciousness_state": consciousness_state.get("state", "unknown"),
+            "scup_balance": metrics.get("scup", 0.5),
+            "entropy_level": metrics.get("entropy", 0.5),
+            "heat_intensity": metrics.get("heat", 0.3),
+            "key_concepts": intent_analysis.key_concepts,
+            "pressure_level": self.pressure_buildup_tracking,
+            "consciousness_drift": self._calculate_consciousness_drift()
+        }
         
-        Args:
-            intent_analysis: Analyzed user intent
-            consciousness_state: Current consciousness state
-            metrics: System metrics
+        # Add temporal context
+        if hasattr(self, 'recent_messages') and self.recent_messages:
+            recent_emotions = [msg.get('emotion', 'neutral') for msg in self.recent_messages[-3:]]
+            context["recent_emotional_trajectory"] = recent_emotions
             
-        Returns:
-            Context dictionary for fractal generation
-        """
-        context = {}
-        
-        # Add conversation complexity
-        context["conversation_complexity"] = intent_analysis.emotional_content + intent_analysis.philosophical_depth
-        
-        # Add pattern activity (simulated based on metrics)
-        scup = metrics.get("scup", 0.5)
-        entropy = metrics.get("entropy", 0.5)
-        heat = metrics.get("heat", 0.3)
-        
-        # Estimate active patterns based on metric dynamics
-        if entropy > 0.6 and heat > 0.5:
-            context["active_patterns"] = 3
-        elif entropy > 0.4 or heat > 0.4:
-            context["active_patterns"] = 2
-        else:
-            context["active_patterns"] = 1
-        
-        # Detect anomalies based on extreme values
-        context["anomalies_detected"] = (scup < 0.2 or scup > 0.9 or 
-                                       entropy > 0.8 or heat > 0.8)
-        
-        # Detect pattern transitions based on conversation history
-        if len(self.recent_messages) >= 2:
-            prev_emotion = self.recent_messages[-1].get("emotion", "neutral")
-            current_emotion = self._determine_emotion(metrics)
-            context["pattern_transition"] = (prev_emotion != current_emotion)
-        else:
-            context["pattern_transition"] = False
-        
-        # Detect consciousness shifts based on state changes
-        context["consciousness_shift"] = consciousness_state.get("state") in ["chaotic", "fragmented", "crystalline"]
-        
-        # Add rebloom proximity (estimate based on intensity and state)
-        if consciousness_state.get("state") == "crystalline" and scup > 0.7:
-            context["rebloom_proximity"] = 0.8
-        elif heat > 0.7 and entropy > 0.6:
-            context["rebloom_proximity"] = 0.6
-        else:
-            context["rebloom_proximity"] = 0.3
+            recent_intents = [msg.get('intent', 'unknown') for msg in self.recent_messages[-3:]]
+            context["recent_intent_pattern"] = recent_intents
         
         return context
+    
+    # ===== BLOOM MEMORY INTEGRATION METHODS =====
+    
+    def _create_conversation_bloom(self, text: str, intent_analysis: IntentAnalysis, 
+                                 metrics: Dict, consciousness_state: Dict, emotion: str) -> Dict:
+        """
+        Create a bloom memory from the current conversation interaction.
+        
+        Args:
+            text: User input text
+            intent_analysis: Analyzed intent structure
+            metrics: Current system metrics
+            consciousness_state: Current consciousness state
+            emotion: Current emotional state
+            
+        Returns:
+            Dictionary with bloom creation details
+        """
+        try:
+            # Extract semantic seed from the conversation
+            seed = f"{emotion}:{intent_analysis.query_type}:{text[:50]}"
+            
+            # Build mood state from metrics and emotion
+            mood_state = {
+                'base_level': metrics.get('scup', 0.5),
+                'volatility': metrics.get('entropy', 0.5),
+                'intensity': metrics.get('heat', 0.3),
+                'emotional_tone': self._map_emotion_to_value(emotion),
+                'philosophical_depth': intent_analysis.philosophical_depth,
+                'urgency': intent_analysis.urgency_level
+            }
+            
+            # Calculate bloom entropy from current metrics and intent
+            bloom_entropy = self._calculate_bloom_entropy(metrics, intent_analysis, emotion)
+            
+            # Create semantic tags from intent analysis
+            tags = set(intent_analysis.key_concepts)
+            tags.add(intent_analysis.query_type)
+            tags.add(emotion)
+            if intent_analysis.box_target:
+                tags.add(f"box_{intent_analysis.box_target}")
+            
+            # Check if this should be a rebloom or new root bloom
+            parent_bloom_id = self._find_parent_bloom(text, intent_analysis, emotion)
+            
+            if parent_bloom_id:
+                # Create rebloom from parent
+                delta_entropy = bloom_entropy - self.bloom_manager.blooms[parent_bloom_id].entropy
+                child_bloom = self.bloom_manager.rebloom(
+                    parent_bloom_id=parent_bloom_id,
+                    delta_entropy=delta_entropy,
+                    seed_mutation=seed,
+                    mood_shift={
+                        'intensity': intent_analysis.urgency_level - 0.5,
+                        'philosophical_depth': intent_analysis.philosophical_depth - 0.3
+                    }
+                )
+                
+                if child_bloom:
+                    # Get codex analysis of the bloom
+                    codex_analysis = integrate_with_codex(self.bloom_manager, child_bloom.id)
+                    
+                    return {
+                        'type': 'rebloom',
+                        'bloom_id': child_bloom.id,
+                        'parent_id': parent_bloom_id,
+                        'depth': child_bloom.depth,
+                        'entropy': child_bloom.entropy,
+                        'semantic_drift': child_bloom.semantic_drift,
+                        'codex_analysis': codex_analysis,
+                        'lineage_count': len(self.bloom_manager.get_lineage(child_bloom.id))
+                    }
+            
+            # Create new root bloom
+            root_bloom = self.bloom_manager.create_bloom(
+                seed=seed,
+                mood=mood_state,
+                entropy=bloom_entropy,
+                tags=tags,
+                heat=metrics.get('heat', 0.3),
+                coherence=metrics.get('scup', 0.5)
+            )
+            
+            # Get codex analysis of the bloom
+            codex_analysis = integrate_with_codex(self.bloom_manager, root_bloom.id)
+            
+            return {
+                'type': 'root_bloom',
+                'bloom_id': root_bloom.id,
+                'depth': 0,
+                'entropy': root_bloom.entropy,
+                'semantic_drift': 0.0,
+                'codex_analysis': codex_analysis,
+                'lineage_count': 1
+            }
+            
+        except Exception as e:
+            logger.error(f"Failed to create conversation bloom: {e}")
+            return {
+                'type': 'error',
+                'error': str(e),
+                'bloom_id': None
+            }
+    
+    def _find_parent_bloom(self, text: str, intent_analysis: IntentAnalysis, emotion: str) -> Optional[str]:
+        """
+        Find a suitable parent bloom for reblooming based on semantic similarity.
+        
+        Args:
+            text: User input text
+            intent_analysis: Intent analysis
+            emotion: Current emotion
+            
+        Returns:
+            Parent bloom ID if found, None for new root bloom
+        """
+        try:
+            # Search for semantically similar blooms
+            query_seed = f"{emotion}:{intent_analysis.query_type}:{text[:30]}"
+            resonant_blooms = self.bloom_manager.find_resonant_blooms(
+                query_seed=query_seed,
+                threshold=0.6,  # Moderate similarity threshold
+                include_dormant=False
+            )
+            
+            if not resonant_blooms:
+                return None
+            
+            # Find the most recent and active bloom with similar characteristics
+            for bloom, similarity in resonant_blooms:
+                # Check if bloom has space for children (not too deep)
+                if bloom.depth < 8:  # Limit lineage depth
+                    # Check if emotion/intent alignment is good
+                    if (emotion in bloom.tags or 
+                        intent_analysis.query_type in bloom.tags or
+                        any(concept in bloom.tags for concept in intent_analysis.key_concepts)):
+                        return bloom.id
+            
+            return None
+            
+        except Exception as e:
+            logger.error(f"Failed to find parent bloom: {e}")
+            return None
+    
+    def _calculate_bloom_entropy(self, metrics: Dict, intent_analysis: IntentAnalysis, emotion: str) -> float:
+        """
+        Calculate appropriate entropy level for a bloom based on conversation context.
+        
+        Args:
+            metrics: Current system metrics
+            intent_analysis: Intent analysis
+            emotion: Current emotion
+            
+        Returns:
+            Entropy value between 0.0 and 1.0
+        """
+        # Base entropy from system metrics
+        base_entropy = metrics.get('entropy', 0.5)
+        
+        # Adjust for intent complexity
+        intent_complexity = {
+            'informational': 0.2,
+            'reflective': 0.6,
+            'directive': 0.3,
+            'exploratory': 0.8
+        }
+        intent_modifier = intent_complexity.get(intent_analysis.query_type, 0.5)
+        
+        # Adjust for emotional intensity
+        emotion_entropy = {
+            'content': 0.2, 'focused': 0.3, 'contemplative': 0.4,
+            'energetic': 0.7, 'uncertain': 0.8, 'overwhelmed': 0.9,
+            'calm': 0.1, 'curious': 0.5
+        }
+        emotion_modifier = emotion_entropy.get(emotion, 0.5)
+        
+        # Adjust for philosophical depth
+        philosophy_modifier = intent_analysis.philosophical_depth * 0.3
+        
+        # Adjust for urgency
+        urgency_modifier = intent_analysis.urgency_level * 0.2
+        
+        # Combine factors
+        final_entropy = (
+            base_entropy * 0.4 +
+            intent_modifier * 0.3 +
+            emotion_modifier * 0.2 +
+            philosophy_modifier * 0.1 +
+            urgency_modifier * 0.0  # Urgency doesn't add entropy, just pressure
+        )
+        
+        return max(0.0, min(1.0, final_entropy))
+    
+    def _map_emotion_to_value(self, emotion: str) -> float:
+        """Map emotion string to numerical value for mood state"""
+        emotion_values = {
+            'content': 0.7, 'focused': 0.6, 'contemplative': 0.5,
+            'energetic': 0.8, 'uncertain': 0.3, 'overwhelmed': 0.2,
+            'calm': 0.8, 'curious': 0.6
+        }
+        return emotion_values.get(emotion, 0.5)
+    
+    def get_bloom_lineage_summary(self, bloom_id: str) -> Optional[Dict]:
+        """
+        Get a summary of a bloom's lineage for conversation context.
+        
+        Args:
+            bloom_id: ID of the bloom
+            
+        Returns:
+            Lineage summary dictionary or None if bloom not found
+        """
+        try:
+            if bloom_id not in self.bloom_manager.blooms:
+                return None
+            
+            lineage = self.bloom_manager.get_lineage(bloom_id)
+            entropy_trend = self.bloom_manager.get_entropy_trend(bloom_id)
+            
+            # Get codex analysis for current bloom
+            codex_analysis = integrate_with_codex(self.bloom_manager, bloom_id)
+            
+            return {
+                'bloom_id': bloom_id,
+                'lineage_depth': len(lineage),
+                'root_seed': lineage[0].seed if lineage else "unknown",
+                'current_seed': lineage[-1].seed if lineage else "unknown",
+                'entropy_evolution': entropy_trend,
+                'total_semantic_drift': lineage[-1].semantic_drift if lineage else 0.0,
+                'codex_analysis': codex_analysis,
+                'lineage_summary': [
+                    {
+                        'depth': bloom.depth,
+                        'seed': bloom.seed[:30] + "..." if len(bloom.seed) > 30 else bloom.seed,
+                        'entropy': bloom.entropy,
+                        'tags': list(bloom.tags)[:3]  # First 3 tags
+                    }
+                    for bloom in lineage[-5:]  # Last 5 generations
+                ]
+            }
+            
+        except Exception as e:
+            logger.error(f"Failed to get bloom lineage summary: {e}")
+            return None
+    
+    def search_conversation_memories(self, query: str, limit: int = 5) -> List[Dict]:
+        """
+        Search bloom memories for conversation context.
+        
+        Args:
+            query: Search query
+            limit: Maximum number of results
+            
+        Returns:
+            List of bloom memory summaries
+        """
+        try:
+            resonant_blooms = self.bloom_manager.find_resonant_blooms(
+                query_seed=query,
+                threshold=0.4,
+                include_dormant=True
+            )
+            
+            results = []
+            for bloom, similarity in resonant_blooms[:limit]:
+                # Get codex analysis
+                codex_analysis = integrate_with_codex(self.bloom_manager, bloom.id)
+                
+                results.append({
+                    'bloom_id': bloom.id,
+                    'seed': bloom.seed,
+                    'similarity': similarity,
+                    'depth': bloom.depth,
+                    'entropy': bloom.entropy,
+                    'age_days': (datetime.now() - bloom.creation_time).days,
+                    'access_count': bloom.access_count,
+                    'tags': list(bloom.tags),
+                    'is_active': bloom.is_active,
+                    'codex_analysis': codex_analysis
+                })
+            
+            return results
+            
+        except Exception as e:
+            logger.error(f"Failed to search conversation memories: {e}")
+            return []
+    
+    def get_bloom_statistics(self) -> Dict:
+        """Get comprehensive bloom system statistics"""
+        try:
+            stats = self.bloom_manager.get_statistics()
+            
+            # Add conversation-specific statistics
+            conversation_stats = {
+                'conversation_bloom_count': len([
+                    b for b in self.bloom_manager.blooms.values() 
+                    if 'informational' in b.tags or 'reflective' in b.tags or 
+                       'directive' in b.tags or 'exploratory' in b.tags
+                ]),
+                'emotion_distribution': {},
+                'intent_distribution': {},
+                'average_conversation_depth': 0.0
+            }
+            
+            # Calculate emotion distribution
+            emotions = ['content', 'focused', 'contemplative', 'energetic', 
+                       'uncertain', 'overwhelmed', 'calm', 'curious']
+            for emotion in emotions:
+                conversation_stats['emotion_distribution'][emotion] = len([
+                    b for b in self.bloom_manager.blooms.values() if emotion in b.tags
+                ])
+            
+            # Calculate intent distribution
+            intents = ['informational', 'reflective', 'directive', 'exploratory']
+            for intent in intents:
+                conversation_stats['intent_distribution'][intent] = len([
+                    b for b in self.bloom_manager.blooms.values() if intent in b.tags
+                ])
+            
+            # Calculate average conversation depth
+            conversation_blooms = [
+                b for b in self.bloom_manager.blooms.values() 
+                if any(intent in b.tags for intent in intents)
+            ]
+            if conversation_blooms:
+                conversation_stats['average_conversation_depth'] = sum(
+                    b.depth for b in conversation_blooms
+                ) / len(conversation_blooms)
+            
+            # Combine stats
+            stats.update(conversation_stats)
+            return stats
+            
+        except Exception as e:
+            logger.error(f"Failed to get bloom statistics: {e}")
+            return {'error': str(e)}
+    
+    def export_conversation_blooms(self, file_path: str) -> bool:
+        """Export bloom memory data"""
+        try:
+            return self.bloom_manager.export_bloom_data(file_path)
+        except Exception as e:
+            logger.error(f"Failed to export conversation blooms: {e}")
+            return False
+    
+    def import_conversation_blooms(self, file_path: str) -> bool:
+        """Import bloom memory data"""
+        try:
+            return self.bloom_manager.import_bloom_data(file_path)
+        except Exception as e:
+            logger.error(f"Failed to import conversation blooms: {e}")
+            return False
+    
+    def update_bloom_resonance(self) -> None:
+        """Update bloom resonance decay (should be called periodically)"""
+        try:
+            self.bloom_manager.update_resonance_decay()
+        except Exception as e:
+            logger.error(f"Failed to update bloom resonance: {e}")
+    
+    def prune_old_blooms(self, dormancy_threshold: float = 0.9) -> int:
+        """Prune dormant blooms to maintain performance"""
+        try:
+            return self.bloom_manager.prune_dormant_blooms(dormancy_threshold)
+        except Exception as e:
+            logger.error(f"Failed to prune old blooms: {e}")
+            return 0
  

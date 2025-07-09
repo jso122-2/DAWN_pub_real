@@ -5,6 +5,10 @@ Integrated version for backend tick engine with multi-process support
 """
 
 import json
+import os
+import os
+import os
+import os
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
@@ -20,9 +24,15 @@ import atexit
 import sys
 
 # Import GIF saver
-try:
+
     from .gif_saver import setup_gif_saver
-except ImportError:
+    from gif_saver import setup_gif_saver
+import signal
+import atexit
+
+# Import GIF saver
+
+    from .gif_saver import setup_gif_saver
     from gif_saver import setup_gif_saver
 
 logger = logging.getLogger(__name__)
@@ -83,16 +93,15 @@ class HeatMonitorVisualizer:
     
     def save_animation_gif(self):
         """Save the animation as GIF"""
-        try:
+
             if hasattr(self, 'ani'):
-                gif_path = self.gif_saver.save_animation_as_gif(self.ani, fps=10, dpi=100)
+                gif_path = self.gif_saver.save_animation_as_gif(self.ani, fps=5, dpi=100)
                 if gif_path:
                     print(f"\nAnimation GIF saved: {gif_path}", file=sys.stderr)
                 else:
                     print("\nFailed to save animation GIF", file=sys.stderr)
             else:
                 print("\nNo animation to save", file=sys.stderr)
-        except Exception as e:
             print(f"\nError saving animation GIF: {e}", file=sys.stderr)
 
     def cleanup(self):
@@ -240,7 +249,7 @@ class HeatMonitorVisualizer:
     
     def parse_heat_data(self, process_data: Dict[str, Any], process_id: int = 0) -> float:
         """Extract and process heat/intensity from DAWN process data"""
-        try:
+
             # Direct heat value
             heat_raw = process_data.get('heat', 0.3)
             
@@ -285,7 +294,6 @@ class HeatMonitorVisualizer:
             # Clamp to valid range
             return max(0.0, min(1.0, combined_heat))
             
-        except Exception as e:
             logger.error(f"Error parsing heat data for process {process_id}: {e}")
             return 0.3
     
@@ -303,7 +311,7 @@ class HeatMonitorVisualizer:
     
     def update_visualization(self, process_data: Dict[str, Any], process_id: int = 0, tick: int = 0) -> None:
         """Update the visualization with new process data"""
-        try:
+
             # Update heat state
             raw_heat = self.parse_heat_data(process_data, process_id)
             self.heat_current[process_id] = self.smooth_heat_transition(raw_heat, process_id)
@@ -340,7 +348,6 @@ class HeatMonitorVisualizer:
             status = f"Zone: {zone_label} | Avg: {self.heat_average[process_id]:.3f}"
             components['status_text'].set_text(status)
             
-        except Exception as e:
             logger.error(f"Update error for process {process_id}: {e}")
     
     def update_all_processes(self, all_process_data: Dict[int, Dict[str, Any]], tick: int) -> None:
@@ -381,7 +388,7 @@ class HeatMonitorVisualizer:
     def start_animation(self) -> None:
         """Start the animation loop"""
         if self.ani is None:
-            self.ani = animation.FuncAnimation(
+            self.ani = animation.FuncAnimation(frames=1000, 
                 self.fig, 
                 lambda frame: self._animation_frame(frame), 
                 interval=self.update_interval, 

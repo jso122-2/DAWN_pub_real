@@ -122,8 +122,8 @@ class BaseVisualProcess:
     def save_animation_gif(self):
         """Save the animation as GIF"""
         try:
-            if hasattr(self, 'animation'):
-                gif_path = self.gif_saver.save_animation_as_gif(self.animation, fps=10, dpi=100)
+            if hasattr(self, 'animation') and self.animation is not None:
+                gif_path = self.gif_saver.save_animation_as_gif(self.animation, fps=5, dpi=100)
                 if gif_path:
                     print(f"\nAnimation GIF saved: {gif_path}", file=sys.stderr)
                 else:

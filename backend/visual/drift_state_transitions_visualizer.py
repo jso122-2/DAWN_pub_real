@@ -10,10 +10,17 @@ import signal
 import atexit
 
 # Import GIF saver
-try:
+
     from .gif_saver import setup_gif_saver
-except ImportError:
     from gif_saver import setup_gif_saver
+import signal
+import atexit
+
+# Import GIF saver
+
+    from .gif_saver import setup_gif_saver
+    from gif_saver import setup_gif_saver
+import sys
 
 DRIFT_STATES = {
     'contemplative': {
@@ -62,6 +69,13 @@ class DriftStateTransitionsVisualizer:
         self._animation_thread = None
         self._setup_graph()
 
+        # Setup GIF saver
+        self.gif_saver = setup_gif_saver("driftstatetransitionsvisualizer")
+
+        # Register cleanup function
+        atexit.register(self.cleanup)
+        signal.signal(signal.SIGINT, self.signal_handler)
+        signal.signal(signal.SIGTERM, self.signal_handler)
     def _setup_graph(self):
         for state, props in DRIFT_STATES.items():
             self.graph.add_node(state, color=props['color'], description=props['description'])
@@ -201,6 +215,28 @@ class DriftStateTransitionsVisualizer:
         # Remove simulation - this should not be called
         pass
 
+    def save_animation_gif(self):
+        """Save the animation as GIF"""
+
+            if hasattr(self, 'animation'):
+                gif_path = self.gif_saver.save_animation_as_gif(self.animation, fps=5, dpi=100)
+                if gif_path:
+                    print(f'\nAnimation GIF saved: {gif_path}', file=sys.stderr)
+                else:
+                    print('\nFailed to save animation GIF', file=sys.stderr)
+            else:
+                print('\nNo animation to save', file=sys.stderr)
+            print(f'\nError saving animation GIF: {e}', file=sys.stderr)
+
+    def cleanup(self):
+        """Cleanup function to save GIF"""
+        self.save_animation_gif()
+
+    def signal_handler(self, signum, frame):
+        """Signal handler to save GIF on termination"""
+        print(f'\nReceived signal {signum}, saving GIF...', file=sys.stderr)
+        self.save_animation_gif()
+        sys.exit(0)
 # Factory function for backend integration
 def get_drift_state_transitions_visualizer():
     return DriftStateTransitionsVisualizer(history_length=100)

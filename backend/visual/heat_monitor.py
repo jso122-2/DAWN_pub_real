@@ -1,15 +1,18 @@
 #!/usr/bin/env python3
 """
-DAWN Heat Monitor Visualizer
-Real-time visualization of cognitive heat dynamics
+DAWN Cognition Visualization #3: Heat Monitor
+Foundation Tier - "Meeting DAWN"
+
+Real-time radial gauge visualization of DAWN's cognitive intensity.
+Displays processing heat as a dynamic speedometer showing the engine's
+cognitive load, processing speed, and mental effort across time.
 """
 
-# Configure matplotlib for headless operation
-import matplotlib
-matplotlib.use('Agg')  # Use non-interactive backend
-
 import json
+import os
 import numpy as np
+import matplotlib
+matplotlib.use('Agg')  # Use non-interactive backend for headless mode
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 from matplotlib.patches import Wedge, Circle
@@ -18,21 +21,18 @@ import time
 from collections import deque
 import argparse
 import math
-import signal
-import atexit
-import threading
-import queue
-
-# Import GIF saver
-try:
-    from .gif_saver import setup_gif_saver
-except ImportError:
-    from gif_saver import setup_gif_saver
 
 class HeatMonitorVisualizer:
-    def __init__(self, data_source="stdin", buffer_size=50):
+    def __init__(self, data_source="stdin", buffer_size=50, save_frames=False, output_dir="./visual_output"):
         self.data_source = data_source
         self.buffer_size = buffer_size
+        self.save_frames = save_frames
+        self.output_dir = output_dir
+        self.frame_count = 0
+        
+        # Create output directory if saving
+        if self.save_frames:
+            os.makedirs(self.output_dir, exist_ok=True)
         
         # Heat state buffers
         self.heat_history = deque(maxlen=buffer_size)
@@ -69,22 +69,6 @@ class HeatMonitorVisualizer:
         self.setup_history_plot()
         
         plt.tight_layout()
-        
-        # Data queue and background thread for stdin
-        self.data_queue = queue.Queue()
-        self.stdin_thread = None
-        self.stop_event = threading.Event()
-        if self.data_source == "stdin":
-            self.stdin_thread = threading.Thread(target=self.read_stdin_data, daemon=True)
-            self.stdin_thread.start()
-        
-        # Setup GIF saver
-        self.gif_saver = setup_gif_saver("heatmonitorvisualizer")
-
-        # Register cleanup function
-        atexit.register(self.cleanup)
-        signal.signal(signal.SIGINT, self.signal_handler)
-        signal.signal(signal.SIGTERM, self.signal_handler)
     
     def setup_gauge(self):
         """Initialize the radial gauge display"""
@@ -189,9 +173,6 @@ class HeatMonitorVisualizer:
         self.average_line, = self.ax_history.plot([], [], 'y--', linewidth=1, alpha=0.6)
         self.peak_line, = self.ax_history.plot([], [], 'r:', linewidth=1, alpha=0.8)
         
-        # Fill area under curve
-        self.history_fill = self.ax_history.fill_between([], [], alpha=0.2, color='green')
-        
         # Add heat zone backgrounds
         for min_val, max_val, color, label in self.heat_zones:
             self.ax_history.axhspan(min_val, max_val, alpha=0.1, color=color)
@@ -213,8 +194,13 @@ class HeatMonitorVisualizer:
     def parse_heat_data(self, json_data):
         """Extract and process heat/intensity from DAWN JSON output"""
         try:
-            # Direct heat value
-            heat_raw = json_data.get('heat', 0.3)
+            # Try thermal.heat first (real DAWN data format)
+            thermal = json_data.get('thermal', {})
+            if 'heat' in thermal:
+                heat_raw = thermal['heat']
+            else:
+                # Fallback to direct heat value
+                heat_raw = json_data.get('heat', 0.3)
             
             # Calculate derived heat from other cognitive metrics
             mood = json_data.get('mood', {})
@@ -227,9 +213,9 @@ class HeatMonitorVisualizer:
             # Mood contribution (emotional intensity)
             mood_intensity = 0.0
             if isinstance(mood, dict):
-                mood_vector = mood.get('vector', [0.5, 0.5, 0.5, 0.5])
-                if isinstance(mood_vector, list):
-                    mood_intensity = np.mean([abs(x - 0.5) for x in mood_vector[:4]]) * 2
+                base_level = mood.get('base_level', 0.5)
+                if isinstance(base_level, (int, float)):
+                    mood_intensity = abs(base_level - 0.5) * 2
             
             # Entropy contribution (information processing load)
             entropy_heat = float(entropy) if isinstance(entropy, (int, float)) else 0.5
@@ -249,9 +235,9 @@ class HeatMonitorVisualizer:
             )
             
             # Add temporal variation
-            tick = json_data.get('tick', 0)
+            tick = json_data.get('tick_count', 0)
             if isinstance(tick, (int, float)):
-                temporal_noise = np.sin(tick * 0.1) * 0.05
+                temporal_noise = np.sin(tick * 0.01) * 0.05
                 combined_heat += temporal_noise
             
             # Clamp to valid range
@@ -273,46 +259,38 @@ class HeatMonitorVisualizer:
                 return color, label
         return self.heat_zones[-1][2], self.heat_zones[-1][3]  # Default to highest zone
     
-    def read_stdin_data(self):
-        """Background thread to read lines from stdin and put them in the queue"""
-        while not self.stop_event.is_set():
-            try:
-                line = sys.stdin.readline()
-                if line == '':
-                    print("[heat_monitor] Waiting for input...")
-                    time.sleep(0.1)
-                    continue
-                line = line.strip()
-                if not line:
-                    continue
-                try:
-                    data = json.loads(line)
-                except Exception as e:
-                    print(f"JSON decode error: {e}")
-                    continue
-                self.data_queue.put(data)
-            except Exception as e:
-                print(f"Error reading stdin: {e}", file=sys.stderr)
-                break
+    def generate_demo_data(self, frame):
+        """Generate demonstration data for testing"""
+        t = frame * 0.02
+        return {
+            'thermal': {'heat': 0.5 + 0.3 * np.sin(t)},
+            'entropy': 0.5 + 0.3 * np.cos(t * 0.7),
+            'tick_count': 20000 + frame,
+            'scup': {
+                'schema': 0.5 + 0.25 * np.sin(t * 1.3),
+                'coherence': 0.5 + 0.25 * np.cos(t * 1.7),
+                'utility': 0.5 + 0.2 * np.sin(t * 0.9),
+                'pressure': 0.3 + 0.4 * abs(np.sin(t * 0.5))
+            },
+            'mood': {'base_level': 0.6 + 0.2 * np.sin(t * 0.3)}
+        }
 
     def update_visualization(self, frame):
         """Animation update function"""
         try:
-            data = None
-            if self.data_source == "stdin":
-                while not self.data_queue.empty():
-                    data = self.data_queue.get()
+            # Get data from stdin
+            if self.data_source == 'stdin':
+                try:
+                    line = sys.stdin.readline().strip()
+                    if line:
+                        data = json.loads(line)
+                    else:
+                        data = self.generate_demo_data(frame)
+                except:
+                    data = self.generate_demo_data(frame)
             else:
-                # Simulated data for testing
-                data = {
-                    'tick': frame,
-                    'heat': 0.5 + 0.3 * np.sin(frame * 0.05),
-                    'mood': {'base_level': 0.3 + 0.2 * np.sin(frame * 0.03)},
-                    'entropy': 0.5 + 0.2 * np.sin(frame * 0.04),
-                    'scup': {'schema': 0.5, 'coherence': 0.5, 'utility': 0.5, 'pressure': 0.5}
-                }
-            if data is None:
-                return [self.history_line, self.needle]
+                data = self.generate_demo_data(frame)
+            
             # Update heat state
             raw_heat = self.parse_heat_data(data)
             self.heat_current = self.smooth_heat_transition(raw_heat)
@@ -340,7 +318,7 @@ class HeatMonitorVisualizer:
             self.needle.set_color(zone_color)
             
             # Update digital readout
-            tick = data.get('tick', frame)
+            tick = data.get('tick_count', frame)
             readout = f"HEAT: {self.heat_current:.3f}\nTICK: {tick:06d}"
             self.readout_text.set_text(readout)
             self.readout_text.set_color(zone_color)
@@ -362,61 +340,78 @@ class HeatMonitorVisualizer:
                 
                 self.average_line.set_data(x_data, avg_data)
                 self.peak_line.set_data(x_data, peak_data)
-                
-                # Update fill
-                self.history_fill.remove()
-                self.history_fill = self.ax_history.fill_between(x_data, y_data, alpha=0.2, color=zone_color)
+            
+            # Save frame if requested
+            if self.save_frames and self.frame_count % 10 == 0:  # Save every 10th frame
+                filename = f"{self.output_dir}/heat_monitor_frame_{self.frame_count:06d}.png"
+                self.fig.savefig(filename, dpi=100, bbox_inches='tight', 
+                               facecolor='#0a0a0a', edgecolor='none')
+            
+            self.frame_count += 1
             
             return [self.needle, self.readout_text, self.status_text, 
                    self.history_line, self.average_line, self.peak_line]
-            
         except Exception as e:
-            print(f"Error in update_visualization: {e}", file=sys.stderr)
-            return [self.history_line, self.needle]
+            print(f"Update error: {e}", file=sys.stderr)
+            return []
     
-    def run(self, interval=200):
+    def run(self, interval=50):
         """Start the real-time visualization"""
         try:
-            self.animation = animation.FuncAnimation(self.fig, self.update_visualization,
-                                                   interval=interval, blit=False, cache_frame_data=False)
-            plt.show()
-        except KeyboardInterrupt:
-            print("\nVisualization terminated by user.")
-            self.save_animation_gif()
+            if self.save_frames:
+                # For saving mode, run a limited number of frames
+                for frame in range(1000):  # Process up to 1000 frames
+                    self.update_visualization(frame)
+                    if frame % 50 == 0:  # Print progress every 50 frames
+                        print(f"Processed frame {frame}", file=sys.stderr)
+                    # Check if there's more data to read
+                    try:
+                        import select
+                        if not select.select([sys.stdin], [], [], 0)[0]:
+                            break  # No more data available
+                    except:
+                        pass
+                print(f"Heat Monitor saved frames to: {self.output_dir}")
+            else:
+                # Interactive mode
+                ani = animation.FuncAnimation(self.fig, self.update_visualization, 
+                                            interval=interval, blit=False, cache_frame_data=False)
+                plt.show()
+                print("\nHeat Monitor terminated by user.")
         except Exception as e:
             print(f"Runtime error: {e}", file=sys.stderr)
-            self.save_animation_gif()
-
-    def cleanup(self):
-        """Cleanup function for compatibility."""
-        pass
-
-    def signal_handler(self, signum, frame):
-        print(f"Received signal {signum}, exiting gracefully.")
-        self.cleanup()
-        sys.exit(0)
 
 def main():
     parser = argparse.ArgumentParser(description='DAWN Heat Monitor Visualizer')
-    parser.add_argument('--source', choices=['stdin', 'demo'], default='stdin',
+    parser.add_argument('--data-source', choices=['stdin', 'demo'], default='stdin',
                        help='Data source: stdin for live DAWN data, demo for testing')
     parser.add_argument('--interval', type=int, default=100,
                        help='Animation update interval in milliseconds')
     parser.add_argument('--buffer', type=int, default=50,
                        help='Heat history buffer size')
+    parser.add_argument('--save', action='store_true',
+                       help='Save visualization frames as PNG files')
+    parser.add_argument('--output-dir', default='./visual_output/heat_monitor',
+                       help='Directory to save output frames')
+    
     args = parser.parse_args()
     
     print("DAWN Cognition Visualization #3: Heat Monitor")
     print("Cognitive Intensity Gauge")
     print("=" * 50)
     
-    if args.source == 'stdin':
+    if args.data_source == 'stdin':
         print("Waiting for DAWN JSON data on stdin...")
         print("Monitoring cognitive heat and processing intensity...")
     else:
         print("Running in demo mode with simulated heat data...")
     
-    visualizer = HeatMonitorVisualizer(data_source=args.source, buffer_size=args.buffer)
+    visualizer = HeatMonitorVisualizer(
+        data_source=args.data_source, 
+        buffer_size=args.buffer,
+        save_frames=args.save,
+        output_dir=args.output_dir
+    )
     visualizer.run(interval=args.interval)
 
 if __name__ == "__main__":

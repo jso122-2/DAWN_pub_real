@@ -10,6 +10,7 @@ import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 from matplotlib.colors import LinearSegmentedColormap
 import json
+import os
 import sys
 import argparse
 import time
@@ -245,31 +246,46 @@ class SCUPPressureGrid:
                 decay = self.wave_decay ** age
                 radius = age * 2  # Wave speed
                 
+                # Apply wave to nearby cells
                 for i in range(4):
                     for j in range(4):
-                        dist = np.sqrt((i - row)**2 + (j - col)**2)
-                        if dist <= radius:
-                            wave_intensity = intensity * decay * np.exp(-dist/2)
-                            wave_matrix[i, j] += wave_intensity
-                
+                        distance = np.sqrt((i - row)**2 + (j - col)**2)
+                        if distance <= radius:
+                            wave_intensity = intensity * decay * (1 - distance/radius)
+                            wave_matrix[i, j] = max(wave_matrix[i, j], wave_intensity)
                 active_waves.append((row, col, intensity, start_time))
         
         self.wave_sources = active_waves
-        return np.clip(wave_matrix, 0, 1)
+        return wave_matrix
     
     def detect_critical_states(self):
-        """Detect cells in critical pressure states"""
+        """Detect critical pressure states"""
         self.critical_cells.clear()
         
         for i in range(4):
             for j in range(4):
                 if self.pressure_matrix[i, j] > self.critical_threshold:
                     self.critical_cells.add((i, j))
-                    # Trigger pressure wave from critical cell
-                    if np.random.random() < 0.3:  # Probabilistic wave generation
-                        self.wave_sources.append((i, j, self.pressure_matrix[i, j], 
-                                                time.time()))
+                    
+                    # Trigger wave if new critical state
+                    if len(self.wave_sources) < 3:  # Limit concurrent waves
+                        self.wave_sources.append((i, j, 0.8, time.time()))
     
+    def read_latest_json_data(self):
+        """Read the latest data from JSON file"""
+        json_file = "/tmp/dawn_tick_data.json"
+        if os.path.exists(json_file):
+            try:
+                with open(json_file, 'r') as f:
+                    lines = f.readlines()
+                    if lines:
+                        last_line = lines[-1].strip()
+                        if last_line:
+                            return json.loads(last_line)
+            except Exception as e:
+                print(f"Error reading JSON: {e}", file=sys.stderr)
+        return None
+
     def update_visualization(self, frame):
         """Animation update function"""
         try:
@@ -281,22 +297,18 @@ class SCUPPressureGrid:
                 # Generate demo data
                 data = self.generate_demo_data(frame)
                 self.calculate_pressure_matrix(data)
-            
             # Update heatmap
             self.im.set_array(self.pressure_matrix)
-            
             # Update cell colors based on intensity
             for i in range(4):
                 for j in range(4):
                     intensity = self.pressure_matrix[i, j]
                     text = self.cell_texts[i][j]
-                    
                     # Adjust text color for readability
                     if intensity > 0.6:
                         text.set_color('black')
                     else:
                         text.set_color('white')
-                    
                     # Highlight critical cells
                     if (i, j) in self.critical_cells:
                         text.set_fontweight('bold')
@@ -304,7 +316,6 @@ class SCUPPressureGrid:
                     else:
                         text.set_fontweight('normal')
                         text.set_fontsize(10 if i == j else 8)
-            
             # Update pressure history bars
             for i, (ax, dim) in enumerate(zip(self.ax_bars, self.dimensions)):
                 history = list(self.scup_history[dim])
@@ -312,12 +323,10 @@ class SCUPPressureGrid:
                     x = range(len(history))
                     ax.line.set_data(x, history)
                     ax.set_xlim(0, max(len(history), 10))
-                    
                     # Update current value
                     current_val = history[-1] if history else 0
                     ax.value_text.set_text(f'{current_val:.3f}')
                     ax.value_text.set_color(self.cmap(current_val))
-            
             # Update metadata
             if self.time_stamps:
                 fps = len(self.time_stamps) / max(1, self.time_stamps[-1] - self.time_stamps[0])
@@ -326,17 +335,14 @@ class SCUPPressureGrid:
                     f'Smoothing: {self.smoothing:.2f} | '
                     f'FPS: {fps:.1f}'
                 )
-            
             # Update critical state indicator
             if self.critical_cells:
                 self.critical_text.set_text('⚠ CRITICAL PRESSURE DETECTED ⚠')
                 self.critical_text.set_alpha(0.8 + 0.2 * np.sin(frame * 0.5))
             else:
                 self.critical_text.set_alpha(0)
-            
         except Exception as e:
             print(f"Update error: {e}", file=sys.stderr)
-        
         return [self.im] + [text for row in self.cell_texts for text in row]
     
     def generate_demo_data(self, frame):
@@ -362,37 +368,45 @@ class SCUPPressureGrid:
         
         return data
     
-    def read_stdin_data(self):
-        """Read JSON data from stdin"""
-        while True:
+    def read_json_data(self):
+        """Background thread to read data from JSON file"""
+        json_file = "/tmp/dawn_tick_data.json"
+        last_position = 0
+        
+        while not hasattr(self, 'stop_event') or not self.stop_event.is_set():
             try:
-                line = sys.stdin.readline()
-                if not line:
-                    break
+                if not os.path.exists(json_file):
+                    time.sleep(0.1)
+                    continue
                 
-                data = json.loads(line.strip())
-                scup_data = data.get('scup', {})
+                with open(json_file, 'r') as f:
+                    f.seek(last_position)
+                    lines = f.readlines()
+                    last_position = f.tell()
+                    
+                    for line in lines:
+                        line = line.strip()
+                        if not line:
+                            continue
+                        try:
+                            data = json.loads(line)
+                            self.data_queue.put(data)
+                        except json.JSONDecodeError as e:
+                            print(f"Error parsing JSON: {e}", file=sys.stderr)
+                            continue
                 
-                # Extract SCUP values
-                processed_data = {
-                    'schema': scup_data.get('schema', 0.5),
-                    'coherence': scup_data.get('coherence', 0.5),
-                    'utility': scup_data.get('utility', 0.5),
-                    'pressure': scup_data.get('pressure', 0.5)
-                }
+                time.sleep(0.1)  # Small delay to avoid excessive CPU usage
                 
-                self.data_queue.put(processed_data)
-                
-            except json.JSONDecodeError:
-                continue
             except Exception as e:
-                print(f"Error reading data: {e}", file=sys.stderr)
+                print(f"Error reading JSON file: {e}", file=sys.stderr)
+                time.sleep(1.0)  # Longer delay on error
     
     def run(self):
         """Start the visualization"""
         # Start stdin reader thread if needed
         if self.data_source == 'stdin':
-            reader_thread = threading.Thread(target=self.read_stdin_data, daemon=True)
+            self.stop_event = threading.Event()
+            reader_thread = threading.Thread(target=self.read_json_data, daemon=True)
             reader_thread.start()
         
         # Create animation
@@ -403,41 +417,38 @@ class SCUPPressureGrid:
             cache_frame_data=False
         )
         
-        plt.tight_layout()
         plt.show()
 
 def main():
     """Main entry point"""
-    parser = argparse.ArgumentParser(
-        description='DAWN SCUP Pressure Grid - Visualize cognitive dimension interactions'
-    )
-    parser.add_argument('--source', choices=['stdin', 'demo'], default='demo',
-                       help='Data source (default: demo)')
+    parser = argparse.ArgumentParser(description='SCUP Pressure Grid Visualization')
+    parser.add_argument('--data-source', default='demo', 
+                       choices=['demo', 'stdin'],
+                       help='Data source (demo or stdin)')
     parser.add_argument('--smoothing', type=float, default=0.15,
-                       help='Temporal smoothing factor (0-1, default: 0.15)')
-    parser.add_argument('--model', choices=['reinforcing', 'competing', 'averaging', 
-                                           'tension', 'synergistic'],
-                       default='reinforcing',
-                       help='Interaction model (default: reinforcing)')
-    parser.add_argument('--history', type=int, default=50,
-                       help='History size for pressure tracking (default: 50)')
+                       help='Temporal smoothing factor (0-1)')
+    parser.add_argument('--interaction-model', default='reinforcing',
+                       choices=['reinforcing', 'competing', 'averaging', 'tension', 'synergistic'],
+                       help='Interaction calculation model')
+    parser.add_argument('--history-size', type=int, default=50,
+                       help='History buffer size')
     
     args = parser.parse_args()
     
     # Create and run visualization
     viz = SCUPPressureGrid(
-        data_source=args.source,
+        data_source=args.data_source,
         smoothing=args.smoothing,
-        interaction_model=args.model,
-        history_size=args.history
+        interaction_model=args.interaction_model,
+        history_size=args.history_size
     )
     
     print(f"Starting DAWN SCUP Pressure Grid Visualization...")
-    print(f"Data source: {args.source}")
-    print(f"Interaction model: {args.model}")
+    print(f"Data source: {args.data_source}")
+    print(f"Interaction model: {args.interaction_model}")
     print(f"Smoothing: {args.smoothing}")
     
-    if args.source == 'stdin':
+    if args.data_source == 'stdin':
         print("Waiting for JSON data on stdin...")
     
     viz.run()

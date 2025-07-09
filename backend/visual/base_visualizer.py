@@ -5,6 +5,10 @@ Base Visualizer class for DAWN visualization components
 import base64
 import io
 import json
+import os
+import os
+import os
+import os
 import logging
 import time
 from abc import ABC, abstractmethod
@@ -168,6 +172,7 @@ class BaseVisualizer(ABC):
         """Draw text on the image."""
         from PIL import ImageDraw, ImageFont
         draw = ImageDraw.Draw(image)
+
         try:
             font = ImageFont.truetype("JetBrainsMono-Regular.ttf", font_size)
         except:

@@ -1,0 +1,2608 @@
+{
+  "nodes": {
+    "root_bloom_001": {
+      "bloom_id": "root_bloom_001",
+      "parent_id": null,
+      "children": [
+        "child_001",
+        "child_002"
+      ],
+      "depth": 0,
+      "entropy_delta_from_parent": 0.0,
+      "total_entropy_drift": 0.0,
+      "creation_time": "2025-07-10T03:40:39.944967"
+    },
+    "child_001": {
+      "bloom_id": "child_001",
+      "parent_id": "root_bloom_001",
+      "children": [
+        "grand_001"
+      ],
+      "depth": 1,
+      "entropy_delta_from_parent": 0.1,
+      "total_entropy_drift": 0.1,
+      "creation_time": "2025-07-10T03:40:39.944967"
+    },
+    "child_002": {
+      "bloom_id": "child_002",
+      "parent_id": "root_bloom_001",
+      "children": [
+        "grand_002"
+      ],
+      "depth": 1,
+      "entropy_delta_from_parent": -0.05,
+      "total_entropy_drift": -0.05,
+      "creation_time": "2025-07-10T03:40:39.944967"
+    },
+    "grand_001": {
+      "bloom_id": "grand_001",
+      "parent_id": "child_001",
+      "children": [],
+      "depth": 2,
+      "entropy_delta_from_parent": 0.15,
+      "total_entropy_drift": 0.25,
+      "creation_time": "2025-07-10T03:40:39.944967"
+    },
+    "grand_002": {
+      "bloom_id": "grand_002",
+      "parent_id": "child_002",
+      "children": [],
+      "depth": 2,
+      "entropy_delta_from_parent": 0.08,
+      "total_entropy_drift": 0.03,
+      "creation_time": "2025-07-10T03:40:39.944967"
+    },
+    "consciousness_seed_001": {
+      "bloom_id": "consciousness_seed_001",
+      "parent_id": null,
+      "children": [
+        "thought_stream_001",
+        "thought_stream_002",
+        "thought_stream_003"
+      ],
+      "depth": 0,
+      "entropy_delta_from_parent": 0.0,
+      "total_entropy_drift": 0.0,
+      "creation_time": "2025-07-10T03:44:14.359172"
+    },
+    "thought_stream_001": {
+      "bloom_id": "thought_stream_001",
+      "parent_id": "consciousness_seed_001",
+      "children": [
+        "rebloom_thought_stream_001_001",
+        "engine_bloom_001",
+        "engine_bloom_004",
+        "thought_stream_001_vault_rebloom_01"
+      ],
+      "depth": 1,
+      "entropy_delta_from_parent": 0.003088267425235519,
+      "total_entropy_drift": 0.003088267425235519,
+      "creation_time": "2025-07-10T03:44:14.359172"
+    },
+    "thought_stream_002": {
+      "bloom_id": "thought_stream_002",
+      "parent_id": "consciousness_seed_001",
+      "children": [
+        "rebloom_thought_stream_002_001",
+        "engine_bloom_002",
+        "engine_bloom_005",
+        "thought_stream_002_vault_rebloom_01"
+      ],
+      "depth": 1,
+      "entropy_delta_from_parent": 0.13506064425311867,
+      "total_entropy_drift": 0.13506064425311867,
+      "creation_time": "2025-07-10T03:44:14.359172"
+    },
+    "thought_stream_003": {
+      "bloom_id": "thought_stream_003",
+      "parent_id": "consciousness_seed_001",
+      "children": [
+        "engine_bloom_003",
+        "thought_stream_003_vault_rebloom_01"
+      ],
+      "depth": 1,
+      "entropy_delta_from_parent": 0.16869292572573738,
+      "total_entropy_drift": 0.16869292572573738,
+      "creation_time": "2025-07-10T03:44:14.360171"
+    },
+    "rebloom_thought_stream_001_001": {
+      "bloom_id": "rebloom_thought_stream_001_001",
+      "parent_id": "thought_stream_001",
+      "children": [],
+      "depth": 2,
+      "entropy_delta_from_parent": -0.1256214223883116,
+      "total_entropy_drift": -0.12253315496307607,
+      "creation_time": "2025-07-10T03:44:14.360171"
+    },
+    "rebloom_thought_stream_002_001": {
+      "bloom_id": "rebloom_thought_stream_002_001",
+      "parent_id": "thought_stream_002",
+      "children": [],
+      "depth": 2,
+      "entropy_delta_from_parent": 0.04084545900628289,
+      "total_entropy_drift": 0.17590610325940156,
+      "creation_time": "2025-07-10T03:44:14.360171"
+    },
+    "engine_bloom_001": {
+      "bloom_id": "engine_bloom_001",
+      "parent_id": "thought_stream_001",
+      "children": [],
+      "depth": 2,
+      "entropy_delta_from_parent": 0.4694562252174176,
+      "total_entropy_drift": 0.4725444926426531,
+      "creation_time": "2025-07-10T03:44:14.361168"
+    },
+    "engine_bloom_002": {
+      "bloom_id": "engine_bloom_002",
+      "parent_id": "thought_stream_002",
+      "children": [],
+      "depth": 2,
+      "entropy_delta_from_parent": 0.47280300211159343,
+      "total_entropy_drift": 0.6078636463647121,
+      "creation_time": "2025-07-10T03:44:14.361168"
+    },
+    "engine_bloom_003": {
+      "bloom_id": "engine_bloom_003",
+      "parent_id": "thought_stream_003",
+      "children": [],
+      "depth": 2,
+      "entropy_delta_from_parent": 0.7569446063862473,
+      "total_entropy_drift": 0.9256375321119846,
+      "creation_time": "2025-07-10T03:44:14.362170"
+    },
+    "engine_bloom_004": {
+      "bloom_id": "engine_bloom_004",
+      "parent_id": "thought_stream_001",
+      "children": [],
+      "depth": 2,
+      "entropy_delta_from_parent": 0.7654650142419988,
+      "total_entropy_drift": 0.7685532816672342,
+      "creation_time": "2025-07-10T03:44:14.362170"
+    },
+    "engine_bloom_005": {
+      "bloom_id": "engine_bloom_005",
+      "parent_id": "thought_stream_002",
+      "children": [],
+      "depth": 2,
+      "entropy_delta_from_parent": 0.8176613031669359,
+      "total_entropy_drift": 0.9527219474200546,
+      "creation_time": "2025-07-10T03:44:14.362170"
+    },
+    "thought_stream_001_vault_rebloom_01": {
+      "bloom_id": "thought_stream_001_vault_rebloom_01",
+      "parent_id": "thought_stream_001",
+      "children": [],
+      "depth": 2,
+      "entropy_delta_from_parent": 0.18459723739674772,
+      "total_entropy_drift": 0.18768550482198323,
+      "creation_time": "2025-07-10T03:44:14.374262"
+    },
+    "thought_stream_002_vault_rebloom_01": {
+      "bloom_id": "thought_stream_002_vault_rebloom_01",
+      "parent_id": "thought_stream_002",
+      "children": [],
+      "depth": 2,
+      "entropy_delta_from_parent": 0.16397771569286546,
+      "total_entropy_drift": 0.29903835994598416,
+      "creation_time": "2025-07-10T03:44:14.374262"
+    },
+    "thought_stream_003_vault_rebloom_01": {
+      "bloom_id": "thought_stream_003_vault_rebloom_01",
+      "parent_id": "thought_stream_003",
+      "children": [],
+      "depth": 2,
+      "entropy_delta_from_parent": 0.15607906249672837,
+      "total_entropy_drift": 0.3247719882224658,
+      "creation_time": "2025-07-10T03:44:14.375262"
+    },
+    "performance_root": {
+      "bloom_id": "performance_root",
+      "parent_id": null,
+      "children": [
+        "perf_gen1_nce_root_0",
+        "perf_gen1_nce_root_1",
+        "perf_gen2_nce_root_0",
+        "perf_gen2_nce_root_1",
+        "perf_gen2_nce_root_2",
+        "perf_gen3_nce_root_0"
+      ],
+      "depth": 0,
+      "entropy_delta_from_parent": 0.0,
+      "total_entropy_drift": 0.0,
+      "creation_time": "2025-07-10T03:44:14.381262"
+    },
+    "perf_gen1_nce_root_0": {
+      "bloom_id": "perf_gen1_nce_root_0",
+      "parent_id": "performance_root",
+      "children": [
+        "perf_gen2_e_root_0_0",
+        "perf_gen2_e_root_0_1",
+        "perf_gen3_e_root_0_0"
+      ],
+      "depth": 1,
+      "entropy_delta_from_parent": 0.10033664136706782,
+      "total_entropy_drift": 0.10033664136706782,
+      "creation_time": "2025-07-10T03:44:14.381262"
+    },
+    "perf_gen1_nce_root_1": {
+      "bloom_id": "perf_gen1_nce_root_1",
+      "parent_id": "performance_root",
+      "children": [
+        "perf_gen2_e_root_1_0",
+        "perf_gen2_e_root_1_1",
+        "perf_gen3_e_root_1_0",
+        "perf_gen3_e_root_1_1"
+      ],
+      "depth": 1,
+      "entropy_delta_from_parent": 0.2402188774326796,
+      "total_entropy_drift": 0.2402188774326796,
+      "creation_time": "2025-07-10T03:44:14.381262"
+    },
+    "perf_gen2_nce_root_0": {
+      "bloom_id": "perf_gen2_nce_root_0",
+      "parent_id": "performance_root",
+      "children": [
+        "perf_gen3_e_root_0_1",
+        "perf_gen3_e_root_0_2"
+      ],
+      "depth": 1,
+      "entropy_delta_from_parent": -0.1287305097057932,
+      "total_entropy_drift": -0.1287305097057932,
+      "creation_time": "2025-07-10T03:44:14.381262"
+    },
+    "perf_gen2_nce_root_1": {
+      "bloom_id": "perf_gen2_nce_root_1",
+      "parent_id": "performance_root",
+      "children": [
+        "perf_gen3_e_root_1_2"
+      ],
+      "depth": 1,
+      "entropy_delta_from_parent": -0.0029774429406067004,
+      "total_entropy_drift": -0.0029774429406067004,
+      "creation_time": "2025-07-10T03:44:14.381262"
+    },
+    "perf_gen2_nce_root_2": {
+      "bloom_id": "perf_gen2_nce_root_2",
+      "parent_id": "performance_root",
+      "children": [
+        "perf_gen3_e_root_2_0",
+        "perf_gen3_e_root_2_1",
+        "perf_gen3_e_root_2_2"
+      ],
+      "depth": 1,
+      "entropy_delta_from_parent": 0.16557300330867597,
+      "total_entropy_drift": 0.16557300330867597,
+      "creation_time": "2025-07-10T03:44:14.381262"
+    },
+    "perf_gen2_e_root_0_0": {
+      "bloom_id": "perf_gen2_e_root_0_0",
+      "parent_id": "perf_gen1_nce_root_0",
+      "children": [
+        "perf_gen3_root_0_0_0"
+      ],
+      "depth": 2,
+      "entropy_delta_from_parent": -0.030396852527011187,
+      "total_entropy_drift": 0.06993978884005664,
+      "creation_time": "2025-07-10T03:44:14.382261"
+    },
+    "perf_gen2_e_root_0_1": {
+      "bloom_id": "perf_gen2_e_root_0_1",
+      "parent_id": "perf_gen1_nce_root_0",
+      "children": [
+        "perf_gen3_root_0_1_0",
+        "perf_gen3_root_0_1_1",
+        "perf_gen3_root_0_1_2"
+      ],
+      "depth": 2,
+      "entropy_delta_from_parent": -0.12588025151941096,
+      "total_entropy_drift": -0.025543610152343132,
+      "creation_time": "2025-07-10T03:44:14.382261"
+    },
+    "perf_gen2_e_root_1_0": {
+      "bloom_id": "perf_gen2_e_root_1_0",
+      "parent_id": "perf_gen1_nce_root_1",
+      "children": [
+        "perf_gen3_root_1_0_0",
+        "perf_gen3_root_1_0_1",
+        "perf_gen3_root_1_0_2"
+      ],
+      "depth": 2,
+      "entropy_delta_from_parent": -0.18222115680110545,
+      "total_entropy_drift": 0.05799772063157416,
+      "creation_time": "2025-07-10T03:44:14.395261"
+    },
+    "perf_gen2_e_root_1_1": {
+      "bloom_id": "perf_gen2_e_root_1_1",
+      "parent_id": "perf_gen1_nce_root_1",
+      "children": [
+        "perf_gen3_root_1_1_0",
+        "perf_gen3_root_1_1_1",
+        "perf_gen4_root_1_1_0",
+        "perf_gen4_root_1_1_1"
+      ],
+      "depth": 2,
+      "entropy_delta_from_parent": -0.04169965685606125,
+      "total_entropy_drift": 0.19851922057661836,
+      "creation_time": "2025-07-10T03:44:14.395261"
+    },
+    "perf_gen3_nce_root_0": {
+      "bloom_id": "perf_gen3_nce_root_0",
+      "parent_id": "performance_root",
+      "children": [
+        "perf_gen4_e_root_0_0",
+        "perf_gen4_e_root_0_1",
+        "perf_gen4_e_root_0_2"
+      ],
+      "depth": 1,
+      "entropy_delta_from_parent": -0.06972669153406547,
+      "total_entropy_drift": -0.06972669153406547,
+      "creation_time": "2025-07-10T03:44:14.395261"
+    },
+    "perf_gen3_e_root_0_0": {
+      "bloom_id": "perf_gen3_e_root_0_0",
+      "parent_id": "perf_gen1_nce_root_0",
+      "children": [
+        "perf_gen4_root_0_0_0",
+        "perf_gen4_root_0_0_1",
+        "perf_gen4_root_0_0_2"
+      ],
+      "depth": 2,
+      "entropy_delta_from_parent": 0.15119077942691345,
+      "total_entropy_drift": 0.25152742079398127,
+      "creation_time": "2025-07-10T03:44:14.395261"
+    },
+    "perf_gen3_e_root_1_0": {
+      "bloom_id": "perf_gen3_e_root_1_0",
+      "parent_id": "perf_gen1_nce_root_1",
+      "children": [
+        "perf_gen4_root_1_0_0"
+      ],
+      "depth": 2,
+      "entropy_delta_from_parent": 0.23854230735740933,
+      "total_entropy_drift": 0.47876118479008895,
+      "creation_time": "2025-07-10T03:44:14.396262"
+    },
+    "perf_gen3_e_root_1_1": {
+      "bloom_id": "perf_gen3_e_root_1_1",
+      "parent_id": "perf_gen1_nce_root_1",
+      "children": [],
+      "depth": 2,
+      "entropy_delta_from_parent": 0.2306722785260144,
+      "total_entropy_drift": 0.470891155958694,
+      "creation_time": "2025-07-10T03:44:14.396262"
+    },
+    "perf_gen3_e_root_0_1": {
+      "bloom_id": "perf_gen3_e_root_0_1",
+      "parent_id": "perf_gen2_nce_root_0",
+      "children": [
+        "perf_gen4_root_0_1_0",
+        "perf_gen4_root_0_1_1"
+      ],
+      "depth": 2,
+      "entropy_delta_from_parent": -0.1550500591407063,
+      "total_entropy_drift": -0.2837805688464995,
+      "creation_time": "2025-07-10T03:44:14.396262"
+    },
+    "perf_gen3_e_root_0_2": {
+      "bloom_id": "perf_gen3_e_root_0_2",
+      "parent_id": "perf_gen2_nce_root_0",
+      "children": [
+        "perf_gen4_root_0_2_0",
+        "perf_gen4_root_0_2_1"
+      ],
+      "depth": 2,
+      "entropy_delta_from_parent": 0.2511395354271818,
+      "total_entropy_drift": 0.12240902572138862,
+      "creation_time": "2025-07-10T03:44:14.396262"
+    },
+    "perf_gen3_e_root_1_2": {
+      "bloom_id": "perf_gen3_e_root_1_2",
+      "parent_id": "perf_gen2_nce_root_1",
+      "children": [
+        "perf_gen4_root_1_2_0",
+        "perf_gen4_root_1_2_1"
+      ],
+      "depth": 2,
+      "entropy_delta_from_parent": 0.2345285587259769,
+      "total_entropy_drift": 0.2315511157853702,
+      "creation_time": "2025-07-10T03:44:14.396262"
+    },
+    "perf_gen3_e_root_2_0": {
+      "bloom_id": "perf_gen3_e_root_2_0",
+      "parent_id": "perf_gen2_nce_root_2",
+      "children": [
+        "perf_gen4_root_2_0_0"
+      ],
+      "depth": 2,
+      "entropy_delta_from_parent": 0.20690919494573112,
+      "total_entropy_drift": 0.3724821982544071,
+      "creation_time": "2025-07-10T03:44:14.396262"
+    },
+    "perf_gen3_e_root_2_1": {
+      "bloom_id": "perf_gen3_e_root_2_1",
+      "parent_id": "perf_gen2_nce_root_2",
+      "children": [
+        "perf_gen4_root_2_1_0",
+        "perf_gen4_root_2_1_1",
+        "perf_gen4_root_2_1_2"
+      ],
+      "depth": 2,
+      "entropy_delta_from_parent": -0.11231788810746812,
+      "total_entropy_drift": 0.05325511520120785,
+      "creation_time": "2025-07-10T03:44:14.410266"
+    },
+    "perf_gen3_e_root_2_2": {
+      "bloom_id": "perf_gen3_e_root_2_2",
+      "parent_id": "perf_gen2_nce_root_2",
+      "children": [
+        "perf_gen4_root_2_2_0"
+      ],
+      "depth": 2,
+      "entropy_delta_from_parent": 0.0826867630351536,
+      "total_entropy_drift": 0.24825976634382957,
+      "creation_time": "2025-07-10T03:44:14.410266"
+    },
+    "perf_gen3_root_0_0_0": {
+      "bloom_id": "perf_gen3_root_0_0_0",
+      "parent_id": "perf_gen2_e_root_0_0",
+      "children": [
+        "perf_gen4_ot_0_0_0_0",
+        "perf_gen4_ot_0_0_0_1"
+      ],
+      "depth": 3,
+      "entropy_delta_from_parent": -0.0031882899224842665,
+      "total_entropy_drift": 0.06675149891757237,
+      "creation_time": "2025-07-10T03:44:14.410266"
+    },
+    "perf_gen3_root_0_1_0": {
+      "bloom_id": "perf_gen3_root_0_1_0",
+      "parent_id": "perf_gen2_e_root_0_1",
+      "children": [
+        "perf_gen4_ot_0_1_0_0"
+      ],
+      "depth": 3,
+      "entropy_delta_from_parent": -0.11931591700913152,
+      "total_entropy_drift": -0.14485952716147465,
+      "creation_time": "2025-07-10T03:44:14.410266"
+    },
+    "perf_gen3_root_0_1_1": {
+      "bloom_id": "perf_gen3_root_0_1_1",
+      "parent_id": "perf_gen2_e_root_0_1",
+      "children": [
+        "perf_gen4_ot_0_1_1_0",
+        "perf_gen4_ot_0_1_1_1",
+        "perf_gen4_ot_0_1_1_2"
+      ],
+      "depth": 3,
+      "entropy_delta_from_parent": -0.17693855631666838,
+      "total_entropy_drift": -0.20248216646901152,
+      "creation_time": "2025-07-10T03:44:14.410266"
+    },
+    "perf_gen3_root_0_1_2": {
+      "bloom_id": "perf_gen3_root_0_1_2",
+      "parent_id": "perf_gen2_e_root_0_1",
+      "children": [
+        "perf_gen4_ot_0_1_2_0"
+      ],
+      "depth": 3,
+      "entropy_delta_from_parent": 0.24253142147134438,
+      "total_entropy_drift": 0.21698781131900124,
+      "creation_time": "2025-07-10T03:44:14.411267"
+    },
+    "perf_gen3_root_1_0_0": {
+      "bloom_id": "perf_gen3_root_1_0_0",
+      "parent_id": "perf_gen2_e_root_1_0",
+      "children": [
+        "perf_gen4_ot_1_0_0_0",
+        "perf_gen4_ot_1_0_0_1"
+      ],
+      "depth": 3,
+      "entropy_delta_from_parent": -0.1335536352726,
+      "total_entropy_drift": -0.07555591464102585,
+      "creation_time": "2025-07-10T03:44:14.411267"
+    },
+    "perf_gen3_root_1_0_1": {
+      "bloom_id": "perf_gen3_root_1_0_1",
+      "parent_id": "perf_gen2_e_root_1_0",
+      "children": [
+        "perf_gen4_ot_1_0_1_0"
+      ],
+      "depth": 3,
+      "entropy_delta_from_parent": -0.10563656301582763,
+      "total_entropy_drift": -0.04763884238425348,
+      "creation_time": "2025-07-10T03:44:14.411267"
+    },
+    "perf_gen3_root_1_0_2": {
+      "bloom_id": "perf_gen3_root_1_0_2",
+      "parent_id": "perf_gen2_e_root_1_0",
+      "children": [
+        "perf_gen4_ot_1_0_2_0",
+        "perf_gen4_ot_1_0_2_1"
+      ],
+      "depth": 3,
+      "entropy_delta_from_parent": -0.11467815996902386,
+      "total_entropy_drift": -0.056680439337449706,
+      "creation_time": "2025-07-10T03:44:14.411267"
+    },
+    "perf_gen3_root_1_1_0": {
+      "bloom_id": "perf_gen3_root_1_1_0",
+      "parent_id": "perf_gen2_e_root_1_1",
+      "children": [
+        "perf_gen4_ot_1_1_0_0",
+        "perf_gen4_ot_1_1_0_1"
+      ],
+      "depth": 3,
+      "entropy_delta_from_parent": 0.1500856992678925,
+      "total_entropy_drift": 0.34860491984451086,
+      "creation_time": "2025-07-10T03:44:14.411267"
+    },
+    "perf_gen3_root_1_1_1": {
+      "bloom_id": "perf_gen3_root_1_1_1",
+      "parent_id": "perf_gen2_e_root_1_1",
+      "children": [
+        "perf_gen4_ot_1_1_1_0",
+        "perf_gen4_ot_1_1_1_1",
+        "perf_gen4_ot_1_1_1_2"
+      ],
+      "depth": 3,
+      "entropy_delta_from_parent": 0.2799218677565903,
+      "total_entropy_drift": 0.47844108833320864,
+      "creation_time": "2025-07-10T03:44:14.424780"
+    },
+    "perf_gen4_root_1_1_0": {
+      "bloom_id": "perf_gen4_root_1_1_0",
+      "parent_id": "perf_gen2_e_root_1_1",
+      "children": [],
+      "depth": 3,
+      "entropy_delta_from_parent": 0.011262269592646812,
+      "total_entropy_drift": 0.20978149016926517,
+      "creation_time": "2025-07-10T03:44:14.425779"
+    },
+    "perf_gen4_root_1_1_1": {
+      "bloom_id": "perf_gen4_root_1_1_1",
+      "parent_id": "perf_gen2_e_root_1_1",
+      "children": [],
+      "depth": 3,
+      "entropy_delta_from_parent": 0.14790420609883764,
+      "total_entropy_drift": 0.346423426675456,
+      "creation_time": "2025-07-10T03:44:14.425779"
+    },
+    "perf_gen4_e_root_0_0": {
+      "bloom_id": "perf_gen4_e_root_0_0",
+      "parent_id": "perf_gen3_nce_root_0",
+      "children": [],
+      "depth": 2,
+      "entropy_delta_from_parent": 0.08018815128036894,
+      "total_entropy_drift": 0.01046145974630347,
+      "creation_time": "2025-07-10T03:44:14.425779"
+    },
+    "perf_gen4_e_root_0_1": {
+      "bloom_id": "perf_gen4_e_root_0_1",
+      "parent_id": "perf_gen3_nce_root_0",
+      "children": [],
+      "depth": 2,
+      "entropy_delta_from_parent": -0.16260556483663496,
+      "total_entropy_drift": -0.23233225637070043,
+      "creation_time": "2025-07-10T03:44:14.425779"
+    },
+    "perf_gen4_e_root_0_2": {
+      "bloom_id": "perf_gen4_e_root_0_2",
+      "parent_id": "perf_gen3_nce_root_0",
+      "children": [],
+      "depth": 2,
+      "entropy_delta_from_parent": -0.19986393900469396,
+      "total_entropy_drift": -0.2695906305387594,
+      "creation_time": "2025-07-10T03:44:14.426779"
+    },
+    "perf_gen4_root_0_0_0": {
+      "bloom_id": "perf_gen4_root_0_0_0",
+      "parent_id": "perf_gen3_e_root_0_0",
+      "children": [],
+      "depth": 3,
+      "entropy_delta_from_parent": 0.04279489438848488,
+      "total_entropy_drift": 0.29432231518246615,
+      "creation_time": "2025-07-10T03:44:14.426779"
+    },
+    "perf_gen4_root_0_0_1": {
+      "bloom_id": "perf_gen4_root_0_0_1",
+      "parent_id": "perf_gen3_e_root_0_0",
+      "children": [],
+      "depth": 3,
+      "entropy_delta_from_parent": 0.028029312880376467,
+      "total_entropy_drift": 0.27955673367435774,
+      "creation_time": "2025-07-10T03:44:14.426779"
+    },
+    "perf_gen4_root_0_0_2": {
+      "bloom_id": "perf_gen4_root_0_0_2",
+      "parent_id": "perf_gen3_e_root_0_0",
+      "children": [],
+      "depth": 3,
+      "entropy_delta_from_parent": 0.08664692916245964,
+      "total_entropy_drift": 0.3381743499564409,
+      "creation_time": "2025-07-10T03:44:14.426779"
+    },
+    "perf_gen4_root_1_0_0": {
+      "bloom_id": "perf_gen4_root_1_0_0",
+      "parent_id": "perf_gen3_e_root_1_0",
+      "children": [],
+      "depth": 3,
+      "entropy_delta_from_parent": -0.060706949970888324,
+      "total_entropy_drift": 0.4180542348192006,
+      "creation_time": "2025-07-10T03:44:14.426779"
+    },
+    "perf_gen4_root_0_1_0": {
+      "bloom_id": "perf_gen4_root_0_1_0",
+      "parent_id": "perf_gen3_e_root_0_1",
+      "children": [],
+      "depth": 3,
+      "entropy_delta_from_parent": -0.19576792175944757,
+      "total_entropy_drift": -0.47954849060594706,
+      "creation_time": "2025-07-10T03:44:14.441779"
+    },
+    "perf_gen4_root_0_1_1": {
+      "bloom_id": "perf_gen4_root_0_1_1",
+      "parent_id": "perf_gen3_e_root_0_1",
+      "children": [],
+      "depth": 3,
+      "entropy_delta_from_parent": 0.014593293156833276,
+      "total_entropy_drift": -0.2691872756896662,
+      "creation_time": "2025-07-10T03:44:14.441779"
+    },
+    "perf_gen4_root_0_2_0": {
+      "bloom_id": "perf_gen4_root_0_2_0",
+      "parent_id": "perf_gen3_e_root_0_2",
+      "children": [],
+      "depth": 3,
+      "entropy_delta_from_parent": 0.027360617288045896,
+      "total_entropy_drift": 0.14976964300943452,
+      "creation_time": "2025-07-10T03:44:14.441779"
+    },
+    "perf_gen4_root_0_2_1": {
+      "bloom_id": "perf_gen4_root_0_2_1",
+      "parent_id": "perf_gen3_e_root_0_2",
+      "children": [],
+      "depth": 3,
+      "entropy_delta_from_parent": 0.2542741456392309,
+      "total_entropy_drift": 0.3766831713606195,
+      "creation_time": "2025-07-10T03:44:14.441779"
+    },
+    "perf_gen4_root_1_2_0": {
+      "bloom_id": "perf_gen4_root_1_2_0",
+      "parent_id": "perf_gen3_e_root_1_2",
+      "children": [],
+      "depth": 3,
+      "entropy_delta_from_parent": 0.03726787485891431,
+      "total_entropy_drift": 0.2688189906442845,
+      "creation_time": "2025-07-10T03:44:14.441779"
+    },
+    "perf_gen4_root_1_2_1": {
+      "bloom_id": "perf_gen4_root_1_2_1",
+      "parent_id": "perf_gen3_e_root_1_2",
+      "children": [],
+      "depth": 3,
+      "entropy_delta_from_parent": 0.06469113289088496,
+      "total_entropy_drift": 0.29624224867625515,
+      "creation_time": "2025-07-10T03:44:14.442779"
+    },
+    "perf_gen4_root_2_0_0": {
+      "bloom_id": "perf_gen4_root_2_0_0",
+      "parent_id": "perf_gen3_e_root_2_0",
+      "children": [],
+      "depth": 3,
+      "entropy_delta_from_parent": -0.05636427327399479,
+      "total_entropy_drift": 0.3161179249804123,
+      "creation_time": "2025-07-10T03:44:14.442779"
+    },
+    "perf_gen4_root_2_1_0": {
+      "bloom_id": "perf_gen4_root_2_1_0",
+      "parent_id": "perf_gen3_e_root_2_1",
+      "children": [],
+      "depth": 3,
+      "entropy_delta_from_parent": -0.16491213348629213,
+      "total_entropy_drift": -0.11165701828508429,
+      "creation_time": "2025-07-10T03:44:14.442779"
+    },
+    "perf_gen4_root_2_1_1": {
+      "bloom_id": "perf_gen4_root_2_1_1",
+      "parent_id": "perf_gen3_e_root_2_1",
+      "children": [
+        "perf_gen5_ot_2_1_1_0",
+        "perf_gen5_ot_2_1_1_1",
+        "perf_gen5_ot_2_1_1_2"
+      ],
+      "depth": 3,
+      "entropy_delta_from_parent": 0.28800246761989673,
+      "total_entropy_drift": 0.3412575828211046,
+      "creation_time": "2025-07-10T03:44:14.442779"
+    },
+    "perf_gen4_root_2_1_2": {
+      "bloom_id": "perf_gen4_root_2_1_2",
+      "parent_id": "perf_gen3_e_root_2_1",
+      "children": [
+        "perf_gen5_ot_2_1_2_0",
+        "perf_gen5_ot_2_1_2_1",
+        "perf_gen5_ot_2_1_2_2"
+      ],
+      "depth": 3,
+      "entropy_delta_from_parent": 0.028130185698869714,
+      "total_entropy_drift": 0.08138530090007756,
+      "creation_time": "2025-07-10T03:44:14.442779"
+    },
+    "perf_gen4_root_2_2_0": {
+      "bloom_id": "perf_gen4_root_2_2_0",
+      "parent_id": "perf_gen3_e_root_2_2",
+      "children": [
+        "perf_gen5_ot_2_2_0_0",
+        "perf_gen5_ot_2_2_0_1",
+        "perf_gen5_ot_2_2_0_2"
+      ],
+      "depth": 3,
+      "entropy_delta_from_parent": 0.12023753798249631,
+      "total_entropy_drift": 0.3684973043263259,
+      "creation_time": "2025-07-10T03:44:14.457778"
+    },
+    "perf_gen4_ot_0_0_0_0": {
+      "bloom_id": "perf_gen4_ot_0_0_0_0",
+      "parent_id": "perf_gen3_root_0_0_0",
+      "children": [
+        "perf_gen5__0_0_0_0_0",
+        "perf_gen5__0_0_0_0_1",
+        "perf_gen5__0_0_0_0_2"
+      ],
+      "depth": 4,
+      "entropy_delta_from_parent": 0.08996214030885707,
+      "total_entropy_drift": 0.15671363922642945,
+      "creation_time": "2025-07-10T03:44:14.457778"
+    },
+    "perf_gen4_ot_0_0_0_1": {
+      "bloom_id": "perf_gen4_ot_0_0_0_1",
+      "parent_id": "perf_gen3_root_0_0_0",
+      "children": [
+        "perf_gen5__0_0_0_1_0",
+        "perf_gen5__0_0_0_1_1"
+      ],
+      "depth": 4,
+      "entropy_delta_from_parent": -0.09238643936928254,
+      "total_entropy_drift": -0.025634940451710164,
+      "creation_time": "2025-07-10T03:44:14.458779"
+    },
+    "perf_gen4_ot_0_1_0_0": {
+      "bloom_id": "perf_gen4_ot_0_1_0_0",
+      "parent_id": "perf_gen3_root_0_1_0",
+      "children": [
+        "perf_gen5__0_1_0_0_0"
+      ],
+      "depth": 4,
+      "entropy_delta_from_parent": -0.08928633557917653,
+      "total_entropy_drift": -0.2341458627406512,
+      "creation_time": "2025-07-10T03:44:14.458779"
+    },
+    "perf_gen4_ot_0_1_1_0": {
+      "bloom_id": "perf_gen4_ot_0_1_1_0",
+      "parent_id": "perf_gen3_root_0_1_1",
+      "children": [
+        "perf_gen5__0_1_1_0_0"
+      ],
+      "depth": 4,
+      "entropy_delta_from_parent": 0.017200649262996415,
+      "total_entropy_drift": -0.1852815172060151,
+      "creation_time": "2025-07-10T03:44:14.458779"
+    },
+    "perf_gen4_ot_0_1_1_1": {
+      "bloom_id": "perf_gen4_ot_0_1_1_1",
+      "parent_id": "perf_gen3_root_0_1_1",
+      "children": [
+        "perf_gen5__0_1_1_1_0",
+        "perf_gen5__0_1_1_1_1",
+        "perf_gen5__0_1_1_1_2"
+      ],
+      "depth": 4,
+      "entropy_delta_from_parent": 0.2926425844159688,
+      "total_entropy_drift": 0.09016041794695728,
+      "creation_time": "2025-07-10T03:44:14.458779"
+    },
+    "perf_gen4_ot_0_1_1_2": {
+      "bloom_id": "perf_gen4_ot_0_1_1_2",
+      "parent_id": "perf_gen3_root_0_1_1",
+      "children": [
+        "perf_gen5__0_1_1_2_0",
+        "perf_gen5__0_1_1_2_1"
+      ],
+      "depth": 4,
+      "entropy_delta_from_parent": 0.12570326919788855,
+      "total_entropy_drift": -0.07677889727112297,
+      "creation_time": "2025-07-10T03:44:14.458779"
+    },
+    "perf_gen4_ot_0_1_2_0": {
+      "bloom_id": "perf_gen4_ot_0_1_2_0",
+      "parent_id": "perf_gen3_root_0_1_2",
+      "children": [
+        "perf_gen5__0_1_2_0_0"
+      ],
+      "depth": 4,
+      "entropy_delta_from_parent": 0.2938303271562556,
+      "total_entropy_drift": 0.5108181384752568,
+      "creation_time": "2025-07-10T03:44:14.458779"
+    },
+    "perf_gen4_ot_1_0_0_0": {
+      "bloom_id": "perf_gen4_ot_1_0_0_0",
+      "parent_id": "perf_gen3_root_1_0_0",
+      "children": [
+        "perf_gen5__1_0_0_0_0"
+      ],
+      "depth": 4,
+      "entropy_delta_from_parent": -0.04093122556861861,
+      "total_entropy_drift": -0.11648714020964446,
+      "creation_time": "2025-07-10T03:44:14.458779"
+    },
+    "perf_gen4_ot_1_0_0_1": {
+      "bloom_id": "perf_gen4_ot_1_0_0_1",
+      "parent_id": "perf_gen3_root_1_0_0",
+      "children": [
+        "perf_gen5__1_0_0_1_0",
+        "perf_gen5__1_0_0_1_1",
+        "perf_gen5__1_0_0_1_2"
+      ],
+      "depth": 4,
+      "entropy_delta_from_parent": 0.15904984834350305,
+      "total_entropy_drift": 0.08349393370247721,
+      "creation_time": "2025-07-10T03:44:14.458779"
+    },
+    "perf_gen4_ot_1_0_1_0": {
+      "bloom_id": "perf_gen4_ot_1_0_1_0",
+      "parent_id": "perf_gen3_root_1_0_1",
+      "children": [
+        "perf_gen5__1_0_1_0_0",
+        "perf_gen5__1_0_1_0_1"
+      ],
+      "depth": 4,
+      "entropy_delta_from_parent": 0.2551441433281693,
+      "total_entropy_drift": 0.20750530094391584,
+      "creation_time": "2025-07-10T03:44:14.474780"
+    },
+    "perf_gen4_ot_1_0_2_0": {
+      "bloom_id": "perf_gen4_ot_1_0_2_0",
+      "parent_id": "perf_gen3_root_1_0_2",
+      "children": [
+        "perf_gen5__1_0_2_0_0",
+        "perf_gen5__1_0_2_0_1"
+      ],
+      "depth": 4,
+      "entropy_delta_from_parent": 0.23566718081667276,
+      "total_entropy_drift": 0.17898674147922305,
+      "creation_time": "2025-07-10T03:44:14.474780"
+    },
+    "perf_gen4_ot_1_0_2_1": {
+      "bloom_id": "perf_gen4_ot_1_0_2_1",
+      "parent_id": "perf_gen3_root_1_0_2",
+      "children": [
+        "perf_gen5__1_0_2_1_0"
+      ],
+      "depth": 4,
+      "entropy_delta_from_parent": 0.023928069717010392,
+      "total_entropy_drift": -0.032752369620439314,
+      "creation_time": "2025-07-10T03:44:14.474780"
+    },
+    "perf_gen4_ot_1_1_0_0": {
+      "bloom_id": "perf_gen4_ot_1_1_0_0",
+      "parent_id": "perf_gen3_root_1_1_0",
+      "children": [
+        "perf_gen5__1_1_0_0_0",
+        "perf_gen5__1_1_0_0_1"
+      ],
+      "depth": 4,
+      "entropy_delta_from_parent": -0.10537683356025757,
+      "total_entropy_drift": 0.2432280862842533,
+      "creation_time": "2025-07-10T03:44:14.475780"
+    },
+    "perf_gen4_ot_1_1_0_1": {
+      "bloom_id": "perf_gen4_ot_1_1_0_1",
+      "parent_id": "perf_gen3_root_1_1_0",
+      "children": [
+        "perf_gen5__1_1_0_1_0",
+        "perf_gen5__1_1_0_1_1"
+      ],
+      "depth": 4,
+      "entropy_delta_from_parent": 0.25922710047786757,
+      "total_entropy_drift": 0.6078320203223784,
+      "creation_time": "2025-07-10T03:44:14.475780"
+    },
+    "perf_gen4_ot_1_1_1_0": {
+      "bloom_id": "perf_gen4_ot_1_1_1_0",
+      "parent_id": "perf_gen3_root_1_1_1",
+      "children": [
+        "perf_gen5__1_1_1_0_0",
+        "perf_gen5__1_1_1_0_1"
+      ],
+      "depth": 4,
+      "entropy_delta_from_parent": 0.15381238901519523,
+      "total_entropy_drift": 0.6322534773484039,
+      "creation_time": "2025-07-10T03:44:14.475780"
+    },
+    "perf_gen4_ot_1_1_1_1": {
+      "bloom_id": "perf_gen4_ot_1_1_1_1",
+      "parent_id": "perf_gen3_root_1_1_1",
+      "children": [
+        "perf_gen5__1_1_1_1_0",
+        "perf_gen5__1_1_1_1_1"
+      ],
+      "depth": 4,
+      "entropy_delta_from_parent": 0.25949196091698407,
+      "total_entropy_drift": 0.7379330492501928,
+      "creation_time": "2025-07-10T03:44:14.475780"
+    },
+    "perf_gen4_ot_1_1_1_2": {
+      "bloom_id": "perf_gen4_ot_1_1_1_2",
+      "parent_id": "perf_gen3_root_1_1_1",
+      "children": [
+        "perf_gen5__1_1_1_2_0",
+        "perf_gen5__1_1_1_2_1",
+        "perf_gen5__1_1_1_2_2"
+      ],
+      "depth": 4,
+      "entropy_delta_from_parent": -0.08043832129364115,
+      "total_entropy_drift": 0.3980027670395675,
+      "creation_time": "2025-07-10T03:44:14.475780"
+    },
+    "perf_gen5_ot_2_1_1_0": {
+      "bloom_id": "perf_gen5_ot_2_1_1_0",
+      "parent_id": "perf_gen4_root_2_1_1",
+      "children": [],
+      "depth": 4,
+      "entropy_delta_from_parent": -0.017960616174160005,
+      "total_entropy_drift": 0.3232969666469446,
+      "creation_time": "2025-07-10T03:44:14.475780"
+    },
+    "perf_gen5_ot_2_1_1_1": {
+      "bloom_id": "perf_gen5_ot_2_1_1_1",
+      "parent_id": "perf_gen4_root_2_1_1",
+      "children": [],
+      "depth": 4,
+      "entropy_delta_from_parent": 0.010848849620868017,
+      "total_entropy_drift": 0.3521064324419726,
+      "creation_time": "2025-07-10T03:44:14.476779"
+    },
+    "perf_gen5_ot_2_1_1_2": {
+      "bloom_id": "perf_gen5_ot_2_1_1_2",
+      "parent_id": "perf_gen4_root_2_1_1",
+      "children": [],
+      "depth": 4,
+      "entropy_delta_from_parent": 0.1965340672865551,
+      "total_entropy_drift": 0.5377916501076596,
+      "creation_time": "2025-07-10T03:44:14.492779"
+    },
+    "perf_gen5_ot_2_1_2_0": {
+      "bloom_id": "perf_gen5_ot_2_1_2_0",
+      "parent_id": "perf_gen4_root_2_1_2",
+      "children": [],
+      "depth": 4,
+      "entropy_delta_from_parent": -0.162369339822881,
+      "total_entropy_drift": -0.08098403892280343,
+      "creation_time": "2025-07-10T03:44:14.492779"
+    },
+    "perf_gen5_ot_2_1_2_1": {
+      "bloom_id": "perf_gen5_ot_2_1_2_1",
+      "parent_id": "perf_gen4_root_2_1_2",
+      "children": [],
+      "depth": 4,
+      "entropy_delta_from_parent": -0.13478277364777552,
+      "total_entropy_drift": -0.05339747274769796,
+      "creation_time": "2025-07-10T03:44:14.492779"
+    },
+    "perf_gen5_ot_2_1_2_2": {
+      "bloom_id": "perf_gen5_ot_2_1_2_2",
+      "parent_id": "perf_gen4_root_2_1_2",
+      "children": [],
+      "depth": 4,
+      "entropy_delta_from_parent": 0.22795221235348884,
+      "total_entropy_drift": 0.3093375132535664,
+      "creation_time": "2025-07-10T03:44:14.493778"
+    },
+    "perf_gen5_ot_2_2_0_0": {
+      "bloom_id": "perf_gen5_ot_2_2_0_0",
+      "parent_id": "perf_gen4_root_2_2_0",
+      "children": [],
+      "depth": 4,
+      "entropy_delta_from_parent": -0.12467553664171416,
+      "total_entropy_drift": 0.24382176768461172,
+      "creation_time": "2025-07-10T03:44:14.493778"
+    },
+    "perf_gen5_ot_2_2_0_1": {
+      "bloom_id": "perf_gen5_ot_2_2_0_1",
+      "parent_id": "perf_gen4_root_2_2_0",
+      "children": [],
+      "depth": 4,
+      "entropy_delta_from_parent": 0.25998200404821487,
+      "total_entropy_drift": 0.6284793083745408,
+      "creation_time": "2025-07-10T03:44:14.493778"
+    },
+    "perf_gen5_ot_2_2_0_2": {
+      "bloom_id": "perf_gen5_ot_2_2_0_2",
+      "parent_id": "perf_gen4_root_2_2_0",
+      "children": [],
+      "depth": 4,
+      "entropy_delta_from_parent": -0.10914437329041099,
+      "total_entropy_drift": 0.2593529310359149,
+      "creation_time": "2025-07-10T03:44:14.493778"
+    },
+    "perf_gen5__0_0_0_0_0": {
+      "bloom_id": "perf_gen5__0_0_0_0_0",
+      "parent_id": "perf_gen4_ot_0_0_0_0",
+      "children": [],
+      "depth": 5,
+      "entropy_delta_from_parent": 0.01984214269632173,
+      "total_entropy_drift": 0.17655578192275118,
+      "creation_time": "2025-07-10T03:44:14.493778"
+    },
+    "perf_gen5__0_0_0_0_1": {
+      "bloom_id": "perf_gen5__0_0_0_0_1",
+      "parent_id": "perf_gen4_ot_0_0_0_0",
+      "children": [],
+      "depth": 5,
+      "entropy_delta_from_parent": -0.1255566588746091,
+      "total_entropy_drift": 0.03115698035182035,
+      "creation_time": "2025-07-10T03:44:14.493778"
+    },
+    "perf_gen5__0_0_0_0_2": {
+      "bloom_id": "perf_gen5__0_0_0_0_2",
+      "parent_id": "perf_gen4_ot_0_0_0_0",
+      "children": [],
+      "depth": 5,
+      "entropy_delta_from_parent": -0.042674038593563834,
+      "total_entropy_drift": 0.11403960063286561,
+      "creation_time": "2025-07-10T03:44:14.493778"
+    },
+    "perf_gen5__0_0_0_1_0": {
+      "bloom_id": "perf_gen5__0_0_0_1_0",
+      "parent_id": "perf_gen4_ot_0_0_0_1",
+      "children": [],
+      "depth": 5,
+      "entropy_delta_from_parent": 0.26512163127423627,
+      "total_entropy_drift": 0.2394866908225261,
+      "creation_time": "2025-07-10T03:44:14.511777"
+    },
+    "perf_gen5__0_0_0_1_1": {
+      "bloom_id": "perf_gen5__0_0_0_1_1",
+      "parent_id": "perf_gen4_ot_0_0_0_1",
+      "children": [],
+      "depth": 5,
+      "entropy_delta_from_parent": 0.29768181008603484,
+      "total_entropy_drift": 0.2720468696343247,
+      "creation_time": "2025-07-10T03:44:14.511777"
+    },
+    "perf_gen5__0_1_0_0_0": {
+      "bloom_id": "perf_gen5__0_1_0_0_0",
+      "parent_id": "perf_gen4_ot_0_1_0_0",
+      "children": [],
+      "depth": 5,
+      "entropy_delta_from_parent": -0.11283254482743421,
+      "total_entropy_drift": -0.3469784075680854,
+      "creation_time": "2025-07-10T03:44:14.511777"
+    },
+    "perf_gen5__0_1_1_0_0": {
+      "bloom_id": "perf_gen5__0_1_1_0_0",
+      "parent_id": "perf_gen4_ot_0_1_1_0",
+      "children": [],
+      "depth": 5,
+      "entropy_delta_from_parent": -0.007640288639282844,
+      "total_entropy_drift": -0.19292180584529794,
+      "creation_time": "2025-07-10T03:44:14.511777"
+    },
+    "perf_gen5__0_1_1_1_0": {
+      "bloom_id": "perf_gen5__0_1_1_1_0",
+      "parent_id": "perf_gen4_ot_0_1_1_1",
+      "children": [],
+      "depth": 5,
+      "entropy_delta_from_parent": 0.10084696256849163,
+      "total_entropy_drift": 0.1910073805154489,
+      "creation_time": "2025-07-10T03:44:14.511777"
+    },
+    "perf_gen5__0_1_1_1_1": {
+      "bloom_id": "perf_gen5__0_1_1_1_1",
+      "parent_id": "perf_gen4_ot_0_1_1_1",
+      "children": [],
+      "depth": 5,
+      "entropy_delta_from_parent": -0.1611455077546014,
+      "total_entropy_drift": -0.07098508980764412,
+      "creation_time": "2025-07-10T03:44:14.511777"
+    },
+    "perf_gen5__0_1_1_1_2": {
+      "bloom_id": "perf_gen5__0_1_1_1_2",
+      "parent_id": "perf_gen4_ot_0_1_1_1",
+      "children": [],
+      "depth": 5,
+      "entropy_delta_from_parent": -0.05158836782302023,
+      "total_entropy_drift": 0.03857205012393705,
+      "creation_time": "2025-07-10T03:44:14.512779"
+    },
+    "perf_gen5__0_1_1_2_0": {
+      "bloom_id": "perf_gen5__0_1_1_2_0",
+      "parent_id": "perf_gen4_ot_0_1_1_2",
+      "children": [],
+      "depth": 5,
+      "entropy_delta_from_parent": -0.11710057968984938,
+      "total_entropy_drift": -0.19387947696097235,
+      "creation_time": "2025-07-10T03:44:14.512779"
+    },
+    "perf_gen5__0_1_1_2_1": {
+      "bloom_id": "perf_gen5__0_1_1_2_1",
+      "parent_id": "perf_gen4_ot_0_1_1_2",
+      "children": [],
+      "depth": 5,
+      "entropy_delta_from_parent": -0.12875143356951718,
+      "total_entropy_drift": -0.20553033084064015,
+      "creation_time": "2025-07-10T03:44:14.512779"
+    },
+    "perf_gen5__0_1_2_0_0": {
+      "bloom_id": "perf_gen5__0_1_2_0_0",
+      "parent_id": "perf_gen4_ot_0_1_2_0",
+      "children": [],
+      "depth": 5,
+      "entropy_delta_from_parent": 0.23685505456241385,
+      "total_entropy_drift": 0.7476731930376707,
+      "creation_time": "2025-07-10T03:44:14.512779"
+    },
+    "perf_gen5__1_0_0_0_0": {
+      "bloom_id": "perf_gen5__1_0_0_0_0",
+      "parent_id": "perf_gen4_ot_1_0_0_0",
+      "children": [],
+      "depth": 5,
+      "entropy_delta_from_parent": 0.01728118457094746,
+      "total_entropy_drift": -0.099205955638697,
+      "creation_time": "2025-07-10T03:44:14.531778"
+    },
+    "perf_gen5__1_0_0_1_0": {
+      "bloom_id": "perf_gen5__1_0_0_1_0",
+      "parent_id": "perf_gen4_ot_1_0_0_1",
+      "children": [],
+      "depth": 5,
+      "entropy_delta_from_parent": 0.0809478556989503,
+      "total_entropy_drift": 0.1644417894014275,
+      "creation_time": "2025-07-10T03:44:14.531778"
+    },
+    "perf_gen5__1_0_0_1_1": {
+      "bloom_id": "perf_gen5__1_0_0_1_1",
+      "parent_id": "perf_gen4_ot_1_0_0_1",
+      "children": [],
+      "depth": 5,
+      "entropy_delta_from_parent": -0.14777533750131694,
+      "total_entropy_drift": -0.06428140379883973,
+      "creation_time": "2025-07-10T03:44:14.531778"
+    },
+    "perf_gen5__1_0_0_1_2": {
+      "bloom_id": "perf_gen5__1_0_0_1_2",
+      "parent_id": "perf_gen4_ot_1_0_0_1",
+      "children": [],
+      "depth": 5,
+      "entropy_delta_from_parent": -0.19871777133782687,
+      "total_entropy_drift": -0.11522383763534966,
+      "creation_time": "2025-07-10T03:44:14.531778"
+    },
+    "perf_gen5__1_0_1_0_0": {
+      "bloom_id": "perf_gen5__1_0_1_0_0",
+      "parent_id": "perf_gen4_ot_1_0_1_0",
+      "children": [],
+      "depth": 5,
+      "entropy_delta_from_parent": -0.175374466193163,
+      "total_entropy_drift": 0.032130834750752846,
+      "creation_time": "2025-07-10T03:44:14.532778"
+    },
+    "perf_gen5__1_0_1_0_1": {
+      "bloom_id": "perf_gen5__1_0_1_0_1",
+      "parent_id": "perf_gen4_ot_1_0_1_0",
+      "children": [],
+      "depth": 5,
+      "entropy_delta_from_parent": 0.23612856683142674,
+      "total_entropy_drift": 0.4436338677753426,
+      "creation_time": "2025-07-10T03:44:14.532778"
+    },
+    "perf_gen5__1_0_2_0_0": {
+      "bloom_id": "perf_gen5__1_0_2_0_0",
+      "parent_id": "perf_gen4_ot_1_0_2_0",
+      "children": [],
+      "depth": 5,
+      "entropy_delta_from_parent": -0.029078626744644398,
+      "total_entropy_drift": 0.14990811473457866,
+      "creation_time": "2025-07-10T03:44:14.532778"
+    },
+    "perf_gen5__1_0_2_0_1": {
+      "bloom_id": "perf_gen5__1_0_2_0_1",
+      "parent_id": "perf_gen4_ot_1_0_2_0",
+      "children": [],
+      "depth": 5,
+      "entropy_delta_from_parent": 0.022146445679249394,
+      "total_entropy_drift": 0.20113318715847245,
+      "creation_time": "2025-07-10T03:44:14.532778"
+    },
+    "perf_gen5__1_0_2_1_0": {
+      "bloom_id": "perf_gen5__1_0_2_1_0",
+      "parent_id": "perf_gen4_ot_1_0_2_1",
+      "children": [],
+      "depth": 5,
+      "entropy_delta_from_parent": -0.05273953629905609,
+      "total_entropy_drift": -0.0854919059194954,
+      "creation_time": "2025-07-10T03:44:14.532778"
+    },
+    "perf_gen5__1_1_0_0_0": {
+      "bloom_id": "perf_gen5__1_1_0_0_0",
+      "parent_id": "perf_gen4_ot_1_1_0_0",
+      "children": [],
+      "depth": 5,
+      "entropy_delta_from_parent": -0.026181425786508616,
+      "total_entropy_drift": 0.21704666049774468,
+      "creation_time": "2025-07-10T03:44:14.532778"
+    },
+    "perf_gen5__1_1_0_0_1": {
+      "bloom_id": "perf_gen5__1_1_0_0_1",
+      "parent_id": "perf_gen4_ot_1_1_0_0",
+      "children": [],
+      "depth": 5,
+      "entropy_delta_from_parent": 0.20846178526283393,
+      "total_entropy_drift": 0.45168987154708723,
+      "creation_time": "2025-07-10T03:44:14.552779"
+    },
+    "perf_gen5__1_1_0_1_0": {
+      "bloom_id": "perf_gen5__1_1_0_1_0",
+      "parent_id": "perf_gen4_ot_1_1_0_1",
+      "children": [],
+      "depth": 5,
+      "entropy_delta_from_parent": 0.030542427422966645,
+      "total_entropy_drift": 0.638374447745345,
+      "creation_time": "2025-07-10T03:44:14.552779"
+    },
+    "perf_gen5__1_1_0_1_1": {
+      "bloom_id": "perf_gen5__1_1_0_1_1",
+      "parent_id": "perf_gen4_ot_1_1_0_1",
+      "children": [],
+      "depth": 5,
+      "entropy_delta_from_parent": 0.027163985355964038,
+      "total_entropy_drift": 0.6349960056783424,
+      "creation_time": "2025-07-10T03:44:14.553779"
+    },
+    "perf_gen5__1_1_1_0_0": {
+      "bloom_id": "perf_gen5__1_1_1_0_0",
+      "parent_id": "perf_gen4_ot_1_1_1_0",
+      "children": [],
+      "depth": 5,
+      "entropy_delta_from_parent": 0.05651574440079837,
+      "total_entropy_drift": 0.6887692217492023,
+      "creation_time": "2025-07-10T03:44:14.553779"
+    },
+    "perf_gen5__1_1_1_0_1": {
+      "bloom_id": "perf_gen5__1_1_1_0_1",
+      "parent_id": "perf_gen4_ot_1_1_1_0",
+      "children": [],
+      "depth": 5,
+      "entropy_delta_from_parent": 0.03467541027944332,
+      "total_entropy_drift": 0.6669288876278472,
+      "creation_time": "2025-07-10T03:44:14.553779"
+    },
+    "perf_gen5__1_1_1_1_0": {
+      "bloom_id": "perf_gen5__1_1_1_1_0",
+      "parent_id": "perf_gen4_ot_1_1_1_1",
+      "children": [],
+      "depth": 5,
+      "entropy_delta_from_parent": 0.2096176464909375,
+      "total_entropy_drift": 0.9475506957411303,
+      "creation_time": "2025-07-10T03:44:14.553779"
+    },
+    "perf_gen5__1_1_1_1_1": {
+      "bloom_id": "perf_gen5__1_1_1_1_1",
+      "parent_id": "perf_gen4_ot_1_1_1_1",
+      "children": [],
+      "depth": 5,
+      "entropy_delta_from_parent": -0.04650705040553066,
+      "total_entropy_drift": 0.691425998844662,
+      "creation_time": "2025-07-10T03:44:14.553779"
+    },
+    "perf_gen5__1_1_1_2_0": {
+      "bloom_id": "perf_gen5__1_1_1_2_0",
+      "parent_id": "perf_gen4_ot_1_1_1_2",
+      "children": [],
+      "depth": 5,
+      "entropy_delta_from_parent": 0.16172555635256225,
+      "total_entropy_drift": 0.5597283233921297,
+      "creation_time": "2025-07-10T03:44:14.553779"
+    },
+    "perf_gen5__1_1_1_2_1": {
+      "bloom_id": "perf_gen5__1_1_1_2_1",
+      "parent_id": "perf_gen4_ot_1_1_1_2",
+      "children": [],
+      "depth": 5,
+      "entropy_delta_from_parent": 0.14514641540649387,
+      "total_entropy_drift": 0.5431491824460614,
+      "creation_time": "2025-07-10T03:44:14.553779"
+    },
+    "perf_gen5__1_1_1_2_2": {
+      "bloom_id": "perf_gen5__1_1_1_2_2",
+      "parent_id": "perf_gen4_ot_1_1_1_2",
+      "children": [],
+      "depth": 5,
+      "entropy_delta_from_parent": 0.27463421975165336,
+      "total_entropy_drift": 0.6726369867912209,
+      "creation_time": "2025-07-10T03:44:14.554777"
+    }
+  },
+  "events": [
+    {
+      "parent_id": "root_bloom_001",
+      "child_id": "child_001",
+      "entropy_diff": 0.1,
+      "timestamp": "2025-07-10T03:40:39.944967",
+      "metadata": {
+        "source": "test",
+        "trigger": "curiosity"
+      }
+    },
+    {
+      "parent_id": "root_bloom_001",
+      "child_id": "child_002",
+      "entropy_diff": -0.05,
+      "timestamp": "2025-07-10T03:40:39.944967",
+      "metadata": {
+        "source": "test",
+        "trigger": "memory"
+      }
+    },
+    {
+      "parent_id": "child_001",
+      "child_id": "grand_001",
+      "entropy_diff": 0.15,
+      "timestamp": "2025-07-10T03:40:39.944967",
+      "metadata": {
+        "source": "test",
+        "trigger": "synthesis"
+      }
+    },
+    {
+      "parent_id": "child_002",
+      "child_id": "grand_002",
+      "entropy_diff": 0.08,
+      "timestamp": "2025-07-10T03:40:39.944967",
+      "metadata": {
+        "source": "test",
+        "trigger": "evolution"
+      }
+    },
+    {
+      "parent_id": "consciousness_seed_001",
+      "child_id": "thought_stream_001",
+      "entropy_diff": 0.003088267425235519,
+      "timestamp": "2025-07-10T03:44:14.359172",
+      "metadata": {
+        "source": "demo",
+        "type": "thought_stream",
+        "trigger": "cognitive_branching"
+      }
+    },
+    {
+      "parent_id": "consciousness_seed_001",
+      "child_id": "thought_stream_002",
+      "entropy_diff": 0.13506064425311867,
+      "timestamp": "2025-07-10T03:44:14.359172",
+      "metadata": {
+        "source": "demo",
+        "type": "thought_stream",
+        "trigger": "cognitive_branching"
+      }
+    },
+    {
+      "parent_id": "consciousness_seed_001",
+      "child_id": "thought_stream_003",
+      "entropy_diff": 0.16869292572573738,
+      "timestamp": "2025-07-10T03:44:14.360171",
+      "metadata": {
+        "source": "demo",
+        "type": "thought_stream",
+        "trigger": "cognitive_branching"
+      }
+    },
+    {
+      "parent_id": "thought_stream_001",
+      "child_id": "rebloom_thought_stream_001_001",
+      "entropy_diff": -0.1256214223883116,
+      "timestamp": "2025-07-10T03:44:14.360171",
+      "metadata": {
+        "source": "demo",
+        "type": "memory_consolidation",
+        "trigger": "rebloom_event"
+      }
+    },
+    {
+      "parent_id": "thought_stream_002",
+      "child_id": "rebloom_thought_stream_002_001",
+      "entropy_diff": 0.04084545900628289,
+      "timestamp": "2025-07-10T03:44:14.360171",
+      "metadata": {
+        "source": "demo",
+        "type": "memory_consolidation",
+        "trigger": "rebloom_event"
+      }
+    },
+    {
+      "parent_id": "thought_stream_001",
+      "child_id": "engine_bloom_001",
+      "entropy_diff": 0.4694562252174176,
+      "timestamp": "2025-07-10T03:44:14.361168",
+      "metadata": {
+        "source": "bloom_engine",
+        "bloom_type": "memory",
+        "trigger_type": "curiosity",
+        "mood": "contemplative",
+        "lineage_depth": 1
+      }
+    },
+    {
+      "parent_id": "thought_stream_002",
+      "child_id": "engine_bloom_002",
+      "entropy_diff": 0.47280300211159343,
+      "timestamp": "2025-07-10T03:44:14.361168",
+      "metadata": {
+        "source": "bloom_engine",
+        "bloom_type": "insight",
+        "trigger_type": "emotional_resonance",
+        "mood": "reflective",
+        "lineage_depth": 1
+      }
+    },
+    {
+      "parent_id": "thought_stream_003",
+      "child_id": "engine_bloom_003",
+      "entropy_diff": 0.7569446063862473,
+      "timestamp": "2025-07-10T03:44:14.362170",
+      "metadata": {
+        "source": "bloom_engine",
+        "bloom_type": "memory",
+        "trigger_type": "emotional_resonance",
+        "mood": "curious",
+        "lineage_depth": 2
+      }
+    },
+    {
+      "parent_id": "thought_stream_001",
+      "child_id": "engine_bloom_004",
+      "entropy_diff": 0.7654650142419988,
+      "timestamp": "2025-07-10T03:44:14.362170",
+      "metadata": {
+        "source": "bloom_engine",
+        "bloom_type": "memory",
+        "trigger_type": "curiosity",
+        "mood": "curious",
+        "lineage_depth": 1
+      }
+    },
+    {
+      "parent_id": "thought_stream_002",
+      "child_id": "engine_bloom_005",
+      "entropy_diff": 0.8176613031669359,
+      "timestamp": "2025-07-10T03:44:14.362170",
+      "metadata": {
+        "source": "bloom_engine",
+        "bloom_type": "insight",
+        "trigger_type": "curiosity",
+        "mood": "contemplative",
+        "lineage_depth": 1
+      }
+    },
+    {
+      "parent_id": "thought_stream_001",
+      "child_id": "thought_stream_001_vault_rebloom_01",
+      "entropy_diff": 0.18459723739674772,
+      "timestamp": "2025-07-10T03:44:14.374262",
+      "metadata": {
+        "source": "vault_manager",
+        "evolution_notes": "Vault-managed evolution of thought_stream_001",
+        "rebloom_generation": 1,
+        "semantic_drift": 0.09500368506071706
+      }
+    },
+    {
+      "parent_id": "thought_stream_002",
+      "child_id": "thought_stream_002_vault_rebloom_01",
+      "entropy_diff": 0.16397771569286546,
+      "timestamp": "2025-07-10T03:44:14.374262",
+      "metadata": {
+        "source": "vault_manager",
+        "evolution_notes": "Vault-managed evolution of thought_stream_002",
+        "rebloom_generation": 1,
+        "semantic_drift": 0.02548033271297043
+      }
+    },
+    {
+      "parent_id": "thought_stream_003",
+      "child_id": "thought_stream_003_vault_rebloom_01",
+      "entropy_diff": 0.15607906249672837,
+      "timestamp": "2025-07-10T03:44:14.375262",
+      "metadata": {
+        "source": "vault_manager",
+        "evolution_notes": "Vault-managed evolution of thought_stream_003",
+        "rebloom_generation": 1,
+        "semantic_drift": 0.02046979920982775
+      }
+    },
+    {
+      "parent_id": "performance_root",
+      "child_id": "perf_gen1_nce_root_0",
+      "entropy_diff": 0.10033664136706782,
+      "timestamp": "2025-07-10T03:44:14.381262",
+      "metadata": {
+        "source": "performance_test",
+        "generation": 1
+      }
+    },
+    {
+      "parent_id": "performance_root",
+      "child_id": "perf_gen1_nce_root_1",
+      "entropy_diff": 0.2402188774326796,
+      "timestamp": "2025-07-10T03:44:14.381262",
+      "metadata": {
+        "source": "performance_test",
+        "generation": 1
+      }
+    },
+    {
+      "parent_id": "performance_root",
+      "child_id": "perf_gen2_nce_root_0",
+      "entropy_diff": -0.1287305097057932,
+      "timestamp": "2025-07-10T03:44:14.381262",
+      "metadata": {
+        "source": "performance_test",
+        "generation": 2
+      }
+    },
+    {
+      "parent_id": "performance_root",
+      "child_id": "perf_gen2_nce_root_1",
+      "entropy_diff": -0.0029774429406067004,
+      "timestamp": "2025-07-10T03:44:14.381262",
+      "metadata": {
+        "source": "performance_test",
+        "generation": 2
+      }
+    },
+    {
+      "parent_id": "performance_root",
+      "child_id": "perf_gen2_nce_root_2",
+      "entropy_diff": 0.16557300330867597,
+      "timestamp": "2025-07-10T03:44:14.381262",
+      "metadata": {
+        "source": "performance_test",
+        "generation": 2
+      }
+    },
+    {
+      "parent_id": "perf_gen1_nce_root_0",
+      "child_id": "perf_gen2_e_root_0_0",
+      "entropy_diff": -0.030396852527011187,
+      "timestamp": "2025-07-10T03:44:14.382261",
+      "metadata": {
+        "source": "performance_test",
+        "generation": 2
+      }
+    },
+    {
+      "parent_id": "perf_gen1_nce_root_0",
+      "child_id": "perf_gen2_e_root_0_1",
+      "entropy_diff": -0.12588025151941096,
+      "timestamp": "2025-07-10T03:44:14.382261",
+      "metadata": {
+        "source": "performance_test",
+        "generation": 2
+      }
+    },
+    {
+      "parent_id": "perf_gen1_nce_root_1",
+      "child_id": "perf_gen2_e_root_1_0",
+      "entropy_diff": -0.18222115680110545,
+      "timestamp": "2025-07-10T03:44:14.395261",
+      "metadata": {
+        "source": "performance_test",
+        "generation": 2
+      }
+    },
+    {
+      "parent_id": "perf_gen1_nce_root_1",
+      "child_id": "perf_gen2_e_root_1_1",
+      "entropy_diff": -0.04169965685606125,
+      "timestamp": "2025-07-10T03:44:14.395261",
+      "metadata": {
+        "source": "performance_test",
+        "generation": 2
+      }
+    },
+    {
+      "parent_id": "performance_root",
+      "child_id": "perf_gen3_nce_root_0",
+      "entropy_diff": -0.06972669153406547,
+      "timestamp": "2025-07-10T03:44:14.395261",
+      "metadata": {
+        "source": "performance_test",
+        "generation": 3
+      }
+    },
+    {
+      "parent_id": "perf_gen1_nce_root_0",
+      "child_id": "perf_gen3_e_root_0_0",
+      "entropy_diff": 0.15119077942691345,
+      "timestamp": "2025-07-10T03:44:14.395261",
+      "metadata": {
+        "source": "performance_test",
+        "generation": 3
+      }
+    },
+    {
+      "parent_id": "perf_gen1_nce_root_1",
+      "child_id": "perf_gen3_e_root_1_0",
+      "entropy_diff": 0.23854230735740933,
+      "timestamp": "2025-07-10T03:44:14.396262",
+      "metadata": {
+        "source": "performance_test",
+        "generation": 3
+      }
+    },
+    {
+      "parent_id": "perf_gen1_nce_root_1",
+      "child_id": "perf_gen3_e_root_1_1",
+      "entropy_diff": 0.2306722785260144,
+      "timestamp": "2025-07-10T03:44:14.396262",
+      "metadata": {
+        "source": "performance_test",
+        "generation": 3
+      }
+    },
+    {
+      "parent_id": "perf_gen2_nce_root_0",
+      "child_id": "perf_gen3_e_root_0_1",
+      "entropy_diff": -0.1550500591407063,
+      "timestamp": "2025-07-10T03:44:14.396262",
+      "metadata": {
+        "source": "performance_test",
+        "generation": 3
+      }
+    },
+    {
+      "parent_id": "perf_gen2_nce_root_0",
+      "child_id": "perf_gen3_e_root_0_2",
+      "entropy_diff": 0.2511395354271818,
+      "timestamp": "2025-07-10T03:44:14.396262",
+      "metadata": {
+        "source": "performance_test",
+        "generation": 3
+      }
+    },
+    {
+      "parent_id": "perf_gen2_nce_root_1",
+      "child_id": "perf_gen3_e_root_1_2",
+      "entropy_diff": 0.2345285587259769,
+      "timestamp": "2025-07-10T03:44:14.396262",
+      "metadata": {
+        "source": "performance_test",
+        "generation": 3
+      }
+    },
+    {
+      "parent_id": "perf_gen2_nce_root_2",
+      "child_id": "perf_gen3_e_root_2_0",
+      "entropy_diff": 0.20690919494573112,
+      "timestamp": "2025-07-10T03:44:14.396262",
+      "metadata": {
+        "source": "performance_test",
+        "generation": 3
+      }
+    },
+    {
+      "parent_id": "perf_gen2_nce_root_2",
+      "child_id": "perf_gen3_e_root_2_1",
+      "entropy_diff": -0.11231788810746812,
+      "timestamp": "2025-07-10T03:44:14.410266",
+      "metadata": {
+        "source": "performance_test",
+        "generation": 3
+      }
+    },
+    {
+      "parent_id": "perf_gen2_nce_root_2",
+      "child_id": "perf_gen3_e_root_2_2",
+      "entropy_diff": 0.0826867630351536,
+      "timestamp": "2025-07-10T03:44:14.410266",
+      "metadata": {
+        "source": "performance_test",
+        "generation": 3
+      }
+    },
+    {
+      "parent_id": "perf_gen2_e_root_0_0",
+      "child_id": "perf_gen3_root_0_0_0",
+      "entropy_diff": -0.0031882899224842665,
+      "timestamp": "2025-07-10T03:44:14.410266",
+      "metadata": {
+        "source": "performance_test",
+        "generation": 3
+      }
+    },
+    {
+      "parent_id": "perf_gen2_e_root_0_1",
+      "child_id": "perf_gen3_root_0_1_0",
+      "entropy_diff": -0.11931591700913152,
+      "timestamp": "2025-07-10T03:44:14.410266",
+      "metadata": {
+        "source": "performance_test",
+        "generation": 3
+      }
+    },
+    {
+      "parent_id": "perf_gen2_e_root_0_1",
+      "child_id": "perf_gen3_root_0_1_1",
+      "entropy_diff": -0.17693855631666838,
+      "timestamp": "2025-07-10T03:44:14.410266",
+      "metadata": {
+        "source": "performance_test",
+        "generation": 3
+      }
+    },
+    {
+      "parent_id": "perf_gen2_e_root_0_1",
+      "child_id": "perf_gen3_root_0_1_2",
+      "entropy_diff": 0.24253142147134438,
+      "timestamp": "2025-07-10T03:44:14.411267",
+      "metadata": {
+        "source": "performance_test",
+        "generation": 3
+      }
+    },
+    {
+      "parent_id": "perf_gen2_e_root_1_0",
+      "child_id": "perf_gen3_root_1_0_0",
+      "entropy_diff": -0.1335536352726,
+      "timestamp": "2025-07-10T03:44:14.411267",
+      "metadata": {
+        "source": "performance_test",
+        "generation": 3
+      }
+    },
+    {
+      "parent_id": "perf_gen2_e_root_1_0",
+      "child_id": "perf_gen3_root_1_0_1",
+      "entropy_diff": -0.10563656301582763,
+      "timestamp": "2025-07-10T03:44:14.411267",
+      "metadata": {
+        "source": "performance_test",
+        "generation": 3
+      }
+    },
+    {
+      "parent_id": "perf_gen2_e_root_1_0",
+      "child_id": "perf_gen3_root_1_0_2",
+      "entropy_diff": -0.11467815996902386,
+      "timestamp": "2025-07-10T03:44:14.411267",
+      "metadata": {
+        "source": "performance_test",
+        "generation": 3
+      }
+    },
+    {
+      "parent_id": "perf_gen2_e_root_1_1",
+      "child_id": "perf_gen3_root_1_1_0",
+      "entropy_diff": 0.1500856992678925,
+      "timestamp": "2025-07-10T03:44:14.411267",
+      "metadata": {
+        "source": "performance_test",
+        "generation": 3
+      }
+    },
+    {
+      "parent_id": "perf_gen2_e_root_1_1",
+      "child_id": "perf_gen3_root_1_1_1",
+      "entropy_diff": 0.2799218677565903,
+      "timestamp": "2025-07-10T03:44:14.424780",
+      "metadata": {
+        "source": "performance_test",
+        "generation": 3
+      }
+    },
+    {
+      "parent_id": "perf_gen2_e_root_1_1",
+      "child_id": "perf_gen4_root_1_1_0",
+      "entropy_diff": 0.011262269592646812,
+      "timestamp": "2025-07-10T03:44:14.425779",
+      "metadata": {
+        "source": "performance_test",
+        "generation": 4
+      }
+    },
+    {
+      "parent_id": "perf_gen2_e_root_1_1",
+      "child_id": "perf_gen4_root_1_1_1",
+      "entropy_diff": 0.14790420609883764,
+      "timestamp": "2025-07-10T03:44:14.425779",
+      "metadata": {
+        "source": "performance_test",
+        "generation": 4
+      }
+    },
+    {
+      "parent_id": "perf_gen3_nce_root_0",
+      "child_id": "perf_gen4_e_root_0_0",
+      "entropy_diff": 0.08018815128036894,
+      "timestamp": "2025-07-10T03:44:14.425779",
+      "metadata": {
+        "source": "performance_test",
+        "generation": 4
+      }
+    },
+    {
+      "parent_id": "perf_gen3_nce_root_0",
+      "child_id": "perf_gen4_e_root_0_1",
+      "entropy_diff": -0.16260556483663496,
+      "timestamp": "2025-07-10T03:44:14.425779",
+      "metadata": {
+        "source": "performance_test",
+        "generation": 4
+      }
+    },
+    {
+      "parent_id": "perf_gen3_nce_root_0",
+      "child_id": "perf_gen4_e_root_0_2",
+      "entropy_diff": -0.19986393900469396,
+      "timestamp": "2025-07-10T03:44:14.426779",
+      "metadata": {
+        "source": "performance_test",
+        "generation": 4
+      }
+    },
+    {
+      "parent_id": "perf_gen3_e_root_0_0",
+      "child_id": "perf_gen4_root_0_0_0",
+      "entropy_diff": 0.04279489438848488,
+      "timestamp": "2025-07-10T03:44:14.426779",
+      "metadata": {
+        "source": "performance_test",
+        "generation": 4
+      }
+    },
+    {
+      "parent_id": "perf_gen3_e_root_0_0",
+      "child_id": "perf_gen4_root_0_0_1",
+      "entropy_diff": 0.028029312880376467,
+      "timestamp": "2025-07-10T03:44:14.426779",
+      "metadata": {
+        "source": "performance_test",
+        "generation": 4
+      }
+    },
+    {
+      "parent_id": "perf_gen3_e_root_0_0",
+      "child_id": "perf_gen4_root_0_0_2",
+      "entropy_diff": 0.08664692916245964,
+      "timestamp": "2025-07-10T03:44:14.426779",
+      "metadata": {
+        "source": "performance_test",
+        "generation": 4
+      }
+    },
+    {
+      "parent_id": "perf_gen3_e_root_1_0",
+      "child_id": "perf_gen4_root_1_0_0",
+      "entropy_diff": -0.060706949970888324,
+      "timestamp": "2025-07-10T03:44:14.426779",
+      "metadata": {
+        "source": "performance_test",
+        "generation": 4
+      }
+    },
+    {
+      "parent_id": "perf_gen3_e_root_0_1",
+      "child_id": "perf_gen4_root_0_1_0",
+      "entropy_diff": -0.19576792175944757,
+      "timestamp": "2025-07-10T03:44:14.441779",
+      "metadata": {
+        "source": "performance_test",
+        "generation": 4
+      }
+    },
+    {
+      "parent_id": "perf_gen3_e_root_0_1",
+      "child_id": "perf_gen4_root_0_1_1",
+      "entropy_diff": 0.014593293156833276,
+      "timestamp": "2025-07-10T03:44:14.441779",
+      "metadata": {
+        "source": "performance_test",
+        "generation": 4
+      }
+    },
+    {
+      "parent_id": "perf_gen3_e_root_0_2",
+      "child_id": "perf_gen4_root_0_2_0",
+      "entropy_diff": 0.027360617288045896,
+      "timestamp": "2025-07-10T03:44:14.441779",
+      "metadata": {
+        "source": "performance_test",
+        "generation": 4
+      }
+    },
+    {
+      "parent_id": "perf_gen3_e_root_0_2",
+      "child_id": "perf_gen4_root_0_2_1",
+      "entropy_diff": 0.2542741456392309,
+      "timestamp": "2025-07-10T03:44:14.441779",
+      "metadata": {
+        "source": "performance_test",
+        "generation": 4
+      }
+    },
+    {
+      "parent_id": "perf_gen3_e_root_1_2",
+      "child_id": "perf_gen4_root_1_2_0",
+      "entropy_diff": 0.03726787485891431,
+      "timestamp": "2025-07-10T03:44:14.441779",
+      "metadata": {
+        "source": "performance_test",
+        "generation": 4
+      }
+    },
+    {
+      "parent_id": "perf_gen3_e_root_1_2",
+      "child_id": "perf_gen4_root_1_2_1",
+      "entropy_diff": 0.06469113289088496,
+      "timestamp": "2025-07-10T03:44:14.442779",
+      "metadata": {
+        "source": "performance_test",
+        "generation": 4
+      }
+    },
+    {
+      "parent_id": "perf_gen3_e_root_2_0",
+      "child_id": "perf_gen4_root_2_0_0",
+      "entropy_diff": -0.05636427327399479,
+      "timestamp": "2025-07-10T03:44:14.442779",
+      "metadata": {
+        "source": "performance_test",
+        "generation": 4
+      }
+    },
+    {
+      "parent_id": "perf_gen3_e_root_2_1",
+      "child_id": "perf_gen4_root_2_1_0",
+      "entropy_diff": -0.16491213348629213,
+      "timestamp": "2025-07-10T03:44:14.442779",
+      "metadata": {
+        "source": "performance_test",
+        "generation": 4
+      }
+    },
+    {
+      "parent_id": "perf_gen3_e_root_2_1",
+      "child_id": "perf_gen4_root_2_1_1",
+      "entropy_diff": 0.28800246761989673,
+      "timestamp": "2025-07-10T03:44:14.442779",
+      "metadata": {
+        "source": "performance_test",
+        "generation": 4
+      }
+    },
+    {
+      "parent_id": "perf_gen3_e_root_2_1",
+      "child_id": "perf_gen4_root_2_1_2",
+      "entropy_diff": 0.028130185698869714,
+      "timestamp": "2025-07-10T03:44:14.442779",
+      "metadata": {
+        "source": "performance_test",
+        "generation": 4
+      }
+    },
+    {
+      "parent_id": "perf_gen3_e_root_2_2",
+      "child_id": "perf_gen4_root_2_2_0",
+      "entropy_diff": 0.12023753798249631,
+      "timestamp": "2025-07-10T03:44:14.457778",
+      "metadata": {
+        "source": "performance_test",
+        "generation": 4
+      }
+    },
+    {
+      "parent_id": "perf_gen3_root_0_0_0",
+      "child_id": "perf_gen4_ot_0_0_0_0",
+      "entropy_diff": 0.08996214030885707,
+      "timestamp": "2025-07-10T03:44:14.457778",
+      "metadata": {
+        "source": "performance_test",
+        "generation": 4
+      }
+    },
+    {
+      "parent_id": "perf_gen3_root_0_0_0",
+      "child_id": "perf_gen4_ot_0_0_0_1",
+      "entropy_diff": -0.09238643936928254,
+      "timestamp": "2025-07-10T03:44:14.458779",
+      "metadata": {
+        "source": "performance_test",
+        "generation": 4
+      }
+    },
+    {
+      "parent_id": "perf_gen3_root_0_1_0",
+      "child_id": "perf_gen4_ot_0_1_0_0",
+      "entropy_diff": -0.08928633557917653,
+      "timestamp": "2025-07-10T03:44:14.458779",
+      "metadata": {
+        "source": "performance_test",
+        "generation": 4
+      }
+    },
+    {
+      "parent_id": "perf_gen3_root_0_1_1",
+      "child_id": "perf_gen4_ot_0_1_1_0",
+      "entropy_diff": 0.017200649262996415,
+      "timestamp": "2025-07-10T03:44:14.458779",
+      "metadata": {
+        "source": "performance_test",
+        "generation": 4
+      }
+    },
+    {
+      "parent_id": "perf_gen3_root_0_1_1",
+      "child_id": "perf_gen4_ot_0_1_1_1",
+      "entropy_diff": 0.2926425844159688,
+      "timestamp": "2025-07-10T03:44:14.458779",
+      "metadata": {
+        "source": "performance_test",
+        "generation": 4
+      }
+    },
+    {
+      "parent_id": "perf_gen3_root_0_1_1",
+      "child_id": "perf_gen4_ot_0_1_1_2",
+      "entropy_diff": 0.12570326919788855,
+      "timestamp": "2025-07-10T03:44:14.458779",
+      "metadata": {
+        "source": "performance_test",
+        "generation": 4
+      }
+    },
+    {
+      "parent_id": "perf_gen3_root_0_1_2",
+      "child_id": "perf_gen4_ot_0_1_2_0",
+      "entropy_diff": 0.2938303271562556,
+      "timestamp": "2025-07-10T03:44:14.458779",
+      "metadata": {
+        "source": "performance_test",
+        "generation": 4
+      }
+    },
+    {
+      "parent_id": "perf_gen3_root_1_0_0",
+      "child_id": "perf_gen4_ot_1_0_0_0",
+      "entropy_diff": -0.04093122556861861,
+      "timestamp": "2025-07-10T03:44:14.458779",
+      "metadata": {
+        "source": "performance_test",
+        "generation": 4
+      }
+    },
+    {
+      "parent_id": "perf_gen3_root_1_0_0",
+      "child_id": "perf_gen4_ot_1_0_0_1",
+      "entropy_diff": 0.15904984834350305,
+      "timestamp": "2025-07-10T03:44:14.458779",
+      "metadata": {
+        "source": "performance_test",
+        "generation": 4
+      }
+    },
+    {
+      "parent_id": "perf_gen3_root_1_0_1",
+      "child_id": "perf_gen4_ot_1_0_1_0",
+      "entropy_diff": 0.2551441433281693,
+      "timestamp": "2025-07-10T03:44:14.474780",
+      "metadata": {
+        "source": "performance_test",
+        "generation": 4
+      }
+    },
+    {
+      "parent_id": "perf_gen3_root_1_0_2",
+      "child_id": "perf_gen4_ot_1_0_2_0",
+      "entropy_diff": 0.23566718081667276,
+      "timestamp": "2025-07-10T03:44:14.474780",
+      "metadata": {
+        "source": "performance_test",
+        "generation": 4
+      }
+    },
+    {
+      "parent_id": "perf_gen3_root_1_0_2",
+      "child_id": "perf_gen4_ot_1_0_2_1",
+      "entropy_diff": 0.023928069717010392,
+      "timestamp": "2025-07-10T03:44:14.474780",
+      "metadata": {
+        "source": "performance_test",
+        "generation": 4
+      }
+    },
+    {
+      "parent_id": "perf_gen3_root_1_1_0",
+      "child_id": "perf_gen4_ot_1_1_0_0",
+      "entropy_diff": -0.10537683356025757,
+      "timestamp": "2025-07-10T03:44:14.475780",
+      "metadata": {
+        "source": "performance_test",
+        "generation": 4
+      }
+    },
+    {
+      "parent_id": "perf_gen3_root_1_1_0",
+      "child_id": "perf_gen4_ot_1_1_0_1",
+      "entropy_diff": 0.25922710047786757,
+      "timestamp": "2025-07-10T03:44:14.475780",
+      "metadata": {
+        "source": "performance_test",
+        "generation": 4
+      }
+    },
+    {
+      "parent_id": "perf_gen3_root_1_1_1",
+      "child_id": "perf_gen4_ot_1_1_1_0",
+      "entropy_diff": 0.15381238901519523,
+      "timestamp": "2025-07-10T03:44:14.475780",
+      "metadata": {
+        "source": "performance_test",
+        "generation": 4
+      }
+    },
+    {
+      "parent_id": "perf_gen3_root_1_1_1",
+      "child_id": "perf_gen4_ot_1_1_1_1",
+      "entropy_diff": 0.25949196091698407,
+      "timestamp": "2025-07-10T03:44:14.475780",
+      "metadata": {
+        "source": "performance_test",
+        "generation": 4
+      }
+    },
+    {
+      "parent_id": "perf_gen3_root_1_1_1",
+      "child_id": "perf_gen4_ot_1_1_1_2",
+      "entropy_diff": -0.08043832129364115,
+      "timestamp": "2025-07-10T03:44:14.475780",
+      "metadata": {
+        "source": "performance_test",
+        "generation": 4
+      }
+    },
+    {
+      "parent_id": "perf_gen4_root_2_1_1",
+      "child_id": "perf_gen5_ot_2_1_1_0",
+      "entropy_diff": -0.017960616174160005,
+      "timestamp": "2025-07-10T03:44:14.475780",
+      "metadata": {
+        "source": "performance_test",
+        "generation": 5
+      }
+    },
+    {
+      "parent_id": "perf_gen4_root_2_1_1",
+      "child_id": "perf_gen5_ot_2_1_1_1",
+      "entropy_diff": 0.010848849620868017,
+      "timestamp": "2025-07-10T03:44:14.476779",
+      "metadata": {
+        "source": "performance_test",
+        "generation": 5
+      }
+    },
+    {
+      "parent_id": "perf_gen4_root_2_1_1",
+      "child_id": "perf_gen5_ot_2_1_1_2",
+      "entropy_diff": 0.1965340672865551,
+      "timestamp": "2025-07-10T03:44:14.492779",
+      "metadata": {
+        "source": "performance_test",
+        "generation": 5
+      }
+    },
+    {
+      "parent_id": "perf_gen4_root_2_1_2",
+      "child_id": "perf_gen5_ot_2_1_2_0",
+      "entropy_diff": -0.162369339822881,
+      "timestamp": "2025-07-10T03:44:14.492779",
+      "metadata": {
+        "source": "performance_test",
+        "generation": 5
+      }
+    },
+    {
+      "parent_id": "perf_gen4_root_2_1_2",
+      "child_id": "perf_gen5_ot_2_1_2_1",
+      "entropy_diff": -0.13478277364777552,
+      "timestamp": "2025-07-10T03:44:14.492779",
+      "metadata": {
+        "source": "performance_test",
+        "generation": 5
+      }
+    },
+    {
+      "parent_id": "perf_gen4_root_2_1_2",
+      "child_id": "perf_gen5_ot_2_1_2_2",
+      "entropy_diff": 0.22795221235348884,
+      "timestamp": "2025-07-10T03:44:14.493778",
+      "metadata": {
+        "source": "performance_test",
+        "generation": 5
+      }
+    },
+    {
+      "parent_id": "perf_gen4_root_2_2_0",
+      "child_id": "perf_gen5_ot_2_2_0_0",
+      "entropy_diff": -0.12467553664171416,
+      "timestamp": "2025-07-10T03:44:14.493778",
+      "metadata": {
+        "source": "performance_test",
+        "generation": 5
+      }
+    },
+    {
+      "parent_id": "perf_gen4_root_2_2_0",
+      "child_id": "perf_gen5_ot_2_2_0_1",
+      "entropy_diff": 0.25998200404821487,
+      "timestamp": "2025-07-10T03:44:14.493778",
+      "metadata": {
+        "source": "performance_test",
+        "generation": 5
+      }
+    },
+    {
+      "parent_id": "perf_gen4_root_2_2_0",
+      "child_id": "perf_gen5_ot_2_2_0_2",
+      "entropy_diff": -0.10914437329041099,
+      "timestamp": "2025-07-10T03:44:14.493778",
+      "metadata": {
+        "source": "performance_test",
+        "generation": 5
+      }
+    },
+    {
+      "parent_id": "perf_gen4_ot_0_0_0_0",
+      "child_id": "perf_gen5__0_0_0_0_0",
+      "entropy_diff": 0.01984214269632173,
+      "timestamp": "2025-07-10T03:44:14.493778",
+      "metadata": {
+        "source": "performance_test",
+        "generation": 5
+      }
+    },
+    {
+      "parent_id": "perf_gen4_ot_0_0_0_0",
+      "child_id": "perf_gen5__0_0_0_0_1",
+      "entropy_diff": -0.1255566588746091,
+      "timestamp": "2025-07-10T03:44:14.493778",
+      "metadata": {
+        "source": "performance_test",
+        "generation": 5
+      }
+    },
+    {
+      "parent_id": "perf_gen4_ot_0_0_0_0",
+      "child_id": "perf_gen5__0_0_0_0_2",
+      "entropy_diff": -0.042674038593563834,
+      "timestamp": "2025-07-10T03:44:14.493778",
+      "metadata": {
+        "source": "performance_test",
+        "generation": 5
+      }
+    },
+    {
+      "parent_id": "perf_gen4_ot_0_0_0_1",
+      "child_id": "perf_gen5__0_0_0_1_0",
+      "entropy_diff": 0.26512163127423627,
+      "timestamp": "2025-07-10T03:44:14.511777",
+      "metadata": {
+        "source": "performance_test",
+        "generation": 5
+      }
+    },
+    {
+      "parent_id": "perf_gen4_ot_0_0_0_1",
+      "child_id": "perf_gen5__0_0_0_1_1",
+      "entropy_diff": 0.29768181008603484,
+      "timestamp": "2025-07-10T03:44:14.511777",
+      "metadata": {
+        "source": "performance_test",
+        "generation": 5
+      }
+    },
+    {
+      "parent_id": "perf_gen4_ot_0_1_0_0",
+      "child_id": "perf_gen5__0_1_0_0_0",
+      "entropy_diff": -0.11283254482743421,
+      "timestamp": "2025-07-10T03:44:14.511777",
+      "metadata": {
+        "source": "performance_test",
+        "generation": 5
+      }
+    },
+    {
+      "parent_id": "perf_gen4_ot_0_1_1_0",
+      "child_id": "perf_gen5__0_1_1_0_0",
+      "entropy_diff": -0.007640288639282844,
+      "timestamp": "2025-07-10T03:44:14.511777",
+      "metadata": {
+        "source": "performance_test",
+        "generation": 5
+      }
+    },
+    {
+      "parent_id": "perf_gen4_ot_0_1_1_1",
+      "child_id": "perf_gen5__0_1_1_1_0",
+      "entropy_diff": 0.10084696256849163,
+      "timestamp": "2025-07-10T03:44:14.511777",
+      "metadata": {
+        "source": "performance_test",
+        "generation": 5
+      }
+    },
+    {
+      "parent_id": "perf_gen4_ot_0_1_1_1",
+      "child_id": "perf_gen5__0_1_1_1_1",
+      "entropy_diff": -0.1611455077546014,
+      "timestamp": "2025-07-10T03:44:14.511777",
+      "metadata": {
+        "source": "performance_test",
+        "generation": 5
+      }
+    },
+    {
+      "parent_id": "perf_gen4_ot_0_1_1_1",
+      "child_id": "perf_gen5__0_1_1_1_2",
+      "entropy_diff": -0.05158836782302023,
+      "timestamp": "2025-07-10T03:44:14.512779",
+      "metadata": {
+        "source": "performance_test",
+        "generation": 5
+      }
+    },
+    {
+      "parent_id": "perf_gen4_ot_0_1_1_2",
+      "child_id": "perf_gen5__0_1_1_2_0",
+      "entropy_diff": -0.11710057968984938,
+      "timestamp": "2025-07-10T03:44:14.512779",
+      "metadata": {
+        "source": "performance_test",
+        "generation": 5
+      }
+    },
+    {
+      "parent_id": "perf_gen4_ot_0_1_1_2",
+      "child_id": "perf_gen5__0_1_1_2_1",
+      "entropy_diff": -0.12875143356951718,
+      "timestamp": "2025-07-10T03:44:14.512779",
+      "metadata": {
+        "source": "performance_test",
+        "generation": 5
+      }
+    },
+    {
+      "parent_id": "perf_gen4_ot_0_1_2_0",
+      "child_id": "perf_gen5__0_1_2_0_0",
+      "entropy_diff": 0.23685505456241385,
+      "timestamp": "2025-07-10T03:44:14.512779",
+      "metadata": {
+        "source": "performance_test",
+        "generation": 5
+      }
+    },
+    {
+      "parent_id": "perf_gen4_ot_1_0_0_0",
+      "child_id": "perf_gen5__1_0_0_0_0",
+      "entropy_diff": 0.01728118457094746,
+      "timestamp": "2025-07-10T03:44:14.531778",
+      "metadata": {
+        "source": "performance_test",
+        "generation": 5
+      }
+    },
+    {
+      "parent_id": "perf_gen4_ot_1_0_0_1",
+      "child_id": "perf_gen5__1_0_0_1_0",
+      "entropy_diff": 0.0809478556989503,
+      "timestamp": "2025-07-10T03:44:14.531778",
+      "metadata": {
+        "source": "performance_test",
+        "generation": 5
+      }
+    },
+    {
+      "parent_id": "perf_gen4_ot_1_0_0_1",
+      "child_id": "perf_gen5__1_0_0_1_1",
+      "entropy_diff": -0.14777533750131694,
+      "timestamp": "2025-07-10T03:44:14.531778",
+      "metadata": {
+        "source": "performance_test",
+        "generation": 5
+      }
+    },
+    {
+      "parent_id": "perf_gen4_ot_1_0_0_1",
+      "child_id": "perf_gen5__1_0_0_1_2",
+      "entropy_diff": -0.19871777133782687,
+      "timestamp": "2025-07-10T03:44:14.531778",
+      "metadata": {
+        "source": "performance_test",
+        "generation": 5
+      }
+    },
+    {
+      "parent_id": "perf_gen4_ot_1_0_1_0",
+      "child_id": "perf_gen5__1_0_1_0_0",
+      "entropy_diff": -0.175374466193163,
+      "timestamp": "2025-07-10T03:44:14.532778",
+      "metadata": {
+        "source": "performance_test",
+        "generation": 5
+      }
+    },
+    {
+      "parent_id": "perf_gen4_ot_1_0_1_0",
+      "child_id": "perf_gen5__1_0_1_0_1",
+      "entropy_diff": 0.23612856683142674,
+      "timestamp": "2025-07-10T03:44:14.532778",
+      "metadata": {
+        "source": "performance_test",
+        "generation": 5
+      }
+    },
+    {
+      "parent_id": "perf_gen4_ot_1_0_2_0",
+      "child_id": "perf_gen5__1_0_2_0_0",
+      "entropy_diff": -0.029078626744644398,
+      "timestamp": "2025-07-10T03:44:14.532778",
+      "metadata": {
+        "source": "performance_test",
+        "generation": 5
+      }
+    },
+    {
+      "parent_id": "perf_gen4_ot_1_0_2_0",
+      "child_id": "perf_gen5__1_0_2_0_1",
+      "entropy_diff": 0.022146445679249394,
+      "timestamp": "2025-07-10T03:44:14.532778",
+      "metadata": {
+        "source": "performance_test",
+        "generation": 5
+      }
+    },
+    {
+      "parent_id": "perf_gen4_ot_1_0_2_1",
+      "child_id": "perf_gen5__1_0_2_1_0",
+      "entropy_diff": -0.05273953629905609,
+      "timestamp": "2025-07-10T03:44:14.532778",
+      "metadata": {
+        "source": "performance_test",
+        "generation": 5
+      }
+    },
+    {
+      "parent_id": "perf_gen4_ot_1_1_0_0",
+      "child_id": "perf_gen5__1_1_0_0_0",
+      "entropy_diff": -0.026181425786508616,
+      "timestamp": "2025-07-10T03:44:14.532778",
+      "metadata": {
+        "source": "performance_test",
+        "generation": 5
+      }
+    },
+    {
+      "parent_id": "perf_gen4_ot_1_1_0_0",
+      "child_id": "perf_gen5__1_1_0_0_1",
+      "entropy_diff": 0.20846178526283393,
+      "timestamp": "2025-07-10T03:44:14.552779",
+      "metadata": {
+        "source": "performance_test",
+        "generation": 5
+      }
+    },
+    {
+      "parent_id": "perf_gen4_ot_1_1_0_1",
+      "child_id": "perf_gen5__1_1_0_1_0",
+      "entropy_diff": 0.030542427422966645,
+      "timestamp": "2025-07-10T03:44:14.552779",
+      "metadata": {
+        "source": "performance_test",
+        "generation": 5
+      }
+    },
+    {
+      "parent_id": "perf_gen4_ot_1_1_0_1",
+      "child_id": "perf_gen5__1_1_0_1_1",
+      "entropy_diff": 0.027163985355964038,
+      "timestamp": "2025-07-10T03:44:14.553779",
+      "metadata": {
+        "source": "performance_test",
+        "generation": 5
+      }
+    },
+    {
+      "parent_id": "perf_gen4_ot_1_1_1_0",
+      "child_id": "perf_gen5__1_1_1_0_0",
+      "entropy_diff": 0.05651574440079837,
+      "timestamp": "2025-07-10T03:44:14.553779",
+      "metadata": {
+        "source": "performance_test",
+        "generation": 5
+      }
+    },
+    {
+      "parent_id": "perf_gen4_ot_1_1_1_0",
+      "child_id": "perf_gen5__1_1_1_0_1",
+      "entropy_diff": 0.03467541027944332,
+      "timestamp": "2025-07-10T03:44:14.553779",
+      "metadata": {
+        "source": "performance_test",
+        "generation": 5
+      }
+    },
+    {
+      "parent_id": "perf_gen4_ot_1_1_1_1",
+      "child_id": "perf_gen5__1_1_1_1_0",
+      "entropy_diff": 0.2096176464909375,
+      "timestamp": "2025-07-10T03:44:14.553779",
+      "metadata": {
+        "source": "performance_test",
+        "generation": 5
+      }
+    },
+    {
+      "parent_id": "perf_gen4_ot_1_1_1_1",
+      "child_id": "perf_gen5__1_1_1_1_1",
+      "entropy_diff": -0.04650705040553066,
+      "timestamp": "2025-07-10T03:44:14.553779",
+      "metadata": {
+        "source": "performance_test",
+        "generation": 5
+      }
+    },
+    {
+      "parent_id": "perf_gen4_ot_1_1_1_2",
+      "child_id": "perf_gen5__1_1_1_2_0",
+      "entropy_diff": 0.16172555635256225,
+      "timestamp": "2025-07-10T03:44:14.553779",
+      "metadata": {
+        "source": "performance_test",
+        "generation": 5
+      }
+    },
+    {
+      "parent_id": "perf_gen4_ot_1_1_1_2",
+      "child_id": "perf_gen5__1_1_1_2_1",
+      "entropy_diff": 0.14514641540649387,
+      "timestamp": "2025-07-10T03:44:14.553779",
+      "metadata": {
+        "source": "performance_test",
+        "generation": 5
+      }
+    },
+    {
+      "parent_id": "perf_gen4_ot_1_1_1_2",
+      "child_id": "perf_gen5__1_1_1_2_2",
+      "entropy_diff": 0.27463421975165336,
+      "timestamp": "2025-07-10T03:44:14.554777",
+      "metadata": {
+        "source": "performance_test",
+        "generation": 5
+      }
+    }
+  ],
+  "statistics": {
+    "max_depth_observed": 5,
+    "total_reblooms": 124,
+    "entropy_stats": {
+      "max_positive_drift": 0.8176613031669359,
+      "max_negative_drift": -0.19986393900469396,
+      "average_drift": 0.06981882085741967
+    }
+  },
+  "metadata": {
+    "saved_at": "2025-07-10T03:44:14.589780",
+    "total_nodes": 127,
+    "total_roots": 3
+  }
+}

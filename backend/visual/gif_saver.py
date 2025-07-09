@@ -1,119 +1,49 @@
 #!/usr/bin/env python3
 """
-GIF Saver Utility for DAWN Visualizations
-Handles saving matplotlib animations as GIF files with proper date formatting
+GIF Saver for DAWN Visualizations
+Handles saving matplotlib animations as GIF files
 """
 
 import os
-import sys
-from datetime import datetime
-from typing import Optional, List
-import matplotlib.pyplot as plt
-import matplotlib.animation as animation
-from matplotlib.figure import Figure
 import logging
+from typing import Optional, List
+from datetime import datetime
+import matplotlib.pyplot as plt
+from matplotlib.figure import Figure
+import matplotlib.animation as animation
 
+# Configure logging
+logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 class GIFSaver:
-    """Utility class for saving matplotlib animations as GIF files"""
+    """Handles saving matplotlib figures and animations as GIF files"""
     
     def __init__(self, output_dir: str, script_name: str):
         """
         Initialize GIF saver
         
         Args:
-            output_dir: Base output directory
-            script_name: Name of the visualization script (without .py)
+            output_dir: Directory to save GIF files
+            script_name: Name of the script (for filename)
         """
         self.output_dir = output_dir
         self.script_name = script_name
-        self.date_str = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        self.frames: List[Figure] = []
+        self.save_interval = 5  # Save every 5 frames
         
         # Create output directory if it doesn't exist
-        os.makedirs(self.output_dir, exist_ok=True)
-        
-        # Frame storage for GIF creation
-        self.frames: List[Figure] = []
-        self.save_interval = 10  # Save frame every N updates
-        
+        os.makedirs(output_dir, exist_ok=True)
+    
     def get_gif_filename(self) -> str:
-        """Generate GIF filename with date"""
-        return f"{self.script_name}_{self.date_str}.gif"
+        """Generate GIF filename with timestamp"""
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        return f"{self.script_name}_{timestamp}.gif"
     
     def get_gif_path(self) -> str:
         """Get full path for GIF file"""
         filename = self.get_gif_filename()
         return os.path.join(self.output_dir, filename)
-    
-    def save_frame(self, fig: Figure, frame_count: int) -> None:
-        """
-        Save current frame for GIF creation
-        
-        Args:
-            fig: Matplotlib figure to save
-            frame_count: Current frame number
-        """
-        if frame_count % self.save_interval == 0:
-            # Create a copy of the figure to avoid modifying the original
-            fig_copy = plt.figure(figsize=fig.get_size_inches())
-            fig_copy.canvas.draw()
-            
-            # Copy the figure content
-            for ax in fig.axes:
-                ax_copy = fig_copy.add_subplot(ax.get_geometry()[0], ax.get_geometry()[1], ax.get_geometry()[2])
-                ax_copy.set_xlim(ax.get_xlim())
-                ax_copy.set_ylim(ax.get_ylim())
-                ax_copy.set_title(ax.get_title())
-                ax_copy.set_xlabel(ax.get_xlabel())
-                ax_copy.set_ylabel(ax.get_ylabel())
-                
-                # Copy all artists (lines, patches, etc.)
-                for artist in ax.get_children():
-                    if hasattr(artist, 'get_data'):
-                        # Handle lines
-                        x_data, y_data = artist.get_data()
-                        ax_copy.plot(x_data, y_data, color=artist.get_color(), 
-                                   linewidth=artist.get_linewidth(), alpha=artist.get_alpha())
-                    elif hasattr(artist, 'get_facecolor'):
-                        # Handle patches
-                        ax_copy.add_patch(artist)
-            
-            self.frames.append(fig_copy)
-            
-            # Keep only last 100 frames to manage memory
-            if len(self.frames) > 100:
-                self.frames.pop(0)
-    
-    def save_gif(self, fps: int = 10, dpi: int = 100) -> Optional[str]:
-        """
-        Save collected frames as GIF
-        
-        Args:
-            fps: Frames per second for the GIF
-            dpi: DPI for the output GIF
-            
-        Returns:
-            Path to saved GIF file, or None if failed
-        """
-        if not self.frames:
-            logger.warning("No frames to save as GIF")
-            return None
-        
-        try:
-            gif_path = self.get_gif_path()
-            
-            # Save the first frame as a test
-            self.frames[0].savefig(gif_path, format='gif', dpi=dpi, 
-                                 save_all=True, append_images=self.frames[1:],
-                                 duration=1000//fps, loop=0)
-            
-            logger.info(f"GIF saved: {gif_path}")
-            return gif_path
-            
-        except Exception as e:
-            logger.error(f"Failed to save GIF: {e}")
-            return None
     
     def save_animation_as_gif(self, anim: animation.FuncAnimation, 
                             fps: int = 10, dpi: int = 100) -> Optional[str]:
@@ -128,17 +58,90 @@ class GIFSaver:
         Returns:
             Path to saved GIF file, or None if failed
         """
+        if anim is None:
+            logger.error("No animation object provided to save_animation_as_gif.")
+            return None
+        
         try:
             gif_path = self.get_gif_path()
             
-            # Save animation as GIF
-            anim.save(gif_path, writer='pillow', fps=fps, dpi=dpi)
+            # Try different writers in order of preference
+            writers_to_try = ['pillow', 'imagemagick']
             
-            logger.info(f"Animation GIF saved: {gif_path}")
-            return gif_path
+            for writer_name in writers_to_try:
+                try:
+                    logger.info(f"Trying to save with writer: {writer_name}")
+                    
+                    if writer_name == 'pillow':
+                        # For pillow, we need to use a different approach
+                        anim.save(gif_path, writer='pillow', fps=fps, dpi=dpi)
+                    elif writer_name == 'imagemagick':
+                        anim.save(gif_path, writer='imagemagick', fps=fps, dpi=dpi)
+                    
+                    logger.info(f"Animation saved with {writer_name}: {gif_path}")
+                    return gif_path
+                except Exception as e:
+                    logger.warning(f"Failed to save with {writer_name}: {e}")
+                    continue
+            
+            # If all writers fail, try saving as MP4 with ffmpeg
+            try:
+                mp4_path = gif_path.replace('.gif', '.mp4')
+                anim.save(mp4_path, writer='ffmpeg', fps=fps, dpi=dpi)
+                logger.info(f"Saved as MP4 instead: {mp4_path}")
+                return mp4_path
+            except Exception as e:
+                logger.warning(f"Failed to save as MP4: {e}")
+            
+            # Final fallback: save as individual PNG frames
+            logger.warning("All video writers failed, saving as PNG frames")
+            return self.save_as_png_frames(anim, fps, dpi)
             
         except Exception as e:
             logger.error(f"Failed to save animation GIF: {e}")
+            return None
+    
+    def save_as_png_frames(self, anim: animation.FuncAnimation, 
+                          fps: int = 10, dpi: int = 100) -> Optional[str]:
+        """
+        Save animation as individual PNG frames as fallback
+        
+        Args:
+            anim: Matplotlib animation object
+            fps: Frames per second for the GIF
+            dpi: DPI for the output GIF
+            
+        Returns:
+            Path to saved frames directory, or None if failed
+        """
+        try:
+            frames_dir = self.get_gif_path().replace('.gif', '_frames')
+            os.makedirs(frames_dir, exist_ok=True)
+            
+            # Save a few key frames
+            frame_count = 0
+            for i in range(0, 100, 5):  # Save every 5th frame up to 100
+                try:
+                    # Update animation to frame i
+                    anim._func(i)
+                    
+                    # Save frame
+                    frame_path = os.path.join(frames_dir, f"frame_{frame_count:04d}.png")
+                    anim._fig.savefig(frame_path, dpi=dpi, bbox_inches='tight')
+                    frame_count += 1
+                    
+                    if frame_count >= 20:  # Limit to 20 frames
+                        break
+                        
+                except Exception as e:
+                    logger.warning(f"Failed to save frame {i}: {e}")
+                    continue
+            
+            logger.info(f"Saved {frame_count} PNG frames to: {frames_dir}")
+            return frames_dir
+            
+        except Exception as e:
+            logger.error(f"Failed to save PNG frames: {e}")
             return None
 
 def setup_gif_saver(script_name: str) -> GIFSaver:
