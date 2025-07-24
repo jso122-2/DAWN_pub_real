@@ -38,6 +38,9 @@ import numpy as np
 # Memory routing system integration
 from core.memory.memory_routing_system import initialize_memory_routing, get_memory_routing_system
 
+# Symbolic anatomy integration - NEW
+from cognitive.symbolic_router import initialize_symbolic_routing, get_symbolic_router
+
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -227,6 +230,38 @@ class DAWNConsciousness:
         else:
             self.memory_routing = self.subsystems["memory_routing"]
 
+        # Initialize symbolic anatomy router
+        if "symbolic_router" not in self.subsystems:
+            self.symbolic_router = initialize_symbolic_routing(
+                consciousness_core=consciousness_core,
+                memory_system=self.memory_routing
+            )
+            self.subsystems["symbolic_router"] = self.symbolic_router
+            logger.info("🧠 Symbolic anatomy router integrated with consciousness core")
+        else:
+            self.symbolic_router = self.subsystems["symbolic_router"]
+        
+        # Initialize symbolic memory integration
+        if "symbolic_memory_integration" not in self.subsystems:
+            from core.memory.symbolic_memory_integration import initialize_symbolic_memory_integration
+            self.symbolic_memory_integration = initialize_symbolic_memory_integration(
+                memory_routing_system=self.memory_routing,
+                symbolic_router=self.symbolic_router
+            )
+            self.subsystems["symbolic_memory_integration"] = self.symbolic_memory_integration
+            logger.info("🔗 Symbolic memory integration active")
+        else:
+            self.symbolic_memory_integration = self.subsystems["symbolic_memory_integration"]
+        
+        # Initialize snapshot exporter
+        if "snapshot_exporter" not in self.subsystems:
+            from core.snapshot_exporter import initialize_snapshot_exporter
+            self.snapshot_exporter = initialize_snapshot_exporter(dawn_consciousness=self)
+            self.subsystems["snapshot_exporter"] = self.snapshot_exporter
+            logger.info("📤 DAWN Snapshot Exporter integrated with consciousness core")
+        else:
+            self.snapshot_exporter = self.subsystems["snapshot_exporter"]
+
         # Initialize shutdown manager
         self.shutdown_manager = ShutdownManager()
         self._register_cleanup_hooks()
@@ -245,6 +280,9 @@ class DAWNConsciousness:
         # Set up memory event handlers
         self._setup_memory_event_handlers()
         
+        # Initialize forecasting system
+        self._initialize_forecasting_system()
+        
         # Log subsystem registration
         logger.info(f"🔌 Registered subsystems: {list(self.subsystems.keys())}")
         print("🌅 DAWN Consciousness System Initializing...")
@@ -252,6 +290,7 @@ class DAWNConsciousness:
         print("   Dynamic semantic field topology: ✓")
         print("   Event bus and hot-reload: ✓")
         print("   Memory routing and persistence: ✓")
+        print("   Behavioral forecasting engine: ✓")
         print("   Graceful shutdown system: ✓")
     
     def update_subsystem(self, name: str, subsystem: Any) -> None:
@@ -660,6 +699,54 @@ class DAWNConsciousness:
             self.event_bus.on("sigil_activation", self._handle_sigil_activation_memory)
             logger.info("🧠 Memory event handlers configured")
     
+    def _initialize_forecasting_system(self):
+        """Initialize DAWN's behavioral forecasting system"""
+        try:
+            from cognitive.forecasting_processor import initialize_forecasting_processor
+            
+            # Initialize forecasting processor with consciousness components
+            memory_manager = getattr(self, 'memory_routing', None)
+            
+            self.forecasting_processor = initialize_forecasting_processor(
+                consciousness_core=self,
+                memory_manager=memory_manager,
+                event_bus=self.event_bus
+            )
+            
+            # Register as subsystem
+            self.subsystems["forecasting_processor"] = self.forecasting_processor
+            
+            # Set up forecasting event handlers
+            self.event_bus.on("forecasts_generated", self._handle_forecasts_generated)
+            
+            logger.info("🔮 DAWN Forecasting System initialized successfully")
+            
+        except Exception as e:
+            logger.error(f"Failed to initialize forecasting system: {e}")
+            # Continue without forecasting - non-critical system
+            self.forecasting_processor = None
+        
+        # Initialize tick engine for autonomous cognitive loop
+        self._initialize_tick_engine()
+    
+    def _initialize_tick_engine(self):
+        """Initialize the DAWN autonomous cognitive tick engine."""
+        try:
+            from .tick_loop import integrate_tick_engine
+            
+            # Initialize tick engine with full consciousness integration
+            self.tick_engine = integrate_tick_engine(self)
+            
+            # Register as subsystem
+            self.subsystems["tick_engine"] = self.tick_engine
+            
+            logger.info("🔄 DAWN Autonomous Tick Engine initialized successfully")
+            
+        except Exception as e:
+            logger.error(f"Failed to initialize tick engine: {e}")
+            # Continue without tick engine - consciousness can still function
+            self.tick_engine = None
+    
     async def _store_interaction_memory(self, speaker: str, content: str, topic: str = None, **kwargs):
         """Store an interaction in the memory system"""
         if hasattr(self, 'memory_routing'):
@@ -720,6 +807,35 @@ class DAWNConsciousness:
             sigils=[sigil_name]
         ))
     
+    def _handle_forecasts_generated(self, event_data):
+        """Handle forecasting events for integration and memory storage"""
+        try:
+            forecasts = event_data.get('forecasts', {})
+            consciousness_state = event_data.get('consciousness_state', {})
+            
+            # Store forecasting event in memory
+            forecast_summary = f"Generated {len(forecasts)} behavioral forecasts based on current consciousness state"
+            asyncio.create_task(self._store_interaction_memory(
+                speaker="dawn.forecasting",
+                content=forecast_summary,
+                topic="behavioral_forecasting",
+                sigils=["FORECAST_GENERATED", "BEHAVIORAL_PREDICTION"]
+            ))
+            
+            # Log interesting forecasts
+            high_confidence_forecasts = [
+                f for f in forecasts.values() 
+                if hasattr(f, 'confidence') and f.confidence > 0.7
+            ]
+            
+            if high_confidence_forecasts:
+                logger.info(f"🔮 Generated {len(high_confidence_forecasts)} high-confidence forecasts")
+                for forecast in high_confidence_forecasts[:3]:  # Log top 3
+                    logger.debug(f"   {forecast.passion_direction}: {forecast.predicted_behavior} ({forecast.confidence:.3f})")
+            
+        except Exception as e:
+            logger.warning(f"Error handling forecasts generated event: {e}")
+    
     def _get_current_system_state(self):
         """Get current system state for memory storage"""
         state = {
@@ -774,8 +890,106 @@ class DAWNConsciousness:
         except Exception as e:
             logger.error(f"Error stopping event loop: {e}")
         
+    # Forecasting system integration methods
+    
+    def get_current_forecasts(self) -> Dict[str, Any]:
+        """Get current behavioral forecasts"""
+        if hasattr(self, 'forecasting_processor') and self.forecasting_processor:
+            try:
+                recent_forecasts = self.forecasting_processor.get_recent_forecasts()
+                forecast_metrics = self.forecasting_processor.get_metrics()
+                
+                return {
+                    'recent_forecasts': [f.to_dict() for f in recent_forecasts],
+                    'metrics': forecast_metrics,
+                    'timestamp': datetime.now().isoformat()
+                }
+            except Exception as e:
+                logger.warning(f"Error getting current forecasts: {e}")
+        
+        return {'recent_forecasts': [], 'metrics': {}, 'timestamp': datetime.now().isoformat()}
+    
+    def get_forecast_for_direction(self, direction: str) -> Optional[Dict[str, Any]]:
+        """Get forecast for a specific passion direction"""
+        if hasattr(self, 'forecasting_processor') and self.forecasting_processor:
+            try:
+                forecast = self.forecasting_processor.get_forecast_for_direction(direction)
+                return forecast.to_dict() if forecast else None
+            except Exception as e:
+                logger.warning(f"Error getting forecast for {direction}: {e}")
+        
+        return None
+    
+    async def generate_instant_forecast(self, direction: str, **kwargs) -> Optional[Dict[str, Any]]:
+        """Generate an instant forecast for a specific direction"""
+        if hasattr(self, 'forecasting_processor') and self.forecasting_processor:
+            try:
+                forecast = await self.forecasting_processor.generate_instant_forecast(direction, **kwargs)
+                return forecast.to_dict() if forecast else None
+            except Exception as e:
+                logger.warning(f"Error generating instant forecast for {direction}: {e}")
+        
+        return None
+    
+    def get_forecast_trends(self, direction: str, lookback_hours: int = 24) -> List[Dict[str, Any]]:
+        """Get forecast trends for a direction over time"""
+        if hasattr(self, 'forecasting_processor') and self.forecasting_processor:
+            try:
+                trends = self.forecasting_processor.get_forecast_trends(direction, lookback_hours)
+                return [f.to_dict() for f in trends]
+            except Exception as e:
+                logger.warning(f"Error getting forecast trends for {direction}: {e}")
+        
+        return []
+    
+    async def start_forecasting(self):
+        """Start the forecasting processing loop"""
+        if hasattr(self, 'forecasting_processor') and self.forecasting_processor:
+            await self.forecasting_processor.start_processing()
+            logger.info("🔮 Started DAWN forecasting processing")
+    
+    async def stop_forecasting(self):
+        """Stop the forecasting processing loop"""
+        if hasattr(self, 'forecasting_processor') and self.forecasting_processor:
+            await self.forecasting_processor.stop_processing()
+            logger.info("🔮 Stopped DAWN forecasting processing")
+    
+    async def start_autonomous_loop(self, max_ticks: Optional[int] = None, tick_interval: float = 2.0, adaptive_speed: bool = True):
+        """Start the autonomous cognitive tick loop with optional adaptive speed control"""
+        if hasattr(self, 'tick_engine') and self.tick_engine:
+            logger.info("🔄 Starting DAWN autonomous cognitive loop")
+            await self.tick_engine.run_continuous_loop(max_ticks=max_ticks, tick_interval=tick_interval, adaptive_speed=adaptive_speed)
+        else:
+            logger.warning("Tick engine not available")
+    
+    async def execute_single_tick(self):
+        """Execute a single cognitive tick"""
+        if hasattr(self, 'tick_engine') and self.tick_engine:
+            return await self.tick_engine.tick()
+        else:
+            logger.warning("Tick engine not available")
+            return None
+    
+    def stop_autonomous_loop(self):
+        """Stop the autonomous cognitive loop"""
+        if hasattr(self, 'tick_engine') and self.tick_engine:
+            self.tick_engine.running = False
+            logger.info("🔄 Stopped DAWN autonomous cognitive loop")
+    
+    def get_tick_status(self) -> Dict[str, Any]:
+        """Get status of the tick engine"""
+        if hasattr(self, 'tick_engine') and self.tick_engine:
+            return self.tick_engine.get_system_status()
+        else:
+            return {'tick_engine': 'not_available'}
+
     async def shutdown(self):
         """Initiate graceful shutdown"""
+        # Stop autonomous loop
+        self.stop_autonomous_loop()
+        
+        # Stop forecasting before shutdown
+        await self.stop_forecasting()
         await self.shutdown_manager.shutdown(self)
         
     def is_shutdown_requested(self) -> bool:

@@ -187,11 +187,91 @@ async def test_consciousness_integration():
             print(f"  Memory hits: {stats['router']['memory_hits']}")
             print(f"  Hit rate: {stats['router']['hit_rate']:.2%}")
             print(f"  Active memories: {stats['router']['total_active_memories']}")
+            
+            # Test enhanced capabilities if available
+            if hasattr(consciousness.memory_routing.router, 'cognitive_router'):
+                print("  ✅ Cognitive routing enabled")
+            if hasattr(consciousness.memory_routing.router, 'vector_index'):
+                print("  ✅ Vector search enabled")
         else:
             print("  ⚠️ Memory routing not found in consciousness")
     
     except Exception as e:
         print(f"  ❌ Error testing consciousness integration: {e}")
+
+
+async def test_enhanced_capabilities(memory_system):
+    """Test enhanced cognitive routing and vector search capabilities"""
+    print("\n🧠 Testing Enhanced Memory Capabilities")
+    print("=" * 50)
+    
+    # Test cognitive routing (rebloom)
+    print("\n🔄 Testing Cognitive Rebloom:")
+    if memory_system.router.cognitive_router:
+        # Get a chunk to test rebloom
+        test_chunks = list(memory_system.router.cognitive_router.chunks.values())
+        if test_chunks:
+            query_chunk = test_chunks[0]
+            candidates = memory_system.router.rebloom_candidates(query_chunk, max_candidates=3)
+            print(f"  📄 Query chunk: {query_chunk.summary()}")
+            print(f"  🔍 Found {len(candidates)} rebloom candidates:")
+            for i, candidate in enumerate(candidates, 1):
+                print(f"    {i}. {candidate.summary()}")
+        else:
+            print("  ⚠️ No chunks available for rebloom test")
+    else:
+        print("  ⚠️ Cognitive router not available")
+    
+    # Test vector search
+    print("\n🔍 Testing Vector Search:")
+    if memory_system.router.vector_index:
+        # Test basic vector search
+        vector_results = memory_system.router.vector_search("system entropy", top_k=3)
+        print(f"  📊 Vector search for 'system entropy': {len(vector_results)} results")
+        for i, chunk in enumerate(vector_results, 1):
+            print(f"    {i}. {chunk.summary()}")
+        
+        # Test context-aware vector search
+        context = {
+            'speaker': 'dawn.core',
+            'pulse_state': {'heat': 30.0, 'entropy': 0.5, 'mood': 'analytical'}
+        }
+        context_results = memory_system.router.vector_search("thermal regulation", top_k=2, context=context)
+        print(f"  🌡️ Context-aware search: {len(context_results)} results")
+        for i, chunk in enumerate(context_results, 1):
+            print(f"    {i}. {chunk.summary()}")
+    else:
+        print("  ⚠️ Vector index not available")
+    
+    # Test memory compression
+    print("\n🗜️ Testing Memory Compression:")
+    compressed = memory_system.router.compress_memories()
+    if 'memory_summary' in compressed:
+        print(f"  📊 {compressed['memory_summary']}")
+        print(f"  📈 Performance metrics: {compressed.get('performance_metrics', {})}")
+        if 'pulse_state_averages' in compressed:
+            pulse_avgs = compressed['pulse_state_averages']
+            print(f"  🌡️ Average entropy: {pulse_avgs.get('entropy', 0):.3f}")
+            print(f"  🔥 Average heat: {pulse_avgs.get('heat', 0):.1f}")
+            print(f"  🔄 Average SCUP: {pulse_avgs.get('scup', 0):.3f}")
+    else:
+        print("  ⚠️ Compression not available")
+    
+    # Show enhanced statistics
+    print("\n📊 Enhanced Statistics:")
+    stats = memory_system.router.get_routing_stats()
+    print(f"  🔄 Rebloom requests: {stats.get('rebloom_requests', 0)}")
+    print(f"  🔍 Vector searches: {stats.get('vector_searches', 0)}")
+    
+    if 'cognitive_router' in stats:
+        cog_stats = stats['cognitive_router']
+        print(f"  🧠 Cognitive chunks: {cog_stats.get('total_chunks', 0)}")
+        print(f"  🏷️ Unique sigils: {cog_stats.get('unique_sigils', 0)}")
+    
+    if 'vector_index' in stats:
+        vec_stats = stats['vector_index']
+        print(f"  📚 Vector index size: {vec_stats.get('vector_count', 0)}")
+        print(f"  💾 Memory usage: {vec_stats.get('memory_usage_mb', 0):.2f} MB")
 
 
 async def test_advanced_filtering(memory_system):
@@ -286,6 +366,7 @@ async def main():
         await test_memory_retrieval(memory_system)
         await test_memory_persistence(memory_system)
         await test_advanced_filtering(memory_system)
+        await test_enhanced_capabilities(memory_system)
         await test_consciousness_integration()
         
         print("\n" + "=" * 60)

@@ -15,6 +15,8 @@ import threading
 
 from .memory_chunk import MemoryChunk, create_memory_now, memory_stats
 from .memory_loader import DAWNMemoryLoader
+from .cognitive_router import CognitiveRouter
+from .vector_index import DAWNVectorIndex, IndexConfig
 
 # Integration with existing DAWN memory systems
 try:
@@ -47,20 +49,28 @@ class MemoryRouter:
     def __init__(self, 
                  max_active_memories: int = 5000,
                  importance_threshold: float = 0.3,
-                 pulse_controller: Optional['PulseController'] = None):
+                 pulse_controller: Optional['PulseController'] = None,
+                 enable_cognitive_routing: bool = True,
+                 enable_vector_search: bool = True):
         """
-        Initialize the memory router.
+        Initialize the enhanced memory router.
         
         Args:
             max_active_memories: Maximum memories to keep in active routing
             importance_threshold: Minimum importance for memory retention
             pulse_controller: Optional pulse controller for thermal awareness
+            enable_cognitive_routing: Enable cognitive routing capabilities
+            enable_vector_search: Enable vector-based semantic search
         """
         self.max_active_memories = max_active_memories
         self.importance_threshold = importance_threshold
         self.pulse_controller = pulse_controller
         
-        # Active memory pools
+        # Enhanced routing components
+        self.cognitive_router = CognitiveRouter() if enable_cognitive_routing else None
+        self.vector_index = DAWNVectorIndex() if enable_vector_search else None
+        
+        # Active memory pools (legacy support)
         self.working_memory: deque = deque(maxlen=50)  # High-priority active memories
         self.recent_memories: deque = deque(maxlen=200)  # Recently created memories
         self.significant_memories: List[MemoryChunk] = []  # High-importance memories
@@ -75,15 +85,22 @@ class MemoryRouter:
         self.routing_decisions = 0
         self.memory_hits = 0
         self.memory_misses = 0
+        self.rebloom_requests = 0
+        self.vector_searches = 0
         
         # Thread safety
         self.lock = threading.RLock()
         
-        logger.info("🔄 Memory router initialized")
+        logger.info("🔄 Enhanced memory router initialized")
+        if self.cognitive_router:
+            logger.info("   🧠 Cognitive routing: ✓")
+        if self.vector_index:
+            logger.info("   🔍 Vector search: ✓")
     
     def route_memory(self, chunk: MemoryChunk) -> Dict[str, bool]:
         """
         Route a memory chunk to appropriate storage systems.
+        Enhanced with cognitive routing and vector indexing.
         
         Args:
             chunk: Memory chunk to route
@@ -96,6 +113,8 @@ class MemoryRouter:
                 'working_memory': False,
                 'recent_memory': False,
                 'significant_memory': False,
+                'cognitive_stored': False,
+                'vector_indexed': False,
                 'trace_logged': False,
                 'anchor_created': False
             }
@@ -105,6 +124,25 @@ class MemoryRouter:
             # Calculate memory importance
             importance = self._calculate_importance(chunk)
             
+            # Route to cognitive router
+            if self.cognitive_router:
+                try:
+                    chunk_id = self.cognitive_router.add_chunk(chunk)
+                    routing_result['cognitive_stored'] = True
+                    logger.debug(f"Routed {chunk.memory_id} to cognitive router as {chunk_id[:8]}...")
+                except Exception as e:
+                    logger.warning(f"Failed to route to cognitive router: {e}")
+            
+            # Add to vector index for semantic search
+            if self.vector_index:
+                try:
+                    self.vector_index.add(chunk)
+                    routing_result['vector_indexed'] = True
+                    logger.debug(f"Added {chunk.memory_id} to vector index")
+                except Exception as e:
+                    logger.warning(f"Failed to add to vector index: {e}")
+            
+            # Legacy routing (maintain compatibility)
             # Route to working memory if high importance or recent interaction
             if importance > 0.7 or self._is_recent_interaction(chunk):
                 self.working_memory.append(chunk)
@@ -134,49 +172,117 @@ class MemoryRouter:
     def retrieve_memories(self, 
                          query: str,
                          context: Optional[Dict[str, Any]] = None,
-                         max_results: int = 10) -> List[MemoryChunk]:
+                         max_results: int = 10,
+                         use_vector_search: bool = True,
+                         use_cognitive_search: bool = True) -> List[MemoryChunk]:
         """
         Retrieve relevant memories based on query and context.
+        Enhanced with cognitive routing and vector search capabilities.
         
         Args:
             query: Search query
             context: Optional context for relevance scoring
             max_results: Maximum number of results to return
+            use_vector_search: Use vector-based semantic search
+            use_cognitive_search: Use cognitive routing for rebloom candidates
             
         Returns:
             List[MemoryChunk]: Retrieved memories sorted by relevance
         """
         with self.lock:
-            candidates = []
+            all_results = []
+            
+            # Vector search (semantic similarity)
+            if use_vector_search and self.vector_index:
+                try:
+                    self.vector_searches += 1
+                    
+                    # Check for pulse state context for enhanced search
+                    if context and 'pulse_state' in context:
+                        vector_results = self.vector_index.search_with_pulse_state(
+                            query, context['pulse_state'], max_results
+                        )
+                    # Check for filtering context
+                    elif context and any(k in context for k in ['speaker', 'topic', 'mood']):
+                        vector_results = self.vector_index.search_with_filters(
+                            query, 
+                            speaker=context.get('speaker'),
+                            topic=context.get('topic'),
+                            mood=context.get('mood'),
+                            top_k=max_results
+                        )
+                    else:
+                        vector_results = self.vector_index.search(query, max_results)
+                    
+                    # Convert SearchResults to MemoryChunks
+                    vector_memories = [result.chunk for result in vector_results]
+                    all_results.extend(vector_memories)
+                    
+                    logger.debug(f"Vector search found {len(vector_memories)} results")
+                    
+                except Exception as e:
+                    logger.warning(f"Vector search failed: {e}")
+            
+            # Cognitive search (rebloom candidates)
+            if use_cognitive_search and self.cognitive_router and all_results:
+                try:
+                    self.rebloom_requests += 1
+                    
+                    # Use the first vector result as query for rebloom
+                    query_chunk = all_results[0]
+                    rebloom_candidates = self.cognitive_router.rebloom_candidates(
+                        query_chunk, max_candidates=max_results // 2
+                    )
+                    all_results.extend(rebloom_candidates)
+                    
+                    logger.debug(f"Cognitive rebloom found {len(rebloom_candidates)} candidates")
+                    
+                except Exception as e:
+                    logger.warning(f"Cognitive search failed: {e}")
+            
+            # Legacy search (fallback and compatibility)
+            legacy_candidates = []
             
             # Search working memory first (highest priority)
-            candidates.extend(self.working_memory)
+            legacy_candidates.extend(self.working_memory)
             
             # Search significant memories
-            candidates.extend(self.significant_memories)
+            legacy_candidates.extend(self.significant_memories)
             
             # Search recent memories
-            candidates.extend(self.recent_memories)
+            legacy_candidates.extend(self.recent_memories)
             
-            # Score and filter candidates
+            # Score and filter legacy candidates
             scored_memories = []
-            for chunk in candidates:
+            for chunk in legacy_candidates:
                 score = self._calculate_relevance_score(chunk, query, context)
                 if score > 0.1:  # Minimum relevance threshold
                     scored_memories.append((chunk, score))
             
-            # Sort by score and return top results
-            scored_memories.sort(key=lambda x: x[1], reverse=True)
-            results = [chunk for chunk, score in scored_memories[:max_results]]
+            # Add legacy results
+            legacy_results = [chunk for chunk, score in scored_memories]
+            all_results.extend(legacy_results)
+            
+            # Remove duplicates (by memory_id)
+            seen_ids = set()
+            unique_results = []
+            for chunk in all_results:
+                chunk_id = getattr(chunk, 'memory_id', id(chunk))
+                if chunk_id not in seen_ids:
+                    seen_ids.add(chunk_id)
+                    unique_results.append(chunk)
+            
+            # Limit results
+            final_results = unique_results[:max_results]
             
             # Update hit/miss statistics
-            if results:
+            if final_results:
                 self.memory_hits += 1
             else:
                 self.memory_misses += 1
             
-            logger.debug(f"Retrieved {len(results)} memories for query: {query[:50]}...")
-            return results
+            logger.debug(f"Retrieved {len(final_results)} memories for query: {query[:50]}...")
+            return final_results
     
     def _calculate_importance(self, chunk: MemoryChunk) -> float:
         """Calculate the importance score for a memory chunk."""
@@ -283,19 +389,91 @@ class MemoryRouter:
         for sigil in chunk.sigils:
             self.sigil_patterns[sigil].add(chunk.speaker)
     
+    def rebloom_candidates(self, query_chunk: MemoryChunk, max_candidates: int = 10) -> List[MemoryChunk]:
+        """
+        Find memory chunks related to the query chunk using cognitive routing.
+        
+        Args:
+            query_chunk: Memory chunk to find relations for
+            max_candidates: Maximum number of candidates to return
+            
+        Returns:
+            List[MemoryChunk]: List of related memory chunks
+        """
+        if self.cognitive_router:
+            self.rebloom_requests += 1
+            return self.cognitive_router.rebloom_candidates(query_chunk, max_candidates)
+        return []
+    
+    def vector_search(self, query: str, top_k: int = 5, context: Optional[Dict] = None) -> List[MemoryChunk]:
+        """
+        Perform vector-based semantic search.
+        
+        Args:
+            query: Search query string
+            top_k: Number of top results to return
+            context: Optional context for enhanced search
+            
+        Returns:
+            List[MemoryChunk]: Semantically similar memory chunks
+        """
+        if self.vector_index:
+            self.vector_searches += 1
+            
+            if context and 'pulse_state' in context:
+                results = self.vector_index.search_with_pulse_state(query, context['pulse_state'], top_k)
+            elif context and any(k in context for k in ['speaker', 'topic', 'mood']):
+                results = self.vector_index.search_with_filters(
+                    query,
+                    speaker=context.get('speaker'),
+                    topic=context.get('topic'),
+                    mood=context.get('mood'),
+                    top_k=top_k
+                )
+            else:
+                results = self.vector_index.search(query, top_k)
+            
+            return [result.chunk for result in results]
+        return []
+    
+    def compress_memories(self) -> Dict[str, Any]:
+        """
+        Generate a compressed representation of all stored memories.
+        
+        Returns:
+            Dict[str, Any]: Compressed memory representation
+        """
+        if self.cognitive_router:
+            return self.cognitive_router.compress()
+        return {'compressed_memories': 'Cognitive router not available'}
+    
     def get_routing_stats(self) -> Dict[str, Any]:
-        """Get routing system statistics."""
+        """Get comprehensive routing system statistics."""
         with self.lock:
-            return {
+            stats = {
                 'routing_decisions': self.routing_decisions,
                 'memory_hits': self.memory_hits,
                 'memory_misses': self.memory_misses,
+                'rebloom_requests': self.rebloom_requests,
+                'vector_searches': self.vector_searches,
                 'hit_rate': self.memory_hits / max(1, self.memory_hits + self.memory_misses),
                 'working_memory_size': len(self.working_memory),
                 'recent_memory_size': len(self.recent_memories),
                 'significant_memory_size': len(self.significant_memories),
                 'total_active_memories': len(self.working_memory) + len(self.recent_memories) + len(self.significant_memories)
             }
+            
+            # Add cognitive router stats
+            if self.cognitive_router:
+                cognitive_stats = self.cognitive_router.get_stats()
+                stats['cognitive_router'] = cognitive_stats
+            
+            # Add vector index stats
+            if self.vector_index:
+                vector_stats = self.vector_index.get_stats()
+                stats['vector_index'] = vector_stats
+            
+            return stats
 
 
 class DAWNMemoryRoutingSystem:

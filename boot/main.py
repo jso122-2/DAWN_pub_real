@@ -46,6 +46,14 @@ async def initialize_system() -> Optional[DAWNConsciousness]:
             scup_tracker=scup_tracker
         )
         print("✅ DAWN Consciousness initialized")
+        
+        # Start forecasting system
+        try:
+            await dawn.start_forecasting()
+            print("✅ DAWN Forecasting system started")
+        except Exception as e:
+            print(f"⚠️ Could not start forecasting: {e}")
+        
         return dawn
         
     except Exception as e:

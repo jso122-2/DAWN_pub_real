@@ -43,6 +43,174 @@ async def root():
     logger.info("Root endpoint called")
     return {"message": "DAWN API Running", "time": datetime.now().isoformat()}
 
+# Forecasting endpoints
+@app.get("/forecasting/status")
+async def get_forecasting_status():
+    """Get the status of the forecasting system"""
+    logger.info("Forecasting status endpoint called")
+    try:
+        # Try to get DAWN consciousness instance
+        from core.consciousness_core import consciousness_core
+        
+        if hasattr(consciousness_core, 'forecasting_processor') and consciousness_core.forecasting_processor:
+            metrics = consciousness_core.forecasting_processor.get_metrics()
+            return {
+                "status": "active",
+                "metrics": metrics,
+                "timestamp": datetime.now().isoformat()
+            }
+        else:
+            return {
+                "status": "inactive",
+                "message": "Forecasting processor not initialized",
+                "timestamp": datetime.now().isoformat()
+            }
+    except Exception as e:
+        logger.error(f"Error getting forecasting status: {e}")
+        return {
+            "status": "error",
+            "error": str(e),
+            "timestamp": datetime.now().isoformat()
+        }
+
+@app.get("/forecasting/current")
+async def get_current_forecasts():
+    """Get current behavioral forecasts"""
+    logger.info("Current forecasts endpoint called")
+    try:
+        from core.consciousness_core import consciousness_core
+        
+        if hasattr(consciousness_core, 'get_current_forecasts'):
+            forecasts = consciousness_core.get_current_forecasts()
+            return forecasts
+        else:
+            return {
+                "recent_forecasts": [],
+                "metrics": {},
+                "message": "Forecasting not available",
+                "timestamp": datetime.now().isoformat()
+            }
+    except Exception as e:
+        logger.error(f"Error getting current forecasts: {e}")
+        return {
+            "recent_forecasts": [],
+            "metrics": {},
+            "error": str(e),
+            "timestamp": datetime.now().isoformat()
+        }
+
+@app.get("/forecasting/direction/{direction}")
+async def get_forecast_for_direction(direction: str):
+    """Get forecast for a specific passion direction"""
+    logger.info(f"Forecast for direction '{direction}' endpoint called")
+    try:
+        from core.consciousness_core import consciousness_core
+        
+        if hasattr(consciousness_core, 'get_forecast_for_direction'):
+            forecast = consciousness_core.get_forecast_for_direction(direction)
+            if forecast:
+                return {
+                    "direction": direction,
+                    "forecast": forecast,
+                    "timestamp": datetime.now().isoformat()
+                }
+            else:
+                return {
+                    "direction": direction,
+                    "forecast": None,
+                    "message": f"No forecast available for direction '{direction}'",
+                    "timestamp": datetime.now().isoformat()
+                }
+        else:
+            return {
+                "direction": direction,
+                "forecast": None,
+                "error": "Forecasting not available",
+                "timestamp": datetime.now().isoformat()
+            }
+    except Exception as e:
+        logger.error(f"Error getting forecast for direction '{direction}': {e}")
+        return {
+            "direction": direction,
+            "forecast": None,
+            "error": str(e),
+            "timestamp": datetime.now().isoformat()
+        }
+
+@app.post("/forecasting/generate/{direction}")
+async def generate_instant_forecast(direction: str):
+    """Generate an instant forecast for a specific direction"""
+    logger.info(f"Generate instant forecast for '{direction}' endpoint called")
+    try:
+        from core.consciousness_core import consciousness_core
+        
+        if hasattr(consciousness_core, 'generate_instant_forecast'):
+            forecast = await consciousness_core.generate_instant_forecast(direction)
+            if forecast:
+                return {
+                    "direction": direction,
+                    "forecast": forecast,
+                    "generated_at": datetime.now().isoformat()
+                }
+            else:
+                return {
+                    "direction": direction,
+                    "forecast": None,
+                    "message": f"Could not generate forecast for direction '{direction}'",
+                    "generated_at": datetime.now().isoformat()
+                }
+        else:
+            return {
+                "direction": direction,
+                "forecast": None,
+                "error": "Forecasting not available",
+                "generated_at": datetime.now().isoformat()
+            }
+    except Exception as e:
+        logger.error(f"Error generating instant forecast for '{direction}': {e}")
+        return {
+            "direction": direction,
+            "forecast": None,
+            "error": str(e),
+            "generated_at": datetime.now().isoformat()
+        }
+
+@app.get("/forecasting/trends/{direction}")
+async def get_forecast_trends(direction: str, hours: int = 24):
+    """Get forecast trends for a direction over time"""
+    logger.info(f"Forecast trends for '{direction}' over {hours} hours endpoint called")
+    try:
+        from core.consciousness_core import consciousness_core
+        
+        if hasattr(consciousness_core, 'get_forecast_trends'):
+            trends = consciousness_core.get_forecast_trends(direction, hours)
+            return {
+                "direction": direction,
+                "lookback_hours": hours,
+                "trends": trends,
+                "count": len(trends),
+                "timestamp": datetime.now().isoformat()
+            }
+        else:
+            return {
+                "direction": direction,
+                "lookback_hours": hours,
+                "trends": [],
+                "count": 0,
+                "error": "Forecasting not available",
+                "timestamp": datetime.now().isoformat()
+            }
+    except Exception as e:
+        logger.error(f"Error getting forecast trends for '{direction}': {e}")
+        return {
+            "direction": direction,
+            "lookback_hours": hours,
+            "trends": [],
+            "count": 0,
+            "error": str(e),
+            "timestamp": datetime.now().isoformat()
+        }
+
 @app.get("/processes/status")
 async def get_processes_status():
     logger.info("Process status endpoint called")
