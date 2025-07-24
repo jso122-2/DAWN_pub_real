@@ -767,6 +767,29 @@ class DAWNGui:
                 component_status.append(f"Active sigils: {engine_status.get('active_sigils', 0)}")
                 component_status.append(f"Executions: {current_executions}")
                 
+                # Get active sigils from the engine
+                active_sigils_data = []
+                if hasattr(self.sigil_engine, 'active_sigils'):
+                    active_sigils_raw = self.sigil_engine.active_sigils
+                    for sigil_id, sigil_info in active_sigils_raw.items():
+                        # Convert sigil object to display format
+                        thermal_sig = getattr(sigil_info, 'thermal_signature', 50.0)
+                        decay_rate = getattr(sigil_info, 'decay_rate', 0.0)
+                        cognitive_house = getattr(sigil_info, 'cognitive_house', 'unknown')
+                        
+                        active_sigils_data.append({
+                            "symbol": getattr(sigil_info, 'symbol', '◉'),
+                            "name": getattr(sigil_info, 'command', sigil_id),
+                            "class": cognitive_house,
+                            "heat": int(thermal_sig),
+                            "decay": decay_rate,
+                            "id": sigil_id,
+                            "level": getattr(sigil_info, 'level', 1)
+                        })
+                
+                # Update current data with active sigils
+                self.current_data["sigils"] = active_sigils_data
+                
                 # Generate tick events for new executions
                 if current_executions > prev_executions:
                     new_executions = current_executions - prev_executions
@@ -803,6 +826,60 @@ class DAWNGui:
             mode_indicator = "🔗 UNIFIED" if self.external_components_connected else "🔥 INTEGRATED"
             summary = f"{mode_indicator} DAWN System Active | " + " | ".join(component_status)
             self.current_data["summary"] = summary
+            
+            # Generate owl observations from real system state
+            owl_observations = []
+            current_heat = self.current_data.get('heat', 0)
+            current_zone = self.current_data.get('zone', 'CALM')
+            active_sigil_count = len(self.current_data.get('sigils', []))
+            
+            # Generate observations based on real system state
+            if hasattr(self, '_last_heat') and abs(current_heat - self._last_heat) > 5:
+                if current_heat > self._last_heat:
+                    owl_observations.append({
+                        "comment": f"Thermal acceleration detected: {self._last_heat:.1f}° → {current_heat:.1f}°",
+                        "type": "highlight"
+                    })
+                else:
+                    owl_observations.append({
+                        "comment": f"Thermal stabilization observed: {self._last_heat:.1f}° → {current_heat:.1f}°", 
+                        "type": "normal"
+                    })
+            
+            if hasattr(self, '_last_zone') and current_zone != self._last_zone:
+                owl_observations.append({
+                    "comment": f"Cognitive zone transition: {self._last_zone} → {current_zone}",
+                    "type": "insight"
+                })
+            
+            if active_sigil_count > 0:
+                active_sigils = self.current_data.get('sigils', [])
+                high_heat_sigils = [s for s in active_sigils if s.get('heat', 0) > 70]
+                if high_heat_sigils:
+                    sigil_names = [s.get('name', 'Unknown') for s in high_heat_sigils[:2]]
+                    owl_observations.append({
+                        "comment": f"High-intensity sigil activity detected: {', '.join(sigil_names)}",
+                        "type": "critical" if len(high_heat_sigils) > 2 else "highlight"
+                    })
+            
+            # Store current values for next comparison
+            self._last_heat = current_heat
+            self._last_zone = current_zone
+            
+            # Update owl observations
+            if owl_observations:
+                existing_observations = self.current_data.get('owl_observations', [])
+                self.current_data['owl_observations'] = existing_observations + owl_observations
+            
+            # Update bridge activity based on real system activity
+            bridge_activity = self.current_data.get('bridge_activity', {})
+            bridge_activity.update({
+                "observations_processed": bridge_activity.get('observations_processed', 0) + len(owl_observations),
+                "sigils_triggered": len(self.current_data.get('sigils', [])),
+                "reflections_generated": bridge_activity.get('reflections_generated', 0) + (1 if tick_events else 0),
+                "last_activity": datetime.now().strftime("%H:%M:%S") if (owl_observations or tick_events) else bridge_activity.get('last_activity')
+            })
+            self.current_data['bridge_activity'] = bridge_activity
             
             # Add tick events to show real activity
             if tick_events:
@@ -861,6 +938,9 @@ class DAWNGui:
             if self.fractal_canvas:
                 bloom_data = self.current_data.get('bloom_data', {})
                 if bloom_data:
+                    # Add real system data for fractal variation
+                    bloom_data['system_heat'] = self.current_data.get('heat', 50.0)
+                    bloom_data['active_sigils'] = len(self.current_data.get('sigils', []))
                     self.fractal_canvas.draw_bloom_signature(bloom_data)
                     self.update_bloom_info_display()
             
@@ -881,15 +961,19 @@ class DAWNGui:
                         observation['_logged'] = True
                 
                 # Update bridge status
-                if self.owl_sigil_bridge:
-                    bridge_stats = self.owl_sigil_bridge.get_statistics()
-                    activity_text = f"Activity: {bridge_stats['observations_processed']}/{bridge_stats['sigils_triggered']}/{bridge_stats['reflections_generated']}"
+                bridge_activity = self.current_data.get('bridge_activity', {})
+                if bridge_activity:
+                    observations = bridge_activity.get('observations_processed', 0)
+                    sigils = bridge_activity.get('sigils_triggered', 0) 
+                    reflections = bridge_activity.get('reflections_generated', 0)
+                    activity_text = f"Activity: {observations}/{sigils}/{reflections}"
                     self.bridge_activity_label.config(text=activity_text)
                     
-                    if bridge_stats['is_active']:
+                    last_activity = bridge_activity.get('last_activity')
+                    if last_activity and self.external_components_connected:
                         self.bridge_status_label.config(text="🔗 Bridge: Active", fg="#00ff88")
                     else:
-                        self.bridge_status_label.config(text="🔗 Bridge: Idle", fg="#888888")
+                        self.bridge_status_label.config(text="🔗 Bridge: Monitoring", fg="#888888")
             
             # Update entropy panel
             self.update_entropy_panel()

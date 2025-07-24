@@ -13,9 +13,11 @@ import signal
 import atexit
 
 # Import GIF saver
-
+try:
     from .gif_saver import setup_gif_saver
+except ImportError:
     from gif_saver import setup_gif_saver
+
 import sys
 
 # Sigil command categories and their properties
@@ -453,7 +455,7 @@ class SigilCommandStreamVisualizer:
 
     def save_animation_gif(self):
         """Save the animation as GIF"""
-
+        try:
             if hasattr(self, 'animation'):
                 gif_path = self.gif_saver.save_animation_as_gif(self.animation, fps=5, dpi=100)
                 if gif_path:
@@ -462,6 +464,7 @@ class SigilCommandStreamVisualizer:
                     print('\nFailed to save animation GIF', file=sys.stderr)
             else:
                 print('\nNo animation to save', file=sys.stderr)
+        except Exception as e:
             print(f'\nError saving animation GIF: {e}', file=sys.stderr)
 
     def cleanup(self):

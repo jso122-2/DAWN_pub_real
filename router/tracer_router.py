@@ -1,1070 +1,466 @@
+#!/usr/bin/env python3
 """
-Tracer Router with Decision Spine Logic
-Implements structured decision-making framework for tracers based on pressure and semantic relationships.
+tracer_router.py - DAWN Cognitive Tracer Routing System
+Intelligently routes specialized tracers (Owl, Crow, Spider, Whale) to optimal bloom targets
+based on their unique capabilities and analysis specializations.
 """
 
-import json
-import os
-from typing import Dict, List, Tuple, Optional, Set, Any
-from collections import deque, defaultdict
-import numpy as np
-from datetime import datetime
+import time
+import random
+import math
 from dataclasses import dataclass, field
+from typing import Dict, List, Optional, Tuple, Any
+from datetime import datetime, timedelta
+from collections import defaultdict
+from enum import Enum
+
+
+class TracerType(Enum):
+    """Specialized tracer types with unique capabilities"""
+    OWL = "owl"           # 🦉 Deep Pattern Analysis
+    CROW = "crow"         # 🐦‍⬛ SCUP Weakness Detection  
+    SPIDER = "spider"     # 🕷️ Token Bridge Construction
+    WHALE = "whale"       # 🐋 High-Density Processing
+
 
 @dataclass
-class TracerPayload:
-    """Structured payload for tracer routing with signal and context."""
+class TracerCapabilities:
+    """Defines the capabilities and preferences of a tracer type"""
+    preferred_depth_range: Tuple[int, int]    # Optimal working depth
+    entropy_affinity: Tuple[float, float]     # Entropy preference range
+    thermal_tolerance: Tuple[float, float]    # Heat tolerance range
+    specialization: str                       # Primary function
+    efficiency_factors: Dict[str, float]      # Performance modifiers
     
-    signal: str
-    origin: str
-    urgency: float
-    mood_context: Optional[str] = None
-    metadata: Dict[str, Any] = field(default_factory=dict)
-    
-    def __post_init__(self):
-        """Validate and normalize payload data."""
-        # Ensure urgency is between 0 and 1
-        self.urgency = max(0.0, min(1.0, self.urgency))
+    def calculate_compatibility(self, bloom: Dict[str, Any]) -> float:
+        """Calculate how well this tracer matches a bloom's characteristics"""
+        score = 0.0
         
-        # Normalize signal
-        self.signal = self.signal.strip().lower()
-        
-        # Ensure origin is a valid module name
-        self.origin = self.origin.replace(" ", "_").lower()
-        
-        # Set default mood if not provided
-        if self.mood_context is None:
-            self.mood_context = "neutral"
-            
-    def to_dict(self) -> Dict[str, Any]:
-        """Convert payload to dictionary format."""
-        return {
-            "signal": self.signal,
-            "origin": self.origin,
-            "urgency": self.urgency,
-            "mood_context": self.mood_context,
-            "metadata": self.metadata
-        }
-        
-    @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> 'TracerPayload':
-        """Create payload from dictionary data."""
-        return cls(
-            signal=data["signal"],
-            origin=data["origin"],
-            urgency=data["urgency"],
-            mood_context=data.get("mood_context"),
-            metadata=data.get("metadata", {})
-        )
-        
-    def get_signal_type(self) -> str:
-        """Determine the type of signal for routing."""
-        signal_lower = self.signal.lower()
-        
-        if "entropy" in signal_lower or "risk" in signal_lower:
-            return "entropy_signal"
-        elif "bloom" in signal_lower or "fractal" in signal_lower:
-            return "bloom_signal"
-        elif "sigil" in signal_lower or "pattern" in signal_lower:
-            return "sigil_signal"
-        elif "claude" in signal_lower:
-            return "claude_signal"
+        # Depth compatibility
+        bloom_depth = bloom.get('depth', 0)
+        depth_min, depth_max = self.preferred_depth_range
+        if depth_min <= bloom_depth <= depth_max:
+            score += 0.3
         else:
-            return "general_signal"
-            
-    def get_priority_boost(self) -> float:
-        """Calculate priority boost based on signal content and urgency."""
-        boost = 0.0
+            # Penalty for being outside preferred range
+            penalty = min(abs(bloom_depth - depth_min), abs(bloom_depth - depth_max)) * 0.05
+            score += max(0, 0.3 - penalty)
         
-        # Base boost from urgency
-        boost += self.urgency * 0.1
+        # Entropy compatibility
+        bloom_entropy = bloom.get('entropy', 0.5)
+        entropy_min, entropy_max = self.entropy_affinity
+        if entropy_min <= bloom_entropy <= entropy_max:
+            score += 0.3
+        else:
+            penalty = min(abs(bloom_entropy - entropy_min), abs(bloom_entropy - entropy_max)) * 0.5
+            score += max(0, 0.3 - penalty)
         
-        # Additional boost for specific signal types
-        signal_type = self.get_signal_type()
-        if signal_type == "entropy_signal" and self.urgency > 0.7:
-            boost += 0.2
-        elif signal_type == "bloom_signal" and "critical" in self.signal:
-            boost += 0.15
-        elif signal_type == "sigil_signal" and "anomaly" in self.signal:
-            boost += 0.15
-            
-        return min(0.3, boost)  # Cap total boost at 0.3
+        # Thermal compatibility
+        bloom_heat = bloom.get('heat', 0.5)
+        heat_min, heat_max = self.thermal_tolerance
+        if heat_min <= bloom_heat <= heat_max:
+            score += 0.2
+        else:
+            penalty = min(abs(bloom_heat - heat_min), abs(bloom_heat - heat_max)) * 0.4
+            score += max(0, 0.2 - penalty)
+        
+        # Specialization bonus
+        bloom_type = bloom.get('type', 'unknown')
+        if bloom_type in self.efficiency_factors:
+            score += self.efficiency_factors[bloom_type] * 0.2
+        
+        return min(1.0, max(0.0, score))
 
-class ClaudeSignal:
-    """Helper class for managing Claude signal priorities."""
-    
-    PRIORITY_TERMS_FILE = "priority_terms.txt"
-    CLAUDE_TRACE_FILE = "logs/claude_trace.json"
-    PRIORITY_BOOST = 0.05
-    
-    @classmethod
-    def get_priority_terms(cls) -> List[str]:
-        """Load priority terms from file or return defaults."""
-        try:
-            if os.path.exists(cls.PRIORITY_TERMS_FILE):
-                with open(cls.PRIORITY_TERMS_FILE, 'r') as f:
-                    return [line.strip() for line in f if line.strip()]
-            else:
-                # Create default priority terms
-                default_terms = [
-                    "schema drift",
-                    "operator offline",
-                    "fail-safe trigger",
-                    "critical path",
-                    "system stress",
-                    "anomaly detected"
-                ]
-                with open(cls.PRIORITY_TERMS_FILE, 'w') as f:
-                    f.write('\n'.join(default_terms))
-                return default_terms
-        except Exception as e:
-            print(f"[ClaudeSignal] Error loading priority terms: {e}")
-            return []
-            
-    @classmethod
-    def get_recent_signals(cls, max_age_seconds: int = 300) -> List[Dict]:
-        """Get recent signals from Claude trace."""
-        try:
-            if not os.path.exists(cls.CLAUDE_TRACE_FILE):
-                return []
-                
-            with open(cls.CLAUDE_TRACE_FILE, 'r') as f:
-                signals = json.load(f)
-                
-            # Filter for recent signals
-            current_time = datetime.now()
-            recent_signals = []
-            
-            for signal in signals:
-                try:
-                    signal_time = datetime.fromisoformat(signal.get('timestamp', ''))
-                    age = (current_time - signal_time).total_seconds()
-                    if age <= max_age_seconds:
-                        recent_signals.append(signal)
-                except (ValueError, TypeError):
-                    continue
-                    
-            return recent_signals
-        except Exception as e:
-            print(f"[ClaudeSignal] Error loading recent signals: {e}")
-            return []
-            
-    @classmethod
-    def has_priority_match(cls, signal_text: str) -> bool:
-        """Check if signal text matches any priority terms."""
-        priority_terms = cls.get_priority_terms()
-        return any(term.lower() in signal_text.lower() for term in priority_terms)
 
-class TracerTypeRegistry:
-    """Registry for tracer type configurations and behaviors."""
+@dataclass
+class BloomTarget:
+    """Represents a bloom that needs tracer analysis"""
+    bloom_id: str
+    depth: int
+    entropy: float
+    heat: float
+    bloom_type: str
+    priority: float
+    metadata: Dict[str, Any] = field(default_factory=dict)
+    assigned_tracers: List[str] = field(default_factory=list)
+    analysis_history: List[Dict] = field(default_factory=list)
     
-    def __init__(self):
-        self.registry = {
-            "OwlTracer": {
-                "urgency_modifier": 1.2,  # Higher urgency for entropy risks
-                "preferred_targets": {"entropy_monitor", "risk_analyzer", "whisper_log"},
-                "avoided_targets": set(),
-                "special_logic": self._owl_tracer_logic
-            },
-            "BloomTracer": {
-                "urgency_modifier": 1.0,
-                "preferred_targets": {"bloom_engine", "memory_weaver", "fractal_decoder"},
-                "avoided_targets": {"risk_analyzer", "entropy_monitor"},
-                "special_logic": self._bloom_tracer_logic
-            },
-            "SigilTracer": {
-                "urgency_modifier": 0.8,  # More cautious with high pressure
-                "preferred_targets": {"sigil_generator", "pattern_matcher"},
-                "avoided_targets": {"rebloom_zone", "entropy_monitor"},
-                "special_logic": self._sigil_tracer_logic
-            }
+    def add_analysis_result(self, tracer_type: TracerType, result: Dict[str, Any]):
+        """Add an analysis result to this bloom's history"""
+        analysis_entry = {
+            'timestamp': datetime.now().isoformat(),
+            'tracer_type': tracer_type.value,
+            'result': result
         }
+        self.analysis_history.append(analysis_entry)
         
-    def get_tracer_config(self, tracer_type: str) -> Dict:
-        """Get configuration for a specific tracer type."""
-        return self.registry.get(tracer_type, {
-            "urgency_modifier": 1.0,
-            "preferred_targets": set(),
-            "avoided_targets": set(),
-            "special_logic": None
-        })
-        
-    def _owl_tracer_logic(self, route_data: Dict) -> float:
-        """Special routing logic for OwlTracer."""
-        # Boost score if target is in preferred targets
-        if route_data["target"] in self.registry["OwlTracer"]["preferred_targets"]:
-            return 1.2
-            
-        # Check for high entropy risk
-        if route_data.get("entropy", 0.0) > 0.7:
-            return 1.3  # Significant boost for high entropy
-            
-        return 1.0
-        
-    def _bloom_tracer_logic(self, route_data: Dict) -> float:
-        """Special routing logic for BloomTracer."""
-        # Boost score for bloom-related targets
-        if route_data["target"] in self.registry["BloomTracer"]["preferred_targets"]:
-            return 1.2
-            
-        # Reduce score for risk-related targets
-        if route_data["target"] in self.registry["BloomTracer"]["avoided_targets"]:
-            return 0.7
-            
-        return 1.0
-        
-    def _sigil_tracer_logic(self, route_data: Dict) -> float:
-        """Special routing logic for SigilTracer."""
-        # Avoid rebloom zones if pressure is high
-        if (route_data["target"] in self.registry["SigilTracer"]["avoided_targets"] and 
-            route_data.get("pressure", 0.0) > 0.6):
-            return 0.0  # Block route
-            
-        # Boost score for sigil-related targets
-        if route_data["target"] in self.registry["SigilTracer"]["preferred_targets"]:
-            return 1.1
-            
-        return 1.0
+        # Keep history manageable
+        if len(self.analysis_history) > 50:
+            self.analysis_history = self.analysis_history[-25:]
 
-class TracerAttentionManager:
-    """Manages attention budgets for tracers."""
+
+@dataclass
+class TracerInstance:
+    """Represents an active tracer instance"""
+    tracer_id: str
+    tracer_type: TracerType
+    capabilities: TracerCapabilities
+    current_assignment: Optional[str] = None
+    workload: int = 0
+    efficiency: float = 1.0
+    last_assignment_time: Optional[datetime] = None
+    analysis_count: int = 0
     
-    def __init__(self):
-        self.attention_levels: Dict[str, float] = defaultdict(lambda: 1.0)
-        self.last_replenish: Dict[str, datetime] = defaultdict(datetime.now)
-        self.replenish_rate = 0.05  # Attention points per tick
-        self.min_attention = 0.1    # Minimum attention to process requests
-        self.max_attention = 1.0    # Maximum attention level
-        
-    def get_attention(self, tracer_id: str) -> float:
-        """Get current attention level for a tracer."""
-        self._replenish_attention(tracer_id)
-        return self.attention_levels[tracer_id]
-        
-    def _replenish_attention(self, tracer_id: str) -> None:
-        """Replenish attention based on time elapsed."""
-        now = datetime.now()
-        last = self.last_replenish[tracer_id]
-        ticks_elapsed = (now - last).total_seconds() / 5.0  # Assuming 5-second ticks
-        
-        if ticks_elapsed > 0:
-            replenish_amount = min(
-                self.replenish_rate * ticks_elapsed,
-                self.max_attention - self.attention_levels[tracer_id]
-            )
-            self.attention_levels[tracer_id] += replenish_amount
-            self.last_replenish[tracer_id] = now
-            
-    def consume_attention(self, tracer_id: str, route_score: float) -> bool:
-        """
-        Consume attention for a route.
-        
-        Args:
-            tracer_id: ID of the tracer
-            route_score: Score of the route being taken
-            
-        Returns:
-            bool: True if enough attention available, False otherwise
-        """
-        self._replenish_attention(tracer_id)
-        
-        # Calculate attention cost
-        attention_cost = route_score / 10.0
-        
-        # Check if enough attention available
-        if self.attention_levels[tracer_id] < attention_cost:
-            print(f"[TracerAttention] {tracer_id} has insufficient attention: "
-                  f"{self.attention_levels[tracer_id]:.2f} < {attention_cost:.2f}")
-            return False
-            
-        # Consume attention
-        self.attention_levels[tracer_id] -= attention_cost
-        print(f"[TracerAttention] {tracer_id} consumed {attention_cost:.2f} attention, "
-              f"remaining: {self.attention_levels[tracer_id]:.2f}")
-        return True
-        
-    def can_process_request(self, tracer_id: str) -> bool:
-        """Check if tracer has enough attention to process a request."""
-        return self.get_attention(tracer_id) >= self.min_attention
-        
-    def get_attention_status(self, tracer_id: str) -> Dict[str, float]:
-        """Get detailed attention status for a tracer."""
-        return {
-            "current_attention": self.attention_levels[tracer_id],
-            "replenish_rate": self.replenish_rate,
-            "min_attention": self.min_attention,
-            "max_attention": self.max_attention
-        }
+    def is_available(self) -> bool:
+        """Check if this tracer is available for new assignments"""
+        return self.current_assignment is None and self.workload < 5
+    
+    def assign_to_bloom(self, bloom_id: str):
+        """Assign this tracer to analyze a specific bloom"""
+        self.current_assignment = bloom_id
+        self.workload += 1
+        self.last_assignment_time = datetime.now()
+        self.analysis_count += 1
+    
+    def complete_assignment(self):
+        """Mark the current assignment as complete"""
+        self.current_assignment = None
+        self.workload = max(0, self.workload - 1)
+
 
 class TracerRouter:
-    """Core router implementing Decision Spine Logic for tracers."""
+    """Advanced routing system for DAWN cognitive tracers"""
     
-    def __init__(self, semantic_field=None, agreement_matrix=None, log_file: str = "tracer_paths.json"):
-        # Decision thresholds
-        self.pressure_threshold = 0.7
-        self.trust_threshold = 0.6
-        self.semantic_threshold = 0.5
-        self.hold_timeout = 300  # 5 minutes
-        
-        # State tracking
-        self.last_decision = None
-        self.hold_start_time = None
-        self.pressure_history = deque(maxlen=100)
-        self.trust_history = deque(maxlen=100)
-        self.route_history = deque(maxlen=50)
-        self.current_tick = 0
-        
-        # Dependencies
-        self.semantic_field = semantic_field
-        self.agreement_matrix = agreement_matrix
-        
-        # Initialize tracer type registry
-        self.tracer_registry = TracerTypeRegistry()
-        
-        # Initialize attention manager
-        self.attention_manager = TracerAttentionManager()
-        
-        # Logging
-        self.log_file = log_file
-        self.path_log = []
-        self.load_path_log()
-        
-        # Ensure logs directory exists
-        os.makedirs('logs', exist_ok=True)
-        
-        # Pressure sources
-        self.pressure_sources = {
-            'pulse': self._get_pulse_pressure,
-            'bloom': self._get_bloom_entropy,
-            'claude': self._get_claude_signal
+    def __init__(self):
+        """Initialize the tracer router with default configurations"""
+        self.tracer_configurations = self._initialize_tracer_configs()
+        self.active_tracers: Dict[str, TracerInstance] = {}
+        self.bloom_queue: List[BloomTarget] = []
+        self.routing_history: List[Dict] = []
+        self.performance_metrics = {
+            'total_assignments': 0,
+            'successful_analyses': 0,
+            'failed_analyses': 0,
+            'avg_analysis_time': 0.0
         }
         
-        # Initialize route registry
-        self.route_registry = {}
-        
-        # Initialize memory trail log
-        self.memory_trail_file = "logs/tracer_memory.json"
-        self._init_memory_trail()
-        
-        # Initialize Claude signal handler
-        self.claude_signal = ClaudeSignal()
-        
-    def _init_memory_trail(self) -> None:
-        """Initialize memory trail log file if it doesn't exist."""
-        if not os.path.exists(self.memory_trail_file):
-            with open(self.memory_trail_file, 'w') as f:
-                json.dump([], f)
-                
-    def log_memory_trail(self, source: str, target: str, path: List[str], 
-                        score: float, entropy: float, signal: str, 
-                        mood_context: str) -> None:
-        """
-        Log a memory trail entry for a completed route.
-        
-        Args:
-            source: Source component
-            target: Target component
-            path: List of components in the path
-            score: Route score
-            entropy: Entropy at start of route
-            signal: Signal type (e.g., 'rebloom risk')
-            mood_context: Current mood context
-        """
-        # Generate tracer ID
-        tracer_id = f"OwlTracer-{self.current_tick:03d}"
-        
-        # Create memory trail entry
-        memory_entry = {
-            "tick": self.current_tick,
-            "tracer": tracer_id,
-            "source": source,
-            "target": target,
-            "path": path,
-            "score": score,
-            "entropy_at_start": entropy,
-            "signal": signal,
-            "mood_context": mood_context
-        }
-        
-        # Load existing memory trail
-        try:
-            with open(self.memory_trail_file, 'r') as f:
-                memory_trail = json.load(f)
-        except (json.JSONDecodeError, FileNotFoundError):
-            memory_trail = []
-            
-        # Append new entry
-        memory_trail.append(memory_entry)
-        
-        # Write updated memory trail
-        with open(self.memory_trail_file, 'w') as f:
-            json.dump(memory_trail, f, indent=2)
-            
-        print(f"[TracerRouter] Logged memory trail for {tracer_id}")
-        
-    def load_path_log(self) -> None:
-        """Load path log from file."""
-        try:
-            if os.path.exists(self.log_file):
-                with open(self.log_file, 'r') as f:
-                    self.path_log = json.load(f)
-                print(f"[TracerRouter] Loaded {len(self.path_log)} path logs")
-            else:
-                print("[TracerRouter] No existing path log found, starting fresh")
-                self.path_log = []
-        except Exception as e:
-            print(f"[TracerRouter] Error loading path log: {e}")
-            self.path_log = []
-
-    def save_path_log(self) -> None:
-        """Save path log to file."""
-        try:
-            with open(self.log_file, 'w') as f:
-                json.dump(self.path_log, f, indent=2)
-            print(f"[TracerRouter] Saved {len(self.path_log)} path logs")
-        except Exception as e:
-            print(f"[TracerRouter] Error saving path log: {e}")
-
-    def log_path(self, source: str, target: str, path: List[str], 
-                confidence: float, semantic_distance: float) -> None:
-        """Log a tracer path."""
-        log_entry = {
-            'timestamp': datetime.now().isoformat(),
-            'source': source,
-            'target': target,
-            'path': path,
-            'confidence': confidence,
-            'semantic_distance': semantic_distance
-        }
-        self.path_log.append(log_entry)
-        self.save_path_log()
-
-    def log_route_trace(self, source: str, target: str, path: List[str], 
-                       score: float, semantic_distance: float) -> None:
-        """Record route decision in logs/tracer_path_trace.json."""
-        trace_entry = {
-            "tick": self.current_tick,
-            "source": source,
-            "target": target,
-            "path": path,
-            "score": score,
-            "semantic_distance": semantic_distance
-        }
-        
-        trace_file = "logs/tracer_path_trace.json"
-        
-        # Load existing traces if file exists
-        traces = []
-        if os.path.exists(trace_file):
-            try:
-                with open(trace_file, 'r') as f:
-                    traces = json.load(f)
-            except json.JSONDecodeError:
-                traces = []
-        
-        # Append new trace
-        traces.append(trace_entry)
-        
-        # Write updated traces
-        with open(trace_file, 'w') as f:
-            json.dump(traces, f, indent=2)
-
-    def evaluate_need(self, tracer_type: str, context: Dict) -> Tuple[bool, str]:
-        """
-        Decision Point 1: Am I needed?
-        
-        Args:
-            tracer_type: Type of tracer (memory/command/mood)
-            context: Dict containing:
-                - triggered: bool (explicit trigger)
-                - ambient_pressure: float
-                - urgency: float
-                
-        Returns:
-            Tuple of (is_needed: bool, reason: str)
-        """
-        # Explicit trigger always activates
-        if context.get('triggered', False):
-            return True, "Explicit trigger received"
-            
-        # Check ambient pressure
-        ambient_pressure = context.get('ambient_pressure', 0.0)
-        if ambient_pressure > self.pressure_threshold:
-            return True, f"High ambient pressure: {ambient_pressure:.2f}"
-            
-        # Type-specific activation
-        if self._check_type_specific_need(tracer_type, context):
-            return True, f"Type-specific need detected for {tracer_type}"
-            
-        return False, "No current need"
-        
-    def find_pressure_peak(self, pressure_map: Dict[str, float]) -> Tuple[str, float]:
-        """
-        Decision Point 2: Where is pressure highest?
-        
-        Args:
-            pressure_map: Dict mapping component names to pressure values
-            
-        Returns:
-            Tuple of (component_name, pressure_value)
-        """
-        if not pressure_map:
-            return None, 0.0
-            
-        # Find highest pressure component
-        max_component = max(pressure_map.items(), key=lambda x: x[1])
-        
-        # Update pressure history
-        self.pressure_history.append(max_component[1])
-        
-        return max_component
-        
-    def evaluate_path(self, source: str, target: str, 
-                     trust_matrix: Dict[str, float],
-                     semantic_field: 'SemanticField') -> Tuple[bool, float, str]:
-        """
-        Decision Point 3: What path is most trusted and semantically proximate?
-        
-        Args:
-            source: Source component
-            target: Target component
-            trust_matrix: Component trust scores
-            semantic_field: Semantic field instance
-            
-        Returns:
-            Tuple of (path_exists: bool, path_score: float, path: str)
-        """
-        # Get semantic distance
-        semantic_distance = semantic_field.calculate_semantic_distance(source, target)
-        
-        # Get trust score
-        trust_score = trust_matrix.get(f"{source}→{target}", 0.5)
-        
-        # Update trust history
-        self.trust_history.append(trust_score)
-        
-        # Calculate path score
-        path_score = (1 - semantic_distance) * trust_score
-        
-        # Check if path is viable
-        if semantic_distance < self.semantic_threshold and trust_score > self.trust_threshold:
-            return True, path_score, f"{source}→{target}"
-            
-        return False, path_score, None
-        
-    def determine_payload_type(self, tracer_type: str, context: Dict) -> str:
-        """
-        Decision Point 4: What type of payload do I carry?
-        
-        Args:
-            tracer_type: Type of tracer
-            context: Dict containing:
-                - source_component: str
-                - target_component: str
-                - pressure_type: str
-                - semantic_field: SemanticField
-                
-        Returns:
-            str: 'memory', 'command', or 'mood'
-        """
-        # Type-specific payload determination
-        if tracer_type == 'memory_tracer':
-            return 'memory'
-        elif tracer_type == 'command_tracer':
-            return 'command'
-        elif tracer_type == 'mood_tracer':
-            return 'mood'
-            
-        # Default determination based on components and pressure
-        source = context['source_component']
-        target = context['target_component']
-        
-        if 'memory' in source.lower() or 'memory' in target.lower():
-            return 'memory'
-        elif 'mood' in source.lower() or 'mood' in target.lower():
-            return 'mood'
-        else:
-            return 'command'
-            
-    def handle_no_path(self, context: Dict) -> Tuple[str, str]:
-        """
-        Decision Point 5: What to do when no path exists?
-        
-        Args:
-            context: Dict containing:
-                - pressure: float
-                - trust_history: List[float]
-                - semantic_field: SemanticField
-                
-        Returns:
-            Tuple of (action: str, reason: str)
-        """
-        pressure = context.get('pressure', 0.0)
-        trust_trend = np.mean(list(self.trust_history)[-10:]) if self.trust_history else 0.5
-        
-        # Check if we should hold
-        if pressure > 0.8 and trust_trend > 0.6:
-            if not self.hold_start_time:
-                self.hold_start_time = time.time()
-            elif time.time() - self.hold_start_time > self.hold_timeout:
-                return 'decay', "Hold timeout exceeded"
-            return 'hold', "High pressure with good trust trend"
-            
-        # Check if we should decay
-        if pressure < 0.3 or trust_trend < 0.3:
-            return 'decay', f"Low pressure ({pressure:.2f}) or trust ({trust_trend:.2f})"
-            
-        # Default to return
-        return 'return', "No viable path, returning to source"
-        
-    def _check_type_specific_need(self, tracer_type: str, context: Dict) -> bool:
-        """Check if tracer is needed based on its specific type."""
-        if tracer_type == 'memory_tracer':
-            return context.get('memory_pressure', 0.0) > 0.6
-        elif tracer_type == 'command_tracer':
-            return context.get('command_urgency', 0.0) > 0.7
-        elif tracer_type == 'mood_tracer':
-            return context.get('mood_volatility', 0.0) > 0.5
-        return False
-        
-    def _get_pulse_pressure(self) -> float:
-        """Get pressure from pulse_state.json"""
-        try:
-            with open("pulse_state.json", "r") as f:
-                pulse_data = json.load(f)
-                return min(1.0, pulse_data.get("heat", 0.0) / 10.0)
-        except Exception:
-            return 0.0
-            
-    def _get_bloom_entropy(self) -> float:
-        """Get pressure from bloom entropy"""
-        try:
-            bloom_count = len([f for f in os.listdir("blooms") 
-                              if f.endswith(".json")]) if os.path.exists("blooms") else 0
-            return min(1.0, bloom_count / 20.0)
-        except Exception:
-            return 0.0
-            
-    def _get_claude_signal(self) -> float:
-        """Get pressure from Claude signal input"""
-        try:
-            if os.path.exists("claude_trigger.py"):
-                with open("claude_trigger.py", "r") as f:
-                    content = f.read()
-                    return min(1.0, content.count("claude") / 10.0)
-            return 0.0
-        except Exception:
-            return 0.0
-            
-    def register_route(self, route_id: str, route_data: Dict):
-        """Register a new route in the registry."""
-        self.route_registry[route_id] = {
-            'data': route_data,
-            'created_at': datetime.now().isoformat(),
-            'last_used': None,
-            'success_count': 0,
-            'failure_count': 0
-        }
-        
-    def update_route_stats(self, route_id: str, success: bool):
-        """Update route statistics after use."""
-        if route_id in self.route_registry:
-            route = self.route_registry[route_id]
-            route['last_used'] = datetime.now().isoformat()
-            if success:
-                route['success_count'] += 1
-            else:
-                route['failure_count'] += 1
-                
-    def get_route_reliability(self, route_id: str) -> float:
-        """Calculate route reliability score."""
-        if route_id in self.route_registry:
-            route = self.route_registry[route_id]
-            total = route['success_count'] + route['failure_count']
-            if total > 0:
-                return route['success_count'] / total
-        return 0.5  # Default reliability for unknown routes 
-
-    def evaluate_route(self, source: str, target: str, 
-                      payload: TracerPayload,
-                      current_pressure: float,
-                      tracer_type: str = "OwlTracer") -> Dict:
-        """
-        Evaluate a route between source and target components.
-        
-        Args:
-            source: Source component
-            target: Target component
-            payload: TracerPayload containing signal and context
-            current_pressure: Current system pressure
-            tracer_type: Type of tracer making the request
-            
-        Returns:
-            Dict containing route evaluation results
-        """
-        # Generate tracer ID
-        tracer_id = f"{tracer_type}-{self.current_tick:03d}"
-        
-        # Check attention budget
-        if not self.attention_manager.can_process_request(tracer_id):
-            print(f"[TracerRouter] {tracer_id} has insufficient attention, delaying request")
-            return {
-                "success": False,
-                "status": "delayed",
-                "reason": "insufficient_attention",
-                "tracer_id": tracer_id,
-                "attention_status": self.attention_manager.get_attention_status(tracer_id)
-            }
-            
-        # Get tracer configuration
-        tracer_config = self.tracer_registry.get_tracer_config(tracer_type)
-        
-        # Get base agreement score
-        agreement_score = self.agreement_matrix.get_route_score(f"{source}→{target}")
-        
-        # Get signal-based priority boost
-        priority_boost = payload.get_priority_boost()
-        if priority_boost > 0:
-            print(f"[TracerRouter] Applying signal priority boost of {priority_boost:.2f}")
-        
-        # Apply priority boost to agreement score
-        boosted_score = min(1.0, agreement_score + priority_boost)
-        
-        # Get semantic distance
-        semantic_distance = self.semantic_field.calculate_semantic_distance(source, target)
-        
-        # Get current mood and apply mood-based modifiers
-        current_mood = payload.mood_context or self._get_current_mood()
-        mood_modifier = 1.0
-        
-        if current_mood == "submerged":
-            mood_modifier = 0.9
-            print(f"[TracerRouter] Submerged mood: reducing route scores by 10%")
-        elif current_mood == "reflective":
-            if semantic_distance > 0.5:
-                mood_modifier = 1.2
-                print(f"[TracerRouter] Reflective mood: boosting longer semantic paths by 20%")
-            else:
-                mood_modifier = 0.9
-                print(f"[TracerRouter] Reflective mood: reducing shorter paths by 10%")
-        elif current_mood == "anxious":
-            if boosted_score < 0.5:
-                mood_modifier = 0.0
-                print(f"[TracerRouter] Anxious mood: blocking low-confidence path ({boosted_score:.2f})")
-            else:
-                mood_modifier = 1.1
-                print(f"[TracerRouter] Anxious mood: boosting high-confidence path by 10%")
-        
-        # Apply mood modifier to boosted score
-        mood_adjusted_score = boosted_score * mood_modifier
-        
-        # Apply tracer-specific logic
-        route_data = {
-            "source": source,
-            "target": target,
-            "pressure": current_pressure,
-            "entropy": self._get_bloom_entropy(),
-            "score": mood_adjusted_score,
-            "signal": payload.signal,
-            "signal_type": payload.get_signal_type()
-        }
-        
-        if tracer_config["special_logic"]:
-            tracer_modifier = tracer_config["special_logic"](route_data)
-            mood_adjusted_score *= tracer_modifier
-            print(f"[TracerRouter] Applied {tracer_type} modifier: {tracer_modifier:.2f}")
-        
-        # Apply tracer urgency modifier
-        urgency_adjusted_score = mood_adjusted_score * tracer_config["urgency_modifier"]
-        
-        # Calculate final score
-        final_score = (1 - semantic_distance) * urgency_adjusted_score
-        
-        # Check for preferred/avoided targets
-        if target in tracer_config["preferred_targets"]:
-            final_score *= 1.2
-            print(f"[TracerRouter] Target {target} is preferred for {tracer_type}")
-        elif target in tracer_config["avoided_targets"]:
-            final_score *= 0.7
-            print(f"[TracerRouter] Target {target} is avoided for {tracer_type}")
-        
-        # Determine route viability
-        is_viable = (semantic_distance < self.semantic_threshold and 
-                    urgency_adjusted_score > self.trust_threshold)
-                    
-        # Check if enough attention available for the route
-        if is_viable and not self.attention_manager.consume_attention(tracer_id, final_score):
-            is_viable = False
-            print(f"[TracerRouter] Route viable but insufficient attention for {tracer_id}")
-        
-        # Create evaluation result
-        eval_result = {
-            "success": is_viable,
-            "route": f"{source}→{target}",
-            "score": final_score,
-            "semantic_distance": semantic_distance,
-            "agreement_score": agreement_score,
-            "priority_boost": priority_boost,
-            "boosted_score": boosted_score,
-            "mood": current_mood,
-            "mood_modifier": mood_modifier,
-            "mood_adjusted_score": mood_adjusted_score,
-            "tracer_type": tracer_type,
-            "tracer_id": tracer_id,
-            "urgency_modifier": tracer_config["urgency_modifier"],
-            "final_adjusted_score": urgency_adjusted_score,
-            "signal_type": payload.get_signal_type(),
-            "payload_urgency": payload.urgency,
-            "attention_status": self.attention_manager.get_attention_status(tracer_id)
-        }
-        
-        # Update agreement matrix if route is viable
-        if is_viable:
-            self._update_agreement_matrix(source, target, final_score)
-            
-            # Log memory trail
-            self.log_memory_trail(
-                source=source,
-                target=target,
-                path=[source, target],
-                score=final_score,
-                entropy=current_pressure,
-                signal=payload.signal,
-                mood_context=current_mood
-            )
-            
-        return eval_result
-
-    def _get_risk_zones(self) -> Dict[str, float]:
-        """Get risk zones from owl_registry.json."""
-        try:
-            with open('owl_registry.json', 'r') as f:
-                registry = json.load(f)
-                return registry.get('risk_zones', {})
-        except Exception as e:
-            print(f"[TracerRouter] Error reading owl registry: {str(e)}")
-            return {}
-
-    def _get_priority_terms(self) -> Dict[str, float]:
-        """Get priority terms from claude_trace.json."""
-        try:
-            with open('claude_trace.json', 'r') as f:
-                trace = json.load(f)
-                return trace.get('priority_terms', {})
-        except Exception as e:
-            print(f"[TracerRouter] Error reading claude trace: {str(e)}")
-            return {}
-
-    def _update_agreement_matrix(self, source: str, target: str, score: float) -> None:
-        """Update agreement matrix with new route score."""
-        try:
-            if not self.agreement_matrix:
-                self.agreement_matrix = {}
-                
-            key = f"{source}→{target}"
-            if key not in self.agreement_matrix:
-                self.agreement_matrix[key] = {
-                    'score': score,
-                    'count': 1,
-                    'last_updated': datetime.now().isoformat()
+    def _initialize_tracer_configs(self) -> Dict[TracerType, TracerCapabilities]:
+        """Initialize the capabilities for each tracer type"""
+        return {
+            TracerType.OWL: TracerCapabilities(
+                preferred_depth_range=(5, 15),
+                entropy_affinity=(0.3, 0.7),
+                thermal_tolerance=(0.2, 0.8),
+                specialization="pattern_analysis",
+                efficiency_factors={
+                    'cognitive': 1.2,
+                    'memory': 1.1,
+                    'symbolic': 1.3,
+                    'abstract': 1.0
                 }
-            else:
-                # Update with exponential moving average
-                old_score = self.agreement_matrix[key]['score']
-                new_score = 0.7 * old_score + 0.3 * score
-                self.agreement_matrix[key].update({
-                    'score': new_score,
-                    'count': self.agreement_matrix[key]['count'] + 1,
-                    'last_updated': datetime.now().isoformat()
-                })
-                
-            # Save updated matrix
-            with open('agreement_matrix.json', 'w') as f:
-                json.dump(self.agreement_matrix, f, indent=2)
-                
-        except Exception as e:
-            print(f"[TracerRouter] Error updating agreement matrix: {str(e)}")
-
-    def _get_current_mood(self) -> str:
-        """Get current mood context from system state."""
-        try:
-            with open("mood_state.json", 'r') as f:
-                mood_state = json.load(f)
-                return mood_state.get("current_mood", "neutral")
-        except (FileNotFoundError, json.JSONDecodeError):
-            return "neutral" 
-
-    def _find_nearest_reachable(self, source: str, target: str, 
-                              semantic_field: 'SemanticField') -> Tuple[str, float]:
-        """
-        Find the nearest reachable node to the target.
+            ),
+            TracerType.CROW: TracerCapabilities(
+                preferred_depth_range=(2, 8),
+                entropy_affinity=(0.5, 0.9),
+                thermal_tolerance=(0.4, 1.0),
+                specialization="weakness_detection",
+                efficiency_factors={
+                    'scup': 1.5,
+                    'coherence': 1.2,
+                    'stability': 1.1,
+                    'error': 1.4
+                }
+            ),
+            TracerType.SPIDER: TracerCapabilities(
+                preferred_depth_range=(3, 12),
+                entropy_affinity=(0.2, 0.6),
+                thermal_tolerance=(0.1, 0.7),
+                specialization="bridge_construction",
+                efficiency_factors={
+                    'connection': 1.4,
+                    'network': 1.3,
+                    'bridge': 1.5,
+                    'link': 1.2
+                }
+            ),
+            TracerType.WHALE: TracerCapabilities(
+                preferred_depth_range=(8, 20),
+                entropy_affinity=(0.6, 1.0),
+                thermal_tolerance=(0.5, 1.0),
+                specialization="high_density_processing",
+                efficiency_factors={
+                    'complex': 1.3,
+                    'dense': 1.4,
+                    'heavy': 1.2,
+                    'bulk': 1.5
+                }
+            )
+        }
+    
+    def create_tracer(self, tracer_type: TracerType, tracer_id: Optional[str] = None) -> str:
+        """Create a new tracer instance of the specified type"""
+        if tracer_id is None:
+            tracer_id = f"{tracer_type.value}_{len(self.active_tracers):03d}"
         
-        Args:
-            source: Source component
-            target: Target component
-            semantic_field: Semantic field for distance calculation
-            
-        Returns:
-            Tuple of (nearest_node, distance_score)
-        """
-        # Get all known components
-        all_components = set(self.route_registry.keys())
-        all_components.add(source)
-        all_components.add(target)
+        capabilities = self.tracer_configurations[tracer_type]
+        tracer = TracerInstance(
+            tracer_id=tracer_id,
+            tracer_type=tracer_type,
+            capabilities=capabilities
+        )
         
-        # Calculate distances to target
-        distances = []
-        for component in all_components:
-            if component != target:
-                try:
-                    distance = semantic_field.calculate_semantic_distance(component, target)
-                    trust_score = self.agreement_matrix.get_route_score(f"{source}→{component}")
-                    combined_score = (1 - distance) * trust_score
-                    distances.append((component, combined_score))
-                except Exception:
-                    continue
-                    
-        if not distances:
-            return source, 0.0
-            
-        # Return the component with highest combined score
-        return max(distances, key=lambda x: x[1])
+        self.active_tracers[tracer_id] = tracer
+        return tracer_id
+    
+    def add_bloom_target(self, bloom_id: str, depth: int, entropy: float, 
+                        heat: float, bloom_type: str, priority: float = 0.5,
+                        metadata: Optional[Dict] = None) -> BloomTarget:
+        """Add a new bloom target to the analysis queue"""
+        bloom = BloomTarget(
+            bloom_id=bloom_id,
+            depth=depth,
+            entropy=entropy,
+            heat=heat,
+            bloom_type=bloom_type,
+            priority=priority,
+            metadata=metadata or {}
+        )
         
-    def _log_fallback_handoff(self, source: str, target: str, 
-                            fallback_node: str, score: float,
-                            payload: TracerPayload) -> None:
-        """
-        Log fallback handoff information.
+        self.bloom_queue.append(bloom)
+        # Sort queue by priority (higher priority first)
+        self.bloom_queue.sort(key=lambda b: b.priority, reverse=True)
         
-        Args:
-            source: Original source
-            target: Original target
-            fallback_node: Node where handoff occurred
-            score: Handoff confidence score
-            payload: Original tracer payload
-        """
-        fallback_data = {
-            "timestamp": datetime.now().isoformat(),
-            "original_route": f"{source}→{target}",
-            "fallback_node": fallback_node,
-            "confidence_score": score,
-            "payload": payload.to_dict(),
-            "system_state": {
-                "pressure": self._get_pulse_pressure(),
-                "mood": self._get_current_mood(),
-                "tick": self.current_tick
+        return bloom
+    
+    def find_optimal_tracer(self, bloom: BloomTarget) -> Optional[TracerInstance]:
+        """Find the most suitable available tracer for a bloom"""
+        available_tracers = [t for t in self.active_tracers.values() if t.is_available()]
+        
+        if not available_tracers:
+            return None
+        
+        # Calculate compatibility scores
+        scored_tracers = []
+        for tracer in available_tracers:
+            bloom_dict = {
+                'depth': bloom.depth,
+                'entropy': bloom.entropy,
+                'heat': bloom.heat,
+                'type': bloom.bloom_type
             }
+            compatibility = tracer.capabilities.calculate_compatibility(bloom_dict)
+            # Factor in tracer efficiency
+            total_score = compatibility * tracer.efficiency
+            scored_tracers.append((total_score, tracer))
+        
+        # Return the best match
+        scored_tracers.sort(key=lambda x: x[0], reverse=True)
+        return scored_tracers[0][1] if scored_tracers else None
+    
+    def route_tracers(self) -> Dict[str, List[str]]:
+        """Perform intelligent routing of available tracers to bloom targets"""
+        routing_results = {
+            'successful_assignments': [],
+            'failed_assignments': [],
+            'queue_remaining': []
         }
         
-        # Ensure logs directory exists
-        os.makedirs('logs', exist_ok=True)
+        assignments_made = 0
         
-        # Load existing fallback log
-        fallback_file = "logs/route_fallback.json"
-        try:
-            if os.path.exists(fallback_file):
-                with open(fallback_file, 'r') as f:
-                    fallback_log = json.load(f)
+        # Process bloom queue
+        remaining_blooms = []
+        for bloom in self.bloom_queue:
+            optimal_tracer = self.find_optimal_tracer(bloom)
+            
+            if optimal_tracer:
+                # Make the assignment
+                optimal_tracer.assign_to_bloom(bloom.bloom_id)
+                bloom.assigned_tracers.append(optimal_tracer.tracer_id)
+                
+                # Record the routing decision
+                routing_record = {
+                    'timestamp': datetime.now().isoformat(),
+                    'bloom_id': bloom.bloom_id,
+                    'tracer_id': optimal_tracer.tracer_id,
+                    'tracer_type': optimal_tracer.tracer_type.value,
+                    'compatibility_score': optimal_tracer.capabilities.calculate_compatibility({
+                        'depth': bloom.depth,
+                        'entropy': bloom.entropy,
+                        'heat': bloom.heat,
+                        'type': bloom.bloom_type
+                    })
+                }
+                self.routing_history.append(routing_record)
+                
+                routing_results['successful_assignments'].append(
+                    f"{bloom.bloom_id} → {optimal_tracer.tracer_id}"
+                )
+                assignments_made += 1
+                
+                # Update performance metrics
+                self.performance_metrics['total_assignments'] += 1
+                
             else:
-                fallback_log = []
-        except Exception:
-            fallback_log = []
-            
-        # Append new fallback entry
-        fallback_log.append(fallback_data)
+                # No available tracer found
+                remaining_blooms.append(bloom)
+                routing_results['failed_assignments'].append(bloom.bloom_id)
         
-        # Save updated log
-        try:
-            with open(fallback_file, 'w') as f:
-                json.dump(fallback_log, f, indent=2)
-            print(f"[TracerRouter] Logged fallback handoff to {fallback_node}")
-        except Exception as e:
-            print(f"[TracerRouter] Error logging fallback: {e}")
-            
-    def handle_route_failure(self, source: str, target: str,
-                           payload: TracerPayload) -> Dict:
-        """
-        Handle route failure by finding nearest reachable node.
+        # Update bloom queue with unassigned blooms
+        self.bloom_queue = remaining_blooms
+        routing_results['queue_remaining'] = [b.bloom_id for b in remaining_blooms]
         
-        Args:
-            source: Original source
-            target: Original target
-            payload: Tracer payload
-            
-        Returns:
-            Dict containing fallback route information
-        """
-        # Find nearest reachable node
-        fallback_node, fallback_score = self._find_nearest_reachable(
-            source, target, self.semantic_field
-        )
+        return routing_results
+    
+    def complete_analysis(self, tracer_id: str, bloom_id: str, 
+                         analysis_result: Dict[str, Any]) -> bool:
+        """Mark an analysis as complete and free up the tracer"""
+        if tracer_id not in self.active_tracers:
+            return False
         
-        # Log the fallback handoff
-        self._log_fallback_handoff(
-            source=source,
-            target=target,
-            fallback_node=fallback_node,
-            score=fallback_score,
-            payload=payload
-        )
+        tracer = self.active_tracers[tracer_id]
+        if tracer.current_assignment != bloom_id:
+            return False
         
-        # Create fallback result
-        fallback_result = {
-            "success": True,  # Degraded success
-            "status": "fallback",
-            "original_route": f"{source}→{target}",
-            "fallback_node": fallback_node,
-            "confidence_score": fallback_score,
-            "handoff_timestamp": datetime.now().isoformat(),
-            "payload": payload.to_dict()
+        # Find the bloom and add the analysis result
+        for bloom in self.bloom_queue + [b for b in self.bloom_queue]:
+            if bloom.bloom_id == bloom_id:
+                bloom.add_analysis_result(tracer.tracer_type, analysis_result)
+                break
+        
+        # Free up the tracer
+        tracer.complete_assignment()
+        
+        # Update performance metrics
+        if analysis_result.get('success', False):
+            self.performance_metrics['successful_analyses'] += 1
+        else:
+            self.performance_metrics['failed_analyses'] += 1
+        
+        return True
+    
+    def get_routing_statistics(self) -> Dict[str, Any]:
+        """Get comprehensive statistics about routing performance"""
+        total_tracers = len(self.active_tracers)
+        available_tracers = len([t for t in self.active_tracers.values() if t.is_available()])
+        
+        # Tracer type distribution
+        type_counts = {}
+        for tracer in self.active_tracers.values():
+            tracer_type = tracer.tracer_type.value
+            type_counts[tracer_type] = type_counts.get(tracer_type, 0) + 1
+        
+        # Recent routing success rate
+        recent_history = self.routing_history[-100:] if self.routing_history else []
+        
+        stats = {
+            'total_tracers': total_tracers,
+            'available_tracers': available_tracers,
+            'utilization_rate': (total_tracers - available_tracers) / total_tracers if total_tracers > 0 else 0,
+            'queue_size': len(self.bloom_queue),
+            'tracer_type_distribution': type_counts,
+            'recent_routing_decisions': len(recent_history),
+            'performance_metrics': self.performance_metrics.copy()
         }
         
-        print(f"[TracerRouter] Route failure handled: {source}→{target} → {fallback_node}")
-        return fallback_result
+        if self.performance_metrics['total_assignments'] > 0:
+            success_rate = (self.performance_metrics['successful_analyses'] / 
+                          self.performance_metrics['total_assignments'])
+            stats['success_rate'] = success_rate
+        
+        return stats
+    
+    def optimize_tracer_fleet(self):
+        """Analyze performance and suggest tracer fleet optimizations"""
+        stats = self.get_routing_statistics()
+        suggestions = []
+        
+        # Check utilization
+        if stats['utilization_rate'] > 0.9:
+            suggestions.append("High utilization detected - consider adding more tracers")
+        elif stats['utilization_rate'] < 0.3:
+            suggestions.append("Low utilization detected - consider reducing tracer count")
+        
+        # Check queue buildup
+        if stats['queue_size'] > 20:
+            suggestions.append("Large queue detected - increase tracer capacity or optimize routing")
+        
+        # Check type balance
+        type_dist = stats['tracer_type_distribution']
+        if type_dist:
+            most_common = max(type_dist, key=type_dist.get)
+            least_common = min(type_dist, key=type_dist.get)
+            
+            if type_dist[most_common] > type_dist[least_common] * 3:
+                suggestions.append(f"Imbalanced fleet - too many {most_common}, too few {least_common}")
+        
+        return suggestions
 
-def main():
-    """Example usage of TracerPayload and route evaluation."""
-    # Create sample payloads
-    entropy_payload = TracerPayload(
-        signal="High entropy risk detected in bloom_engine",
-        origin="entropy_monitor",
-        urgency=0.8,
-        mood_context="anxious",
-        metadata={"risk_level": "high", "affected_components": ["bloom_engine"]}
-    )
+
+# Example usage and testing
+if __name__ == "__main__":
+    print("🧠 DAWN Tracer Router - Cognitive Assignment System")
+    print("=" * 60)
     
-    bloom_payload = TracerPayload(
-        signal="Critical bloom pattern detected",
-        origin="bloom_analyzer",
-        urgency=0.6,
-        metadata={"pattern_type": "fractal", "confidence": 0.85}
-    )
-    
-    # Initialize router
+    # Create router
     router = TracerRouter()
     
-    # Evaluate routes with different payloads
-    entropy_route = router.evaluate_route(
-        source="entropy_monitor",
-        target="risk_analyzer",
-        payload=entropy_payload,
-        current_pressure=0.7,
-        tracer_type="OwlTracer"
-    )
+    # Create a diverse fleet of tracers
+    print("\n🚀 Creating tracer fleet...")
+    tracer_fleet = [
+        (TracerType.OWL, 3),
+        (TracerType.CROW, 2),
+        (TracerType.SPIDER, 2),
+        (TracerType.WHALE, 1)
+    ]
     
-    bloom_route = router.evaluate_route(
-        source="bloom_analyzer",
-        target="memory_weaver",
-        payload=bloom_payload,
-        current_pressure=0.5,
-        tracer_type="BloomTracer"
-    )
+    for tracer_type, count in tracer_fleet:
+        for i in range(count):
+            tracer_id = router.create_tracer(tracer_type)
+            print(f"  Created {tracer_type.value} tracer: {tracer_id}")
     
-    print("\nEntropy Route Evaluation:")
-    print(json.dumps(entropy_route, indent=2))
+    # Add various bloom targets
+    print("\n🎯 Adding bloom targets...")
+    bloom_scenarios = [
+        ("cognitive_bloom_001", 7, 0.4, 0.3, "cognitive", 0.8),
+        ("memory_bloom_002", 12, 0.6, 0.7, "memory", 0.6),
+        ("scup_weakness_003", 4, 0.8, 0.9, "scup", 0.9),
+        ("bridge_bloom_004", 6, 0.3, 0.4, "connection", 0.7),
+        ("dense_bloom_005", 15, 0.9, 0.8, "complex", 0.5)
+    ]
     
-    print("\nBloom Route Evaluation:")
-    print(json.dumps(bloom_route, indent=2))
-
-if __name__ == "__main__":
-    main() 
+    for bloom_id, depth, entropy, heat, bloom_type, priority in bloom_scenarios:
+        router.add_bloom_target(bloom_id, depth, entropy, heat, bloom_type, priority)
+        print(f"  Added bloom: {bloom_id} (type: {bloom_type}, priority: {priority})")
+    
+    # Perform routing
+    print("\n🎯 Performing intelligent routing...")
+    routing_results = router.route_tracers()
+    
+    print("  Successful assignments:")
+    for assignment in routing_results['successful_assignments']:
+        print(f"    {assignment}")
+    
+    if routing_results['failed_assignments']:
+        print("  Failed assignments:")
+        for failed in routing_results['failed_assignments']:
+            print(f"    {failed} (no suitable tracer available)")
+    
+    # Show statistics
+    print("\n📊 Routing Statistics:")
+    stats = router.get_routing_statistics()
+    print(f"  Total tracers: {stats['total_tracers']}")
+    print(f"  Available tracers: {stats['available_tracers']}")
+    print(f"  Utilization rate: {stats['utilization_rate']:.1%}")
+    print(f"  Queue size: {stats['queue_size']}")
+    print(f"  Tracer distribution: {stats['tracer_type_distribution']}")
+    
+    # Get optimization suggestions
+    print("\n💡 Fleet Optimization Suggestions:")
+    suggestions = router.optimize_tracer_fleet()
+    if suggestions:
+        for suggestion in suggestions:
+            print(f"  • {suggestion}")
+    else:
+        print("  • Fleet appears well-optimized")
+    
+    print("\n🎉 Tracer routing demonstration complete!") 

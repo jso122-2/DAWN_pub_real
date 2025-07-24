@@ -35,6 +35,9 @@ from core.shutdown_manager import ShutdownManager
 
 import numpy as np
 
+# Memory routing system integration
+from core.memory.memory_routing_system import initialize_memory_routing, get_memory_routing_system
+
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -210,6 +213,19 @@ class DAWNConsciousness:
             self.subsystems["visualizer"] = self.visualizer
         else:
             self.visualizer = self.subsystems["visualizer"]
+        
+        # Initialize memory routing system
+        if "memory_routing" not in self.subsystems:
+            # Get pulse controller if available for integration
+            pulse_controller = self.subsystems.get("pulse_controller") or self.subsystems.get("pulse")
+            self.memory_routing = initialize_memory_routing(
+                memories_dir="memories",
+                pulse_controller=pulse_controller
+            )
+            self.subsystems["memory_routing"] = self.memory_routing
+            logger.info("🧠 Memory routing system integrated with consciousness core")
+        else:
+            self.memory_routing = self.subsystems["memory_routing"]
 
         # Initialize shutdown manager
         self.shutdown_manager = ShutdownManager()
@@ -226,12 +242,16 @@ class DAWNConsciousness:
         listen_signal("tick_complete", self._handle_tick_complete)
         listen_signal("claude_query_needed", self._handle_claude_query)
         
+        # Set up memory event handlers
+        self._setup_memory_event_handlers()
+        
         # Log subsystem registration
         logger.info(f"🔌 Registered subsystems: {list(self.subsystems.keys())}")
         print("🌅 DAWN Consciousness System Initializing...")
         print("   Schema-driven thermal regulation: ✓")
         print("   Dynamic semantic field topology: ✓")
         print("   Event bus and hot-reload: ✓")
+        print("   Memory routing and persistence: ✓")
         print("   Graceful shutdown system: ✓")
     
     def update_subsystem(self, name: str, subsystem: Any) -> None:
@@ -336,6 +356,13 @@ class DAWNConsciousness:
         try:
             scup = data.get('scup', 0.0)
             mood = data.get('mood', 'neutral')
+            
+            # Store query in memory system
+            await self._store_interaction_memory(
+                speaker="dawn.core",
+                content=f"Claude query event: {data}",
+                topic="system_query"
+            )
             
             # Update state with new values
             await self.update_state(scup=scup, mood=mood)
@@ -622,6 +649,105 @@ class DAWNConsciousness:
                 
         except Exception as e:
             logger.error(f"Error saving state: {e}")
+    
+    def _setup_memory_event_handlers(self):
+        """Set up event handlers for memory integration"""
+        if hasattr(self, 'memory_routing'):
+            # Listen for significant system events
+            self.event_bus.on("mood_change", self._handle_mood_change_memory)
+            self.event_bus.on("entropy_spike", self._handle_entropy_spike_memory)
+            self.event_bus.on("thermal_event", self._handle_thermal_event_memory)
+            self.event_bus.on("sigil_activation", self._handle_sigil_activation_memory)
+            logger.info("🧠 Memory event handlers configured")
+    
+    async def _store_interaction_memory(self, speaker: str, content: str, topic: str = None, **kwargs):
+        """Store an interaction in the memory system"""
+        if hasattr(self, 'memory_routing'):
+            try:
+                # Get current system state
+                pulse_state = self._get_current_system_state()
+                
+                # Store memory
+                memory_chunk = await self.memory_routing.store_memory(
+                    speaker=speaker,
+                    content=content,
+                    topic=topic,
+                    pulse_state=pulse_state,
+                    **kwargs
+                )
+                
+                logger.debug(f"Stored interaction memory: {memory_chunk.memory_id}")
+                return memory_chunk
+                
+            except Exception as e:
+                logger.error(f"Error storing interaction memory: {e}")
+        return None
+    
+    def _handle_mood_change_memory(self, event_data):
+        """Handle mood change events for memory storage"""
+        asyncio.create_task(self._store_interaction_memory(
+            speaker="dawn.core",
+            content=f"Mood changed to {event_data.get('new_mood', 'unknown')}",
+            topic="mood_transition",
+            sigils=["MOOD_SHIFT"]
+        ))
+    
+    def _handle_entropy_spike_memory(self, event_data):
+        """Handle entropy spike events for memory storage"""
+        asyncio.create_task(self._store_interaction_memory(
+            speaker="dawn.core",
+            content=f"Entropy spike detected: {event_data.get('entropy_value', 'unknown')}",
+            topic="system_event",
+            sigils=["ENTROPY_SPIKE", "STABILIZE_PROTOCOL"]
+        ))
+    
+    def _handle_thermal_event_memory(self, event_data):
+        """Handle thermal events for memory storage"""
+        asyncio.create_task(self._store_interaction_memory(
+            speaker="dawn.core",
+            content=f"Thermal event: {event_data.get('event_type', 'unknown')}",
+            topic="thermal_regulation",
+            sigils=["THERMAL_EVENT"]
+        ))
+    
+    def _handle_sigil_activation_memory(self, event_data):
+        """Handle sigil activation events for memory storage"""
+        sigil_name = event_data.get('sigil_name', 'unknown')
+        asyncio.create_task(self._store_interaction_memory(
+            speaker="dawn.core",
+            content=f"Sigil activated: {sigil_name}",
+            topic="sigil_activation",
+            sigils=[sigil_name]
+        ))
+    
+    def _get_current_system_state(self):
+        """Get current system state for memory storage"""
+        state = {
+            'timestamp': time.time(),
+            'tick_count': getattr(self, 'tick_count', 0)
+        }
+        
+        # Get pulse state if available
+        if hasattr(self, 'pulse') and self.pulse:
+            try:
+                state.update({
+                    'heat': getattr(self.pulse, 'current_heat', 0.0),
+                    'zone': getattr(self.pulse, 'current_zone', 'unknown')
+                })
+            except Exception:
+                pass
+        
+        # Get mood and entropy if available
+        try:
+            state.update({
+                'mood': getattr(self, '_current_mood', 'neutral'),
+                'entropy': getattr(self, '_current_entropy', 0.5),
+                'scup': getattr(self, '_current_scup', 0.5)
+            })
+        except Exception:
+            pass
+        
+        return state
             
     async def _cleanup_subsystems(self) -> None:
         """Clean up all subsystems"""

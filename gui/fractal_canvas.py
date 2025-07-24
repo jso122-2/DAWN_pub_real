@@ -31,6 +31,9 @@ class FractalCanvas:
         self.canvas = tk.Canvas(self.frame, width=width, height=height, 
                                bg="#0a0a0a", highlightthickness=1, 
                                highlightbackground="#333333")
+        
+        # Ensure canvas is properly initialized
+        self.canvas.update_idletasks()
         self.canvas.pack()
         
         # Bloom info display
@@ -48,6 +51,9 @@ class FractalCanvas:
             "rebloom_status": "stable",
             "complexity": 0.6
         }
+        
+        # Rendering throttle to prevent too-frequent updates
+        self.last_render_time = 0
         
         # Fractal parameters
         self.max_iterations = 50
@@ -69,6 +75,23 @@ class FractalCanvas:
     
     def draw_bloom_signature(self, bloom_data: Dict):
         """Draw fractal signature based on bloom characteristics - COMPREHENSIVE DEBUG + ROBUST FALLBACKS"""
+        
+        # CRITICAL: Check if canvas still exists and is valid
+        try:
+            if not hasattr(self, 'canvas') or not self.canvas.winfo_exists():
+                print("WARNING: Canvas widget destroyed, skipping fractal render")
+                return
+        except Exception as e:
+            print(f"WARNING: Canvas validation failed: {e}, skipping fractal render")
+            return
+        
+        # Throttle rapid updates (minimum 0.1 seconds between renders)
+        import time
+        current_time = time.time()
+        if current_time - self.last_render_time < 0.05:
+            print(f"Throttling fractal update (last render {current_time - self.last_render_time:.2f}s ago)")
+            return
+        self.last_render_time = current_time
         
         # DEBUG HEADER - Clean structured output
         print("\n" + "="*80)
@@ -190,7 +213,11 @@ class FractalCanvas:
                 old_cy = getattr(self, 'cy', 0.1889)
                 old_zoom = getattr(self, 'zoom', 200)
                 
-                self.adjust_fractal_parameters(depth, entropy, semantic_drift, complexity)
+                # Get additional system state for more dynamic variation
+                system_heat = bloom_data.get('system_heat', 50.0)  # From pulse controller
+                active_sigils = bloom_data.get('active_sigils', 0)  # From sigil engine
+                
+                self.adjust_fractal_parameters(depth, entropy, semantic_drift, complexity, system_heat, active_sigils)
                 
                 print(f"  max_iterations: {old_iterations} → {self.max_iterations}")
                 print(f"  cx (real): {old_cx:.6f} → {self.cx:.6f}")
@@ -233,10 +260,13 @@ class FractalCanvas:
                 # DEBUG: Fractal rendering
                 print("\nFRACTAL RENDERING:")
                 print(f"  Canvas size: {self.width}x{self.height}")
-                print(f"  Render resolution: every 2 pixels (optimized)")
-                print(f"  Expected pixel count: {(self.width//2) * (self.height//2)}")
+                print(f"  Render resolution: every pixel (maximum quality)")
+                print(f"  Expected pixel count: {self.width * self.height}")
                 
                 render_start_time = __import__('time').time()
+                
+                # DEBUG: Fractal will render with high quality pixels
+                
                 self.render_bloom_fractal(palette, depth, complexity)
                 render_time = __import__('time').time() - render_start_time
                 print(f"  Fractal rendered in {render_time:.3f} seconds")
@@ -261,9 +291,10 @@ class FractalCanvas:
             self.update_info_display(bloom_data)
             print("  Info display updated")
             
-            # Force redraw
+            # Force redraw - ENHANCED
             self.canvas.update_idletasks()
-            print("Canvas update forced")
+            self.canvas.update()  # Force immediate display update
+            print("Canvas update forced (idletasks + update)")
             
             # DEBUG: Success summary
             print("\nBLOOM SIGNATURE RENDER COMPLETE!")
@@ -316,22 +347,43 @@ class FractalCanvas:
             print("FRACTAL BLOOM DEBUG SESSION COMPLETE")
             print("="*80 + "\n")
     
-    def adjust_fractal_parameters(self, depth: int, entropy: float, semantic_drift: float, complexity: float):
+    def adjust_fractal_parameters(self, depth: int, entropy: float, semantic_drift: float, complexity: float, system_heat: float = 50.0, active_sigils: int = 0):
         """Adjust fractal generation parameters based on bloom characteristics"""
         # Depth affects iteration count and detail level
-        self.max_iterations = max(20, min(100, 30 + depth * 10))
+        self.max_iterations = max(20, min(120, 30 + depth * 15))
         
-        # Entropy affects fractal complexity (Julia set constant)
+        # DYNAMIC VARIATION: Use time-based variation for animation
+        import time
+        time_factor = time.time() * 0.1  # Slow time-based variation
+        
+        # Entropy affects fractal complexity (Julia set constant) - now with time variation
         base_real = -0.7269
         base_imag = 0.1889
         
-        # Apply entropy variation
-        entropy_offset = (entropy - 0.5) * 0.3
-        self.cx = base_real + entropy_offset
-        self.cy = base_imag + (semantic_drift - 0.5) * 0.2
+        # Apply entropy variation with dynamic time component + system state
+        entropy_offset = (entropy - 0.5) * 0.4 + 0.05 * math.sin(time_factor)
+        drift_offset = (semantic_drift - 0.5) * 0.3 + 0.03 * math.cos(time_factor * 1.3)
         
-        # Complexity affects zoom level
-        self.zoom = 150 + complexity * 100
+        # HEAT INFLUENCE: Higher heat creates more chaotic fractals
+        heat_factor = (system_heat - 50.0) / 100.0  # Normalize to -0.5 to +0.5
+        heat_chaos = heat_factor * 0.1 * math.sin(time_factor * 2.0)
+        
+        # SIGIL INFLUENCE: Active sigils create micro-variations
+        sigil_influence = min(active_sigils, 10) * 0.01 * math.cos(time_factor * 1.7)
+        
+        self.cx = base_real + entropy_offset + heat_chaos + sigil_influence
+        self.cy = base_imag + drift_offset + heat_chaos * 0.7 - sigil_influence * 0.5
+        
+        # Complexity affects zoom level with breathing effect + heat influence
+        base_zoom = 150 + complexity * 100
+        zoom_variation = 20 * math.sin(time_factor * 0.7) + heat_factor * 10
+        self.zoom = base_zoom + zoom_variation
+        
+        # DEBUG: Show dynamic parameter changes
+        print(f"  FRACTAL VARIATION: Heat={system_heat:.1f}°, Sigils={active_sigils}, Time={time_factor:.3f}")
+        print(f"  JULIA CONSTANTS: C = {self.cx:.6f} + {self.cy:.6f}i (base: {base_real:.3f} + {base_imag:.3f}i)")
+        print(f"  INFLUENCES: entropy={entropy_offset:.6f}, heat={heat_chaos:.6f}, sigil={sigil_influence:.6f}")
+        print(f"  ZOOM: {self.zoom:.1f} (base={base_zoom:.1f} + variation={zoom_variation:.1f})")
     
     def get_lineage_palette(self, lineage_id: int, entropy: float) -> List[Tuple[float, float, float]]:
         """Get color palette based on lineage with entropy variation"""
@@ -357,8 +409,8 @@ class FractalCanvas:
         # Create pixel grid for fractal
         pixels = []
         
-        for py in range(0, self.height, 2):  # Skip pixels for performance
-            for px in range(0, self.width, 2):
+        for py in range(0, self.height, 1):  # High quality - every pixel
+            for px in range(0, self.width, 1):
                 # Convert pixel coordinates to complex plane
                 zx = (px - center_x) / self.zoom
                 zy = (py - center_y) / self.zoom
@@ -368,7 +420,10 @@ class FractalCanvas:
                 
                 # Map iteration to color
                 if iteration == self.max_iterations:
-                    color = "#000000"  # Inside set - black
+                    # Inside set - use darkest palette color instead of pure black
+                    r, g, b = palette[0]  # Use base color from palette
+                    # Make it darker but not pure black
+                    color = f"#{int(r*80):02x}{int(g*80):02x}{int(b*80):02x}"
                 else:
                     # Color based on iteration count and palette
                     color_intensity = iteration / self.max_iterations
@@ -413,8 +468,8 @@ class FractalCanvas:
         
         r, g, b = palette[palette_index]
         
-        # Apply intensity brightness
-        brightness = 0.3 + intensity * 0.7
+        # FIXED: Apply much brighter intensity brightness (was too dark)
+        brightness = 0.6 + intensity * 0.4  # Increased minimum brightness from 0.3 to 0.6
         r = min(1.0, r * brightness)
         g = min(1.0, g * brightness)
         b = min(1.0, b * brightness)
@@ -424,9 +479,21 @@ class FractalCanvas:
     
     def render_pixels(self, pixels: List[Tuple[int, int, str]]):
         """Batch render fractal pixels to canvas"""
-        for px, py, color in pixels:
-            # Draw 2x2 pixel blocks for better visibility
-            self.canvas.create_rectangle(px, py, px+2, py+2, fill=color, outline="")
+        print(f"  PIXEL RENDERING: Starting to render {len(pixels)} pixels")
+        
+        try:
+            for px, py, color in pixels:
+                # Check canvas validity periodically during rendering
+                if not self.canvas.winfo_exists():
+                    print("  WARNING: Canvas destroyed during pixel rendering, stopping")
+                    return
+                # High quality single pixel rendering
+                self.canvas.create_rectangle(px, py, px+1, py+1, fill=color, outline="")
+        except Exception as e:
+            print(f"  ERROR during pixel rendering: {e}")
+            return
+            
+        print(f"  PIXEL RENDERING: Complete")
     
     def add_bloom_center_glow(self, primary_color: Tuple[float, float, float]):
         """Add glowing center point representing bloom core"""
