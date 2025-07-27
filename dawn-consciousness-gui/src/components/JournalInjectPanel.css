@@ -1,0 +1,430 @@
+/* DAWN Journal Injection Panel - Terminal Memory Seeding Interface */
+.journal-inject-panel {
+  background: linear-gradient(135deg, #0d1b2a 0%, #1e3a5f 100%);
+  border: 2px solid rgba(78, 205, 196, 0.3);
+  border-radius: 12px;
+  padding: 20px;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'DejaVu Sans Mono', 'Courier New', monospace;
+  color: rgba(255, 255, 255, 0.9);
+  width: 100%;
+  max-width: 600px;
+  min-height: 350px;
+  position: relative;
+  box-shadow: 
+    0 0 30px rgba(78, 205, 196, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  overflow: hidden;
+}
+
+.journal-inject-panel::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(circle at 20% 80%, rgba(78, 205, 196, 0.05) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(78, 205, 196, 0.03) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.journal-inject-panel > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Header Section */
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(78, 205, 196, 0.3);
+}
+
+.panel-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.title-icon {
+  font-size: 18px;
+  filter: drop-shadow(0 0 8px rgba(78, 205, 196, 0.6));
+}
+
+.title-text {
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  background: linear-gradient(90deg, #4ecdc4, #44a08d);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.live-indicator {
+  font-size: 10px;
+  color: #4ecdc4;
+  background: rgba(78, 205, 196, 0.1);
+  padding: 2px 6px;
+  border-radius: 4px;
+  border: 1px solid rgba(78, 205, 196, 0.3);
+  animation: live-pulse 2s ease-in-out infinite;
+}
+
+/* Mood Selector */
+.mood-selector {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.mood-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.mood-select {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(78, 205, 196, 0.3);
+  border-radius: 6px;
+  color: #ffffff;
+  padding: 4px 8px;
+  font-family: inherit;
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.mood-select:hover,
+.mood-select:focus {
+  border-color: rgba(78, 205, 196, 0.6);
+  box-shadow: 0 0 8px rgba(78, 205, 196, 0.3);
+  outline: none;
+}
+
+.mood-select option {
+  background: #1e3a5f;
+  color: #ffffff;
+}
+
+/* Injection Container */
+.injection-container {
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(78, 205, 196, 0.2);
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 15px;
+}
+
+.journal-textarea {
+  width: 100%;
+  min-height: 120px;
+  max-height: 200px;
+  background: rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(78, 205, 196, 0.2);
+  border-radius: 6px;
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 13px;
+  line-height: 1.6;
+  padding: 12px;
+  resize: vertical;
+  transition: all 0.3s ease;
+  outline: none;
+}
+
+.journal-textarea:focus {
+  border-color: rgba(78, 205, 196, 0.6);
+  box-shadow: 
+    0 0 12px rgba(78, 205, 196, 0.3),
+    inset 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.journal-textarea:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.journal-textarea::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+  font-style: italic;
+}
+
+/* Textarea Footer */
+.textarea-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-top: 12px;
+  gap: 15px;
+}
+
+.char-counter {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  font-size: 11px;
+}
+
+.char-count {
+  font-weight: 600;
+  font-size: 12px;
+  transition: color 0.3s ease;
+}
+
+.char-limit {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.char-status {
+  color: rgba(255, 255, 255, 0.6);
+  font-style: italic;
+}
+
+/* Submit Section */
+.submit-section {
+  display: flex;
+  align-items: center;
+}
+
+.inject-button {
+  background: linear-gradient(135deg, rgba(78, 205, 196, 0.8), rgba(68, 160, 141, 0.8));
+  border: 1px solid rgba(78, 205, 196, 0.6);
+  border-radius: 8px;
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 10px 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.inject-button.ready:hover {
+  background: linear-gradient(135deg, rgba(78, 205, 196, 1), rgba(68, 160, 141, 1));
+  box-shadow: 0 0 15px rgba(78, 205, 196, 0.5);
+  transform: translateY(-1px);
+}
+
+.inject-button.disabled {
+  background: rgba(100, 100, 100, 0.3);
+  border-color: rgba(100, 100, 100, 0.5);
+  color: rgba(255, 255, 255, 0.4);
+  cursor: not-allowed;
+  transform: none;
+}
+
+.loading-spinner {
+  width: 12px;
+  height: 12px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top: 2px solid #ffffff;
+  border-radius: 50%;
+  animation: spinner 1s linear infinite;
+}
+
+/* Status Messages */
+.status-message {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 15px;
+  border-radius: 6px;
+  margin-bottom: 15px;
+  font-size: 12px;
+  animation: message-fade-in 0.3s ease-out;
+}
+
+.status-message.confirmation {
+  background: rgba(78, 205, 196, 0.1);
+  border: 1px solid rgba(78, 205, 196, 0.3);
+  color: #4ecdc4;
+}
+
+.status-message.error {
+  background: rgba(255, 107, 107, 0.1);
+  border: 1px solid rgba(255, 107, 107, 0.3);
+  color: #ff6b6b;
+}
+
+.status-icon {
+  font-size: 14px;
+}
+
+.status-text {
+  flex: 1;
+}
+
+.dismiss-btn {
+  background: none;
+  border: none;
+  color: inherit;
+  font-size: 16px;
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity 0.3s ease;
+}
+
+.dismiss-btn:hover {
+  opacity: 1;
+}
+
+/* Panel Footer */
+.panel-footer {
+  padding-top: 12px;
+  border-top: 1px solid rgba(78, 205, 196, 0.2);
+}
+
+.instructions {
+  display: flex;
+  gap: 20px;
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.instruction-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.kbd {
+  background: rgba(78, 205, 196, 0.1);
+  border: 1px solid rgba(78, 205, 196, 0.3);
+  border-radius: 3px;
+  padding: 2px 6px;
+  font-size: 9px;
+  font-weight: 600;
+  color: #4ecdc4;
+}
+
+.optimal-range {
+  background: rgba(46, 204, 113, 0.1);
+  border: 1px solid rgba(46, 204, 113, 0.3);
+  border-radius: 3px;
+  padding: 2px 6px;
+  font-size: 9px;
+  font-weight: 600;
+  color: #2ecc71;
+}
+
+.pulse-indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+
+/* Animations */
+@keyframes live-pulse {
+  0%, 100% {
+    opacity: 0.7;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+}
+
+@keyframes spinner {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes message-fade-in {
+  0% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse-dot {
+  0%, 100% {
+    opacity: 0.5;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .journal-inject-panel {
+    padding: 15px;
+    margin: 10px;
+    min-height: 300px;
+  }
+  
+  .panel-header {
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  
+  .mood-selector {
+    align-self: flex-end;
+  }
+  
+  .textarea-footer {
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-start;
+  }
+  
+  .inject-button {
+    align-self: flex-end;
+  }
+  
+  .instructions {
+    flex-direction: column;
+    gap: 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .journal-inject-panel {
+    padding: 12px;
+    min-height: 280px;
+  }
+  
+  .title-text {
+    font-size: 12px;
+    letter-spacing: 1px;
+  }
+  
+  .journal-textarea {
+    min-height: 100px;
+    font-size: 12px;
+  }
+  
+  .inject-button {
+    padding: 8px 12px;
+    font-size: 11px;
+  }
+} 

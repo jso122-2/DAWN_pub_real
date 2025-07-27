@@ -1,0 +1,57 @@
+{
+    "meta": {
+        "version": "1.0",
+        "created": "2024-03-19T00:00:00Z",
+        "last_updated": "2024-03-19T00:00:00Z",
+        "schema_version": "1.0",
+        "location": "claude_cache/",
+        "update_mechanism": ["rebuild_index.sh", "claude_write"],
+        "field_definitions": {
+            "sigil": "Symbolic linkage between related concepts",
+            "heat": "Emotional pressure or intensity of content",
+            "entropy": "Semantic chaos or unpredictability",
+            "coherence": "Internal logic alignment and consistency",
+            "timestamp": "Index age and temporal context",
+            "author": "Source of creation or modification",
+            "session_id": "Compression, rebloom, or recursion tracking"
+        }
+    },
+    "sigil_index": {
+        "sigil_parser": {
+            "files": ["C_001_sigil_parser.md", "I_004_parser_goal.md"],
+            "sigil": "⊙",
+            "heat": 0.84,
+            "entropy": 0.62,
+            "coherence": 0.91,
+            "author": "claude_master",
+            "session_id": "S_20240319_001",
+            "last_used": "2024-06-08T16:44:00Z"
+        }
+    },
+    "stats": {
+        "total_sigils": 0,
+        "total_files": 0,
+        "by_type": {
+            "C": 0,
+            "A": 0,
+            "I": 0,
+            "R": 0,
+            "N": 0
+        },
+        "heat_distribution": {
+            "low": 0,
+            "medium": 0,
+            "high": 0
+        },
+        "entropy_distribution": {
+            "low": 0,
+            "medium": 0,
+            "high": 0
+        },
+        "coherence_distribution": {
+            "low": 0,
+            "medium": 0,
+            "high": 0
+        }
+    }
+} 

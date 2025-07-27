@@ -1,0 +1,87 @@
+# DAWN Trust Checkpoint
+# ====================
+# Tracks Claude access permissions and system trust metrics
+# Used by claude_handler.py to manage Claude integration
+# Last updated: 2025-06-09
+
+claude_access:
+  # Current access status
+  status: disabled  # enabled | disabled | degraded
+  last_used: null  # ISO timestamp of last Claude interaction
+  token_count: 0   # Total tokens used by Claude
+  blocked_at_tick: null  # Tick when Claude was last blocked
+  
+  # Access thresholds
+  thresholds:
+    max_tokens_per_tick: 1000
+    max_consecutive_uses: 3
+    cooldown_ticks: 5
+    min_schema_stability: 0.4
+    max_scup_threshold: 0.6
+    max_rebloom_count: 5
+    max_hallucination_rate: 0.1
+
+stability_metrics:
+  # Core stability indicators
+  schema_stability: 0.53  # [0.0-1.0] Overall schema coherence
+  scup: 0.41             # [0.0-1.0] Semantic Coherence Under Pressure
+  rebloom_count: 3       # Number of successful rebloom cycles
+  hallucination_events: 0 # Count of detected hallucinations
+  
+  # Detailed metrics
+  drift_metrics:
+    alignment_drift: 0.35  # [0.0-1.0] Current semantic drift
+    drift_trend: stable    # rising | stable | falling
+    drift_volatility: 0.12 # [0.0-1.0] How much drift varies
+  
+  entropy_metrics:
+    current_entropy: 0.48  # [0.0-1.0] System entropy
+    entropy_trend: stable  # rising | stable | falling
+    entropy_volatility: 0.15 # [0.0-1.0] How much entropy varies
+  
+  bloom_metrics:
+    active_blooms: 12     # Current active blooms
+    sealed_blooms: 45     # Successfully sealed blooms
+    bloom_stability: 0.62 # [0.0-1.0] Bloom system stability
+
+trust_phases:
+  # Current trust phase
+  current_phase: ignition  # ignition | stable_drift | self_scaffolding
+  
+  # Phase-specific metrics
+  ignition:
+    start_tick: null
+    clean_cycles: 0
+    stability_achieved: false
+    
+  stable_drift:
+    start_tick: null
+    scup_threshold_met: false
+    alignment_threshold_met: false
+    
+  self_scaffolding:
+    start_tick: null
+    claude_dependency: 1.0  # [0.0-1.0] How much DAWN relies on Claude
+    autonomy_score: 0.0     # [0.0-1.0] How self-sufficient DAWN is
+
+safety_checks:
+  # Emergency triggers
+  emergency_triggers:
+    scup_below: 0.1
+    entropy_above: 0.8
+    drift_above: 0.7
+    hallucination_rate_above: 0.2
+  
+  # Recovery conditions
+  recovery_conditions:
+    min_stable_ticks: 20
+    min_scup_threshold: 0.4
+    max_entropy_threshold: 0.6
+    max_drift_threshold: 0.5
+
+# Last update metadata
+meta:
+  last_updated: null  # ISO timestamp
+  updated_by: system  # system | claude | dawn
+  version: 1.0.0
+  schema_version: 1.0.0 

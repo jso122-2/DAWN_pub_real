@@ -1,0 +1,206 @@
+/* Layout Manager - DAWN GUI Grid Scaffolding System */
+
+.layout-manager {
+  width: 100%;
+  height: 100%;
+  padding: 16px;
+  box-sizing: border-box;
+}
+
+.grid-container {
+  display: grid;
+  grid-template-columns: 32% 36% 32%;
+  gap: 16px;
+  max-width: 1400px;
+  margin: 0 auto;
+  height: 100%;
+  min-height: 0;
+}
+
+/* Individual grid items */
+.grid-item {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* Panel Groups */
+.panel-group {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+}
+
+.panel-group-header {
+  margin-bottom: 12px;
+}
+
+.panel-group-title {
+  font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+  font-size: 14px;
+  font-weight: 600;
+  color: #40e0ff;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin: 0;
+  padding: 8px 16px;
+  background: rgba(13, 27, 42, 0.95);
+  border: 1px solid #415a77;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.panel-group-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* Column-specific styling */
+.cognition-column {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.cognition-column .panel-group-title {
+  color: #40e0ff;
+  border-color: #40e0ff;
+}
+
+.symbolic-column {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.symbolic-column .panel-group-title {
+  color: #8b5cf6;
+  border-color: #8b5cf6;
+}
+
+.reflection-column {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.reflection-column .panel-group-title {
+  color: #10b981;
+  border-color: #10b981;
+}
+
+/* DAWN Layout specific styling */
+.dawn-layout .grid-container {
+  grid-template-areas: "cognition symbolic reflection";
+}
+
+.dawn-layout .cognition-column {
+  grid-area: cognition;
+}
+
+.dawn-layout .symbolic-column {
+  grid-area: symbolic;
+}
+
+.dawn-layout .reflection-column {
+  grid-area: reflection;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .grid-container {
+    grid-template-columns: 48% 52%;
+    grid-template-areas: 
+      "cognition symbolic"
+      "reflection reflection";
+  }
+  
+  .dawn-layout .reflection-column {
+    grid-area: reflection;
+    margin-top: 16px;
+  }
+}
+
+@media (max-width: 768px) {
+  .layout-manager {
+    padding: 12px;
+  }
+  
+  .grid-container {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "cognition"
+      "symbolic" 
+      "reflection";
+    gap: 12px;
+  }
+  
+  .panel-group-title {
+    font-size: 12px;
+    padding: 6px 12px;
+  }
+  
+  .panel-group-content {
+    gap: 12px;
+  }
+}
+
+/* Scrollbar styling for panel group content */
+.panel-group-content::-webkit-scrollbar {
+  width: 4px;
+}
+
+.panel-group-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.panel-group-content::-webkit-scrollbar-thumb {
+  background: #415a77;
+  border-radius: 2px;
+}
+
+.panel-group-content::-webkit-scrollbar-thumb:hover {
+  background: #40e0ff;
+}
+
+/* Ensure panels within groups have proper spacing */
+.panel-group-content > * {
+  flex-shrink: 0;
+}
+
+.panel-group-content > *:last-child {
+  margin-bottom: 0;
+}
+
+/* Animation for smooth transitions */
+.panel-group-title {
+  transition: all 0.2s ease;
+}
+
+.panel-group:hover .panel-group-title {
+  background: rgba(64, 224, 255, 0.1);
+  border-color: #40e0ff;
+  color: #40e0ff;
+}
+
+.cognition-column:hover .panel-group-title {
+  border-color: #40e0ff;
+  color: #40e0ff;
+}
+
+.symbolic-column:hover .panel-group-title {
+  border-color: #8b5cf6;
+  color: #8b5cf6;
+}
+
+.reflection-column:hover .panel-group-title {
+  border-color: #10b981;
+  color: #10b981;
+} 

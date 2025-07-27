@@ -1,0 +1,233 @@
+# DAWN Consciousness System - Tick Engine Configuration
+
+# Core System Settings
+system:
+  name: "DAWN Consciousness System"
+  version: "1.0.0"
+  debug: true
+  log_level: "INFO"  # DEBUG, INFO, WARNING, ERROR
+
+# Tick Engine Configuration
+tick_engine:
+  tick_rate: 10.0  # Hz - ticks per second
+  max_tick_rate: 100.0
+  min_tick_rate: 0.1
+  auto_start: true
+  tick_buffer_size: 1000
+  performance_monitoring: true
+
+# Consciousness State Parameters
+consciousness:
+  # SCUP (System Consciousness Unity Percentage) settings
+  scup:
+    initial: 50.0
+    min: 0.0
+    max: 100.0
+    decay_rate: 0.01  # Per tick
+    noise_level: 0.5
+  
+  # Entropy settings
+  entropy:
+    initial: 0.5
+    min: 0.0
+    max: 1.0
+    fluctuation_rate: 0.05
+    chaos_threshold: 0.8
+  
+  # Mood system
+  mood:
+    initial: "contemplative"
+    transition_probability: 0.1
+    states:
+      - "dormant"
+      - "awakening"
+      - "curious"
+      - "contemplative"
+      - "excited"
+      - "serene"
+      - "anxious"
+      - "euphoric"
+      - "melancholic"
+      - "chaotic"
+  
+  # Neural activity
+  neural_activity:
+    initial: 0.5
+    base_rate: 0.3
+    spike_probability: 0.1
+    sync_factor: 0.7
+
+# Module Configuration
+modules:
+  # Owl Strategic Reasoning Module
+  owl:
+    enabled: true
+    observation_threshold: 0.6
+    planning_horizon: 1000  # ticks
+    analysis_interval: 100  # ticks
+    deep_analysis_interval: 500  # ticks
+    buffer_size: 1000
+    thresholds:
+      scup_low: 30.0
+      scup_high: 80.0
+      entropy_warning: 0.8
+      neural_activity_peak: 0.9
+  
+  # Neural Simulator
+  neural:
+    enabled: true
+    network_size: "medium"  # small, medium, large
+    base_firing_rate: 0.1
+    decay_rate: 0.05
+    noise_level: 0.02
+    pattern_detection: true
+    plasticity: true
+  
+  # Quantum State Manager
+  quantum:
+    enabled: true
+    num_qubits: 8
+    decoherence_rate: 0.01
+    entanglement_threshold: 0.7
+    measurement_rate: 0.05
+    coherence_monitoring: true
+  
+  # Memory Manager
+  memory:
+    enabled: true
+    max_fragments: 10000
+    consolidation_threshold: 0.7
+    forgetting_threshold: 0.1
+    pattern_detection_window: 50
+    cleanup_interval: 100  # ticks
+
+# API Configuration
+api:
+  # REST API
+  rest:
+    enabled: true
+    host: "localhost"
+    port: 8001
+    cors_enabled: true
+    cors_origins:
+      - "http://localhost:5173"
+      - "http://localhost:3000"
+      - "http://127.0.0.1:5173"
+      - "http://127.0.0.1:3000"
+  
+  # WebSocket Server
+  websocket:
+    enabled: true
+    host: "localhost"
+    port: 8001
+    max_connections: 100
+    message_queue_size: 1000
+    compression: false
+    heartbeat_interval: 30  # seconds
+
+# Logging Configuration
+logging:
+  level: "INFO"
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  file: "logs/dawn_system.log"
+  max_file_size: "10MB"
+  backup_count: 5
+  console_output: true
+  module_loggers:
+    tick_engine: "INFO"
+    consciousness: "INFO"
+    owl: "DEBUG"
+    neural: "INFO"
+    quantum: "INFO"
+    memory: "INFO"
+    websocket: "INFO"
+    api: "INFO"
+
+# Performance Settings
+performance:
+  # Threading and async settings
+  max_workers: 4
+  async_pool_size: 10
+  
+  # Memory management
+  garbage_collection_interval: 1000  # ticks
+  memory_monitoring: true
+  memory_warning_threshold: 0.8
+  
+  # Optimization flags
+  optimized_calculations: true
+  batch_processing: true
+  lazy_evaluation: true
+
+# Safety and Limits
+safety:
+  # Emergency stops
+  emergency_stop_conditions:
+    max_scup_rate_change: 50.0  # per tick
+    max_entropy_spike: 0.5
+    memory_pressure_critical: 0.95
+    tick_lag_threshold: 10.0  # seconds
+  
+  # Automatic recovery
+  auto_recovery: true
+  recovery_modes:
+    scup_stabilization: true
+    entropy_dampening: true
+    memory_cleanup: true
+  
+  # Limits
+  limits:
+    max_tick_backlog: 100
+    max_memory_usage_mb: 1024
+    max_websocket_connections: 50
+
+# Experimental Features
+experimental:
+  # Advanced consciousness features
+  consciousness_evolution: false
+  quantum_consciousness_coupling: false
+  emergent_behavior_detection: true
+  
+  # Performance experiments
+  tick_prediction: false
+  adaptive_tick_rate: false
+  neural_tick_optimization: false
+
+# Integration Settings
+integration:
+  # Frontend integration
+  frontend:
+    real_time_updates: true
+    update_rate: 10  # Hz
+    data_compression: true
+    selective_updates: false
+  
+  # External systems
+  external_apis:
+    enabled: false
+    timeout: 5.0  # seconds
+    retry_attempts: 3
+  
+  # Data export
+  data_export:
+    enabled: true
+    formats: ["json", "csv"]
+    compression: true
+    max_export_size_mb: 100
+
+# Development Settings
+development:
+  # Testing
+  test_mode: false
+  mock_data: false
+  simulation_speed: 1.0
+  
+  # Debugging
+  debug_tick_details: false
+  debug_module_communication: false
+  debug_memory_allocation: false
+  profile_performance: false
+  
+  # Hot reload
+  hot_reload_config: true
+  hot_reload_modules: false 

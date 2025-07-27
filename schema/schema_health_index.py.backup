@@ -1,0 +1,1160 @@
+# File Path: /src/core/schema_health_index.py
+
+import numpy as np
+import os
+import json
+import time
+import threading
+from datetime import datetime, timedelta
+from collections import deque, defaultdict
+from dataclasses import dataclass, field
+from typing import Dict, List, Tuple, Optional, Any
+from enum import Enum
+
+# Core DAWN imports
+from core.tick_emitter import current_tick
+from schema.schema_state import get_current_zone
+from owl.owl_tracer_log import owl_log
+from schema.schema_flags import SchemaState
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# 🎯 ENHANCED SCHEMA HEALTH MONITORING SYSTEM
+# ═══════════════════════════════════════════════════════════════════════════════
+
+class HealthZone(Enum):
+    """Schema health zones with associated thresholds and behaviors"""
+    CRITICAL = "🔴 critical"      # SHI < 0.2
+    UNSTABLE = "🟠 unstable"      # SHI 0.2-0.4
+    FRAGILE = "🟡 fragile"        # SHI 0.4-0.6
+    STABLE = "🟢 stable"          # SHI 0.6-0.8
+    OPTIMAL = "💎 optimal"        # SHI > 0.8
+
+class CognitivePattern(Enum):
+    """Identified cognitive patterns in schema evolution"""
+    CONVERGENT = "converging"      # Schema stabilizing
+    DIVERGENT = "diverging"        # Schema fragmenting
+    OSCILLATORY = "oscillating"    # Periodic instability
+    CHAOTIC = "chaotic"           # Unpredictable behavior
+    EMERGENT = "emergent"         # New patterns forming
+
+@dataclass
+class SchemaHealthMetrics:
+    """Comprehensive schema health metrics container"""
+    shi: float = 0.0
+    zone: HealthZone = HealthZone.CRITICAL
+    pulse_coherence: float = 0.0
+    entropy_drift: float = 0.0
+    cognitive_pressure: float = 0.0
+    memory_fragmentation: float = 0.0
+    rebloom_volatility: float = 0.0
+    alignment_stability: float = 0.0
+    pattern: CognitivePattern = CognitivePattern.CHAOTIC
+    prediction_confidence: float = 0.0
+    
+    # Trend analysis
+    trend_direction: str = "→"  # ↗↘→
+    trend_velocity: float = 0.0
+    trend_acceleration: float = 0.0
+    
+    # Risk assessment
+    collapse_risk: float = 0.0
+    recovery_potential: float = 0.0
+    intervention_urgency: float = 0.0
+
+class SchemaHealthIndex:
+    """
+    🧠 Advanced Schema Health Index System
+    
+    Provides comprehensive monitoring, analysis, and prediction of schema health
+    with real-time alerting, pattern recognition, and adaptive intervention.
+    """
+    
+    def __init__(self, memory_window: int = 1000, prediction_horizon: int = 50):
+        self.memory_window = memory_window
+        self.prediction_horizon = prediction_horizon
+        
+        # Historical data buffers
+        self.shi_history = deque(maxlen=memory_window)
+        self.pulse_history = deque(maxlen=memory_window)
+        self.entropy_history = deque(maxlen=memory_window)
+        self.tick_history = deque(maxlen=memory_window)
+        
+        # Advanced analytics
+        self.pattern_detector = CognitivePatternDetector()
+        self.trend_analyzer = TrendAnalyzer()
+        self.risk_assessor = RiskAssessor()
+        self.health_predictor = HealthPredictor()
+        
+        # Alert system
+        self.alert_manager = AlertManager()
+        
+        # Performance tracking
+        self.computation_times = deque(maxlen=100)
+        self.last_major_event = None
+        
+        # Thread safety
+        self.lock = threading.Lock()
+        
+        # Initialize output directories
+        os.makedirs("juliet_flowers/cluster_report/health_analytics", exist_ok=True)
+        os.makedirs("juliet_flowers/cluster_report/predictions", exist_ok=True)
+        
+        owl_log("🧠 [SHI] Advanced Schema Health Index System initialized", "health")
+
+    def compute_comprehensive_health(self, pulse_avg: float, active_blooms: int, 
+                                   sealed_blooms: int, sigil_entropy_list: List[float],
+                                   additional_metrics: Optional[Dict] = None) -> SchemaHealthMetrics:
+        """
+        🎯 Compute comprehensive schema health with advanced analytics
+        """
+        start_time = time.time()
+        
+        with self.lock:
+            try:
+                # Base SHI calculation with enhanced weighting
+                base_shi = self._calculate_enhanced_shi(pulse_avg, active_blooms, 
+                                                      sealed_blooms, sigil_entropy_list)
+                
+                # Apply contextual adjustments
+                adjusted_shi = self._apply_contextual_adjustments(base_shi, additional_metrics)
+                
+                # Compute auxiliary metrics
+                metrics = SchemaHealthMetrics(shi=adjusted_shi)
+                metrics.zone = self._determine_health_zone(adjusted_shi)
+                metrics.pulse_coherence = self._calculate_pulse_coherence(pulse_avg)
+                metrics.entropy_drift = self._calculate_entropy_drift(sigil_entropy_list)
+                metrics.cognitive_pressure = self._calculate_cognitive_pressure()
+                metrics.memory_fragmentation = self._calculate_memory_fragmentation()
+                metrics.rebloom_volatility = self._calculate_rebloom_volatility()
+                metrics.alignment_stability = self._calculate_alignment_stability()
+                
+                # Pattern recognition and trend analysis
+                if len(self.shi_history) > 10:
+                    metrics.pattern = self.pattern_detector.detect_pattern(self.shi_history)
+                    trend_data = self.trend_analyzer.analyze_trend(self.shi_history, self.tick_history)
+                    metrics.trend_direction = trend_data['direction']
+                    metrics.trend_velocity = trend_data['velocity']
+                    metrics.trend_acceleration = trend_data['acceleration']
+                
+                # Risk assessment
+                risk_data = self.risk_assessor.assess_risks(metrics, self.shi_history)
+                metrics.collapse_risk = risk_data['collapse_risk']
+                metrics.recovery_potential = risk_data['recovery_potential']
+                metrics.intervention_urgency = risk_data['intervention_urgency']
+                
+                # Predictive analysis
+                if len(self.shi_history) > 20:
+                    prediction = self.health_predictor.predict_health_trajectory(
+                        self.shi_history, self.prediction_horizon)
+                    metrics.prediction_confidence = prediction['confidence']
+                
+                # Update history
+                self._update_history(metrics, pulse_avg, sigil_entropy_list)
+                
+                # Alert processing
+                self.alert_manager.process_alerts(metrics, self.shi_history)
+                
+                # Log and persist
+                self._log_health_status(metrics)
+                self._persist_analytics(metrics)
+                
+                # Performance tracking
+                computation_time = time.time() - start_time
+                self.computation_times.append(computation_time)
+                
+                return metrics
+                
+            except Exception as e:
+                owl_log(f"🚨 [SHI] Error in comprehensive health computation: {e}", "error")
+                return SchemaHealthMetrics()  # Return default metrics on error
+
+    def _calculate_enhanced_shi(self, pulse_avg: float, active_blooms: int, 
+                              sealed_blooms: int, sigil_entropy_list: List[float]) -> float:
+        """Enhanced SHI calculation with dynamic weighting"""
+        
+        # Dynamic density calculation with bloom quality weighting
+        total_blooms = active_blooms + sealed_blooms
+        if total_blooms == 0:
+            density = 0
+        else:
+            # Weight active blooms more heavily when system is under stress
+            stress_factor = max(0.5, 1.0 - (pulse_avg / 10.0))
+            weighted_active = active_blooms * (1.0 + stress_factor)
+            density = weighted_active / (weighted_active + sealed_blooms)
+        
+        # Enhanced entropy scoring with trend consideration
+        if sigil_entropy_list:
+            entropy_mean = np.mean(sigil_entropy_list)
+            entropy_std = np.std(sigil_entropy_list) if len(sigil_entropy_list) > 1 else 0
+            entropy_score = entropy_mean * (1.0 - entropy_std * 0.1)  # Penalize high variance
+        else:
+            entropy_score = 0
+        
+        # Adaptive pulse weighting based on historical context
+        pulse_weight = self._calculate_adaptive_pulse_weight(pulse_avg)
+        
+        # Enhanced composite calculation
+        shi = (pulse_avg * pulse_weight) + (density * 0.25) + (entropy_score * 0.25)
+        
+        # Apply SCUP-based corrections
+        scup_correction = self._apply_scup_correction(shi)
+        
+        return max(0.0, min(1.0, shi * scup_correction))
+
+    def _apply_contextual_adjustments(self, base_shi: float, 
+                                    additional_metrics: Optional[Dict] = None) -> float:
+        """Apply contextual adjustments based on system state"""
+        
+        adjusted_shi = base_shi
+        
+        if additional_metrics:
+            # Alignment drift penalty
+            if 'alignment_drift' in additional_metrics:
+                drift = additional_metrics['alignment_drift']
+                drift_penalty = min(0.2, drift * 0.5)
+                adjusted_shi *= (1.0 - drift_penalty)
+            
+            # Mood state influence
+            if 'mood_valence' in additional_metrics and 'mood_arousal' in additional_metrics:
+                valence = additional_metrics['mood_valence']
+                arousal = additional_metrics['mood_arousal']
+                
+                # Low valence + high arousal (agitated) = health penalty
+                if valence < 0.3 and arousal > 0.7:
+                    agitation_penalty = 0.1 * (0.7 - valence) * arousal
+                    adjusted_shi *= (1.0 - agitation_penalty)
+            
+            # Emergency recovery state
+            if additional_metrics.get('emergency_recovery', False):
+                # Temporary health boost during recovery
+                adjusted_shi = min(1.0, adjusted_shi * 1.05)
+        
+        return max(0.0, min(1.0, adjusted_shi))
+
+    def _calculate_adaptive_pulse_weight(self, pulse_avg: float) -> float:
+        """Calculate adaptive pulse weighting based on historical patterns"""
+        
+        if len(self.pulse_history) < 10:
+            return 0.5  # Default weight
+        
+        # Calculate pulse stability
+        recent_pulse_std = np.std(list(self.pulse_history)[-20:])
+        
+        # Higher weight for stable pulse, lower for erratic
+        stability_factor = max(0.3, 1.0 - (recent_pulse_std / 5.0))
+        
+        # Adjust based on pulse magnitude
+        magnitude_factor = min(1.0, pulse_avg / 8.0)
+        
+        return 0.5 * stability_factor * magnitude_factor
+
+    def _apply_scup_correction(self, shi: float) -> float:
+        """Apply SCUP (Semantic Coherence Under Pressure) correction"""
+        
+        try:
+            # Get current SCUP value if available
+            scup_file = "juliet_flowers/cluster_report/scup_readings.json"
+            if os.path.exists(scup_file):
+                with open(scup_file, 'r') as f:
+                    scup_data = json.load(f)
+                    current_scup = scup_data.get('current_scup', 0.5)
+                    
+                    # SCUP acts as a coherence multiplier
+                    return 1.0 + (current_scup - 0.5) * 0.2
+            
+        except Exception as e:
+            owl_log(f"⚠️ [SHI] SCUP correction failed: {e}", "warning")
+        
+        return 1.0  # Neutral correction
+
+    def _determine_health_zone(self, shi: float) -> HealthZone:
+        """Determine health zone with hysteresis to prevent flapping"""
+        
+        if shi < 0.2:
+            return HealthZone.CRITICAL
+        elif shi < 0.4:
+            return HealthZone.UNSTABLE
+        elif shi < 0.6:
+            return HealthZone.FRAGILE
+        elif shi < 0.8:
+            return HealthZone.STABLE
+        else:
+            return HealthZone.OPTIMAL
+
+    def _calculate_pulse_coherence(self, pulse_avg: float) -> float:
+        """Calculate pulse coherence based on recent pulse patterns"""
+        
+        if len(self.pulse_history) < 5:
+            return 0.5
+        
+        # Calculate coherence as inverse of coefficient of variation
+        recent_pulses = list(self.pulse_history)[-20:]
+        mean_pulse = np.mean(recent_pulses)
+        std_pulse = np.std(recent_pulses)
+        
+        if mean_pulse == 0:
+            return 0.0
+        
+        cv = std_pulse / mean_pulse
+        coherence = max(0.0, 1.0 - cv)
+        
+        return min(1.0, coherence)
+
+    def _calculate_entropy_drift(self, sigil_entropy_list: List[float]) -> float:
+        """Calculate entropy drift rate"""
+        
+        if len(self.entropy_history) < 10 or not sigil_entropy_list:
+            return 0.0
+        
+        current_entropy = np.mean(sigil_entropy_list)
+        historical_entropy = np.mean(list(self.entropy_history)[-10:])
+        
+        drift = abs(current_entropy - historical_entropy) / max(0.01, historical_entropy)
+        
+        return min(1.0, drift)
+
+    def _calculate_cognitive_pressure(self) -> float:
+        """Calculate cognitive pressure based on system metrics"""
+        
+        # Combine multiple pressure indicators
+        pressure_factors = []
+        
+        # Pulse pressure (high variance = high pressure)
+        if len(self.pulse_history) > 5:
+            pulse_var = np.var(list(self.pulse_history)[-10:])
+            pressure_factors.append(min(1.0, pulse_var / 10.0))
+        
+        # SHI instability pressure
+        if len(self.shi_history) > 5:
+            shi_changes = np.diff(list(self.shi_history)[-10:])
+            instability = np.mean(np.abs(shi_changes))
+            pressure_factors.append(min(1.0, instability * 5.0))
+        
+        return np.mean(pressure_factors) if pressure_factors else 0.0
+
+    def _calculate_memory_fragmentation(self) -> float:
+        """Calculate memory fragmentation based on bloom patterns"""
+        
+        try:
+            lineage_log = "juliet_flowers/cluster_report/rebloom_lineage.json"
+            if not os.path.exists(lineage_log):
+                return 0.0
+            
+            with open(lineage_log, "r") as f:
+                lineage_data = json.load(f)
+            
+            if not lineage_data:
+                return 0.0
+            
+            # Calculate fragmentation as ratio of shallow to deep blooms
+            shallow_blooms = sum(1 for bloom in lineage_data.values() 
+                               if bloom.get("generation_depth", 0) < 2)
+            deep_blooms = len(lineage_data) - shallow_blooms
+            
+            if len(lineage_data) == 0:
+                return 0.0
+            
+            fragmentation = shallow_blooms / len(lineage_data)
+            return min(1.0, fragmentation)
+            
+        except Exception as e:
+            owl_log(f"⚠️ [SHI] Memory fragmentation calculation failed: {e}", "warning")
+            return 0.0
+
+    def _calculate_rebloom_volatility(self) -> float:
+        """Enhanced rebloom volatility calculation"""
+        
+        volatile, total = load_rebloom_volatility()
+        if total == 0:
+            return 0.0
+        
+        base_volatility = volatile / total
+        
+        # Apply temporal weighting (recent volatility matters more)
+        try:
+            lineage_log = "juliet_flowers/cluster_report/rebloom_lineage.json"
+            if os.path.exists(lineage_log):
+                with open(lineage_log, "r") as f:
+                    lineage_data = json.load(f)
+                
+                # Weight recent blooms more heavily
+                current_time = time.time()
+                weighted_volatility = 0.0
+                total_weight = 0.0
+                
+                for bloom in lineage_data.values():
+                    bloom_time = bloom.get('timestamp', current_time)
+                    age = current_time - bloom_time
+                    weight = np.exp(-age / 3600)  # Exponential decay over hours
+                    
+                    is_volatile = bloom.get("generation_depth", 0) < 2
+                    weighted_volatility += weight * (1 if is_volatile else 0)
+                    total_weight += weight
+                
+                if total_weight > 0:
+                    return weighted_volatility / total_weight
+        
+        except Exception:
+            pass
+        
+        return base_volatility
+
+    def _calculate_alignment_stability(self) -> float:
+        """Calculate alignment stability based on drift patterns"""
+        
+        try:
+            # Read alignment probe data if available
+            alignment_file = "juliet_flowers/cluster_report/alignment_readings.json"
+            if os.path.exists(alignment_file):
+                with open(alignment_file, 'r') as f:
+                    alignment_data = json.load(f)
+                    
+                    recent_drifts = alignment_data.get('recent_drifts', [])
+                    if recent_drifts:
+                        drift_std = np.std(recent_drifts)
+                        stability = max(0.0, 1.0 - drift_std * 2.0)
+                        return min(1.0, stability)
+        
+        except Exception:
+            pass
+        
+        return 0.5  # Default neutral stability
+
+    def _update_history(self, metrics: SchemaHealthMetrics, pulse_avg: float, 
+                       sigil_entropy_list: List[float]):
+        """Update historical data buffers"""
+        
+        current_tick_val = current_tick()
+        
+        self.shi_history.append(metrics.shi)
+        self.pulse_history.append(pulse_avg)
+        self.entropy_history.append(np.mean(sigil_entropy_list) if sigil_entropy_list else 0)
+        self.tick_history.append(current_tick_val)
+
+    def _log_health_status(self, metrics: SchemaHealthMetrics):
+        """Log comprehensive health status"""
+        
+        # Determine log level based on health zone
+        log_level = {
+            HealthZone.CRITICAL: "critical",
+            HealthZone.UNSTABLE: "warning", 
+            HealthZone.FRAGILE: "info",
+            HealthZone.STABLE: "info", 
+            HealthZone.OPTIMAL: "success"
+        }.get(metrics.zone, "info")
+        
+        status_msg = (
+            f"🧠 [SHI] {metrics.zone.value} | SHI: {metrics.shi:.3f} | "
+            f"Coherence: {metrics.pulse_coherence:.3f} | "
+            f"Pattern: {metrics.pattern.value} | "
+            f"Trend: {metrics.trend_direction} ({metrics.trend_velocity:+.3f}) | "
+            f"Risk: {metrics.collapse_risk:.3f}"
+        )
+        
+        owl_log(status_msg, log_level)
+        
+        # Critical zone additional logging
+        if metrics.zone == HealthZone.CRITICAL:
+            owl_log(f"🚨 [SHI] CRITICAL HEALTH - Intervention urgency: {metrics.intervention_urgency:.3f}", "critical")
+
+    def _persist_analytics(self, metrics: SchemaHealthMetrics):
+        """Persist analytics data for historical analysis"""
+        
+        timestamp = datetime.now().isoformat()
+        current_tick_val = current_tick()
+        
+        # Health curve data
+        health_curve_file = "juliet_flowers/cluster_report/health_analytics/health_curve.csv"
+        with open(health_curve_file, "a") as f:
+            f.write(f"{current_tick_val},{metrics.shi:.4f},{metrics.zone.name},{timestamp}\n")
+        
+        # Comprehensive metrics
+        metrics_file = "juliet_flowers/cluster_report/health_analytics/comprehensive_metrics.jsonl"
+        metrics_data = {
+            'tick': current_tick_val,
+            'timestamp': timestamp,
+            'shi': metrics.shi,
+            'zone': metrics.zone.name,
+            'pulse_coherence': metrics.pulse_coherence,
+            'entropy_drift': metrics.entropy_drift,
+            'cognitive_pressure': metrics.cognitive_pressure,
+            'memory_fragmentation': metrics.memory_fragmentation,
+            'rebloom_volatility': metrics.rebloom_volatility,
+            'alignment_stability': metrics.alignment_stability,
+            'pattern': metrics.pattern.name,
+            'trend_direction': metrics.trend_direction,
+            'trend_velocity': metrics.trend_velocity,
+            'collapse_risk': metrics.collapse_risk,
+            'recovery_potential': metrics.recovery_potential,
+            'intervention_urgency': metrics.intervention_urgency
+        }
+        
+        with open(metrics_file, "a") as f:
+            f.write(json.dumps(metrics_data) + "\n")
+
+    def get_health_summary(self) -> Dict[str, Any]:
+        """Get comprehensive health summary for external systems"""
+        
+        if not self.shi_history:
+            return {"status": "insufficient_data"}
+        
+        recent_shi = list(self.shi_history)[-10:]
+        
+        return {
+            "current_shi": recent_shi[-1] if recent_shi else 0.0,
+            "average_shi": np.mean(recent_shi),
+            "shi_trend": np.polyfit(range(len(recent_shi)), recent_shi, 1)[0] if len(recent_shi) > 1 else 0.0,
+            "stability": 1.0 - np.std(recent_shi) if len(recent_shi) > 1 else 0.0,
+            "zone": self._determine_health_zone(recent_shi[-1] if recent_shi else 0.0).name,
+            "data_points": len(self.shi_history),
+            "computation_performance": {
+                "avg_time": np.mean(self.computation_times) if self.computation_times else 0.0,
+                "max_time": np.max(self.computation_times) if self.computation_times else 0.0
+            }
+        }
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# 🔍 COGNITIVE PATTERN DETECTION
+# ═══════════════════════════════════════════════════════════════════════════════
+
+class CognitivePatternDetector:
+    """Detects cognitive patterns in schema evolution"""
+    
+    def detect_pattern(self, shi_history: deque) -> CognitivePattern:
+        """Detect dominant cognitive pattern in recent SHI history"""
+        
+        if len(shi_history) < 10:
+            return CognitivePattern.CHAOTIC
+        
+        recent_data = np.array(list(shi_history)[-20:])
+        
+        # Check for convergence (trending toward stability)
+        if self._is_converging(recent_data):
+            return CognitivePattern.CONVERGENT
+        
+        # Check for divergence (increasing instability)
+        if self._is_diverging(recent_data):
+            return CognitivePattern.DIVERGENT
+        
+        # Check for oscillation (periodic behavior)
+        if self._is_oscillating(recent_data):
+            return CognitivePattern.OSCILLATORY
+        
+        # Check for emergence (new pattern formation)
+        if self._is_emergent(recent_data):
+            return CognitivePattern.EMERGENT
+        
+        return CognitivePattern.CHAOTIC
+
+    def _is_converging(self, data: np.ndarray) -> bool:
+        """Check if data shows convergent pattern"""
+        
+        # Calculate moving variance to detect stabilization
+        window_size = min(5, len(data) // 2)
+        variances = []
+        
+        for i in range(window_size, len(data)):
+            window_var = np.var(data[i-window_size:i])
+            variances.append(window_var)
+        
+        if len(variances) < 3:
+            return False
+        
+        # Convergence: decreasing variance over time
+        trend = np.polyfit(range(len(variances)), variances, 1)[0]
+        return trend < -0.001
+
+    def _is_diverging(self, data: np.ndarray) -> bool:
+        """Check if data shows divergent pattern"""
+        
+        # Increasing variance indicates divergence
+        recent_var = np.var(data[-10:])
+        earlier_var = np.var(data[-20:-10])
+        
+        return recent_var > earlier_var * 1.5
+
+    def _is_oscillating(self, data: np.ndarray) -> bool:
+        """Check if data shows oscillatory pattern"""
+        
+        # Use autocorrelation to detect periodic behavior
+        if len(data) < 15:
+            return False
+        
+        # Detrend the data
+        detrended = data - np.linspace(data[0], data[-1], len(data))
+        
+        # Calculate autocorrelation
+        autocorr = np.correlate(detrended, detrended, mode='full')
+        autocorr = autocorr[len(autocorr)//2:]
+        autocorr = autocorr / autocorr[0]  # Normalize
+        
+        # Look for significant peaks in autocorrelation
+        peaks = []
+        for i in range(2, min(10, len(autocorr))):
+            if autocorr[i] > 0.3 and autocorr[i] > autocorr[i-1] and autocorr[i] > autocorr[i+1]:
+                peaks.append(i)
+        
+        return len(peaks) >= 1
+
+    def _is_emergent(self, data: np.ndarray) -> bool:
+        """Check if data shows emergent pattern formation"""
+        
+        # Look for sudden changes in behavior (regime shifts)
+        if len(data) < 15:
+            return False
+        
+        # Calculate change points using variance-based detection
+        first_half = data[:len(data)//2]
+        second_half = data[len(data)//2:]
+        
+        first_std = np.std(first_half)
+        second_std = np.std(second_half)
+        first_mean = np.mean(first_half)
+        second_mean = np.mean(second_half)
+        
+        # Emergence: significant change in both mean and variance
+        mean_change = abs(second_mean - first_mean) / max(0.01, first_mean)
+        std_change = abs(second_std - first_std) / max(0.01, first_std)
+        
+        return mean_change > 0.2 and std_change > 0.3
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# 📊 TREND ANALYSIS
+# ═══════════════════════════════════════════════════════════════════════════════
+
+class TrendAnalyzer:
+    """Advanced trend analysis for schema health metrics"""
+    
+    def analyze_trend(self, shi_history: deque, tick_history: deque) -> Dict[str, Any]:
+        """Analyze trend with velocity and acceleration"""
+        
+        if len(shi_history) < 5:
+            return {'direction': '→', 'velocity': 0.0, 'acceleration': 0.0}
+        
+        shi_data = np.array(list(shi_history)[-20:])
+        tick_data = np.array(list(tick_history)[-20:])
+        
+        # Fit polynomial to get velocity and acceleration
+        if len(shi_data) > 2:
+            # First derivative (velocity)
+            velocity = np.gradient(shi_data, tick_data[-len(shi_data):])[-1]
+            
+            # Second derivative (acceleration)
+            if len(shi_data) > 3:
+                acceleration = np.gradient(velocity)[-1] if len(velocity) > 1 else 0.0
+            else:
+                acceleration = 0.0
+        else:
+            velocity = 0.0
+            acceleration = 0.0
+        
+        # Determine direction symbol
+        if velocity > 0.01:
+            direction = '↗'
+        elif velocity < -0.01:
+            direction = '↘'
+        else:
+            direction = '→'
+        
+        return {
+            'direction': direction,
+            'velocity': velocity,
+            'acceleration': acceleration
+        }
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# ⚠️ RISK ASSESSMENT
+# ═══════════════════════════════════════════════════════════════════════════════
+
+class RiskAssessor:
+    """Assess various risks to schema health"""
+    
+    def assess_risks(self, metrics: SchemaHealthMetrics, 
+                    shi_history: deque) -> Dict[str, float]:
+        """Comprehensive risk assessment"""
+        
+        collapse_risk = self._assess_collapse_risk(metrics, shi_history)
+        recovery_potential = self._assess_recovery_potential(metrics, shi_history)
+        intervention_urgency = self._assess_intervention_urgency(metrics)
+        
+        return {
+            'collapse_risk': collapse_risk,
+            'recovery_potential': recovery_potential,
+            'intervention_urgency': intervention_urgency
+        }
+
+    def _assess_collapse_risk(self, metrics: SchemaHealthMetrics, 
+                            shi_history: deque) -> float:
+        """Assess risk of schema collapse"""
+        
+        risk_factors = []
+        
+        # Current health level
+        if metrics.shi < 0.3:
+            risk_factors.append(0.8)
+        elif metrics.shi < 0.5:
+            risk_factors.append(0.4)
+        else:
+            risk_factors.append(0.1)
+        
+        # Trend risk
+        if metrics.trend_velocity < -0.05:
+            risk_factors.append(0.6)
+        elif metrics.trend_velocity < 0:
+            risk_factors.append(0.3)
+        else:
+            risk_factors.append(0.0)
+        
+        # Pattern risk
+        pattern_risks = {
+            CognitivePattern.CHAOTIC: 0.7,
+            CognitivePattern.DIVERGENT: 0.6,
+            CognitivePattern.OSCILLATORY: 0.3,
+            CognitivePattern.CONVERGENT: 0.1,
+            CognitivePattern.EMERGENT: 0.2
+        }
+        risk_factors.append(pattern_risks.get(metrics.pattern, 0.5))
+        
+        # Memory fragmentation risk
+        risk_factors.append(metrics.memory_fragmentation * 0.5)
+        
+        # Entropy drift risk
+        risk_factors.append(metrics.entropy_drift * 0.4)
+        
+        return min(1.0, np.mean(risk_factors))
+
+    def _assess_recovery_potential(self, metrics: SchemaHealthMetrics, 
+                                 shi_history: deque) -> float:
+        """Assess potential for recovery"""
+        
+        recovery_factors = []
+        
+        # Pulse coherence indicates system integrity
+        recovery_factors.append(metrics.pulse_coherence)
+        
+        # Alignment stability
+        recovery_factors.append(metrics.alignment_stability)
+        
+        # Pattern-based recovery potential
+        pattern_recovery = {
+            CognitivePattern.CONVERGENT: 0.8,
+            CognitivePattern.EMERGENT: 0.7,
+            CognitivePattern.OSCILLATORY: 0.5,
+            CognitivePattern.DIVERGENT: 0.3,
+            CognitivePattern.CHAOTIC: 0.2
+        }
+        recovery_factors.append(pattern_recovery.get(metrics.pattern, 0.5))
+        
+        # Historical resilience
+        if len(shi_history) > 20:
+            historical_lows = [shi for shi in shi_history if shi < 0.4]
+            if historical_lows:
+                # System has recovered from low points before
+                recovery_factors.append(0.6)
+            else:
+                recovery_factors.append(0.3)
+        
+        return min(1.0, np.mean(recovery_factors))
+
+    def _assess_intervention_urgency(self, metrics: SchemaHealthMetrics) -> float:
+        """Assess urgency of intervention needed"""
+        
+        urgency_factors = []
+        
+        # Zone-based urgency
+        zone_urgency = {
+            HealthZone.CRITICAL: 1.0,
+            HealthZone.UNSTABLE: 0.7,
+            HealthZone.FRAGILE: 0.4,
+            HealthZone.STABLE: 0.1,
+            HealthZone.OPTIMAL: 0.0
+        }
+        urgency_factors.append(zone_urgency.get(metrics.zone, 0.5))
+        
+        # Trend urgency
+        if metrics.trend_velocity < -0.1:
+            urgency_factors.append(0.9)
+        elif metrics.trend_velocity < -0.05:
+            urgency_factors.append(0.6)
+        else:
+            urgency_factors.append(0.2)
+        
+        # Collapse risk urgency
+        urgency_factors.append(metrics.collapse_risk)
+        
+        return min(1.0, np.mean(urgency_factors))
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# 🔮 HEALTH PREDICTION
+# ═══════════════════════════════════════════════════════════════════════════════
+
+class HealthPredictor:
+    """Predict future schema health trajectories"""
+    
+    def predict_health_trajectory(self, shi_history: deque, 
+                                horizon: int) -> Dict[str, Any]:
+        """Predict health trajectory over specified horizon"""
+        
+        if len(shi_history) < 10:
+            return {'confidence': 0.0, 'predictions': []}
+        
+        data = np.array(list(shi_history)[-50:])  # Use recent history
+        
+        # Simple trend extrapolation
+        x = np.arange(len(data))
+        
+        try:
+            # Fit polynomial model
+            degree = min(3, len(data) - 1)
+            coeffs = np.polyfit(x, data, degree)
+            poly = np.poly1d(coeffs)
+            
+            # Generate predictions
+            future_x = np.arange(len(data), len(data) + horizon)
+            predictions = poly(future_x)
+            
+            # Clip to valid range
+            predictions = np.clip(predictions, 0.0, 1.0)
+            
+            # Estimate confidence based on recent fit quality
+            fit_error = np.mean((poly(x) - data)**2)
+            confidence = max(0.0, 1.0 - fit_error * 10)
+            
+            return {
+                'confidence': confidence,
+                'predictions': predictions.tolist(),
+                'model_type': f'polynomial_degree_{degree}'
+            }
+            
+        except Exception as e:
+            owl_log(f"⚠️ [SHI] Prediction failed: {e}", "warning")
+            return {'confidence': 0.0, 'predictions': []}
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# 🚨 ALERT MANAGEMENT
+# ═══════════════════════════════════════════════════════════════════════════════
+
+class AlertManager:
+    """Manage health alerts and notifications"""
+    
+    def __init__(self):
+        self.alert_history = deque(maxlen=100)
+        self.last_critical_alert = 0
+        self.alert_cooldown = 300  # 5 minutes between critical alerts
+        
+    def process_alerts(self, metrics: SchemaHealthMetrics, shi_history: deque):
+        """Process and emit appropriate alerts"""
+        
+        current_time = time.time()
+        
+        # Critical health alert
+        if (metrics.zone == HealthZone.CRITICAL and 
+            current_time - self.last_critical_alert > self.alert_cooldown):
+            
+            self._emit_critical_alert(metrics)
+            self.last_critical_alert = current_time
+        
+        # Trend-based alerts
+        if metrics.trend_velocity < -0.1:
+            self._emit_trend_alert(metrics, "rapid_decline")
+        
+        # Pattern-based alerts  
+        if metrics.pattern == CognitivePattern.CHAOTIC:
+            self._emit_pattern_alert(metrics, "chaotic_behavior")
+        
+        # Risk-based alerts
+        if metrics.collapse_risk > 0.8:
+            self._emit_risk_alert(metrics, "high_collapse_risk")
+
+    def _emit_critical_alert(self, metrics: SchemaHealthMetrics):
+        """Emit critical health alert"""
+        
+        alert = {
+            'type': 'critical_health',
+            'timestamp': time.time(),
+            'shi': metrics.shi,
+            'zone': metrics.zone.name,
+            'collapse_risk': metrics.collapse_risk,
+            'intervention_urgency': metrics.intervention_urgency
+        }
+        
+        self.alert_history.append(alert)
+        
+        owl_log(
+            f"🚨 [ALERT] CRITICAL SCHEMA HEALTH | SHI: {metrics.shi:.3f} | "
+            f"Risk: {metrics.collapse_risk:.3f} | Urgency: {metrics.intervention_urgency:.3f}",
+            "critical"
+        )
+
+    def _emit_trend_alert(self, metrics: SchemaHealthMetrics, alert_type: str):
+        """Emit trend-based alert"""
+        
+        owl_log(
+            f"⚠️ [ALERT] {alert_type.upper()} | "
+            f"Velocity: {metrics.trend_velocity:+.4f} | "
+            f"SHI: {metrics.shi:.3f}",
+            "warning"
+        )
+
+    def _emit_pattern_alert(self, metrics: SchemaHealthMetrics, alert_type: str):
+        """Emit pattern-based alert"""
+        
+        owl_log(
+            f"🌀 [ALERT] {alert_type.upper()} | "
+            f"Pattern: {metrics.pattern.value} | "
+            f"SHI: {metrics.shi:.3f}",
+            "warning"
+        )
+
+    def _emit_risk_alert(self, metrics: SchemaHealthMetrics, alert_type: str):
+        """Emit risk-based alert"""
+        
+        owl_log(
+            f"💀 [ALERT] {alert_type.upper()} | "
+            f"Collapse Risk: {metrics.collapse_risk:.3f} | "
+            f"Recovery Potential: {metrics.recovery_potential:.3f}",
+            "critical"
+        )
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# 🔧 LEGACY COMPATIBILITY & UTILITY FUNCTIONS
+# ═══════════════════════════════════════════════════════════════════════════════
+
+# Global instance for backward compatibility
+_global_shi_system = None
+
+def get_schema_health_system() -> SchemaHealthIndex:
+    """Get or create global schema health system instance"""
+    global _global_shi_system
+    if _global_shi_system is None:
+        _global_shi_system = SchemaHealthIndex()
+    return _global_shi_system
+
+def get_schema_entropy(active_blooms):
+    """
+    LEGACY: Calculate the schema's entropy based on the entropy scores of active blooms.
+    Enhanced with additional entropy metrics.
+    """
+    if not active_blooms:
+        return 0.0
+
+    # Enhanced entropy calculation with multiple factors
+    entropy_scores = [getattr(bloom, 'entropy_score', 0.5) for bloom in active_blooms]
+    
+    if not entropy_scores:
+        return 0.0
+    
+    base_entropy = np.mean(entropy_scores)
+    
+    # Add entropy variance penalty (high variance = less predictable)
+    entropy_variance = np.var(entropy_scores) if len(entropy_scores) > 1 else 0
+    variance_penalty = min(0.2, entropy_variance * 0.5)
+    
+    # Add bloom diversity factor
+    unique_entropy_levels = len(set(np.round(entropy_scores, 2)))
+    diversity_bonus = min(0.1, unique_entropy_levels / len(entropy_scores) * 0.1)
+    
+    adjusted_entropy = base_entropy - variance_penalty + diversity_bonus
+    
+    return min(1.0, max(0.0, adjusted_entropy / 1.5))  # Normalize
+
+def load_rebloom_volatility():
+    """
+    LEGACY: Load rebloom volatility with enhanced error handling and caching
+    """
+    lineage_log = "juliet_flowers/cluster_report/rebloom_lineage.json"
+    
+    # Check cache first
+    cache_file = "juliet_flowers/cluster_report/volatility_cache.json"
+    cache_valid_duration = 60  # 1 minute cache
+    
+    try:
+        if os.path.exists(cache_file):
+            with open(cache_file, 'r') as f:
+                cache_data = json.load(f)
+                if time.time() - cache_data.get('timestamp', 0) < cache_valid_duration:
+                    return cache_data['volatile'], cache_data['total']
+    except Exception:
+        pass
+    
+    # Load from source
+    if not os.path.exists(lineage_log):
+        return 0, 0
+
+    try:
+        with open(lineage_log, "r") as f:
+            lineage_data = json.load(f)
+    except Exception as e:
+        owl_log(f"❌ [SHI] Failed to parse lineage file: {e}", "error")
+        return 0, 0
+
+    if not isinstance(lineage_data, dict):
+        owl_log("❌ [SHI] Lineage file is not a dictionary of bloom records", "error")
+        return 0, 0
+
+    # Calculate with enhanced logic
+    volatile = 0
+    total = len(lineage_data)
+    current_time = time.time()
+    
+    for bloom in lineage_data.values():
+        depth = bloom.get("generation_depth", 0)
+        age = current_time - bloom.get('timestamp', current_time)
+        
+        # Consider bloom volatile if shallow depth or very recent
+        is_volatile = depth < 2 or age < 300  # 5 minutes
+        if is_volatile:
+            volatile += 1
+    
+    # Cache the result
+    try:
+        os.makedirs(os.path.dirname(cache_file), exist_ok=True)
+        with open(cache_file, 'w') as f:
+            json.dump({
+                'volatile': volatile,
+                'total': total,
+                'timestamp': current_time
+            }, f)
+    except Exception:
+        pass
+    
+    return volatile, total
+
+def update_schema_health(scup_value):
+    """
+    LEGACY: Compute Schema Health Index using SCUP and rebloom entropy penalties
+    Enhanced with comprehensive health system integration
+    """
+    shi_system = get_schema_health_system()
+    
+    # Get enhanced metrics
+    volatile, total = load_rebloom_volatility()
+    volatile_ratio = (volatile / total) if total else 0
+
+    # Base calculation with SCUP integration
+    base_penalty = min(0.2, volatile_ratio * 0.5)
+    scup_multiplier = 1.0 + (scup_value - 0.5) * 0.1  # SCUP influence
+    
+    shi = max(0.0, min(1.0, scup_value * (1 - base_penalty) * scup_multiplier))
+    shi = round(shi, 4)
+
+    # Enhanced logging with health system integration
+    current_tick_val = current_tick()
+    
+    # Log to traditional curve file
+    output_file = "juliet_flowers/cluster_report/schema_health_curve.csv"
+    os.makedirs(os.path.dirname(output_file), exist_ok=True)
+    with open(output_file, "a") as f:
+        f.write(f"{current_tick_val},{shi:.4f}\n")
+    
+    # Log enhanced status
+    zone = shi_system._determine_health_zone(shi)
+    owl_log(f"🧠 [SHI] Legacy Update | SHI: {shi:.4f} | Zone: {zone.value} | SCUP: {scup_value:.3f}", "info")
+
+    return shi
+
+def calculate_SHI(pulse_avg, active_blooms, sealed_blooms, sigil_entropy_list):
+    """
+    LEGACY: Composite metric combining pulse_avg, bloom density, and entropy scores
+    Enhanced with comprehensive health system
+    """
+    shi_system = get_schema_health_system()
+    
+    # Use comprehensive health computation
+    additional_metrics = {
+        'legacy_call': True,
+        'caller': 'calculate_SHI'
+    }
+    
+    metrics = shi_system.compute_comprehensive_health(
+        pulse_avg, active_blooms, sealed_blooms, sigil_entropy_list, additional_metrics
+    )
+    
+    return metrics.shi
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# 🎛️ DIAGNOSTIC AND MONITORING UTILITIES
+# ═══════════════════════════════════════════════════════════════════════════════
+
+def run_schema_health_diagnostics():
+    """Run comprehensive schema health diagnostics"""
+    
+    shi_system = get_schema_health_system()
+    
+    owl_log("🔧 [SHI] Running schema health diagnostics...", "info")
+    
+    # System status
+    summary = shi_system.get_health_summary()
+    
+    # Performance metrics
+    if shi_system.computation_times:
+        avg_computation_time = np.mean(shi_system.computation_times)
+        max_computation_time = np.max(shi_system.computation_times)
+        owl_log(f"⚡ [SHI] Performance | Avg: {avg_computation_time:.4f}s | Max: {max_computation_time:.4f}s", "info")
+    
+    # Data integrity
+    data_health = {
+        'shi_history_size': len(shi_system.shi_history),
+        'pulse_history_size': len(shi_system.pulse_history),
+        'entropy_history_size': len(shi_system.entropy_history),
+        'memory_utilization': len(shi_system.shi_history) / shi_system.memory_window
+    }
+    
+    owl_log(f"📊 [SHI] Data Health | {data_health}", "info")
+    
+    # File system health
+    required_dirs = [
+        "juliet_flowers/cluster_report/health_analytics",
+        "juliet_flowers/cluster_report/predictions"
+    ]
+    
+    for dir_path in required_dirs:
+        if not os.path.exists(dir_path):
+            owl_log(f"⚠️ [SHI] Missing directory: {dir_path}", "warning")
+            os.makedirs(dir_path, exist_ok=True)
+            owl_log(f"✅ [SHI] Created directory: {dir_path}", "info")
+    
+    owl_log("✅ [SHI] Schema health diagnostics complete", "success")
+    
+    return summary
+
+# Initialize system on import
+if __name__ != "__main__":
+    # Auto-initialize on import
+    try:
+        _global_shi_system = SchemaHealthIndex()
+        owl_log("🚀 [SHI] Advanced Schema Health Index System ready", "success")
+    except Exception as e:
+        owl_log(f"❌ [SHI] Initialization failed: {e}", "error")
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# 🧪 TESTING AND VALIDATION
+# ═══════════════════════════════════════════════════════════════════════════════
+
+if __name__ == "__main__":
+    # Run diagnostics if executed directly
+    print("🧠 DAWN Schema Health Index System - Diagnostic Mode")
+    print("═" * 60)
+    
+    # Initialize system
+    shi_system = SchemaHealthIndex()
+    
+    # Run test computation
+    test_metrics = shi_system.compute_comprehensive_health(
+        pulse_avg=7.5,
+        active_blooms=12,
+        sealed_blooms=8,
+        sigil_entropy_list=[0.3, 0.7, 0.5, 0.9],
+        additional_metrics={'test_mode': True}
+    )
+    
+    print(f"Test SHI: {test_metrics.shi:.4f}")
+    print(f"Health Zone: {test_metrics.zone.value}")
+    print(f"Pattern: {test_metrics.pattern.value}")
+    print(f"Collapse Risk: {test_metrics.collapse_risk:.3f}")
+    
+    # Run diagnostics
+    summary = run_schema_health_diagnostics()
+    print(f"System Summary: {summary}")
+    
+    print("✅ Diagnostic complete!")

@@ -1,0 +1,4 @@
+{"parent_id": null, "child_id": "test_thought_001", "timestamp": "2025-07-24T23:04:44.171176", "method": "initial_seed", "lineage_id": "lineage_0"}
+{"parent_id": "test_thought_001", "child_id": "test_thought_002", "timestamp": "2025-07-24T23:04:44.178176", "method": "rebloom_cascade", "lineage_id": "lineage_1"}
+{"parent_id": "test_thought_002", "child_id": "test_thought_003", "timestamp": "2025-07-24T23:04:44.185177", "method": "sigil_network_trigger", "lineage_id": "lineage_2"}
+{"parent_id": "test_thought_003", "child_id": "test_meta_thought_004", "timestamp": "2025-07-24T23:04:44.212177", "method": "meta_cognitive_reflection", "lineage_id": "lineage_3"}

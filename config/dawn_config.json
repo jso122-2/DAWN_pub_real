@@ -1,0 +1,107 @@
+{
+  "description": "DAWN Talk Integration Configuration",
+  "version": "1.0.0",
+  
+  "api_endpoints": {
+    "metrics_websocket_url": "ws://localhost:8000/ws",
+    "api_base_url": "http://localhost:8000",
+    "health_check_url": "http://localhost:8000/health",
+    "talk_endpoint": "http://localhost:8000/talk",
+    "thoughts_endpoint": "http://localhost:8000/dawn/thoughts",
+    "stream_websocket_url": "ws://localhost:8000/dawn/stream"
+  },
+  
+  "logging": {
+    "log_level": "INFO",
+    "conversation_log_dir": "logs/conversations",
+    "main_log_file": "logs/dawn_integration.log",
+    "enable_file_logging": true,
+    "enable_console_logging": true,
+    "log_rotation": {
+      "enabled": true,
+      "max_file_size_mb": 50,
+      "backup_count": 5
+    }
+  },
+  
+  "consciousness_system": {
+    "initialization_timeout_seconds": 30,
+    "state_update_interval_seconds": 1.0,
+    "consciousness_monitoring_enabled": true,
+    "automatic_state_transitions": true
+  },
+  
+  "spontaneous_thoughts": {
+    "thought_generation_interval": 5.0,
+    "max_thoughts_in_buffer": 20,
+    "priority_levels": {
+      "critical": 3,
+      "high": 2,
+      "normal": 1,
+      "low": 0
+    },
+    "cooldown_periods": {
+      "default_cooldown_seconds": 300,
+      "milestone_cooldown_seconds": 900,
+      "critical_cooldown_seconds": 60
+    }
+  },
+  
+  "metrics_stream": {
+    "max_reconnect_attempts": 10,
+    "reconnect_delay": 5.0,
+    "connection_timeout": 10.0,
+    "heartbeat_interval": 30.0,
+    "metrics_buffer_size": 1000,
+    "metrics_update_threshold": 0.05
+  },
+  
+  "conversation": {
+    "default_confidence_threshold": 0.3,
+    "intent_recognition_enabled": true,
+    "action_execution_enabled": true,
+    "conversation_history_limit": 100,
+    "analysis_frequency": 10
+  },
+  
+  "performance": {
+    "max_thread_count": 10,
+    "memory_limit_mb": 512,
+    "cpu_usage_limit_percent": 80,
+    "gc_frequency_seconds": 60
+  },
+  
+  "security": {
+    "enable_ssl_verification": false,
+    "allowed_hosts": ["localhost", "127.0.0.1"],
+    "rate_limiting": {
+      "enabled": false,
+      "max_requests_per_minute": 60
+    }
+  },
+  
+  "features": {
+    "interactive_mode": true,
+    "background_thought_generation": true,
+    "metrics_stream_connection": true,
+    "conversation_analysis": true,
+    "session_summaries": true,
+    "real_time_streaming": true
+  },
+  
+  "development": {
+    "debug_mode": false,
+    "verbose_logging": false,
+    "test_mode": false,
+    "mock_metrics": false,
+    "simulation_mode": false
+  },
+  
+  "integration": {
+    "tick_engine_integration": true,
+    "consciousness_layer_bridge": true,
+    "fastapi_endpoint_usage": true,
+    "websocket_streaming": true,
+    "graceful_shutdown": true
+  }
+} 

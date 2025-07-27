@@ -1,0 +1,256 @@
+/* DAWN Consciousness HUD - Blueprint Theme */
+.tick-monitor-panel {
+  background: #0d1b2a;
+  border: 2px solid #1e3a5f;
+  border-radius: 8px;
+  padding: 20px;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'DejaVu Sans Mono', 'Courier New', monospace;
+  color: #ffffffb4;
+  width: 400px;
+  min-height: 280px;
+  position: relative;
+  box-shadow: 
+    0 0 20px rgba(30, 58, 95, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  overflow: hidden;
+}
+
+.tick-monitor-panel::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(circle at 20% 80%, rgba(30, 58, 95, 0.3) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(30, 58, 95, 0.2) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.tick-monitor-panel > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Header Section */
+.hud-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.hud-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #ffffff;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  text-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
+}
+
+.status-indicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pulse-dot {
+  width: 8px;
+  height: 8px;
+  background: #00ff88;
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+  box-shadow: 0 0 8px rgba(0, 255, 136, 0.6);
+}
+
+.status-text {
+  font-size: 10px;
+  color: #00ff88;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(1.2); }
+}
+
+/* Metrics Display */
+.metrics-display {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.metric-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  transition: all 0.3s ease;
+}
+
+.metric-row:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.metric-label {
+  font-size: 12px;
+  color: #ffffffb4;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  min-width: 80px;
+}
+
+.metric-value {
+  font-size: 16px;
+  font-weight: 600;
+  color: #ffffff;
+  text-align: right;
+  min-width: 80px;
+  text-shadow: 0 0 4px rgba(255, 255, 255, 0.3);
+}
+
+/* Specific value styling */
+.metric-value.tick-number {
+  font-size: 18px;
+  color: #00d4ff;
+  text-shadow: 0 0 8px rgba(0, 212, 255, 0.4);
+}
+
+.metric-value.mood {
+  color: #00ff88;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.metric-value.entropy {
+  color: #ffaa00;
+}
+
+.metric-value.scup {
+  color: #ff6b6b;
+}
+
+/* Critical glow effects */
+.critical-glow {
+  animation: criticalGlow 1.5s ease-in-out infinite alternate;
+  border-color: rgba(255, 107, 107, 0.6) !important;
+  background: rgba(255, 107, 107, 0.1) !important;
+}
+
+.critical-glow .metric-value {
+  color: #ff4444 !important;
+  text-shadow: 0 0 12px rgba(255, 68, 68, 0.8) !important;
+}
+
+@keyframes criticalGlow {
+  0% { 
+    box-shadow: 0 0 5px rgba(255, 68, 68, 0.3);
+  }
+  100% { 
+    box-shadow: 0 0 20px rgba(255, 68, 68, 0.6), 0 0 30px rgba(255, 68, 68, 0.3);
+  }
+}
+
+/* Footer */
+.hud-footer {
+  display: flex;
+  justify-content: center;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.refresh-rate {
+  font-size: 10px;
+  color: #ffffffb4;
+  opacity: 0.7;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+/* Zone indicator styles */
+.zone-indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 8px;
+  background: #4ecdc4;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 8px rgba(78, 205, 196, 0.4);
+}
+
+/* Zone-specific colors */
+.zone-green .zone-indicator {
+  background: #6bcf7f;
+  box-shadow: 0 0 8px rgba(107, 207, 127, 0.4);
+}
+
+.zone-yellow .zone-indicator {
+  background: #ffd93d;
+  box-shadow: 0 0 8px rgba(255, 217, 61, 0.4);
+}
+
+.zone-orange .zone-indicator {
+  background: #ff9500;
+  box-shadow: 0 0 8px rgba(255, 149, 0, 0.4);
+}
+
+.zone-red .zone-indicator {
+  background: #ff6b6b;
+  box-shadow: 0 0 8px rgba(255, 107, 107, 0.4);
+  animation: criticalGlow 1.5s ease-in-out infinite alternate;
+}
+
+/* Heat row specific styling */
+.heat-row {
+  border-left: 3px solid transparent;
+  transition: border-color 0.3s ease;
+}
+
+.heat-row.critical-glow {
+  border-left-color: #ff6b6b;
+}
+
+/* Zone row layout */
+.zone-row {
+  display: flex;
+  align-items: center;
+}
+
+/* Enhanced status indicator */
+.pulse-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #6bcf7f;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 8px rgba(107, 207, 127, 0.4);
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+  .tick-monitor-panel {
+    width: 100%;
+    padding: 16px;
+  }
+  
+  .metric-value {
+    font-size: 14px;
+  }
+  
+  .metric-value.tick-number {
+    font-size: 16px;
+  }
+} 

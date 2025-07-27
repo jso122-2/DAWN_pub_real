@@ -1,0 +1,5 @@
+{"parent_id": null, "child_id": "memory_001", "timestamp": "2025-07-24T23:03:49.826801", "method": "original_thought", "lineage_id": "lineage_0", "child_topic": "general"}
+{"parent_id": "memory_001", "child_id": "memory_002", "timestamp": "2025-07-24T23:03:49.834797", "method": "semantic_retrieval", "lineage_id": "lineage_1", "parent_topic": "general", "child_topic": "general"}
+{"parent_id": "memory_002", "child_id": "memory_003", "timestamp": "2025-07-24T23:03:49.845802", "method": "topic_association", "lineage_id": "lineage_2", "parent_topic": "general", "child_topic": "general"}
+{"parent_id": "memory_003", "child_id": "memory_004", "timestamp": "2025-07-24T23:03:49.854801", "method": "sigil_triggered", "lineage_id": "lineage_3", "parent_topic": "general", "child_topic": "general"}
+{"parent_id": "memory_002", "child_id": "memory_005", "timestamp": "2025-07-24T23:03:49.863799", "method": "semantic_retrieval", "lineage_id": "lineage_4", "parent_topic": "general", "child_topic": "general"}

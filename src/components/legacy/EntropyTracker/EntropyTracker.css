@@ -1,0 +1,116 @@
+.entropy-tracker {
+  position: relative;
+}
+
+.entropy-tracker.size-compact .entropy-container {
+  width: 120px;
+  height: 120px;
+}
+
+.entropy-tracker.size-normal .entropy-container {
+  width: 200px;
+  height: 200px;
+}
+
+.entropy-tracker.size-large .entropy-container {
+  width: 300px;
+  height: 300px;
+}
+
+.entropy-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.entropy-glow {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  filter: blur(20px);
+}
+
+.entropy-ring {
+  position: absolute;
+  border: 2px solid rgba(255, 0, 170, 0.3);
+  border-radius: 50%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: 
+    0 0 20px rgba(255, 0, 170, 0.2),
+    inset 0 0 20px rgba(255, 0, 170, 0.1);
+}
+
+.entropy-core {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 80px;
+  height: 80px;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(10px);
+  border: 2px solid #ff00aa;
+  border-radius: 50%;
+  z-index: 10;
+  box-shadow: 
+    0 0 30px rgba(255, 0, 170, 0.4),
+    inset 0 0 20px rgba(255, 0, 170, 0.1);
+}
+
+.entropy-value {
+  font-size: 20px;
+  font-weight: 700;
+  color: #ff00aa;
+  text-shadow: 0 0 10px rgba(255, 0, 170, 0.5);
+}
+
+.entropy-label {
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.6);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.chaos-particle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: #ff00aa;
+  border-radius: 50%;
+  top: 50%;
+  left: 50%;
+  box-shadow: 0 0 8px rgba(255, 0, 170, 0.8);
+}
+
+/* Compact size adjustments */
+.entropy-tracker.size-compact .entropy-core {
+  width: 60px;
+  height: 60px;
+}
+
+.entropy-tracker.size-compact .entropy-value {
+  font-size: 16px;
+}
+
+.entropy-tracker.size-compact .entropy-label {
+  font-size: 8px;
+}
+
+/* Large size adjustments */
+.entropy-tracker.size-large .entropy-core {
+  width: 120px;
+  height: 120px;
+}
+
+.entropy-tracker.size-large .entropy-value {
+  font-size: 28px;
+}
+
+.entropy-tracker.size-large .entropy-label {
+  font-size: 12px;
+} 

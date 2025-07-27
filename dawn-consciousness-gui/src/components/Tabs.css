@@ -1,0 +1,159 @@
+.dawn-tabs {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background: #0a0e1a;
+  color: #e8f4f8;
+  font-family: 'Courier New', monospace;
+}
+
+.tab-navigation {
+  background: linear-gradient(135deg, #0f1419 0%, #1a1f2e 100%);
+  border-bottom: 2px solid #2d5a87;
+  box-shadow: 0 2px 8px rgba(45, 90, 135, 0.3);
+  padding: 0;
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  min-height: 60px;
+}
+
+.tab-header {
+  padding: 0 1.5rem;
+  border-right: 1px solid #2d5a87;
+}
+
+.dawn-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: bold;
+}
+
+.logo-icon {
+  font-size: 1.5rem;
+}
+
+.logo-text {
+  font-size: 1.2rem;
+  color: #4a9eff;
+  letter-spacing: 0.1em;
+}
+
+.logo-version {
+  font-size: 0.75rem;
+  color: #6c8db5;
+  font-weight: normal;
+}
+
+.tab-buttons {
+  display: flex;
+  gap: 0;
+  flex: 1;
+}
+
+.tab-button {
+  background: transparent;
+  border: none;
+  color: #8ba4c7;
+  padding: 1rem 1.5rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  position: relative;
+  border-bottom: 3px solid transparent;
+}
+
+.tab-button:hover {
+  background: rgba(74, 158, 255, 0.1);
+  color: #4a9eff;
+}
+
+.tab-button.active {
+  background: rgba(74, 158, 255, 0.15);
+  color: #4a9eff;
+  border-bottom-color: #4a9eff;
+}
+
+.tab-icon {
+  font-size: 1.1rem;
+}
+
+.tab-label {
+  font-weight: 600;
+  letter-spacing: 0.025em;
+}
+
+.active-indicator {
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #4a9eff 0%, #7bb3ff 100%);
+  box-shadow: 0 0 8px rgba(74, 158, 255, 0.6);
+}
+
+.tab-content {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+  background: #0a0e1a;
+}
+
+/* Blueprint-style accents */
+.tab-navigation::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, #2d5a87 20%, #2d5a87 80%, transparent 100%);
+}
+
+.tab-navigation::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, #4a9eff 50%, transparent 100%);
+  opacity: 0.3;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .tab-navigation {
+    flex-direction: column;
+    min-height: auto;
+    gap: 0;
+  }
+  
+  .tab-header {
+    border-right: none;
+    border-bottom: 1px solid #2d5a87;
+    padding: 0.75rem 1rem;
+  }
+  
+  .tab-buttons {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .tab-button {
+    flex: 1;
+    justify-content: center;
+    padding: 0.75rem 1rem;
+  }
+  
+  .tab-label {
+    display: none;
+  }
+} 

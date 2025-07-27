@@ -1,0 +1,25 @@
+version: "2"
+authtoken: YOUR_NGROK_AUTH_TOKEN_HERE
+
+tunnels:
+  frontend:
+    proto: http
+    addr: 5175
+    host_header: "localhost:5175"
+    inspect: true
+    bind_tls: true
+    
+  cv-backend:
+    proto: http
+    addr: 8081
+    host_header: "localhost:8081"
+    inspect: true
+    bind_tls: true
+    
+  # Optional: If you need to tunnel the main DAWN backend too
+  dawn-backend:
+    proto: http
+    addr: 8000
+    host_header: "localhost:8000"
+    inspect: true
+    bind_tls: true 

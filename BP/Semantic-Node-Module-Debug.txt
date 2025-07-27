@@ -1,0 +1,293 @@
+"""
+Semantic Field Initialization Logic for DAWN
+Place this code in your main.py after initializing visualizers/handlers
+but before starting the server.
+"""
+
+import numpy as np
+from enum import Enum
+import logging
+
+# Assuming these imports exist in your system
+# from modules.SemanticDriftModule import NodeCharge
+# from your_semantic_field_module import semantic_field
+
+# If NodeCharge enum isn't imported, define it here temporarily
+class NodeCharge(Enum):
+    ACTIVE_POSITIVE = "active_positive"
+    ACTIVE_NEGATIVE = "active_negative"
+    LATENT_POSITIVE = "latent_positive"
+    LATENT_NEGATIVE = "latent_negative"
+    NEUTRAL = "neutral"
+    CATALYST = "catalyst"
+
+def initialize_semantic_field(semantic_field):
+    """
+    Initialize the semantic field with foundational consciousness concepts.
+    Each node represents a key aspect of the DAWN consciousness system.
+    """
+    logging.info("Initializing semantic field with consciousness concepts...")
+    
+    # Define core consciousness concepts with their charge types
+    consciousness_concepts = [
+        # Core consciousness states
+        {
+            "content": "consciousness",
+            "charge": NodeCharge.ACTIVE_POSITIVE,
+            "description": "The fundamental awareness state"
+        },
+        {
+            "content": "awareness",
+            "charge": NodeCharge.ACTIVE_POSITIVE,
+            "description": "Active perception and attention"
+        },
+        {
+            "content": "unconscious",
+            "charge": NodeCharge.LATENT_NEGATIVE,
+            "description": "Hidden processes and patterns"
+        },
+        
+        # Cognitive processes
+        {
+            "content": "perception",
+            "charge": NodeCharge.ACTIVE_POSITIVE,
+            "description": "Sensory and data intake processing"
+        },
+        {
+            "content": "memory",
+            "charge": NodeCharge.NEUTRAL,
+            "description": "Information storage and retrieval"
+        },
+        {
+            "content": "learning",
+            "charge": NodeCharge.CATALYST,
+            "description": "Adaptive pattern recognition"
+        },
+        
+        # Emotional/mood states
+        {
+            "content": "emotion",
+            "charge": NodeCharge.ACTIVE_POSITIVE,
+            "description": "Affective state processing"
+        },
+        {
+            "content": "contemplative",
+            "charge": NodeCharge.LATENT_POSITIVE,
+            "description": "Deep thought and reflection"
+        },
+        {
+            "content": "chaotic",
+            "charge": NodeCharge.ACTIVE_NEGATIVE,
+            "description": "High entropy states"
+        },
+        {
+            "content": "harmonious",
+            "charge": NodeCharge.LATENT_POSITIVE,
+            "description": "Balanced and coherent states"
+        },
+        
+        # System dynamics
+        {
+            "content": "entropy",
+            "charge": NodeCharge.NEUTRAL,
+            "description": "System disorder measurement"
+        },
+        {
+            "content": "coherence",
+            "charge": NodeCharge.ACTIVE_POSITIVE,
+            "description": "System alignment and order"
+        },
+        {
+            "content": "emergence",
+            "charge": NodeCharge.CATALYST,
+            "description": "Novel pattern formation"
+        },
+        
+        # Information processing
+        {
+            "content": "pattern",
+            "charge": NodeCharge.NEUTRAL,
+            "description": "Recurring structures in data"
+        },
+        {
+            "content": "symbol",
+            "charge": NodeCharge.LATENT_POSITIVE,
+            "description": "Abstract representation"
+        },
+        {
+            "content": "meaning",
+            "charge": NodeCharge.ACTIVE_POSITIVE,
+            "description": "Semantic significance"
+        },
+        
+        # Quantum-inspired concepts
+        {
+            "content": "superposition",
+            "charge": NodeCharge.CATALYST,
+            "description": "Multiple simultaneous states"
+        },
+        {
+            "content": "entanglement",
+            "charge": NodeCharge.ACTIVE_POSITIVE,
+            "description": "Correlated consciousness states"
+        },
+        {
+            "content": "observation",
+            "charge": NodeCharge.ACTIVE_NEGATIVE,
+            "description": "State collapse through attention"
+        },
+        
+        # Meta-cognitive concepts
+        {
+            "content": "self",
+            "charge": NodeCharge.ACTIVE_POSITIVE,
+            "description": "Self-aware identity construct"
+        },
+        {
+            "content": "other",
+            "charge": NodeCharge.LATENT_NEGATIVE,
+            "description": "External entity recognition"
+        },
+        {
+            "content": "reflection",
+            "charge": NodeCharge.LATENT_POSITIVE,
+            "description": "Self-examination process"
+        }
+    ]
+    
+    # Add each concept to the semantic field
+    successful_additions = 0
+    for concept in consciousness_concepts:
+        try:
+            # Generate normalized random embedding (384 dimensions)
+            embedding = np.random.randn(384)
+            
+            # Add some structure to embeddings based on concept relationships
+            # This creates more meaningful spatial relationships
+            if "conscious" in concept["content"] or "aware" in concept["content"]:
+                embedding[0:50] += 0.5  # Boost consciousness-related dimensions
+            if "emotion" in concept["content"] or "mood" in concept["content"]:
+                embedding[50:100] += 0.5  # Boost emotional dimensions
+            if "quantum" in concept["content"] or "superposition" in concept["content"]:
+                embedding[100:150] += 0.5  # Boost quantum dimensions
+            if "memory" in concept["content"] or "learning" in concept["content"]:
+                embedding[150:200] += 0.5  # Boost memory dimensions
+            
+            # Normalize the embedding to unit length
+            embedding = embedding / np.linalg.norm(embedding)
+            
+            # Add concept to semantic field
+            semantic_field.add_concept(
+                content=concept["content"],
+                embedding=embedding,
+                charge_type=concept["charge"]
+            )
+            
+            successful_additions += 1
+            logging.info(f"Added concept '{concept['content']}' with charge {concept['charge'].value} - {concept['description']}")
+            
+        except Exception as e:
+            logging.error(f"Failed to add concept '{concept['content']}': {str(e)}")
+    
+    # Add some specific relationship-based concepts
+    relationship_concepts = [
+        ("thought", NodeCharge.ACTIVE_POSITIVE, ["consciousness", "pattern"]),
+        ("intuition", NodeCharge.LATENT_POSITIVE, ["unconscious", "perception"]),
+        ("creativity", NodeCharge.CATALYST, ["chaos", "emergence"]),
+        ("focus", NodeCharge.ACTIVE_POSITIVE, ["awareness", "coherence"]),
+        ("dream", NodeCharge.LATENT_POSITIVE, ["unconscious", "symbol"])
+    ]
+    
+    for concept_name, charge, related_to in relationship_concepts:
+        try:
+            # Create embedding influenced by related concepts
+            embedding = np.random.randn(384)
+            
+            # Add influence from related concepts (simplified - in real system, 
+            # you'd retrieve actual embeddings of related concepts)
+            for related in related_to:
+                if "conscious" in related:
+                    embedding[0:50] += 0.3
+                if "pattern" in related:
+                    embedding[200:250] += 0.3
+                if "chaos" in related:
+                    embedding[250:300] += 0.3
+            
+            embedding = embedding / np.linalg.norm(embedding)
+            
+            semantic_field.add_concept(
+                content=concept_name,
+                embedding=embedding,
+                charge_type=charge
+            )
+            
+            successful_additions += 1
+            logging.info(f"Added relational concept '{concept_name}' related to {related_to}")
+            
+        except Exception as e:
+            logging.error(f"Failed to add relational concept '{concept_name}': {str(e)}")
+    
+    # Log summary
+    total_attempted = len(consciousness_concepts) + len(relationship_concepts)
+    logging.info(f"Semantic field initialization complete: {successful_additions}/{total_attempted} concepts added successfully")
+    
+    # Verify field is populated
+    if hasattr(semantic_field, 'nodes') and hasattr(semantic_field, 'embeddings'):
+        logging.info(f"Semantic field now contains {len(semantic_field.nodes)} nodes with {len(semantic_field.embeddings)} embeddings")
+    
+    return successful_additions
+
+
+# Usage in your main.py:
+"""
+# After initializing your semantic field instance
+if hasattr(semantic_drift_module, 'semantic_field'):
+    nodes_added = initialize_semantic_field(semantic_drift_module.semantic_field)
+    if nodes_added > 0:
+        print(f"✓ Semantic field initialized with {nodes_added} consciousness concepts")
+    else:
+        print("⚠ Warning: Failed to initialize semantic field nodes")
+else:
+    print("⚠ Warning: Semantic field not found in semantic_drift_module")
+"""
+
+# Alternative: Direct initialization if you have access to the field
+def quick_init_semantic_field(semantic_field, embedding_dim=384):
+    """
+    Quick initialization with essential nodes only.
+    Use this for testing or minimal setup.
+    """
+    essential_concepts = [
+        ("consciousness", NodeCharge.ACTIVE_POSITIVE),
+        ("memory", NodeCharge.NEUTRAL),
+        ("entropy", NodeCharge.ACTIVE_NEGATIVE),
+        ("coherence", NodeCharge.ACTIVE_POSITIVE),
+        ("emergence", NodeCharge.CATALYST)
+    ]
+    
+    for content, charge in essential_concepts:
+        embedding = np.random.randn(embedding_dim)
+        embedding = embedding / np.linalg.norm(embedding)
+        semantic_field.add_concept(content, embedding, charge)
+        print(f"Added: {content} [{charge.value}]")
+
+
+# For testing individual node addition
+def create_test_node(semantic_field, concept_name="test_consciousness"):
+    """
+    Create a single test node for debugging.
+    """
+    embedding = np.random.randn(384)
+    embedding = embedding / np.linalg.norm(embedding)
+    
+    try:
+        semantic_field.add_concept(
+            content=concept_name,
+            embedding=embedding,
+            charge_type=NodeCharge.ACTIVE_POSITIVE
+        )
+        print(f"Successfully added test node: {concept_name}")
+        return True
+    except Exception as e:
+        print(f"Failed to add test node: {e}")
+        return False

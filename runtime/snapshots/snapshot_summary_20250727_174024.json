@@ -1,0 +1,32 @@
+{
+  "timestamp": "2025-07-27T17:40:24.082849",
+  "tick_data": {
+    "tick": 2,
+    "timestamp": 1753602023.3650973,
+    "uptime": 0.0,
+    "scup": 0.6263336979711907,
+    "entropy": 0.4970839926277763,
+    "heat": 0.49359881039374454,
+    "mood": "curious",
+    "neural_activity": 0.4,
+    "consciousness_depth": 0.4118771097434306,
+    "pulse_intensity": 0.5,
+    "tick_rate": 1.0,
+    "memory_usage": 0.0,
+    "cpu_usage": 0.0,
+    "subsystems": [],
+    "raw_data": {
+      "tick": 2,
+      "timestamp": 1753602012.349958,
+      "scup": 0.6263336979711907,
+      "entropy": 0.4970839926277763,
+      "heat": 0.49359881039374454,
+      "mood": "curious",
+      "consciousness_depth": 0.4118771097434306,
+      "test_mode": true
+    }
+  },
+  "rendered_files": {},
+  "module_count": 0,
+  "total_modules_available": 27
+}

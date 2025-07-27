@@ -1,0 +1,163 @@
+# 🧠 DAWN Launcher Configuration Profiles
+# Different launch configurations for various use cases
+
+# Default system configuration
+default:
+  tick_rate: 1.0
+  gui_port: 1420
+  voice_enabled: true
+  tracer_enabled: true
+  auto_snapshot: false
+  snapshot_interval: 300  # 5 minutes
+  max_log_size: 52428800  # 50MB
+  restart_failed: true
+  startup_delay:
+    cognition: 2.0
+    tick_loop: 1.5
+    voice: 1.0
+    tracers: 1.0
+    gui: 5.0
+    snapshots: 2.0
+
+# Full demo profile - everything enabled
+demo:
+  tick_rate: 1.0
+  gui_port: 1420
+  voice_enabled: true
+  tracer_enabled: true
+  auto_snapshot: true
+  snapshot_interval: 180  # 3 minutes for demo
+  max_log_size: 104857600  # 100MB
+  restart_failed: true
+  fresh_reset: true
+  components:
+    - cognition
+    - tick_loop
+    - voice
+    - tracers
+    - gui
+    - snapshots
+
+# Production profile - stable, minimal logging
+production:
+  tick_rate: 0.5  # Slower for stability
+  gui_port: 1420
+  voice_enabled: true
+  tracer_enabled: true
+  auto_snapshot: true
+  snapshot_interval: 600  # 10 minutes
+  max_log_size: 209715200  # 200MB
+  restart_failed: true
+  fresh_reset: false
+  verbose_logging: false
+  components:
+    - cognition
+    - tick_loop
+    - voice
+    - tracers
+    - snapshots  # No GUI for production
+
+# Development profile - fast iteration
+development:
+  tick_rate: 2.0  # Faster for development
+  gui_port: 1420
+  voice_enabled: false  # Quiet for development
+  tracer_enabled: true
+  auto_snapshot: false
+  snapshot_interval: 60  # 1 minute
+  max_log_size: 26214400  # 25MB
+  restart_failed: true
+  fresh_reset: true
+  verbose_logging: true
+  components:
+    - cognition
+    - tick_loop
+    - tracers
+    - gui
+
+# Headless profile - server deployment
+headless:
+  tick_rate: 1.0
+  voice_enabled: false
+  tracer_enabled: true
+  auto_snapshot: true
+  snapshot_interval: 900  # 15 minutes
+  max_log_size: 104857600  # 100MB
+  restart_failed: true
+  fresh_reset: false
+  verbose_logging: false
+  components:
+    - cognition
+    - tick_loop
+    - tracers
+    - snapshots
+
+# Testing profile - minimal components
+testing:
+  tick_rate: 5.0  # Very fast for testing
+  voice_enabled: false
+  tracer_enabled: false
+  auto_snapshot: false
+  max_log_size: 10485760  # 10MB
+  restart_failed: false
+  fresh_reset: true
+  verbose_logging: true
+  components:
+    - cognition
+    - tick_loop
+
+# Research profile - maximum data collection
+research:
+  tick_rate: 0.2  # Very slow for detailed analysis
+  gui_port: 1420
+  voice_enabled: true
+  tracer_enabled: true
+  auto_snapshot: true
+  snapshot_interval: 30  # 30 seconds
+  max_log_size: 1073741824  # 1GB
+  restart_failed: true
+  fresh_reset: false
+  verbose_logging: true
+  detailed_metrics: true
+  components:
+    - cognition
+    - tick_loop
+    - voice
+    - tracers
+    - gui
+    - snapshots
+
+# Voice-focused profile - emphasis on TTS and modulation
+voice_demo:
+  tick_rate: 1.0
+  gui_port: 1420
+  voice_enabled: true
+  tracer_enabled: true
+  auto_snapshot: false
+  voice_modulation: true
+  voice_mood_adaptation: true
+  spoken_trace_enabled: true
+  components:
+    - cognition
+    - tick_loop
+    - voice
+    - tracers
+    - gui
+
+# Semantic analysis profile - focus on memory and patterns
+semantic:
+  tick_rate: 0.5
+  gui_port: 1420
+  voice_enabled: false
+  tracer_enabled: true
+  auto_snapshot: true
+  snapshot_interval: 120  # 2 minutes
+  memory_network_analysis: true
+  lineage_tracking: true
+  symbolic_root_detection: true
+  components:
+    - cognition
+    - tick_loop
+    - tracers
+    - gui
+    - snapshots 

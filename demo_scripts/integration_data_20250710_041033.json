@@ -1,0 +1,258 @@
+{
+  "integration_statistics": {
+    "total_analyses": 3,
+    "successful_integrations": 3,
+    "cache_hits": 0,
+    "tracer_genealogy_matches": 30,
+    "optimal_route_suggestions": 0,
+    "tracer_router_stats": {
+      "total_routes": 31,
+      "successful_routes": 31,
+      "cache_hits": 6,
+      "tracer_usage": {
+        "owl": 6,
+        "crow": 1,
+        "spider": 14,
+        "whale": 10
+      },
+      "average_routing_time": 0.00016123248684790826,
+      "success_rate": 1.0,
+      "active_routes": 31,
+      "cached_routes": 31,
+      "bloom_targets": 16
+    },
+    "rebloom_tracker_stats": {
+      "total_blooms": 16,
+      "total_roots": 2,
+      "total_reblooms": 14,
+      "max_depth": 5,
+      "average_depth": 2.5,
+      "entropy_stats": {
+        "max_positive_drift": 0.3,
+        "max_negative_drift": -0.3,
+        "average_drift": -1.982541115402065e-18
+      },
+      "depth_distribution": {
+        "0": 2,
+        "1": 3,
+        "2": 3,
+        "3": 3,
+        "4": 3,
+        "5": 2
+      },
+      "largest_family_size": 14
+    },
+    "integration_efficiency": 1.0
+  },
+  "analysis_history": [
+    {
+      "tracer_route": {
+        "tracer_type": "spider",
+        "target_bloom_id": "root_alpha",
+        "route_path": [
+          "synthesis_chamber",
+          "creative_engine",
+          "integration_hub",
+          "root_alpha"
+        ],
+        "route_score": 0.67,
+        "estimated_time": 13.485417664693765,
+        "routing_reason": "Token bridging opportunity - high density (0.88), 0.5 complexity"
+      },
+      "genealogy_analysis": {
+        "bloom_id": "root_alpha",
+        "depth": 0,
+        "has_genealogy_data": true,
+        "ancestry_chain": [
+          "root_alpha"
+        ],
+        "descendants": [
+          "bloom_001",
+          "bloom_002",
+          "bloom_004",
+          "bloom_005",
+          "bloom_006",
+          "bloom_007",
+          "bloom_008",
+          "bloom_009",
+          "bloom_010",
+          "bloom_011",
+          "bloom_012",
+          "bloom_013",
+          "bloom_014"
+        ],
+        "siblings": [],
+        "entropy_evolution": [
+          [
+            "root_alpha",
+            0.4
+          ]
+        ],
+        "family_statistics": {
+          "total_family_size": 14,
+          "generation_depth": 1,
+          "descendant_count": 13,
+          "is_root": false,
+          "is_leaf": false
+        }
+      },
+      "family_context": {
+        "bloom_id": "root_alpha",
+        "tracer_type": "spider",
+        "context_match_score": 0.9,
+        "context_type": "highly_connected_family",
+        "family_size": 14,
+        "generation_depth": 1,
+        "has_descendants": true,
+        "has_ancestors": true
+      },
+      "cognitive_insights": [
+        "Root bloom identified: Potential founding cognitive pattern",
+        "Large cognitive family detected: High potential for network effects",
+        "Optimal tracer-family alignment: highly_connected_family"
+      ],
+      "routing_recommendations": [
+        "High descendant count: Consider Whale tracer for family cluster analysis"
+      ],
+      "timestamp": "2025-07-10T04:10:33.463977"
+    },
+    {
+      "tracer_route": {
+        "tracer_type": "spider",
+        "target_bloom_id": "bloom_001",
+        "route_path": [
+          "synthesis_chamber",
+          "creative_engine",
+          "integration_hub",
+          "bloom_001"
+        ],
+        "route_score": 0.76,
+        "estimated_time": 13.473591691852171,
+        "routing_reason": "Token bridging opportunity - high density (0.79), 0.6 complexity"
+      },
+      "genealogy_analysis": {
+        "bloom_id": "bloom_001",
+        "depth": 1,
+        "has_genealogy_data": true,
+        "ancestry_chain": [
+          "root_alpha",
+          "bloom_001"
+        ],
+        "descendants": [
+          "bloom_004",
+          "bloom_005",
+          "bloom_007",
+          "bloom_008",
+          "bloom_010",
+          "bloom_011",
+          "bloom_013",
+          "bloom_014"
+        ],
+        "siblings": [
+          "bloom_002"
+        ],
+        "entropy_evolution": [
+          [
+            "root_alpha",
+            0.4
+          ],
+          [
+            "bloom_001",
+            0.5
+          ]
+        ],
+        "family_statistics": {
+          "total_family_size": 10,
+          "generation_depth": 2,
+          "descendant_count": 8,
+          "is_root": false,
+          "is_leaf": false
+        }
+      },
+      "family_context": {
+        "bloom_id": "bloom_001",
+        "tracer_type": "spider",
+        "context_match_score": 0.9,
+        "context_type": "highly_connected_family",
+        "family_size": 10,
+        "generation_depth": 2,
+        "has_descendants": true,
+        "has_ancestors": true
+      },
+      "cognitive_insights": [
+        "Optimal tracer-family alignment: highly_connected_family"
+      ],
+      "routing_recommendations": [],
+      "timestamp": "2025-07-10T04:10:33.466977"
+    },
+    {
+      "tracer_route": {
+        "tracer_type": "owl",
+        "target_bloom_id": "bloom_004",
+        "route_path": [
+          "analysis_core",
+          "deep_processor",
+          "pattern_analyzer",
+          "logic_engine",
+          "bloom_004"
+        ],
+        "route_score": 0.7200000000000001,
+        "estimated_time": 28.622479186618463,
+        "routing_reason": "Deep cognitive pattern recognition in evolving bloom"
+      },
+      "genealogy_analysis": {
+        "bloom_id": "bloom_004",
+        "depth": 2,
+        "has_genealogy_data": true,
+        "ancestry_chain": [
+          "root_alpha",
+          "bloom_001",
+          "bloom_004"
+        ],
+        "descendants": [
+          "bloom_007",
+          "bloom_010",
+          "bloom_013"
+        ],
+        "siblings": [
+          "bloom_005"
+        ],
+        "entropy_evolution": [
+          [
+            "root_alpha",
+            0.4
+          ],
+          [
+            "bloom_001",
+            0.5
+          ],
+          [
+            "bloom_004",
+            0.8
+          ]
+        ],
+        "family_statistics": {
+          "total_family_size": 6,
+          "generation_depth": 3,
+          "descendant_count": 3,
+          "is_root": false,
+          "is_leaf": false
+        }
+      },
+      "family_context": {
+        "bloom_id": "bloom_004",
+        "tracer_type": "owl",
+        "context_match_score": 0.8,
+        "context_type": "deep_structured_family",
+        "family_size": 6,
+        "generation_depth": 3,
+        "has_descendants": true,
+        "has_ancestors": true
+      },
+      "cognitive_insights": [],
+      "routing_recommendations": [],
+      "timestamp": "2025-07-10T04:10:33.468977"
+    }
+  ],
+  "timestamp": "2025-07-10T04:10:33.490977"
+}

@@ -1,0 +1,163 @@
+.viewport-controls {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(10px);
+  border: 1px solid #00bcd4;
+  border-radius: 8px;
+  padding: 16px;
+  color: #e1f5fe;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  z-index: 1000;
+  box-shadow: 0 4px 20px rgba(0, 188, 212, 0.3);
+  min-width: 200px;
+}
+
+.viewport-status {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #00bcd4;
+}
+
+.status-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.status-label {
+  font-size: 10px;
+  color: #4dd0e1;
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+.status-value {
+  font-size: 11px;
+  color: #e1f5fe;
+  padding: 2px 6px;
+  background: rgba(0, 188, 212, 0.2);
+  border-radius: 4px;
+  min-width: 50px;
+  text-align: center;
+}
+
+.status-value.active {
+  background: rgba(0, 188, 212, 0.4);
+  color: #ffffff;
+  animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.viewport-buttons {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+  justify-content: center;
+}
+
+.button-group {
+  display: flex;
+  gap: 4px;
+}
+
+.viewport-btn {
+  background: rgba(0, 188, 212, 0.2);
+  border: 1px solid #00bcd4;
+  color: #e1f5fe;
+  padding: 6px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: all 0.2s ease;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.viewport-btn:hover {
+  background: rgba(0, 188, 212, 0.4);
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 188, 212, 0.5);
+  transform: translateY(-1px);
+}
+
+.viewport-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 4px rgba(0, 188, 212, 0.3);
+}
+
+.zoom-btn {
+  font-weight: bold;
+}
+
+.center-btn, .reset-btn {
+  font-size: 14px;
+}
+
+.viewport-help {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-top: 12px;
+  border-top: 1px solid #00bcd4;
+}
+
+.help-text {
+  font-size: 10px;
+  color: #4dd0e1;
+  line-height: 1.4;
+}
+
+.help-text strong {
+  color: #e1f5fe;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .viewport-controls {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    top: auto;
+    font-size: 11px;
+    padding: 12px;
+    min-width: 180px;
+  }
+
+  .viewport-status {
+    gap: 12px;
+  }
+
+  .viewport-help {
+    display: none; /* Hide help text on mobile */
+  }
+}
+
+/* Dark mode compatibility */
+@media (prefers-color-scheme: dark) {
+  .viewport-controls {
+    background: rgba(0, 0, 0, 0.9);
+    border-color: #26c6da;
+  }
+
+  .status-value {
+    background: rgba(38, 198, 218, 0.3);
+  }
+
+  .viewport-btn {
+    background: rgba(38, 198, 218, 0.2);
+    border-color: #26c6da;
+  }
+
+  .viewport-btn:hover {
+    background: rgba(38, 198, 218, 0.4);
+  }
+} 

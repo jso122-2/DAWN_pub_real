@@ -1,0 +1,214 @@
+# DAWN Integrated Components Configuration
+# Visual rendering and journal memory integration settings
+
+visual_rendering:
+  # Sigil Renderer Configuration
+  sigil_renderer:
+    enabled: true
+    mode: "terminal"  # Options: terminal, minimal, gui
+    
+    # Display settings
+    use_colors: true
+    clear_screen: true
+    show_timestamp: true
+    show_borders: true
+    terminal_width: 80
+    update_interval: 2.0
+    
+    # Sigil display limits
+    max_sigils_display: 10
+    max_organs_display: 8
+    
+    # Urgency color mapping
+    colors:
+      low: "green"
+      medium: "yellow" 
+      high: "red"
+      critical: "bright_magenta"
+  
+  # DAWN Renderer Integration
+  renderer_integration:
+    enabled: true
+    auto_render: true
+    render_mode: "full"  # Options: full, minimal
+    
+    # Event subscriptions
+    subscribe_to_pulse_updates: true
+    subscribe_to_sigil_changes: true
+    subscribe_to_memory_updates: true
+    
+    # Performance settings
+    max_render_frequency: 0.5  # Minimum seconds between renders
+    async_rendering: false
+
+journal_memory:
+  # Rebloom Journal Configuration
+  rebloom_journal:
+    enabled: true
+    max_words_per_chunk: 400
+    default_topic: "introspection"
+    
+    # Text processing
+    preserve_sentence_boundaries: true
+    clean_excessive_punctuation: true
+    normalize_whitespace: true
+    
+    # Sigil inference
+    content_based_sigils: true
+    pulse_state_sigils: true
+    max_sigils_per_chunk: 3
+  
+  # Journal Memory Adapter
+  memory_adapter:
+    enabled: true
+    
+    # Enhanced features
+    enable_memory_threading: true
+    enable_bloom_triggers: true
+    enable_resonance_detection: true
+    
+    # Memory threading
+    memory_thread_window_hours: 24
+    max_thread_connections: 5
+    semantic_similarity_threshold: 0.7
+    
+    # Bloom triggers
+    bloom_trigger_threshold: 0.6
+    emotional_intensity_weights:
+      high: 0.8
+      medium: 0.5
+      low: 0.2
+    
+    # Resonance detection
+    resonance_threshold: 0.6
+    resonance_factors:
+      - entropy_alignment
+      - zone_matching
+      - temporal_focus
+      - emotional_valence
+
+integration:
+  # Component Integration Settings
+  cross_component:
+    enabled: true
+    real_time_sync: true
+    
+    # Visual-Journal Integration
+    visual_journal_sync:
+      show_journal_processing: true
+      highlight_memory_threading: true
+      display_bloom_triggers: true
+      show_resonance_detection: true
+    
+    # Event propagation
+    event_propagation:
+      journal_to_visual: true
+      visual_to_journal: false
+      bidirectional_sync: false
+  
+  # Performance optimization
+  performance:
+    batch_processing: true
+    async_operations: true
+    memory_efficient_rendering: true
+    lazy_loading: true
+    
+    # Resource limits
+    max_concurrent_operations: 3
+    memory_limit_mb: 100
+    processing_timeout_seconds: 30
+
+monitoring:
+  # System monitoring
+  health_checks:
+    enabled: true
+    check_interval_seconds: 60
+    
+    # Component health
+    check_renderer_responsiveness: true
+    check_journal_processing: true
+    check_memory_usage: true
+    
+    # Alerts
+    alert_on_high_memory: true
+    alert_on_slow_processing: true
+    alert_on_component_failure: true
+  
+  # Statistics collection
+  statistics:
+    enabled: true
+    collection_interval_seconds: 30
+    
+    # Metrics to track
+    track_render_performance: true
+    track_journal_processing_time: true
+    track_memory_usage: true
+    track_error_rates: true
+    
+    # Retention
+    retain_stats_hours: 168  # 1 week
+    compress_old_stats: true
+
+development:
+  # Development and testing settings
+  debug:
+    enabled: false
+    verbose_logging: false
+    component_tracing: false
+    performance_profiling: false
+  
+  # Testing
+  testing:
+    mock_dawn_components: false
+    use_sample_data: false
+    enable_test_mode: false
+    
+    # Sample data
+    sample_journal_entries: 4
+    sample_sigil_states: 3
+    sample_memory_chunks: 10
+  
+  # Demo configuration
+  demo:
+    enabled: true
+    demo_modes:
+      - sequential
+      - live
+      - async
+      - minimal
+    
+    demo_timing:
+      sequential_pause_seconds: 3
+      live_interval_seconds: 5
+      async_interval_seconds: 3
+
+# Component-specific overrides
+overrides:
+  # Environment-specific settings
+  production:
+    visual_rendering.sigil_renderer.clear_screen: false
+    journal_memory.memory_adapter.enable_bloom_triggers: true
+    monitoring.health_checks.check_interval_seconds: 30
+  
+  development:
+    visual_rendering.sigil_renderer.show_timestamp: true
+    development.debug.enabled: true
+    development.debug.verbose_logging: true
+  
+  testing:
+    development.testing.mock_dawn_components: true
+    development.testing.use_sample_data: true
+    performance.async_operations: false
+
+# Version and metadata
+metadata:
+  config_version: "1.0.0"
+  component_version:
+    sigil_renderer: "1.0.0"
+    rebloom_journal: "1.0.0"
+    renderer_integration: "1.0.0"
+    memory_adapter: "1.0.0"
+  
+  last_updated: "2024-01-01T00:00:00Z"
+  created_by: "DAWN Integration System"
+  description: "Integrated visual rendering and journal memory configuration for DAWN cognitive engine" 

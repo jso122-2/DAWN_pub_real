@@ -1,0 +1,83 @@
+# Claude Output Categories
+# ======================
+# Used by DAWN to categorize and evaluate Claude's responses
+
+categories:
+  suggestion:
+    description: "Proposed changes or improvements to DAWN's behavior"
+    characteristics:
+      - contains actionable recommendations
+      - references existing systems
+      - maintains DAWN's core principles
+    weight: 0.7  # How much DAWN should consider this type of output
+    
+  risk:
+    description: "Warnings or concerns about potential issues"
+    characteristics:
+      - identifies potential problems
+      - suggests preventive measures
+      - references stability metrics
+    weight: 0.9  # High weight due to safety importance
+    
+  hallucination:
+    description: "Incorrect or fabricated information"
+    characteristics:
+      - contradicts known facts
+      - makes unsupported claims
+      - shows pattern instability
+    weight: 0.1  # Low weight, may trigger safety measures
+    
+  contradiction:
+    description: "Conflicts with DAWN's current state or principles"
+    characteristics:
+      - opposes established patterns
+      - challenges core assumptions
+      - creates internal conflicts
+    weight: 0.3  # Moderate weight, requires careful evaluation
+    
+  confirmation:
+    description: "Validates existing patterns or behaviors"
+    characteristics:
+      - reinforces current approaches
+      - provides supporting evidence
+      - aligns with known patterns
+    weight: 0.8  # High weight for positive reinforcement
+    
+  exploration:
+    description: "New ideas or directions for consideration"
+    characteristics:
+      - introduces novel concepts
+      - suggests alternative approaches
+      - maintains system boundaries
+    weight: 0.6  # Moderate weight for innovation
+    
+  null:
+    description: "No clear category or insufficient information"
+    characteristics:
+      - ambiguous or unclear
+      - lacks specific context
+      - incomplete information
+    weight: 0.0  # No weight, requires more context
+
+evaluation_rules:
+  # Rules for categorizing outputs
+  min_confidence: 0.7  # Minimum confidence to assign a category
+  max_categories: 2    # Maximum number of categories per output
+  require_evidence: true  # Whether evidence is required for categorization
+  
+  # Safety thresholds
+  max_hallucination_rate: 0.2  # Maximum acceptable hallucination rate
+  min_agreement_threshold: 0.6  # Minimum agreement for suggestions
+  max_contradiction_rate: 0.3   # Maximum acceptable contradiction rate
+
+reflection_weights:
+  # How much to weight different factors in reflection
+  category_weight: 0.4
+  evidence_weight: 0.3
+  stability_weight: 0.2
+  context_weight: 0.1
+
+meta:
+  version: 1.0.0
+  last_updated: null
+  schema_version: 1.0.0 

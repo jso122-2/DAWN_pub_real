@@ -1,0 +1,124 @@
+{
+  "metadata": {
+    "export_time": "2025-07-26T23:10:09.697600",
+    "timestamp": 1753535409.6976006,
+    "node_count": 4,
+    "edge_count": 3,
+    "density": 0.25,
+    "source": "mycelium_layer"
+  },
+  "nodes": [
+    {
+      "id": "meta_awareness_002",
+      "label": "meta_awareness_002",
+      "type": "generic_node",
+      "connections": 2,
+      "timestamp": 1753535409.6976006
+    },
+    {
+      "id": "recursive_thought_003",
+      "label": "recursive_thought_003",
+      "type": "generic_node",
+      "connections": 1,
+      "timestamp": 1753535409.6976006
+    },
+    {
+      "id": "self_reflection_001",
+      "label": "self_reflection_001",
+      "type": "generic_node",
+      "connections": 2,
+      "timestamp": 1753535409.6976006
+    },
+    {
+      "id": "consciousness_core",
+      "label": "consciousness_core",
+      "type": "consciousness_node",
+      "connections": 1,
+      "timestamp": 1753535409.6976006
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge_0",
+      "from": "consciousness_core",
+      "to": "self_reflection_001",
+      "type": "semantic_link",
+      "weight": 1.0,
+      "timestamp": 1753535409.6976006
+    },
+    {
+      "id": "edge_1",
+      "from": "self_reflection_001",
+      "to": "meta_awareness_002",
+      "type": "semantic_link",
+      "weight": 1.0,
+      "timestamp": 1753535409.6976006
+    },
+    {
+      "id": "edge_2",
+      "from": "meta_awareness_002",
+      "to": "recursive_thought_003",
+      "type": "semantic_link",
+      "weight": 1.0,
+      "timestamp": 1753535409.6976006
+    }
+  ],
+  "clusters": [
+    {
+      "id": "cluster_0",
+      "nodes": [
+        "consciousness_core",
+        "self_reflection_001",
+        "meta_awareness_002",
+        "recursive_thought_003"
+      ],
+      "size": 4,
+      "density": 0.25
+    }
+  ],
+  "routing_paths": [
+    {
+      "from": "self_reflection_001",
+      "to": "meta_awareness_002",
+      "path": [
+        "self_reflection_001",
+        "meta_awareness_002"
+      ],
+      "length": 1,
+      "importance": 2.0
+    },
+    {
+      "from": "self_reflection_001",
+      "to": "recursive_thought_003",
+      "path": [
+        "self_reflection_001",
+        "meta_awareness_002",
+        "recursive_thought_003"
+      ],
+      "length": 2,
+      "importance": 1.5
+    },
+    {
+      "from": "meta_awareness_002",
+      "to": "recursive_thought_003",
+      "path": [
+        "meta_awareness_002",
+        "recursive_thought_003"
+      ],
+      "length": 1,
+      "importance": 1.5
+    },
+    {
+      "from": "consciousness_core",
+      "to": "recursive_thought_003",
+      "path": [
+        "consciousness_core",
+        "self_reflection_001",
+        "meta_awareness_002",
+        "recursive_thought_003"
+      ],
+      "length": 3,
+      "importance": 1.0
+    }
+  ]
+}

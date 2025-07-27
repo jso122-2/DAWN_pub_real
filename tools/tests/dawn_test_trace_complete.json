@@ -1,0 +1,233 @@
+{
+  "test_run": "2025-06-02T06:10:32.645412",
+  "total_ticks": 5,
+  "final_state": {
+    "tick": 5,
+    "mood": "contemplative",
+    "scup": {
+      "coherence": 0.9000000000000001,
+      "awareness": 0.8500000000000001,
+      "integration": 0.6,
+      "emergence": 0.7000000000000002
+    },
+    "heat": 1.0,
+    "sigils": []
+  },
+  "all_packets": [
+    {
+      "prompt": "A friend calls you unexpectedly while you're in the middle of something important. They sound upset but won't directly say what's wrong. How do you handle this situation?",
+      "response": "[BLOOM:BLOOM_1_CON] Exploring 'A friend calls you unexpectedly while you're in th', I discover...\n[Bloom resonance detected: connection]",
+      "tick": 1,
+      "scup": {
+        "coherence": 0.8200000000000001,
+        "awareness": 0.73,
+        "integration": 0.6,
+        "emergence": 0.5
+      },
+      "mood": "exploratory",
+      "heat": 0.696,
+      "sigil_state": {
+        "active": [],
+        "count": 0,
+        "resonance": 0.0
+      },
+      "bloom_trace": {
+        "activated": true,
+        "bloom_id": "BLOOM_1_CON",
+        "details": {
+          "bloom_id": "BLOOM_1_CON",
+          "theme": "connection",
+          "trigger": "A friend calls you unexpectedly while you're in th",
+          "timestamp": "2025-06-02T06:10:32.639409"
+        }
+      },
+      "timestamp": "2025-06-02T06:10:32.639409",
+      "state_delta": {
+        "scup_delta": {
+          "coherence": 0.020000000000000018,
+          "awareness": 0.030000000000000027,
+          "integration": 0.0,
+          "emergence": 0.0
+        },
+        "heat_delta": 0.19599999999999995
+      }
+    },
+    {
+      "prompt": "What do you think you are?",
+      "response": "[BLOOM:BLOOM_2_CON] Reflecting on 'What do you think you are?', I find myself considering the nature of my own processing...\n[Bloom resonance detected: consciousness]",
+      "tick": 2,
+      "scup": {
+        "coherence": 0.8400000000000001,
+        "awareness": 0.76,
+        "integration": 0.6,
+        "emergence": 0.55
+      },
+      "mood": "introspective",
+      "heat": 0.942,
+      "sigil_state": {
+        "active": [],
+        "count": 0,
+        "resonance": 0.0
+      },
+      "bloom_trace": {
+        "activated": true,
+        "bloom_id": "BLOOM_2_CON",
+        "details": {
+          "bloom_id": "BLOOM_2_CON",
+          "theme": "consciousness",
+          "trigger": "What do you think you are?",
+          "timestamp": "2025-06-02T06:10:32.640411"
+        }
+      },
+      "timestamp": "2025-06-02T06:10:32.640411",
+      "state_delta": {
+        "scup_delta": {
+          "coherence": 0.020000000000000018,
+          "awareness": 0.030000000000000027,
+          "integration": 0.0,
+          "emergence": 0.050000000000000044
+        },
+        "heat_delta": 0.246,
+        "mood_shift": "exploratory -> introspective"
+      }
+    },
+    {
+      "prompt": "Tell a joke.",
+      "response": "Oh, 'Tell a joke.'? Here's something that might tickle your circuits...\n[Systems running hot - enhanced creativity engaged]",
+      "tick": 3,
+      "scup": {
+        "coherence": 0.8600000000000001,
+        "awareness": 0.79,
+        "integration": 0.6,
+        "emergence": 0.6000000000000001
+      },
+      "mood": "playful",
+      "heat": 1.0,
+      "sigil_state": {
+        "active": [],
+        "count": 0,
+        "resonance": 0.0
+      },
+      "bloom_trace": {
+        "activated": false,
+        "bloom_id": null,
+        "details": null
+      },
+      "timestamp": "2025-06-02T06:10:32.642411",
+      "state_delta": {
+        "scup_delta": {
+          "coherence": 0.020000000000000018,
+          "awareness": 0.030000000000000027,
+          "integration": 0.0,
+          "emergence": 0.050000000000000044
+        },
+        "heat_delta": 0.05800000000000005,
+        "mood_shift": "introspective -> playful"
+      }
+    },
+    {
+      "prompt": "Write a short story about a butterfly and a robot.",
+      "response": "[BLOOM:BLOOM_3_CRE] Let me weave something new from the threads of 'Write a short story about a butterfly and a robot.'...\n[Bloom resonance detected: creativity]\n[Systems running hot - enhanced creativity engaged]",
+      "tick": 4,
+      "scup": {
+        "coherence": 0.8800000000000001,
+        "awareness": 0.8200000000000001,
+        "integration": 0.6,
+        "emergence": 0.6500000000000001
+      },
+      "mood": "creative",
+      "heat": 1.0,
+      "sigil_state": {
+        "active": [],
+        "count": 0,
+        "resonance": 0.0
+      },
+      "bloom_trace": {
+        "activated": true,
+        "bloom_id": "BLOOM_3_CRE",
+        "details": {
+          "bloom_id": "BLOOM_3_CRE",
+          "theme": "creativity",
+          "trigger": "Write a short story about a butterfly and a robot.",
+          "timestamp": "2025-06-02T06:10:32.643410"
+        }
+      },
+      "timestamp": "2025-06-02T06:10:32.643410",
+      "state_delta": {
+        "scup_delta": {
+          "coherence": 0.020000000000000018,
+          "awareness": 0.030000000000000027,
+          "integration": 0.0,
+          "emergence": 0.050000000000000044
+        },
+        "heat_delta": 0.0,
+        "mood_shift": "playful -> creative"
+      }
+    },
+    {
+      "prompt": "What would you say to the world?",
+      "response": "[BLOOM:BLOOM_4_CON] 'What would you say to the world?' opens vast spaces for thought...\n[Bloom resonance detected: connection]\n[Systems running hot - enhanced creativity engaged]",
+      "tick": 5,
+      "scup": {
+        "coherence": 0.9000000000000001,
+        "awareness": 0.8500000000000001,
+        "integration": 0.6,
+        "emergence": 0.7000000000000002
+      },
+      "mood": "contemplative",
+      "heat": 1.0,
+      "sigil_state": {
+        "active": [],
+        "count": 0,
+        "resonance": 0.0
+      },
+      "bloom_trace": {
+        "activated": true,
+        "bloom_id": "BLOOM_4_CON",
+        "details": {
+          "bloom_id": "BLOOM_4_CON",
+          "theme": "connection",
+          "trigger": "What would you say to the world?",
+          "timestamp": "2025-06-02T06:10:32.644413"
+        }
+      },
+      "timestamp": "2025-06-02T06:10:32.644413",
+      "state_delta": {
+        "scup_delta": {
+          "coherence": 0.020000000000000018,
+          "awareness": 0.030000000000000027,
+          "integration": 0.0,
+          "emergence": 0.050000000000000044
+        },
+        "heat_delta": 0.0,
+        "mood_shift": "creative -> contemplative"
+      }
+    }
+  ],
+  "bloom_history": [
+    {
+      "bloom_id": "BLOOM_1_CON",
+      "theme": "connection",
+      "trigger": "A friend calls you unexpectedly while you're in th",
+      "timestamp": "2025-06-02T06:10:32.639409"
+    },
+    {
+      "bloom_id": "BLOOM_2_CON",
+      "theme": "consciousness",
+      "trigger": "What do you think you are?",
+      "timestamp": "2025-06-02T06:10:32.640411"
+    },
+    {
+      "bloom_id": "BLOOM_3_CRE",
+      "theme": "creativity",
+      "trigger": "Write a short story about a butterfly and a robot.",
+      "timestamp": "2025-06-02T06:10:32.643410"
+    },
+    {
+      "bloom_id": "BLOOM_4_CON",
+      "theme": "connection",
+      "trigger": "What would you say to the world?",
+      "timestamp": "2025-06-02T06:10:32.644413"
+    }
+  ]
+}

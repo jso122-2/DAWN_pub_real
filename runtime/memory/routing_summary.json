@@ -1,0 +1,32 @@
+{
+  "timestamp": 1753534944.7586598,
+  "datetime": "2025-07-26T23:02:24.758660",
+  "metrics": {
+    "total_connections": 8,
+    "unique_nodes": 9,
+    "cluster_count": 1,
+    "last_export": 1753534944.7583237,
+    "connection_history_size": 1,
+    "graph_file_exists": true,
+    "graph_file_size": 1624
+  },
+  "recent_connections": [
+    {
+      "timestamp": 1753534944.7554655,
+      "type": "semantic",
+      "connections": [
+        [
+          "chunk_a",
+          "chunk_b"
+        ],
+        [
+          "chunk_b",
+          "chunk_c"
+        ]
+      ],
+      "count": 2
+    }
+  ],
+  "semantic_clusters": 0,
+  "routing_health": "healthy"
+}

@@ -1,0 +1,305 @@
+/* Enhanced Module Card Styles */
+.module-card {
+  position: relative;
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.8), rgba(30, 41, 59, 0.6));
+  border: 1px solid #374151;
+  border-radius: 16px;
+  padding: 1.5rem;
+  backdrop-filter: blur(10px);
+  overflow: hidden;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  min-height: 200px;
+  display: flex;
+  flex-direction: column;
+}
+
+.module-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(59, 130, 246, 0.4);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+.module-card.active {
+  border-color: rgba(0, 255, 136, 0.4);
+  background: linear-gradient(135deg, rgba(0, 255, 136, 0.05), rgba(0, 136, 255, 0.05));
+  box-shadow: 0 4px 20px rgba(0, 255, 136, 0.1);
+}
+
+.module-card.high-activity {
+  animation: highActivityGlow 3s ease-in-out infinite;
+}
+
+@keyframes highActivityGlow {
+  0%, 100% {
+    box-shadow: 0 4px 20px rgba(0, 255, 136, 0.1);
+  }
+  50% {
+    box-shadow: 0 6px 30px rgba(0, 255, 136, 0.3);
+  }
+}
+
+.module-header {
+  display: flex;
+  justify-content: between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+
+.module-icon {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  transition: all 0.3s ease;
+  filter: drop-shadow(0 0 8px currentColor);
+}
+
+.module-card:hover .module-icon {
+  transform: scale(1.1);
+  filter: drop-shadow(0 0 12px currentColor);
+}
+
+.module-status {
+  position: relative;
+  width: 12px;
+  height: 12px;
+  margin-left: auto;
+}
+
+.status-pulse {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  opacity: 0.8;
+}
+
+.module-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.module-name {
+  color: white;
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0 0 0.5rem 0;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+}
+
+.module-description {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.9rem;
+  line-height: 1.4;
+  margin: 0 0 1.5rem 0;
+  flex: 1;
+}
+
+.module-metrics {
+  margin-top: auto;
+}
+
+.metric-display {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.metric-bar {
+  position: relative;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.metric-fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.8s ease;
+  box-shadow: 0 0 8px currentColor;
+}
+
+.metric-glow {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.6;
+}
+
+@keyframes slideGlow {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(200%); }
+}
+
+.metric-details {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.metric-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  text-shadow: 0 0 10px currentColor;
+}
+
+.metric-label {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.extra-metrics {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+}
+
+.extra-metric {
+  text-align: center;
+}
+
+.extra-metric-label {
+  display: block;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.25rem;
+}
+
+.extra-metric-value {
+  display: block;
+  color: white;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.mood-indicator {
+  text-transform: capitalize;
+  color: #00ff88 !important;
+  text-shadow: 0 0 5px rgba(0, 255, 136, 0.5);
+}
+
+.active-indicator {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  width: 12px;
+  height: 12px;
+}
+
+.pulse-ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  height: 100%;
+  border: 2px solid;
+  border-radius: 50%;
+  opacity: 0.8;
+}
+
+.pulse-dot {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  box-shadow: 0 0 8px currentColor;
+}
+
+.activity-waves {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  overflow: hidden;
+}
+
+.wave {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 100%;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .module-card {
+    padding: 1rem;
+    min-height: 180px;
+  }
+  
+  .module-icon {
+    font-size: 1.5rem;
+  }
+  
+  .module-name {
+    font-size: 1.1rem;
+  }
+  
+  .module-description {
+    font-size: 0.8rem;
+  }
+  
+  .metric-value {
+    font-size: 1.2rem;
+  }
+  
+  .extra-metrics {
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+  }
+  
+  .extra-metric:nth-child(3) {
+    grid-column: 1 / -1;
+    justify-self: center;
+  }
+}
+
+/* Dark theme enhancements */
+@media (prefers-color-scheme: dark) {
+  .module-card {
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.9), rgba(15, 23, 42, 0.8));
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+  
+  .module-card:hover {
+    border-color: rgba(0, 255, 136, 0.3);
+  }
+}
+
+/* Animation optimizations */
+@media (prefers-reduced-motion: reduce) {
+  .module-card,
+  .module-icon,
+  .metric-fill,
+  .status-pulse,
+  .pulse-ring,
+  .wave {
+    animation: none !important;
+    transition: none !important;
+  }
+  
+  .module-card:hover {
+    transform: none;
+  }
+} 

@@ -1,0 +1,33 @@
+{
+  "export_timestamp": "2025-07-24T20:53:24.162801",
+  "trace_version": "1.0.0",
+  "symbolic_body_state": {
+    "timestamp": "2025-07-24T20:53:24.162777",
+    "organ_synergy": 0.33962611855543506,
+    "heart": {
+      "emotional_charge": 0.21118275233592776,
+      "resonance_state": "still",
+      "beat_count": 195
+    },
+    "coil": {
+      "active_paths": 1,
+      "dominant_glyph": "✨",
+      "path_count": 3
+    },
+    "lung": {
+      "breathing_phase": "neutral",
+      "lung_fullness": 0.8337830063466194,
+      "breath_count": 54
+    },
+    "symbolic_state": {
+      "constellation": "○✨H",
+      "somatic_commentary": "I exist in somatic awareness."
+    }
+  },
+  "glyph_activations": [
+    "✨",
+    "H"
+  ],
+  "organ_coherence": 0.33962611855543506,
+  "somatic_narrative": "I exist in somatic awareness."
+}

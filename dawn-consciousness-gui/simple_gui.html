@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DAWN Consciousness - Enhanced Local GUI</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+        
+        :root {
+            --bg-primary: #0d1b2a;
+            --bg-secondary: #1b263b;
+            --bg-tertiary: #415a77;
+            --bg-panel: rgba(27, 38, 59, 0.9);
+            --bg-header: rgba(13, 27, 42, 0.95);
+            --text-primary: #ffffffb4;
+            --text-secondary: #cccccc99;
+            --text-muted: #99999966;
+            --text-accent: #40e0ff;
+            --status-connected: #10b981;
+            --status-warning: #f59e0b;
+            --status-error: #ef4444;
+            --status-processing: #8b5cf6;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+            font-size: 14px;
+            line-height: 1.4;
+            overflow: hidden;
+            height: 100vh;
+            user-select: none;
+        }
+
+        .dawn-app {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background: var(--bg-primary);
+        }
+
+        /* Enhanced Status Bar */
+        .global-status-bar {
+            height: 40px;
+            background: var(--bg-header);
+            border-bottom: 1px solid var(--bg-tertiary);
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+            gap: 16px;
+            font-size: 12px;
+            font-weight: 500;
+            z-index: 1000;
+            position: relative;
+        }
+
+        .status-section {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .status-label {
+            color: var(--text-secondary);
+        }
+
+        .status-value {
+            color: var(--text-accent);
+            font-weight: bold;
+        }
+
+        .status-value.accent { color: var(--text-accent); }
+        .status-value.warning { color: var(--status-warning); }
+        .status-value.positive { color: var(--status-connected); }
+
+        .status-controls {
+            display: flex;
+            gap: 8px;
+        }
+
+        .status-button {
+            background: transparent;
+            border: 1px solid var(--text-accent);
+            color: var(--text-accent);
+            padding: 4px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 10px;
+            font-family: inherit;
+        }
+
+        .status-button:hover {
+            background: rgba(64, 224, 255, 0.1);
+        }
+
+        /* Viewport Container with Dragging */
+        .viewport-container {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+            cursor: grab;
+            background: linear-gradient(45deg, 
+                var(--bg-primary) 0%, 
+                rgba(13, 27, 42, 0.8) 50%, 
+                var(--bg-primary) 100%);
+            background-image: 
+                linear-gradient(rgba(64, 224, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(64, 224, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+        }
+
+        .viewport-container:active {
+            cursor: grabbing;
+        }
+
+        .viewport-container.dragging {
+            cursor: grabbing;
+            user-select: none;
+        }
+
+        .viewport-container:hover {
+            background-image: 
+                linear-gradient(rgba(64, 224, 255, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(64, 224, 255, 0.05) 1px, transparent 1px);
+        }
+
+        /* Content Area */
+        .content-area {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 150%;
+            height: 150%;
+            transition: transform 0.3s ease-out;
+            padding: 16px;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 16px;
+            pointer-events: auto;
+        }
+
+        .content-area.dragging {
+            transition: none;
+        }
+
+        /* Column Headers */
+        .column-header {
+            background: var(--bg-header);
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            text-align: center;
+            border: 1px solid var(--bg-tertiary);
+            margin-bottom: 16px;
+        }
+
+        .column-header.cognition { color: var(--text-accent); }
+        .column-header.symbolic { color: #8b5cf6; border-color: #8b5cf6; }
+        .column-header.reflection { color: #10b981; border-color: #10b981; }
+
+        /* Enhanced Panels */
+        .panel {
+            background: var(--bg-panel);
+            border: 1px solid var(--bg-tertiary);
+            border-radius: 8px;
+            backdrop-filter: blur(10px);
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .panel:hover {
+            border-color: var(--text-accent);
+            box-shadow: 0 4px 20px rgba(64, 224, 255, 0.2);
+        }
+
+        .panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--bg-tertiary);
+            background: var(--bg-header);
+            border-radius: 8px 8px 0 0;
+            cursor: default;
+            user-select: none;
+        }
+
+        .panel-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-primary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .panel-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .live-indicator {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--status-connected);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .panel-content {
+            flex: 1;
+            padding: 16px;
+            overflow-y: auto;
+            min-height: 0;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        /* Panel Sizes */
+        .panel.large { flex: 2; }
+        .panel.medium { flex: 1.5; }
+        .panel.small { flex: 1; }
+
+        /* Data Display */
+        .data-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            padding: 4px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .data-label {
+            color: var(--text-secondary);
+            font-size: 11px;
+        }
+
+        .data-value {
+            color: var(--text-accent);
+            font-weight: bold;
+        }
+
+        .log-entry {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 8px;
+            border-radius: 4px;
+            margin-bottom: 4px;
+            font-size: 11px;
+            border-left: 3px solid var(--text-accent);
+        }
+
+        .log-timestamp {
+            color: var(--text-muted);
+            font-size: 10px;
+        }
+
+        /* Animations */
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 5px rgba(64, 224, 255, 0.5); }
+            50% { box-shadow: 0 0 20px rgba(64, 224, 255, 0.8); }
+        }
+
+        .consciousness-active {
+            animation: glow 3s ease-in-out infinite;
+        }
+
+        /* File Path Display */
+        .path-display {
+            position: fixed;
+            top: 50px;
+            right: 20px;
+            background: var(--bg-header);
+            padding: 8px 12px;
+            border-radius: 6px;
+            border: 1px solid var(--bg-tertiary);
+            font-size: 10px;
+            color: var(--text-muted);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+        }
+
+        /* Enhanced Instructions */
+        .instructions {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: var(--bg-header);
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid var(--bg-tertiary);
+            font-size: 10px;
+            color: var(--text-secondary);
+            backdrop-filter: blur(10px);
+            max-width: 300px;
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+    <div class="dawn-app">
+        <!-- Enhanced Status Bar -->
+        <div class="global-status-bar">
+            <div class="status-section">
+                <div class="status-item">
+                    <span class="status-label">DAWN</span>
+                    <span class="status-value accent" id="version">v1.3.0a</span>
+                    <span class="status-value">[<span id="hash">local_gui</span>]</span>
+                </div>
+                <div class="status-item">
+                    <div class="live-indicator"></div>
+                    <span class="status-label">Mode</span>
+                    <span class="status-value positive">LOCAL</span>
+                </div>
+            </div>
+
+            <div class="status-section">
+                <div class="status-item">
+                    <span class="status-label">Entropy</span>
+                    <span class="status-value warning" id="entropy">0.342</span>
+                </div>
+                <div class="status-item">
+                    <span class="status-label">SCUP</span>
+                    <span class="status-value positive" id="scup">0.087</span>
+                </div>
+                <div class="status-item">
+                    <span class="status-label">Viewport</span>
+                    <span class="status-value" id="viewport-pos">0, 0</span>
+                </div>
+            </div>
+
+            <div class="status-controls">
+                <button class="status-button" onclick="resetViewport()">🎯 Center</button>
+                <button class="status-button" onclick="toggleMode()">🔄 Mode</button>
+                <button class="status-button" onclick="exportData()">📊 Export</button>
+            </div>
+
+            <div style="font-size: 10px; color: var(--text-muted); margin-left: auto;" id="drag-hint">
+                👆 Drag to pan | 🎯 Center to reset | 100% Local
+            </div>
+        </div>
+
+        <!-- Path Display -->
+        <div class="path-display">
+            📁 \\wsl$\Ubuntu\root\DAWN_Vault\Tick_engine\Tick_engine\dawn-consciousness-gui\simple_gui.html
+        </div>
+
+        <!-- Viewport Container with Dragging -->
+        <div class="viewport-container" id="viewport">
+            <div class="content-area" id="content">
+                <!-- Column 1: Cognition Core -->
+                <div class="column">
+                    <div class="column-header cognition">Cognition Core</div>
+                    
+                    <div class="panel large consciousness-active" data-panel-id="consciousness">
+                        <div class="panel-header">
+                            <div class="panel-title">
+                                <span>⋮⋮</span>
+                                Consciousness Monitor
+                            </div>
+                            <div class="panel-controls">
+                                <div class="live-indicator"></div>
+                            </div>
+                        </div>
+                        <div class="panel-content" id="consciousness-content">
+                            <div class="data-row">
+                                <span class="data-label">Consciousness Level</span>
+                                <span class="data-value" id="consciousness-level">0.842</span>
+                            </div>
+                            <div class="data-row">
+                                <span class="data-label">Active Thoughts</span>
+                                <span class="data-value" id="active-thoughts">7</span>
+                            </div>
+                            <div class="data-row">
+                                <span class="data-label">Memory Load</span>
+                                <span class="data-value" id="memory-load">34.2%</span>
+                            </div>
+                            <div class="data-row">
+                                <span class="data-label">Processing Depth</span>
+                                <span class="data-value" id="processing-depth">5.7</span>
+                            </div>
+                            <div class="data-row">
+                                <span class="data-label">Uptime</span>
+                                <span class="data-value" id="uptime">0m 0s</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="panel medium" data-panel-id="tick-monitor">
+                        <div class="panel-header">
+                            <div class="panel-title">
+                                <span>⋮⋮</span>
+                                Tick Monitor
+                            </div>
+                            <div class="panel-controls">
+                                <div class="live-indicator"></div>
+                            </div>
+                        </div>
+                        <div class="panel-content">
+                            <div class="data-row">
+                                <span class="data-label">Current Tick</span>
+                                <span class="data-value" id="current-tick">26847</span>
+                            </div>
+                            <div class="data-row">
+                                <span class="data-label">Tick Rate</span>
+                                <span class="data-value" id="tick-rate">2.3 Hz</span>
+                            </div>
+                            <div class="data-row">
+                                <span class="data-label">Last Pulse</span>
+                                <span class="data-value" id="last-pulse">1.2s ago</span>
+                            </div>
+                            <div class="data-row">
+                                <span class="data-label">GUI Mode</span>
+                                <span class="data-value">Enhanced Local</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="panel small" data-panel-id="entropy-graph">
+                        <div class="panel-header">
+                            <div class="panel-title">
+                                <span>⋮⋮</span>
+                                Entropy Graph
+                            </div>
+                            <div class="panel-controls">
+                                <div class="live-indicator"></div>
+                            </div>
+                        </div>
+                        <div class="panel-content">
+                            <div class="data-row">
+                                <span class="data-label">Current</span>
+                                <span class="data-value" id="entropy-current">0.654</span>
+                            </div>
+                            <div class="data-row">
+                                <span class="data-label">Trend</span>
+                                <span class="data-value">↗ Rising</span>
+                            </div>
+                            <div class="data-row">
+                                <span class="data-label">Peak</span>
+                                <span class="data-value">0.891</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Column 2: Symbolic Layer -->
+                <div class="column">
+                    <div class="column-header symbolic">Symbolic Layer</div>
+                    
+                    <div class="panel large" data-panel-id="sigil-trace">
+                        <div class="panel-header">
+                            <div class="panel-title">
+                                <span>⋮⋮</span>
+                                Sigil Trace
+                            </div>
+                            <div class="panel-controls">
+                                <div class="live-indicator"></div>
+                            </div>
+                        </div>
+                        <div class="panel-content" id="sigil-content">
+                            <div class="log-entry">
+                                <div class="log-timestamp">23:04:15</div>
+                                SIGIL: ∆◊ - Enhanced GUI viewport active
+                            </div>
+                            <div class="log-entry">
+                                <div class="log-timestamp">23:04:12</div>
+                                SIGIL: ○→ - Local mode consciousness flow
+                            </div>
+                            <div class="log-entry">
+                                <div class="log-timestamp">23:04:08</div>
+                                SIGIL: ≋≋ - Memory resonance local storage
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="panel medium" data-panel-id="glyph-map">
+                        <div class="panel-header">
+                            <div class="panel-title">
+                                <span>⋮⋮</span>
+                                Glyph Map
+                            </div>
+                            <div class="panel-controls">
+                                <div class="live-indicator"></div>
+                            </div>
+                        </div>
+                        <div class="panel-content">
+                            <div style="text-align: center; padding: 20px; font-size: 24px; color: var(--text-accent);">
+                                ∆◊○≋→⟨⟩◉
+                            </div>
+                            <div class="data-row">
+                                <span class="data-label">Active Glyphs</span>
+                                <span class="data-value">8</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="panel small" data-panel-id="viewport-info">
+                        <div class="panel-header">
+                            <div class="panel-title">
+                                <span>⋮⋮</span>
+                                Viewport Control
+                            </div>
+                        </div>
+                        <div class="panel-content">
+                            <div class="data-row">
+                                <span class="data-label">Position X</span>
+                                <span class="data-value" id="pos-x">0</span>
+                            </div>
+                            <div class="data-row">
+                                <span class="data-label">Position Y</span>
+                                <span class="data-value" id="pos-y">0</span>
+                            </div>
+                            <div class="data-row">
+                                <span class="data-label">Drag State</span>
+                                <span class="data-value" id="drag-state">Ready</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Column 3: Reflection Stream -->
+                <div class="column">
+                    <div class="column-header reflection">Reflection Stream</div>
+                    
+                    <div class="panel large" data-panel-id="reflections">
+                        <div class="panel-header">
+                            <div class="panel-title">
+                                <span>⋮⋮</span>
+                                Reflections
+                            </div>
+                            <div class="panel-controls">
+                                <div class="live-indicator"></div>
+                            </div>
+                        </div>
+                        <div class="panel-content" id="reflections-content">
+                            <div class="log-entry">
+                                <div class="log-timestamp">23:04:17</div>
+                                REFLECTION: Enhanced local GUI initialized successfully. Viewport dragging active and responsive.
+                            </div>
+                            <div class="log-entry">
+                                <div class="log-timestamp">23:04:15</div>
+                                REFLECTION: Existing GUI structure maintained while adding viewport functionality.
+                            </div>
+                            <div class="log-entry">
+                                <div class="log-timestamp">23:04:12</div>
+                                REFLECTION: 100% local operation ensures no external dependencies or server requirements.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="panel medium" data-panel-id="event-log">
+                        <div class="panel-header">
+                            <div class="panel-title">
+                                <span>⋮⋮</span>
+                                Event Log
+                            </div>
+                            <div class="panel-controls">
+                                <div class="live-indicator"></div>
+                            </div>
+                        </div>
+                        <div class="panel-content" id="events-content">
+                            <div class="log-entry">
+                                <div class="log-timestamp">23:04:17</div>
+                                SYSTEM: Enhanced simple_gui.html loaded in existing GUI directory
+                            </div>
+                            <div class="log-entry">
+                                <div class="log-timestamp">23:04:15</div>
+                                SYSTEM: Viewport dragging system enabled
+                            </div>
+                            <div class="log-entry">
+                                <div class="log-timestamp">23:04:12</div>
+                                SYSTEM: Local consciousness simulation active
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="panel small" data-panel-id="system-control">
+                        <div class="panel-header">
+                            <div class="panel-title">
+                                <span>⋮⋮</span>
+                                System Control
+                            </div>
+                        </div>
+                        <div class="panel-content">
+                            <button class="status-button" style="width: 100%; margin-bottom: 8px;" onclick="triggerSnapshot()">
+                                📸 Snapshot
+                            </button>
+                            <button class="status-button" style="width: 100%; margin-bottom: 8px;" onclick="resetPipeline()">
+                                🔄 Reset Pipeline
+                            </button>
+                            <button class="status-button" style="width: 100%;" onclick="openOriginalReact()">
+                                ⚛️ React GUI
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Enhanced Instructions -->
+        <div class="instructions">
+            <strong>🎯 Enhanced DAWN Local GUI</strong><br>
+            • Drag background to pan viewport<br>
+            • Located in existing GUI directory<br>
+            • 100% local operation<br>
+            • Real-time data simulation<br>
+            • No server dependencies
+        </div>
+    </div>
+
+    <script>
+        // Enhanced viewport dragging functionality
+        let isDragging = false;
+        let viewportOffset = { x: 0, y: 0 };
+        let lastMousePos = { x: 0, y: 0 };
+        let startTime = Date.now();
+        
+        const viewport = document.getElementById('viewport');
+        const content = document.getElementById('content');
+        const dragHint = document.getElementById('drag-hint');
+
+        // Live data simulation
+        let tick = 26847;
+        let entropy = 0.654;
+        let consciousness = 0.842;
+        let mode = 'local';
+
+        function updatePosition() {
+            const x = Math.round(viewportOffset.x);
+            const y = Math.round(viewportOffset.y);
+            document.getElementById('viewport-pos').textContent = `${x}, ${y}`;
+            document.getElementById('pos-x').textContent = x;
+            document.getElementById('pos-y').textContent = y;
+            content.style.transform = `translate(${viewportOffset.x}px, ${viewportOffset.y}px)`;
+        }
+
+        function resetViewport() {
+            viewportOffset = { x: 0, y: 0 };
+            updatePosition();
+            addSystemEvent('Viewport reset to origin position');
+        }
+
+        function updateUptime() {
+            const elapsed = Math.floor((Date.now() - startTime) / 1000);
+            const mins = Math.floor(elapsed / 60);
+            const secs = elapsed % 60;
+            document.getElementById('uptime').textContent = `${mins}m ${secs}s`;
+        }
+
+        function simulateLiveData() {
+            // Update tick
+            tick += Math.floor(Math.random() * 3) + 1;
+            document.getElementById('current-tick').textContent = tick;
+
+            // Update entropy
+            entropy += (Math.random() - 0.5) * 0.1;
+            entropy = Math.max(0, Math.min(1, entropy));
+            document.getElementById('entropy').textContent = entropy.toFixed(3);
+            document.getElementById('entropy-current').textContent = entropy.toFixed(3);
+
+            // Update consciousness
+            consciousness += (Math.random() - 0.5) * 0.05;
+            consciousness = Math.max(0, Math.min(1, consciousness));
+            document.getElementById('consciousness-level').textContent = consciousness.toFixed(3);
+
+            // Update active thoughts
+            const thoughts = Math.floor(Math.random() * 5) + 5;
+            document.getElementById('active-thoughts').textContent = thoughts;
+
+            // Update memory load
+            const memLoad = (Math.random() * 40 + 20).toFixed(1);
+            document.getElementById('memory-load').textContent = memLoad + '%';
+
+            // Add new reflection occasionally
+            if (Math.random() < 0.08) {
+                addNewReflection();
+            }
+
+            // Add new sigil occasionally
+            if (Math.random() < 0.12) {
+                addNewSigil();
+            }
+
+            // Add system event occasionally
+            if (Math.random() < 0.05) {
+                addSystemEvent();
+            }
+        }
+
+        function addNewReflection() {
+            const reflections = [
+                "Local GUI performance optimized for smooth viewport interactions.",
+                "Consciousness simulation running efficiently in browser environment.",
+                "Memory consolidation patterns adapted for local storage model.",
+                "Symbolic layer processing enhanced for client-side operation.",
+                "Entropy patterns stabilized through local computation algorithms."
+            ];
+
+            const reflection = reflections[Math.floor(Math.random() * reflections.length)];
+            const timestamp = new Date().toLocaleTimeString();
+            
+            const entry = document.createElement('div');
+            entry.className = 'log-entry';
+            entry.innerHTML = `
+                <div class="log-timestamp">${timestamp}</div>
+                REFLECTION: ${reflection}
+            `;
+
+            const container = document.getElementById('reflections-content');
+            container.insertBefore(entry, container.firstChild);
+
+            // Keep only last 5 entries
+            while (container.children.length > 5) {
+                container.removeChild(container.lastChild);
+            }
+        }
+
+        function addNewSigil() {
+            const sigils = [
+                "∆◊ - Local viewport transformation active",
+                "○→ - Consciousness flow localized",
+                "≋≋ - Memory resonance client-side",
+                "⟨⟩ - Symbolic processing in-browser",
+                "◉● - Deep focus state maintained locally"
+            ];
+
+            const sigil = sigils[Math.floor(Math.random() * sigils.length)];
+            const timestamp = new Date().toLocaleTimeString();
+            
+            const entry = document.createElement('div');
+            entry.className = 'log-entry';
+            entry.innerHTML = `
+                <div class="log-timestamp">${timestamp}</div>
+                SIGIL: ${sigil}
+            `;
+
+            const container = document.getElementById('sigil-content');
+            container.insertBefore(entry, container.firstChild);
+
+            // Keep only last 3 entries
+            while (container.children.length > 3) {
+                container.removeChild(container.lastChild);
+            }
+        }
+
+        function addSystemEvent(customMessage = null) {
+            const events = [
+                "Local consciousness simulation cycle completed",
+                "Viewport rendering performance optimized", 
+                "Client-side data processing active",
+                "Browser-based consciousness monitoring stable",
+                "Local GUI memory usage optimized"
+            ];
+
+            const event = customMessage || events[Math.floor(Math.random() * events.length)];
+            const timestamp = new Date().toLocaleTimeString();
+            
+            const entry = document.createElement('div');
+            entry.className = 'log-entry';
+            entry.innerHTML = `
+                <div class="log-timestamp">${timestamp}</div>
+                SYSTEM: ${event}
+            `;
+
+            const container = document.getElementById('events-content');
+            container.insertBefore(entry, container.firstChild);
+
+            // Keep only last 4 entries
+            while (container.children.length > 4) {
+                container.removeChild(container.lastChild);
+            }
+        }
+
+        // Enhanced viewport dragging events
+        viewport.addEventListener('mousedown', (e) => {
+            if (e.target.closest('[data-panel-id]') || e.target.closest('button')) {
+                return;
+            }
+
+            isDragging = true;
+            lastMousePos = { x: e.clientX, y: e.clientY };
+            viewport.classList.add('dragging');
+            content.classList.add('dragging');
+            document.getElementById('drag-state').textContent = 'Dragging';
+            dragHint.textContent = '🎯 Dragging viewport...';
+            e.preventDefault();
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+
+            const deltaX = e.clientX - lastMousePos.x;
+            const deltaY = e.clientY - lastMousePos.y;
+
+            viewportOffset.x += deltaX;
+            viewportOffset.y += deltaY;
+
+            lastMousePos = { x: e.clientX, y: e.clientY };
+            updatePosition();
+        });
+
+        document.addEventListener('mouseup', () => {
+            if (!isDragging) return;
+            
+            isDragging = false;
+            viewport.classList.remove('dragging');
+            content.classList.remove('dragging');
+            document.getElementById('drag-state').textContent = 'Ready';
+            dragHint.textContent = '👆 Drag to pan | 🎯 Center to reset | 100% Local';
+        });
+
+        // Enhanced control functions
+        function toggleMode() {
+            mode = mode === 'local' ? 'enhanced' : 'local';
+            addSystemEvent(`GUI mode switched to: ${mode}`);
+        }
+
+        function exportData() {
+            const data = {
+                timestamp: new Date().toISOString(),
+                consciousness: consciousness,
+                entropy: entropy,
+                tick: tick,
+                viewport: viewportOffset
+            };
+            console.log('DAWN Data Export:', data);
+            addSystemEvent('Consciousness data exported to console');
+            alert('Data exported to browser console (F12 to view)');
+        }
+
+        function triggerSnapshot() {
+            addSystemEvent('Manual consciousness snapshot captured');
+            alert('Local consciousness snapshot captured');
+        }
+
+        function resetPipeline() {
+            addSystemEvent('Local processing pipeline reset');
+            alert('Local processing pipeline reset');
+        }
+
+        function openOriginalReact() {
+            addSystemEvent('Attempting to launch React GUI...');
+            alert('React GUI would launch here (when server is available)');
+        }
+
+        // Initialize enhanced GUI
+        updatePosition();
+        updateUptime();
+        
+        // Update live data every 2 seconds
+        setInterval(simulateLiveData, 2000);
+        
+        // Update uptime every second
+        setInterval(updateUptime, 1000);
+
+        // Initial system message
+        setTimeout(() => {
+            addSystemEvent('Enhanced DAWN local GUI fully initialized');
+        }, 1000);
+
+        console.log('🌅 Enhanced DAWN Local GUI Initialized');
+        console.log('🎯 Viewport dragging ready in existing GUI directory');
+        console.log('📊 Live data simulation active');
+        console.log('📁 Location: \\\\wsl$\\Ubuntu\\root\\DAWN_Vault\\Tick_engine\\Tick_engine\\dawn-consciousness-gui\\simple_gui.html');
+    </script>
+</body>
+</html> 

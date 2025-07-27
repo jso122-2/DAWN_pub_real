@@ -1,0 +1,60 @@
+.sigil-hud {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.sigil-hud.fullscreen {
+  width: 100%;
+  height: 100%;
+  justify-content: center;
+}
+
+.sigil-canvas {
+  border: 1px solid rgba(0, 255, 136, 0.2);
+  border-radius: 50%;
+  box-shadow: 
+    0 0 50px rgba(0, 255, 136, 0.3),
+    inset 0 0 50px rgba(0, 255, 136, 0.1);
+  background: rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+}
+
+.sigil-canvas:hover {
+  box-shadow: 
+    0 0 80px rgba(0, 255, 136, 0.5),
+    inset 0 0 80px rgba(0, 255, 136, 0.2);
+}
+
+.sigil-metrics {
+  display: flex;
+  gap: 30px;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 15px;
+  padding: 15px 25px;
+}
+
+.sigil-metrics .metric {
+  text-align: center;
+}
+
+.sigil-metrics .label {
+  display: block;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.6);
+  margin-bottom: 5px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.sigil-metrics .value {
+  font-size: 24px;
+  font-weight: 700;
+  color: #00ff88;
+  text-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+} 

@@ -1,0 +1,191 @@
+/* DAWN Sigil Trace Panel - Blueprint Network Theme */
+.sigil-trace-panel {
+  background: #0d1b2a;
+  border: 2px solid #1e3a5f;
+  border-radius: 8px;
+  padding: 20px;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'DejaVu Sans Mono', 'Courier New', monospace;
+  color: #ffffffb4;
+  width: 640px;
+  position: relative;
+  box-shadow: 
+    0 0 20px rgba(30, 58, 95, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  overflow: hidden;
+}
+
+.sigil-trace-panel::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(circle at 30% 70%, rgba(30, 58, 95, 0.2) 0%, transparent 50%),
+    radial-gradient(circle at 70% 30%, rgba(30, 58, 95, 0.15) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.sigil-trace-panel > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Header Section */
+.trace-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.trace-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #ffffff;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  text-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
+}
+
+/* Legend */
+.trace-legend {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  color: #ffffffb4;
+}
+
+.legend-line {
+  width: 20px;
+  height: 2px;
+  border-radius: 1px;
+}
+
+.legend-line.influence {
+  background: #ffffff88;
+  box-shadow: 0 0 4px rgba(255, 255, 255, 0.4);
+}
+
+.legend-line.suppression {
+  background: #ff4444;
+  background-image: repeating-linear-gradient(
+    90deg,
+    transparent,
+    transparent 3px,
+    #ff4444 3px,
+    #ff4444 6px
+  );
+  box-shadow: 0 0 4px rgba(255, 68, 68, 0.4);
+}
+
+/* Network Container */
+.trace-container {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.sigil-network {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  background: #0a1520;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Tooltip */
+.sigil-tooltip {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(13, 27, 42, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
+  padding: 8px 12px;
+  min-width: 120px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(8px);
+}
+
+.tooltip-title {
+  font-size: 11px;
+  font-weight: 600;
+  color: #ffffff;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.tooltip-info {
+  font-size: 9px;
+  color: #ffffffb4;
+  margin-bottom: 2px;
+}
+
+.tooltip-info:last-child {
+  margin-bottom: 0;
+}
+
+/* Footer */
+.trace-footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.active-count {
+  font-size: 10px;
+  color: #00ff88;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  text-shadow: 0 0 4px rgba(0, 255, 136, 0.4);
+}
+
+/* Responsive adjustments */
+@media (max-width: 720px) {
+  .sigil-trace-panel {
+    width: 100%;
+    padding: 16px;
+  }
+  
+  .sigil-network {
+    width: 100%;
+    height: auto;
+  }
+  
+  .trace-header {
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  
+  .trace-legend {
+    align-self: flex-end;
+  }
+}
+
+/* Hover effects */
+.sigil-trace-panel:hover .sigil-network {
+  box-shadow: 
+    inset 0 2px 4px rgba(0, 0, 0, 0.3),
+    0 0 8px rgba(255, 255, 255, 0.1);
+} 

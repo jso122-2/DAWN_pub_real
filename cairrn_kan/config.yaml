@@ -1,0 +1,224 @@
+# KAN-Cairrn System Configuration
+# Interpretable Function Space Navigation Settings
+
+system:
+  name: "DAWN KAN-Cairrn Integration"
+  version: "1.0.0"
+  description: "Neural navigation layer through interpretable spline functions"
+
+# KAN topology configuration
+kan_config:
+  num_layers: 4
+  neurons_per_layer: [64, 128, 128, 64]
+  spline_order: 3
+  grid_size: 5
+  sparse_threshold: 0.01
+  entropy_decay_rate: 0.95
+  interpretability_weight: 0.3
+
+# Cairrn cache settings
+cairrn_config:
+  max_cached_assemblages: 1000
+  activation_threshold: 0.1
+  entropy_cleanup_interval: 3600  # 1 hour in seconds
+  spline_update_learning_rate: 0.001
+  feature_vector_dim: 256
+  cache_decay_rate: 0.95
+  max_access_count: 1000
+
+# Cursor navigation settings
+cursor_config:
+  exploration_weight: 0.3
+  max_navigation_steps: 20
+  pathfinding_algorithm: "semantic_gradient"
+  confidence_threshold: 0.3
+  momentum_decay: 0.9
+  step_size: 0.1
+
+# Spline function settings
+spline_config:
+  basis_function_type: "b_spline"
+  coefficient_initialization: "random_normal"
+  coefficient_std: 0.1
+  gradient_computation: "numerical"
+  gradient_step_size: 1e-6
+  optimization_method: "gradient_descent"
+
+# Interpretability settings
+interpretability:
+  explanation_verbosity: "detailed"  # minimal, moderate, detailed
+  feature_importance_threshold: 0.3
+  confidence_intervals: true
+  real_time_interpretation: true
+  cache_explanations: true
+  explanation_cache_ttl: 300  # 5 minutes
+
+# Claude integration settings
+claude_integration:
+  enabled: true
+  context_enrichment: true
+  prompt_max_length: 4000
+  response_learning: true
+  semantic_momentum_tracking: true
+  confidence_feedback: true
+  cache_ttl: 300  # 5 minutes
+
+# API settings
+api:
+  host: "127.0.0.1"
+  port: 8000
+  title: "KAN-Cairrn Spline API"
+  description: "REST API for interpretable function space navigation"
+  version: "1.0.0"
+  cors_enabled: true
+  rate_limiting:
+    enabled: true
+    requests_per_minute: 100
+  authentication:
+    enabled: false
+    type: "bearer_token"
+
+# Database settings (optional)
+database:
+  enabled: false
+  type: "sqlite"  # sqlite, postgresql, mysql
+  host: "localhost"
+  port: 5432
+  name: "kan_cairrn"
+  user: "kan_user"
+  password: "secure_password"
+  
+  # Schema for spline neuron storage
+  tables:
+    spline_neurons:
+      id: "UUID PRIMARY KEY"
+      assemblage_id: "VARCHAR(255) NOT NULL"
+      spline_coefficients: "JSONB NOT NULL"
+      input_features: "JSONB NOT NULL"
+      activation_threshold: "FLOAT"
+      entropy_level: "FLOAT"
+      access_count: "INTEGER DEFAULT 0"
+      created_at: "TIMESTAMP DEFAULT NOW()"
+      updated_at: "TIMESTAMP DEFAULT NOW()"
+    
+    kan_connections:
+      id: "UUID PRIMARY KEY"
+      source_neuron_id: "UUID REFERENCES spline_neurons(id)"
+      target_neuron_id: "UUID REFERENCES spline_neurons(id)"
+      weight: "FLOAT"
+      connection_type: "VARCHAR(50)"
+      created_at: "TIMESTAMP DEFAULT NOW()"
+    
+    function_navigation:
+      id: "UUID PRIMARY KEY"
+      session_id: "VARCHAR(255)"
+      neuron_path: "JSONB"
+      feature_vectors: "JSONB"
+      interpretations: "JSONB"
+      final_confidence: "FLOAT"
+      created_at: "TIMESTAMP DEFAULT NOW()"
+
+# Logging configuration
+logging:
+  level: "INFO"  # DEBUG, INFO, WARNING, ERROR, CRITICAL
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  file: "logs/kan_cairrn.log"
+  max_size: 10485760  # 10MB
+  backup_count: 5
+  console_output: true
+
+# Monitoring and metrics
+monitoring:
+  enabled: true
+  metrics_collection: true
+  prometheus_enabled: false
+  prometheus_port: 9090
+  health_check_interval: 30  # seconds
+  performance_tracking: true
+  error_tracking: true
+
+# Performance optimization
+performance:
+  spline_computation_cache: true
+  parallel_neuron_processing: false  # Enable for multi-core
+  batch_processing: false
+  memory_optimization: true
+  garbage_collection_threshold: 0.7
+
+# Visualization settings
+visualization:
+  enabled: true
+  real_time_updates: true
+  update_frequency: 10  # Hz
+  max_nodes_display: 100
+  color_scheme: "plasma"
+  layout_algorithm: "force_directed"
+
+# Security settings
+security:
+  input_validation: true
+  sanitize_inputs: true
+  rate_limiting: true
+  cors_origins: ["http://localhost:3000", "http://localhost:8080"]
+  max_request_size: 1048576  # 1MB
+
+# Development settings
+development:
+  debug_mode: false
+  hot_reload: false
+  mock_claude_responses: true
+  test_data_generation: true
+  profiling_enabled: false
+
+# Initial assemblages for system bootstrap
+initial_assemblages:
+  - id: "consciousness_state"
+    features: ["awareness", "coherence", "integration"]
+    threshold: 0.3
+    description: "Core consciousness state assemblage"
+  
+  - id: "desire_ritual"
+    features: ["desire", "ritual", "intensity"] 
+    threshold: 0.2
+    description: "Desire-driven ritual patterns"
+  
+  - id: "grief_sigil"
+    features: ["grief", "sigil", "transformation"]
+    threshold: 0.3
+    description: "Transformative grief processing"
+  
+  - id: "identity_mask"
+    features: ["identity", "mask", "performance"]
+    threshold: 0.25
+    description: "Identity performance mechanisms"
+  
+  - id: "memory_fragment"
+    features: ["memory", "fragment", "nostalgia"]
+    threshold: 0.15
+    description: "Fragmented memory assemblages"
+  
+  - id: "quantum_assemblage"
+    features: ["quantum", "superposition", "collapse"]
+    threshold: 0.4
+    description: "Quantum state processing"
+  
+  - id: "weave_thread"
+    features: ["thread", "weave", "connection"]
+    threshold: 0.2
+    description: "Threading and weaving mechanisms"
+  
+  - id: "schema_evolution"
+    features: ["adaptation", "learning", "structure"]
+    threshold: 0.35
+    description: "Schema adaptation patterns"
+
+# Feature extraction mappings
+feature_mappings:
+  consciousness_level: "awareness"
+  schema_coherence: "coherence"
+  spontaneity: "creativity"
+  tick_rhythm: "frequency"
+  memory_access: "recall"
+  emotional_state: "intensity"
+  cognitive_load: "complexity"
+  system_entropy: "chaos" 

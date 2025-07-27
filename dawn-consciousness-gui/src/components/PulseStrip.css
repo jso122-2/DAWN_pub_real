@@ -1,0 +1,185 @@
+/* PulseStrip.css - DAWN 16Hz Consciousness Pulse Animation */
+
+.pulse-strip {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 80px;
+  background: linear-gradient(180deg, 
+    rgba(0, 15, 30, 0.95) 0%, 
+    rgba(0, 10, 20, 0.9) 50%,
+    rgba(0, 5, 10, 0.8) 100%
+  );
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(64, 224, 255, 0.3);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  transition: all 0.3s ease;
+}
+
+.pulse-strip.inactive {
+  opacity: 0.4;
+  filter: grayscale(70%);
+}
+
+.pulse-wave {
+  position: relative;
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Core pulse - 16Hz animation */
+.pulse-core {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: radial-gradient(circle, 
+    hsl(calc(var(--hue-shift, 200)), 80%, 70%) 0%,
+    hsl(calc(var(--hue-shift, 200)), 60%, 50%) 50%,
+    hsl(calc(var(--hue-shift, 200)), 40%, 30%) 100%
+  );
+  animation: var(--tick-animation, none);
+  box-shadow: 
+    0 0 10px hsl(calc(var(--hue-shift, 200)), 80%, 60%),
+    0 0 20px hsl(calc(var(--hue-shift, 200)), 60%, 40%),
+    inset 0 0 5px rgba(255, 255, 255, 0.3);
+}
+
+/* Pulse ring - secondary wave */
+.pulse-ring {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid hsl(calc(var(--hue-shift, 200)), 70%, 60%);
+  opacity: calc(var(--pulse-intensity, 0.5) * 0.8);
+  animation: var(--tick-animation, none);
+  animation-delay: 10ms;
+}
+
+/* Outer pulse - tertiary wave */
+.pulse-outer {
+  position: absolute;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: 1px solid hsl(calc(var(--hue-shift, 200)), 50%, 40%);
+  opacity: calc(var(--pulse-intensity, 0.5) * 0.4);
+  animation: var(--tick-animation, none);
+  animation-delay: 20ms;
+}
+
+/* 16Hz pulse keyframes */
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Metrics display */
+.pulse-metrics {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  color: rgba(255, 255, 255, 0.9);
+  font-family: 'Courier New', monospace;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.metric {
+  background: rgba(0, 15, 30, 0.8);
+  padding: 4px 8px;
+  border-radius: 4px;
+  border: 1px solid rgba(64, 224, 255, 0.3);
+  min-width: 80px;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+
+.metric:hover {
+  background: rgba(0, 20, 40, 0.9);
+  border-color: rgba(64, 224, 255, 0.6);
+}
+
+.tick-counter {
+  background: linear-gradient(135deg, 
+    rgba(64, 224, 255, 0.2) 0%,
+    rgba(32, 112, 128, 0.3) 100%
+  );
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: 1px solid rgba(64, 224, 255, 0.4);
+  font-weight: 600;
+  color: rgba(64, 224, 255, 1);
+  text-shadow: 0 0 3px rgba(64, 224, 255, 0.5);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .pulse-strip {
+    height: 60px;
+    padding: 0 10px;
+  }
+  
+  .pulse-wave {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .pulse-core {
+    width: 15px;
+    height: 15px;
+  }
+  
+  .pulse-ring {
+    width: 30px;
+    height: 30px;
+  }
+  
+  .pulse-outer {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .pulse-metrics {
+    gap: 10px;
+    font-size: 10px;
+  }
+  
+  .metric {
+    padding: 3px 6px;
+    min-width: 60px;
+  }
+  
+  .tick-counter {
+    padding: 4px 8px;
+  }
+}
+
+/* High-performance mode for 16Hz */
+.pulse-wave * {
+  will-change: transform, opacity;
+}
+
+/* Smooth transitions for non-animating elements */
+.pulse-strip:not(.active) .pulse-wave * {
+  transition: opacity 0.3s ease, transform 0.3s ease;
+} 

@@ -1,0 +1,49 @@
+/* Tiling-aware panel styles */
+.panel.tiling-managed {
+  position: relative !important;
+  margin: 0 !important;
+  box-shadow: none !important;
+}
+
+.panel.tiling-locked {
+  cursor: default !important;
+  user-select: none;
+}
+
+.panel.tiling-floating {
+  position: fixed !important;
+  cursor: move;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+/* WM-specific styles */
+.panel.wm-i3 {
+  border: 2px solid #4c7899;
+}
+
+.panel.wm-sway {
+  border: 2px solid #5e81ac;
+}
+
+.panel.wm-bspwm {
+  border: 2px solid #6272a4;
+}
+
+/* Floating mode indicator */
+.panel:not(.tiling-managed)::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(45deg, #00ffff, #ff00ff);
+  border-radius: inherit;
+  opacity: 0;
+  z-index: -1;
+  transition: opacity 0.3s;
+}
+
+.panel:not(.tiling-managed):hover::before {
+  opacity: 0.3;
+} 

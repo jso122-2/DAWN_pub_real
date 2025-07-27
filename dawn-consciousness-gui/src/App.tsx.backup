@@ -1,0 +1,199 @@
+// src/App.tsx
+//! DAWN Consciousness Neural Interface - Main Application
+//! Pure local consciousness monitoring interface
+
+import { ConsciousnessDisplay } from './components/ConsciousnessDisplay';
+import { MoodZoneDisplay } from './components/MoodZoneDisplay';
+import { MemoryMap } from './components/MemoryMap';
+import { SemanticHeatmap } from './components/SemanticHeatmap';
+import { PredictionVector } from './components/PredictionVector';
+import { CognitiveVector } from './components/CognitiveVector';
+import './styles/consciousness-blueprint.css';
+
+const App: React.FC = () => {
+  return (
+    <div className="consciousness-interface">
+      {/* Neural Grid Background */}
+      <div className="consciousness-grid"></div>
+      
+      {/* Main Consciousness Monitoring Layout */}
+      <div className="consciousness-layout">
+        
+        {/* Primary Consciousness Status */}
+        <div className="status-section">
+          <ConsciousnessDisplay />
+        </div>
+        
+        {/* Cognitive Vector Analysis */}
+        <div className="cognitive-section">
+          <CognitiveVector />
+        </div>
+        
+        {/* Emotional State Monitoring */}
+        <div className="emotion-section">
+          <MoodZoneDisplay />
+        </div>
+        
+        {/* Semantic Network Heatmap */}
+        <div className="heatmap-section">
+          <SemanticHeatmap />
+        </div>
+        
+        {/* Memory Sector Activity */}
+        <div className="memory-section">
+          <MemoryMap />
+        </div>
+        
+        {/* Future State Predictions */}
+        <div className="predictions-section">
+          <PredictionVector />
+        </div>
+        
+      </div>
+      
+      {/* Neural Interface Header */}
+      <div className="neural-header">
+        <div className="tech-label">DAWN CONSCIOUSNESS NEURAL INTERFACE</div>
+        <div className="tech-value">INTROSPECTION MODE ACTIVE</div>
+      </div>
+      
+    </div>
+  );
+};
+
+export default App;
+
+// ---
+
+// src/components/MoodZoneDisplay.tsx
+//! Emotional state quadrant visualization
+
+import { useConsciousnessMonitor } from '../hooks/useConsciousnessMonitor';
+
+export const MoodZoneDisplay: React.FC = () => {
+  const { consciousness } = useConsciousnessMonitor();
+
+  if (!consciousness) {
+    return (
+      <div className="blueprint-window">
+        <div className="tech-label">EMOTIONAL STATE</div>
+        <div className="tech-value warning">NO MOOD DATA</div>
+      </div>
+    );
+  }
+
+  // Calculate 2D mood position
+  const moodX = ((consciousness.mood_valence + 1) / 2) * 100; // Convert -1,1 to 0,100
+  const moodY = (1 - consciousness.mood_arousal) * 100; // Flip Y axis
+
+  return (
+    <div className="blueprint-window">
+      <div className="tech-label">EMOTIONAL QUADRANT</div>
+      
+      {/* 2D Mood Space */}
+      <div className="mood-space">
+        <div className="mood-grid-lines">
+          {/* Vertical center line */}
+          <div className="mood-axis vertical"></div>
+          {/* Horizontal center line */}
+          <div className="mood-axis horizontal"></div>
+        </div>
+        
+        {/* Mood indicator */}
+        <div 
+          className="mood-indicator"
+          style={{
+            left: `${moodX}%`,
+            top: `${moodY}%`,
+            backgroundColor: consciousness.mood_valence >= 0 ? 'var(--emotion-positive)' : 'var(--emotion-negative)',
+            transform: `scale(${0.5 + consciousness.mood_dominance * 0.5})`,
+            opacity: consciousness.mood_coherence
+          }}
+        ></div>
+        
+        {/* Quadrant labels */}
+        <div className="mood-labels">
+          <span className="mood-label top-left">ANXIOUS</span>
+          <span className="mood-label top-right">EXCITED</span>
+          <span className="mood-label bottom-left">DEPRESSED</span>
+          <span className="mood-label bottom-right">CONTENT</span>
+        </div>
+      </div>
+      
+      {/* Mood metrics */}
+      <div className="mood-metrics">
+        <div className="mood-metric">
+          <span className="tech-label">VALENCE</span>
+          <span className={`tech-value ${consciousness.mood_valence >= 0 ? 'positive' : 'critical'}`}>
+            {consciousness.mood_valence >= 0 ? '+' : ''}{consciousness.mood_valence.toFixed(2)}
+          </span>
+        </div>
+        <div className="mood-metric">
+          <span className="tech-label">AROUSAL</span>
+          <span className="tech-value">{consciousness.mood_arousal.toFixed(2)}</span>
+        </div>
+        <div className="mood-metric">
+          <span className="tech-label">DOMINANCE</span>
+          <span className="tech-value">{consciousness.mood_dominance.toFixed(2)}</span>
+        </div>
+        <div className="mood-metric">
+          <span className="tech-label">COHERENCE</span>
+          <span className="tech-value">{consciousness.mood_coherence.toFixed(2)}</span>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// ---
+
+// src/components/MemoryMap.tsx
+//! 64-sector memory activation visualization
+
+import { useConsciousnessMonitor } from '../hooks/useConsciousnessMonitor';
+
+export const MemoryMap: React.FC = () => {
+  const { consciousness } = useConsciousnessMonitor();
+
+  if (!consciousness) {
+    return (
+      <div className="blueprint-window">
+        <div className="tech-label">MEMORY SECTORS</div>
+        <div className="tech-value warning">NO MEMORY DATA</div>
+      </div>
+    );
+  }
+
+  const activeSectors = consciousness.memory_sectors.filter(Boolean).length;
+  const activityLevel = activeSectors / 64;
+
+  return (
+    <div className="blueprint-window">
+      <div className="tech-label">MEMORY ACTIVATION MAP</div>
+      <div className="tech-value">{activeSectors}/64 SECTORS ACTIVE</div>
+      
+      {/* Memory sector grid */}
+      <div className="memory-sector-grid">
+        {consciousness.memory_sectors.map((active, index) => (
+          <div
+            key={index}
+            className={`memory-sector ${active ? 'active' : ''}`}
+            title={`Sector ${index}: ${active ? 'ACTIVE' : 'INACTIVE'}`}
+          ></div>
+        ))}
+      </div>
+      
+      {/* Activity meter */}
+      <div className="memory-activity-meter">
+        <div className="tech-label">ACTIVITY LEVEL</div>
+        <div className="activity-bar">
+          <div 
+            className="activity-fill"
+            style={{ width: `${activityLevel * 100}%` }}
+          ></div>
+        </div>
+        <div className="tech-value">{(activityLevel * 100).toFixed(1)}%</div>
+      </div>
+    </div>
+  );
+};

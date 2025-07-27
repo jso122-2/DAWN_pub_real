@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DAWN Consciousness Monitor</title>
+    <style>
+        /* DAWN Consciousness GUI - Blueprint Schematic Styles */
+        :root {
+            --blueprint-bg: #0f1419;
+            --blueprint-grid: #1a2332;
+            --blueprint-primary: #00d4ff;
+            --blueprint-secondary: #4fb3d9;
+            --blueprint-accent: #00ff88;
+            --blueprint-warning: #ffb000;
+            --blueprint-critical: #ff4757;
+            --blueprint-text: #e6f1ff;
+            --blueprint-text-dim: #8c9db5;
+            --blueprint-border: #2d3748;
+            --blueprint-glow: #00d4ff33;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: var(--blueprint-bg);
+            color: var(--blueprint-text);
+            font-family: 'Consolas', 'Monaco', 'SF Mono', monospace;
+            overflow: hidden;
+            user-select: none;
+        }
+
+        .blueprint-grid {
+            background-image: 
+                linear-gradient(var(--blueprint-grid) 1px, transparent 1px),
+                linear-gradient(90deg, var(--blueprint-grid) 1px, transparent 1px);
+            background-size: 20px 20px;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            z-index: -1;
+            opacity: 0.3;
+        }
+
+        .consciousness-interface {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-rows: auto 1fr auto;
+            gap: 12px;
+            padding: 12px;
+            height: 100vh;
+        }
+
+        .module {
+            border: 2px solid var(--blueprint-primary);
+            background: rgba(15, 20, 25, 0.95);
+            box-shadow: 0 0 20px var(--blueprint-glow);
+            backdrop-filter: blur(8px);
+            padding: 16px;
+            position: relative;
+        }
+
+        .module-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--blueprint-text-dim);
+            margin-bottom: 12px;
+            border-bottom: 1px solid var(--blueprint-border);
+            padding-bottom: 4px;
+        }
+
+        .status-indicator {
+            position: absolute;
+            top: 8px; right: 8px;
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            background: var(--blueprint-critical);
+            transition: all 0.3s ease;
+        }
+
+        .status-indicator.connected {
+            background: var(--blueprint-accent);
+            box-shadow: 0 0 8px var(--blueprint-accent);
+        }
+
+        .metric {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 8px 0;
+        }
+
+        .metric-label {
+            font-size: 0.8rem;
+            color: var(--blueprint-text-dim);
+        }
+
+        .metric-value {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--blueprint-primary);
+            text-shadow: 0 0 4px var(--blueprint-glow);
+        }
+
+        .metric-value.positive { color: var(--blueprint-accent); }
+        .metric-value.warning { color: var(--blueprint-warning); }
+        .metric-value.critical { 
+            color: var(--blueprint-critical);
+            animation: pulse 1s ease-in-out infinite alternate;
+        }
+
+        .consciousness-bar {
+            width: 100%;
+            height: 6px;
+            background: var(--blueprint-border);
+            border-radius: 3px;
+            margin: 8px 0;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .consciousness-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--blueprint-secondary) 0%, var(--blueprint-primary) 100%);
+            transition: width 0.5s ease-out;
+            box-shadow: 0 0 8px var(--blueprint-primary);
+        }
+
+        .memory-grid {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 2px;
+            margin: 8px 0;
+        }
+
+        .memory-cell {
+            aspect-ratio: 1;
+            background: var(--blueprint-border);
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+
+        .memory-cell.active {
+            background: var(--blueprint-accent);
+            box-shadow: 0 0 4px var(--blueprint-accent);
+        }
+
+        .heatmap {
+            display: grid;
+            grid-template-columns: repeat(16, 1fr);
+            gap: 1px;
+            margin: 8px 0;
+            height: 80px;
+        }
+
+        .heatmap-cell {
+            background: var(--blueprint-border);
+            transition: all 0.2s ease;
+        }
+
+        .connection-panel {
+            grid-column: 1 / -1;
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .connection-input {
+            flex: 1;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--blueprint-border);
+            color: var(--blueprint-text);
+            padding: 8px 12px;
+            font-family: inherit;
+            font-size: 0.8rem;
+        }
+
+        .connection-btn {
+            background: var(--blueprint-primary);
+            color: var(--blueprint-bg);
+            border: none;
+            padding: 8px 16px;
+            font-family: inherit;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .connection-btn:hover {
+            background: var(--blueprint-accent);
+            box-shadow: 0 0 8px var(--blueprint-accent);
+        }
+
+        .log-panel {
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid var(--blueprint-border);
+            height: 100px;
+            overflow-y: auto;
+            padding: 8px;
+            font-size: 0.7rem;
+            line-height: 1.3;
+        }
+
+        .log-entry {
+            margin: 2px 0;
+            opacity: 0.8;
+        }
+
+        .log-entry.success { color: var(--blueprint-accent); }
+        .log-entry.error { color: var(--blueprint-critical); }
+        .log-entry.info { color: var(--blueprint-primary); }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            100% { opacity: 0.6; }
+        }
+    </style>
+</head>
+<body>
+    <div class="blueprint-grid"></div>
+    
+    <div class="consciousness-interface">
+        <!-- Status Module -->
+        <div class="module">
+            <div class="module-title">DAWN STATUS</div>
+            <div class="status-indicator" id="statusIndicator"></div>
+            
+            <div class="metric">
+                <span class="metric-label">Engine</span>
+                <span class="metric-value" id="engineStatus">DISCONNECTED</span>
+            </div>
+            
+            <div class="metric">
+                <span class="metric-label">Tick Rate</span>
+                <span class="metric-value" id="tickRate">0.0 Hz</span>
+            </div>
+            
+            <div class="metric">
+                <span class="metric-label">Latest Tick</span>
+                <span class="metric-value" id="latestTick">000000</span>
+            </div>
+            
+            <div class="metric">
+                <span class="metric-label">Integration</span>
+                <span class="metric-value" id="integrationMode">OFFLINE</span>
+            </div>
+            
+            <div class="metric">
+                <span class="metric-label">Consciousness</span>
+                <span class="metric-value" id="consciousnessValue">0.0%</span>
+            </div>
+            <div class="consciousness-bar">
+                <div class="consciousness-fill" id="consciousnessFill"></div>
+            </div>
+        </div>
+
+        <!-- Mood Module -->
+        <div class="module">
+            <div class="module-title">MOOD ZONE</div>
+            
+            <div class="metric">
+                <span class="metric-label">Valence</span>
+                <span class="metric-value" id="moodValence">0.00</span>
+            </div>
+            
+            <div class="metric">
+                <span class="metric-label">Arousal</span>
+                <span class="metric-value" id="moodArousal">0.00</span>
+            </div>
+            
+            <div class="metric">
+                <span class="metric-label">Dominance</span>
+                <span class="metric-value" id="moodDominance">0.00</span>
+            </div>
+            
+            <div class="metric">
+                <span class="metric-label">Coherence</span>
+                <span class="metric-value" id="moodCoherence">0.00</span>
+            </div>
+        </div>
+
+        <!-- Cognitive Module -->
+        <div class="module">
+            <div class="module-title">COGNITIVE VECTOR</div>
+            
+            <div class="metric">
+                <span class="metric-label">Semantic Align</span>
+                <span class="metric-value" id="semanticAlignment">0.0%</span>
+            </div>
+            
+            <div class="metric">
+                <span class="metric-label">Entropy Grad</span>
+                <span class="metric-value" id="entropyGradient">0.0%</span>
+            </div>
+            
+            <div class="metric">
+                <span class="metric-label">Drift Magnitude</span>
+                <span class="metric-value" id="driftMagnitude">0.0%</span>
+            </div>
+            
+            <div class="metric">
+                <span class="metric-label">Rebloom Intensity</span>
+                <span class="metric-value" id="rebloomIntensity">0.0%</span>
+            </div>
+        </div>
+
+        <!-- Memory Module -->
+        <div class="module">
+            <div class="module-title">MEMORY REBLOOM</div>
+            
+            <div class="metric">
+                <span class="metric-label">Active Sectors</span>
+                <span class="metric-value" id="activeSectors">0/64</span>
+            </div>
+            
+            <div class="memory-grid" id="memoryGrid">
+                <!-- 64 memory cells will be generated here -->
+            </div>
+        </div>
+
+        <!-- Semantic Module -->
+        <div class="module">
+            <div class="module-title">SEMANTIC HEATMAP</div>
+            
+            <div class="metric">
+                <span class="metric-label">Active Nodes</span>
+                <span class="metric-value" id="activeNodes">0/256</span>
+            </div>
+            
+            <div class="heatmap" id="semanticHeatmap">
+                <!-- 256 semantic nodes will be generated here -->
+            </div>
+        </div>
+
+        <!-- Forecast Module -->
+        <div class="module">
+            <div class="module-title">FORECAST VECTOR</div>
+            
+            <div class="metric">
+                <span class="metric-label">Dimensions</span>
+                <span class="metric-value" id="forecastDimensions">32</span>
+            </div>
+            
+            <div class="metric">
+                <span class="metric-label">Confidence</span>
+                <span class="metric-value" id="forecastConfidence">0.0%</span>
+            </div>
+            
+            <div class="metric">
+                <span class="metric-label">State Hash</span>
+                <span class="metric-value" id="stateHash">unknown</span>
+            </div>
+        </div>
+
+        <!-- Connection Panel -->
+        <div class="connection-panel module">
+            <div class="module-title">CONNECTION</div>
+            <input type="text" class="connection-input" id="mmapPath" 
+                   placeholder="/tmp/dawn_consciousness.mmap" 
+                   value="runtime/dawn_consciousness.mmap">
+            <button class="connection-btn" id="connectBtn">CONNECT</button>
+            <button class="connection-btn" id="disconnectBtn">DISCONNECT</button>
+        </div>
+
+        <!-- Log Panel -->
+        <div class="module" style="grid-column: 1 / -1;">
+            <div class="module-title">ACTIVITY LOG</div>
+            <div class="log-panel" id="logPanel">
+                <div class="log-entry info">🧠 DAWN Consciousness Monitor initialized</div>
+                <div class="log-entry info">📁 Ready to connect to memory-mapped consciousness state</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const { invoke } = window.__TAURI__.tauri;
+
+        class DawnConsciousnessMonitor {
+            constructor() {
+                this.connected = false;
+                this.polling = false;
+                this.pollInterval = null;
+                
+                this.initializeUI();
+                this.bindEvents();
+                this.generateMemoryGrid();
+                this.generateSemanticHeatmap();
+                
+                this.addLogEntry('info', '🎨 User interface initialized');
+            }
+            
+            initializeUI() {
+                this.elements = {
+                    statusIndicator: document.getElementById('statusIndicator'),
+                    engineStatus: document.getElementById('engineStatus'),
+                    tickRate: document.getElementById('tickRate'),
+                    latestTick: document.getElementById('latestTick'),
+                    integrationMode: document.getElementById('integrationMode'),
+                    consciousnessValue: document.getElementById('consciousnessValue'),
+                    consciousnessFill: document.getElementById('consciousnessFill'),
+                    
+                    moodValence: document.getElementById('moodValence'),
+                    moodArousal: document.getElementById('moodArousal'),
+                    moodDominance: document.getElementById('moodDominance'),
+                    moodCoherence: document.getElementById('moodCoherence'),
+                    
+                    semanticAlignment: document.getElementById('semanticAlignment'),
+                    entropyGradient: document.getElementById('entropyGradient'),
+                    driftMagnitude: document.getElementById('driftMagnitude'),
+                    rebloomIntensity: document.getElementById('rebloomIntensity'),
+                    
+                    activeSectors: document.getElementById('activeSectors'),
+                    activeNodes: document.getElementById('activeNodes'),
+                    forecastDimensions: document.getElementById('forecastDimensions'),
+                    forecastConfidence: document.getElementById('forecastConfidence'),
+                    stateHash: document.getElementById('stateHash'),
+                    
+                    mmapPath: document.getElementById('mmapPath'),
+                    connectBtn: document.getElementById('connectBtn'),
+                    disconnectBtn: document.getElementById('disconnectBtn'),
+                    logPanel: document.getElementById('logPanel')
+                };
+            }
+            
+            bindEvents() {
+                this.elements.connectBtn.addEventListener('click', () => this.connect());
+                this.elements.disconnectBtn.addEventListener('click', () => this.disconnect());
+            }
+            
+            generateMemoryGrid() {
+                const grid = document.getElementById('memoryGrid');
+                for (let i = 0; i < 64; i++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'memory-cell';
+                    cell.id = `memory-${i}`;
+                    grid.appendChild(cell);
+                }
+            }
+            
+            generateSemanticHeatmap() {
+                const heatmap = document.getElementById('semanticHeatmap');
+                for (let i = 0; i < 256; i++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'heatmap-cell';
+                    cell.id = `semantic-${i}`;
+                    heatmap.appendChild(cell);
+                }
+            }
+            
+            async connect() {
+                const mmapPath = this.elements.mmapPath.value.trim();
+                if (!mmapPath) {
+                    this.addLogEntry('error', '❌ Please enter a valid mmap file path');
+                    return;
+                }
+                
+                try {
+                    this.addLogEntry('info', `🔍 Connecting to: ${mmapPath}`);
+                    const result = await invoke('connect_dawn', { mmapPath });
+                    
+                    this.connected = true;
+                    this.elements.statusIndicator.classList.add('connected');
+                    this.elements.engineStatus.textContent = 'CONNECTED';
+                    this.elements.engineStatus.className = 'metric-value positive';
+                    
+                    this.addLogEntry('success', `✅ ${result}`);
+                    this.startPolling();
+                    
+                } catch (error) {
+                    this.addLogEntry('error', `❌ Connection failed: ${error}`);
+                }
+            }
+            
+            disconnect() {
+                this.connected = false;
+                this.stopPolling();
+                
+                this.elements.statusIndicator.classList.remove('connected');
+                this.elements.engineStatus.textContent = 'DISCONNECTED';
+                this.elements.engineStatus.className = 'metric-value';
+                this.elements.integrationMode.textContent = 'OFFLINE';
+                
+                this.addLogEntry('info', '🔌 Disconnected from DAWN consciousness engine');
+            }
+            
+            startPolling() {
+                if (this.polling) return;
+                
+                this.polling = true;
+                this.addLogEntry('info', '⏱️ Starting consciousness state polling (60 Hz)');
+                
+                this.pollInterval = setInterval(() => this.pollConsciousnessState(), 16); // ~60 Hz
+            }
+            
+            stopPolling() {
+                this.polling = false;
+                if (this.pollInterval) {
+                    clearInterval(this.pollInterval);
+                    this.pollInterval = null;
+                }
+                this.addLogEntry('info', '⏸️ Stopped consciousness state polling');
+            }
+            
+            async pollConsciousnessState() {
+                if (!this.connected) return;
+                
+                try {
+                    // Get status
+                    const status = await invoke('get_dawn_status');
+                    this.updateStatus(status);
+                    
+                    // Get latest tick state
+                    const tickState = await invoke('read_consciousness_state');
+                    if (tickState) {
+                        this.updateTickState(tickState);
+                    }
+                    
+                } catch (error) {
+                    this.addLogEntry('error', `⚠️ Polling error: ${error}`);
+                }
+            }
+            
+            updateStatus(status) {
+                this.elements.tickRate.textContent = `${status.tick_rate_hz.toFixed(1)} Hz`;
+                this.elements.latestTick.textContent = status.latest_tick.toString().padStart(6, '0');
+                this.elements.integrationMode.textContent = status.integration_mode.toUpperCase();
+                
+                const consciousness = Math.round(status.consciousness_depth * 100);
+                this.elements.consciousnessValue.textContent = `${consciousness}%`;
+                this.elements.consciousnessFill.style.width = `${consciousness}%`;
+            }
+            
+            updateTickState(tickState) {
+                // Update mood zone
+                this.elements.moodValence.textContent = tickState.mood_zone.valence.toFixed(2);
+                this.elements.moodArousal.textContent = tickState.mood_zone.arousal.toFixed(2);
+                this.elements.moodDominance.textContent = tickState.mood_zone.dominance.toFixed(2);
+                this.elements.moodCoherence.textContent = tickState.mood_zone.coherence.toFixed(2);
+                
+                // Update cognitive vector
+                this.elements.semanticAlignment.textContent = `${Math.round(tickState.cognitive_vector.semantic_alignment * 100)}%`;
+                this.elements.entropyGradient.textContent = `${Math.round(tickState.cognitive_vector.entropy_gradient * 100)}%`;
+                this.elements.driftMagnitude.textContent = `${Math.round(tickState.cognitive_vector.drift_magnitude * 100)}%`;
+                this.elements.rebloomIntensity.textContent = `${Math.round(tickState.cognitive_vector.rebloom_intensity * 100)}%`;
+                
+                // Update memory rebloom
+                const activeCount = tickState.memory_rebloom_flags.filter(flag => flag).length;
+                this.elements.activeSectors.textContent = `${activeCount}/64`;
+                
+                // Update memory grid visualization
+                tickState.memory_rebloom_flags.forEach((active, index) => {
+                    const cell = document.getElementById(`memory-${index}`);
+                    if (cell) {
+                        cell.className = active ? 'memory-cell active' : 'memory-cell';
+                    }
+                });
+                
+                // Update semantic heatmap
+                const activeSemanticNodes = tickState.semantic_heatmap.filter(value => value > 0.1).length;
+                this.elements.activeNodes.textContent = `${activeSemanticNodes}/256`;
+                
+                // Update heatmap visualization
+                tickState.semantic_heatmap.slice(0, 256).forEach((value, index) => {
+                    const cell = document.getElementById(`semantic-${index}`);
+                    if (cell) {
+                        const intensity = Math.min(value, 1.0);
+                        const opacity = intensity * 0.8 + 0.1;
+                        cell.style.backgroundColor = `rgba(0, 212, 255, ${opacity})`;
+                    }
+                });
+                
+                // Update forecast
+                const avgForecast = tickState.forecast_vector.reduce((a, b) => a + b, 0) / tickState.forecast_vector.length;
+                this.elements.forecastConfidence.textContent = `${Math.round(avgForecast * 100)}%`;
+                this.elements.stateHash.textContent = tickState.tensor_state_hash.substring(0, 8);
+                
+                // Update consciousness depth
+                const consciousness = Math.round(tickState.consciousness_depth * 100);
+                this.elements.consciousnessValue.textContent = `${consciousness}%`;
+                this.elements.consciousnessFill.style.width = `${consciousness}%`;
+                
+                // Log periodic updates
+                if (tickState.tick_number % 60 === 0) {
+                    this.addLogEntry('info', `🧠 Tick ${tickState.tick_number} | Consciousness(${consciousness}%) | Active Memory(${activeCount}/64)`);
+                }
+            }
+            
+            addLogEntry(type, message) {
+                const entry = document.createElement('div');
+                entry.className = `log-entry ${type}`;
+                entry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+                
+                this.elements.logPanel.appendChild(entry);
+                this.elements.logPanel.scrollTop = this.elements.logPanel.scrollHeight;
+                
+                // Keep only last 100 entries
+                while (this.elements.logPanel.children.length > 100) {
+                    this.elements.logPanel.removeChild(this.elements.logPanel.firstChild);
+                }
+            }
+        }
+        
+        // Initialize when DOM is ready
+        document.addEventListener('DOMContentLoaded', () => {
+            window.dawnMonitor = new DawnConsciousnessMonitor();
+        });
+    </script>
+</body>
+</html> 

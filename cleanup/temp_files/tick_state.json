@@ -1,0 +1,28 @@
+{
+  "tick_count": 0,
+  "uptime": 126.15955710411072,
+  "subsystems": [
+    "pulse",
+    "tick_thermal_update",
+    "add_heat",
+    "scup_tracker",
+    "schema_evolution_engine",
+    "event_bus",
+    "visualizer"
+  ],
+  "is_running": true,
+  "performance_metrics": {
+    "ticks_per_second": 0.0,
+    "last_tick": 0.0,
+    "uptime": 0.0,
+    "memory_usage": 0.0,
+    "cpu_usage": 0.0
+  },
+  "schema_evolution_engine_state": {
+    "evolution_rate": 0.1,
+    "adaptation_threshold": 0.5,
+    "suppression_active": false,
+    "last_evolution": 0.0,
+    "evolution_status": "stable"
+  }
+}

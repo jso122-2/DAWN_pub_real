@@ -1,0 +1,5 @@
+{"timestamp": "2025-07-26T19:57:46.875475", "source_id": "m_0001", "rebloom_id": "m_0002", "method": "auto", "topic": "origin", "reason": "tick=1, entropy=0.82"}
+{"timestamp": "2025-07-26T19:58:21.875475", "source_id": "m_0002", "rebloom_id": "m_0003", "method": "sigil", "topic": "drift", "reason": "forecast:drift"}
+{"timestamp": "2025-07-26T19:59:36.875475", "source_id": "m_0003", "rebloom_id": "m_0004", "method": "reflection", "topic": "memory", "reason": "reflection triggered rebloom"}
+{"timestamp": "2025-07-26T20:00:56.875475", "source_id": "m_0004", "rebloom_id": "m_0005", "method": "auto", "topic": "recognition", "reason": "scup>45.0, entropy=0.73"}
+{"timestamp": "2025-07-26T20:03:26.875475", "source_id": "m_0001", "rebloom_id": "m_0006", "method": "sigil", "topic": "awakening", "reason": "symbolic resonance: origin->awakening"}

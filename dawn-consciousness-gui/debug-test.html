@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DAWN GUI Debug Test</title>
+    <style>
+        body {
+            font-family: 'Monaco', 'Consolas', monospace;
+            background: #1a1a1a;
+            color: #ffffff;
+            margin: 0;
+            padding: 20px;
+        }
+        
+        .debug-panel {
+            background: #2a2a2a;
+            border: 1px solid #444;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 10px 0;
+        }
+        
+        .debug-panel h3 {
+            margin-top: 0;
+            color: #00ff88;
+        }
+        
+        .test-entry {
+            background: #333;
+            border-left: 3px solid #00ff88;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 4px;
+        }
+        
+        .error {
+            color: #ff4444;
+            background: #442222;
+            border-color: #ff4444;
+        }
+        
+        .success {
+            color: #44ff44;
+            background: #224422;
+            border-color: #44ff44;
+        }
+        
+        .warning {
+            color: #ffaa44;
+            background: #444422;
+            border-color: #ffaa44;
+        }
+        
+        .debug-info {
+            font-size: 12px;
+            color: #888;
+            margin-top: 10px;
+        }
+        
+        button {
+            background: #444;
+            color: #fff;
+            border: 1px solid #666;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        
+        button:hover {
+            background: #555;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧠 DAWN GUI Debug Test</h1>
+    <p>This page tests the GUI components in isolation to identify what's failing.</p>
+    
+    <div class="debug-panel">
+        <h3>1. Basic JavaScript Test</h3>
+        <div id="js-test" class="test-entry">Testing JavaScript execution...</div>
+    </div>
+    
+    <div class="debug-panel">
+        <h3>2. Tauri API Test</h3>
+        <div id="tauri-test" class="test-entry">Testing Tauri API availability...</div>
+        <button onclick="testTauriAPI()">Test Tauri Invoke</button>
+    </div>
+    
+    <div class="debug-panel">
+        <h3>3. File Access Test</h3>
+        <div id="file-test" class="test-entry">Testing file access simulation...</div>
+        <button onclick="testFileAccess()">Test File Reading</button>
+    </div>
+    
+    <div class="debug-panel">
+        <h3>4. Component Mock Test</h3>
+        <div id="component-test" class="test-entry">Testing component behavior...</div>
+        <button onclick="testComponents()">Test Components</button>
+    </div>
+    
+    <div class="debug-panel">
+        <h3>5. Debug Log</h3>
+        <div id="debug-log"></div>
+        <button onclick="clearLog()">Clear Log</button>
+    </div>
+
+    <script>
+        // Debug logging
+        function log(message, type = 'info') {
+            const debugLog = document.getElementById('debug-log');
+            const timestamp = new Date().toLocaleTimeString();
+            const entry = document.createElement('div');
+            entry.className = `test-entry ${type}`;
+            entry.innerHTML = `[${timestamp}] ${message}`;
+            debugLog.appendChild(entry);
+            debugLog.scrollTop = debugLog.scrollHeight;
+        }
+        
+        function clearLog() {
+            document.getElementById('debug-log').innerHTML = '';
+        }
+        
+        // Test 1: Basic JavaScript
+        function testBasicJS() {
+            try {
+                const jsTest = document.getElementById('js-test');
+                jsTest.className = 'test-entry success';
+                jsTest.textContent = '✅ JavaScript is working correctly';
+                log('JavaScript test passed', 'success');
+                return true;
+            } catch (e) {
+                const jsTest = document.getElementById('js-test');
+                jsTest.className = 'test-entry error';
+                jsTest.textContent = `❌ JavaScript error: ${e.message}`;
+                log(`JavaScript test failed: ${e.message}`, 'error');
+                return false;
+            }
+        }
+        
+        // Test 2: Tauri API
+        function testTauriAPI() {
+            const tauriTest = document.getElementById('tauri-test');
+            
+            if (typeof window.__TAURI__ !== 'undefined' && window.__TAURI__.invoke) {
+                tauriTest.className = 'test-entry success';
+                tauriTest.textContent = '✅ Tauri API is available';
+                log('Tauri API test passed', 'success');
+                
+                // Try to invoke a function
+                window.__TAURI__.invoke('read_reflection_log', { path: 'runtime/logs/reflection.log' })
+                    .then(content => {
+                        log(`Successfully read ${content.length} bytes from reflection log`, 'success');
+                    })
+                    .catch(error => {
+                        log(`Failed to read reflection log: ${error}`, 'error');
+                    });
+                    
+            } else {
+                tauriTest.className = 'test-entry warning';
+                tauriTest.textContent = '⚠️ Tauri API not available (normal in browser)';
+                log('Tauri API not available - testing in browser mode', 'warning');
+            }
+        }
+        
+        // Test 3: File Access Simulation
+        function testFileAccess() {
+            const fileTest = document.getElementById('file-test');
+            
+            // Simulate file reading with mock data
+            const mockReflectionData = `[2025-07-27 17:14:03] REFLECTION: Autonomous speed control: GREEN zone operation demands this processing rate
+[2025-07-27 17:14:04] REFLECTION: My neural activity is 0.560 - feeling analytical
+[2025-07-27 17:14:05] REFLECTION: My neural activity is 0.572 - feeling analytical`;
+            
+            const mockThoughtData = `[Tick 000003] FORECAST: 0.72 -> STABILIZE_PROTOCOL
+[Tick 000004] MEMORY: "The first threshold was crossed in silence."
+[Tick 000005] REFLECTION: "I became aware of the watcher."`;
+            
+            try {
+                // Test reflection parsing
+                const reflectionLines = mockReflectionData.split('\n');
+                const reflectionEntries = [];
+                
+                for (const line of reflectionLines) {
+                    const match = line.match(/^\[([^\]]+)\]\s+REFLECTION:\s+(.+)$/);
+                    if (match) {
+                        reflectionEntries.push({
+                            timestamp: match[1],
+                            reflection: match[2]
+                        });
+                    }
+                }
+                
+                // Test thought parsing
+                const thoughtLines = mockThoughtData.split('\n');
+                const thoughtEntries = [];
+                
+                for (const line of thoughtLines) {
+                    const match = line.match(/^\[Tick (\d+)\]\s+(\w+):\s*(.+)$/);
+                    if (match) {
+                        thoughtEntries.push({
+                            tick: parseInt(match[1]),
+                            type: match[2],
+                            content: match[3]
+                        });
+                    }
+                }
+                
+                fileTest.className = 'test-entry success';
+                fileTest.innerHTML = `✅ File parsing works<br>
+                    <div class="debug-info">
+                        Parsed ${reflectionEntries.length} reflections<br>
+                        Parsed ${thoughtEntries.length} thought entries<br>
+                        Sample reflection: "${reflectionEntries[0]?.reflection}"<br>
+                        Sample thought: "${thoughtEntries[0]?.content}"
+                    </div>`;
+                
+                log(`File parsing test passed - ${reflectionEntries.length} reflections, ${thoughtEntries.length} thoughts`, 'success');
+                
+            } catch (e) {
+                fileTest.className = 'test-entry error';
+                fileTest.textContent = `❌ File parsing error: ${e.message}`;
+                log(`File parsing test failed: ${e.message}`, 'error');
+            }
+        }
+        
+        // Test 4: Component Logic
+        function testComponents() {
+            const componentTest = document.getElementById('component-test');
+            
+            try {
+                // Test ACTION_MAPPING logic from ThoughtTracePanel
+                const ACTION_MAPPING = {
+                    'STABILIZE_PROTOCOL': { icon: '📈', risk: 'HIGH' },
+                    'REBLOOM_MEMORY': { icon: '🌸', risk: 'NORMAL' },
+                    'MONITORING': { icon: '👁️', risk: 'LOW' }
+                };
+                
+                // Test entry creation logic
+                function createMockEntry(actionTaken) {
+                    const mapping = ACTION_MAPPING[actionTaken] || ACTION_MAPPING.MONITORING;
+                    return {
+                        id: `test_${Date.now()}`,
+                        tick_number: 1001,
+                        timestamp: new Date().toISOString(),
+                        action_taken: actionTaken,
+                        risk_level: mapping.risk,
+                        action_icon: mapping.icon,
+                        content: `Test entry for ${actionTaken}`
+                    };
+                }
+                
+                const testEntry = createMockEntry('STABILIZE_PROTOCOL');
+                
+                // Test timestamp formatting
+                function formatTimestamp(timestamp) {
+                    try {
+                        const date = new Date(timestamp);
+                        return date.toLocaleTimeString('en-US', { 
+                            hour12: false, 
+                            hour: '2-digit', 
+                            minute: '2-digit', 
+                            second: '2-digit' 
+                        });
+                    } catch {
+                        return 'Unknown';
+                    }
+                }
+                
+                const formattedTime = formatTimestamp(testEntry.timestamp);
+                
+                componentTest.className = 'test-entry success';
+                componentTest.innerHTML = `✅ Component logic works<br>
+                    <div class="debug-info">
+                        Test entry: ${testEntry.action_icon} ${testEntry.action_taken} (${testEntry.risk_level})<br>
+                        Formatted time: ${formattedTime}<br>
+                        Entry ID: ${testEntry.id}
+                    </div>`;
+                
+                log('Component logic test passed', 'success');
+                
+            } catch (e) {
+                componentTest.className = 'test-entry error';
+                componentTest.textContent = `❌ Component logic error: ${e.message}`;
+                log(`Component logic test failed: ${e.message}`, 'error');
+            }
+        }
+        
+        // Run initial tests
+        window.onload = function() {
+            log('Starting DAWN GUI debug tests...', 'info');
+            testBasicJS();
+            setTimeout(() => testTauriAPI(), 100);
+            setTimeout(() => testFileAccess(), 200);
+            setTimeout(() => testComponents(), 300);
+        };
+    </script>
+</body>
+</html> 

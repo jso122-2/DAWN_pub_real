@@ -1,0 +1,16 @@
+[
+  {
+    "timestamp": "2025-06-09T19:48:55.337837",
+    "source": "node_a",
+    "target": "node_d",
+    "distance": 2.6027125647220983,
+    "path": null
+  },
+  {
+    "timestamp": "2025-06-09T19:50:13.350018",
+    "source": "node_a",
+    "target": "node_d",
+    "distance": 0.15846394987612333,
+    "path": null
+  }
+]

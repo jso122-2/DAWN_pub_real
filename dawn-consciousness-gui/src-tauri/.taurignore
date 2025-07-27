@@ -1,0 +1,7 @@
+# Tauri ignore file - exclude runtime data from file watching
+runtime/
+runtime/**
+*.log
+*.jsonl
+*.mmap
+target/ 

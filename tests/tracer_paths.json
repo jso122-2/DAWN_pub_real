@@ -1,0 +1,10 @@
+[
+  {
+    "timestamp": "2025-06-09T19:50:13.352674",
+    "source": "node_a",
+    "target": "node_d",
+    "path": [],
+    "confidence": 0.0,
+    "semantic_distance": 0.15846394987612333
+  }
+]

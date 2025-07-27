@@ -1,0 +1,3 @@
+"""
+Boot package initialization
+"""

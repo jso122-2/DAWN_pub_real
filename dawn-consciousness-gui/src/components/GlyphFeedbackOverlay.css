@@ -1,0 +1,386 @@
+/* DAWN Glyph Feedback Overlay - Symbolic Pressure Response */
+.glyph-feedback-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  z-index: 10;
+  overflow: hidden;
+}
+
+/* FractalHeart Flash Overlay */
+.fractal-heart-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -60%); /* Adjust to match heart position */
+  width: 120px;
+  height: 120px;
+}
+
+.heart-flash-ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80px;
+  height: 80px;
+  border: 3px solid #ff4444;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 68, 68, 0.3) 0%, transparent 70%);
+  animation: heart-flash-ring 1.2s ease-out;
+}
+
+.heart-flash-core {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 20px;
+  height: 20px;
+  background: radial-gradient(circle, #ff4444 0%, #ff6666 50%, transparent 100%);
+  border-radius: 50%;
+  animation: heart-flash-core 1.2s ease-out;
+}
+
+.heart-flash-particles {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  height: 100%;
+}
+
+.heart-particle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 4px;
+  height: 4px;
+  background: #ff4444;
+  border-radius: 50%;
+  transform-origin: 0 0;
+  transform: translate(-50%, -50%) rotate(var(--particle-angle)) translateX(40px);
+  animation: heart-particle 1.2s ease-out;
+  animation-delay: var(--particle-delay);
+}
+
+@keyframes heart-flash-ring {
+  0% {
+    transform: translate(-50%, -50%) scale(0.5);
+    opacity: 1;
+    box-shadow: 0 0 20px rgba(255, 68, 68, 0.8);
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.2);
+    opacity: 0.8;
+    box-shadow: 0 0 40px rgba(255, 68, 68, 0.6);
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(2);
+    opacity: 0;
+    box-shadow: 0 0 60px rgba(255, 68, 68, 0.2);
+  }
+}
+
+@keyframes heart-flash-core {
+  0% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+    box-shadow: 0 0 10px rgba(255, 68, 68, 1);
+  }
+  30% {
+    transform: translate(-50%, -50%) scale(1.5);
+    opacity: 1;
+    box-shadow: 0 0 30px rgba(255, 68, 68, 0.8);
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(0.5);
+    opacity: 0;
+    box-shadow: 0 0 5px rgba(255, 68, 68, 0.2);
+  }
+}
+
+@keyframes heart-particle {
+  0% {
+    opacity: 1;
+    transform: translate(-50%, -50%) rotate(var(--particle-angle)) translateX(10px) scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: translate(-50%, -50%) rotate(var(--particle-angle)) translateX(60px) scale(1.2);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) rotate(var(--particle-angle)) translateX(100px) scale(0.5);
+  }
+}
+
+/* SomaCoil Active Overlay */
+.soma-coil-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -40%); /* Adjust to match coil position */
+  width: 140px;
+  height: 100px;
+}
+
+.coil-energy-field {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(ellipse, rgba(139, 92, 246, 0.2) 0%, rgba(139, 92, 246, 0.1) 50%, transparent 80%);
+  border-radius: 50%;
+  animation: coil-energy-field 1.2s ease-in-out;
+}
+
+.coil-spiral-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  height: 100%;
+}
+
+.spiral-ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border: 2px solid #8b5cf6;
+  border-radius: 50%;
+  width: calc(40px + var(--ring-index) * 30px);
+  height: calc(30px + var(--ring-index) * 20px);
+  animation: spiral-ring 1.2s ease-out;
+  animation-delay: var(--ring-delay);
+}
+
+@keyframes coil-energy-field {
+  0% {
+    transform: translate(-50%, -50%) scale(0.8);
+    opacity: 0;
+  }
+  30% {
+    transform: translate(-50%, -50%) scale(1.2);
+    opacity: 0.8;
+  }
+  70% {
+    transform: translate(-50%, -50%) scale(1.1);
+    opacity: 0.6;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0;
+  }
+}
+
+@keyframes spiral-ring {
+  0% {
+    transform: translate(-50%, -50%) scale(0.5) rotate(0deg);
+    opacity: 1;
+    border-color: #8b5cf6;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.2) rotate(180deg);
+    opacity: 0.7;
+    border-color: #a855f7;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1.5) rotate(360deg);
+    opacity: 0;
+    border-color: #c084fc;
+  }
+}
+
+/* Anxious Body Glow Overlay */
+.anxious-glow-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 200px;
+  height: 280px;
+}
+
+.body-outline-glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 160px;
+  height: 240px;
+  border: 2px solid #ffaa00;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(255, 170, 0, 0.1) 0%, transparent 60%);
+  animation: body-outline-glow 1.2s ease-in-out;
+}
+
+.anxiety-ripples {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  height: 100%;
+}
+
+.anxiety-ripple {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border: 1px solid rgba(255, 170, 0, 0.6);
+  border-radius: 50%;
+  animation: anxiety-ripple 1.2s ease-out;
+  animation-delay: var(--ripple-delay);
+}
+
+.nervous-energy-points {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  height: 100%;
+}
+
+.energy-point {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 3px;
+  height: 3px;
+  background: #ffaa00;
+  border-radius: 50%;
+  transform-origin: 0 0;
+  transform: translate(-50%, -50%) rotate(var(--point-angle)) translateX(80px);
+  animation: energy-point 1.2s ease-out;
+  animation-delay: var(--point-delay);
+}
+
+@keyframes body-outline-glow {
+  0% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0;
+    box-shadow: 0 0 10px rgba(255, 170, 0, 0.4);
+  }
+  30% {
+    transform: translate(-50%, -50%) scale(1.05);
+    opacity: 0.8;
+    box-shadow: 0 0 30px rgba(255, 170, 0, 0.6);
+  }
+  70% {
+    transform: translate(-50%, -50%) scale(1.02);
+    opacity: 0.6;
+    box-shadow: 0 0 20px rgba(255, 170, 0, 0.4);
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0;
+    box-shadow: 0 0 5px rgba(255, 170, 0, 0.2);
+  }
+}
+
+@keyframes anxiety-ripple {
+  0% {
+    width: 50px;
+    height: 70px;
+    opacity: 0.8;
+  }
+  50% {
+    width: 120px;
+    height: 160px;
+    opacity: 0.4;
+  }
+  100% {
+    width: 200px;
+    height: 280px;
+    opacity: 0;
+  }
+}
+
+@keyframes energy-point {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) rotate(var(--point-angle)) translateX(40px) scale(0.5);
+    box-shadow: 0 0 2px rgba(255, 170, 0, 0.8);
+  }
+  30% {
+    opacity: 1;
+    transform: translate(-50%, -50%) rotate(var(--point-angle)) translateX(70px) scale(1.2);
+    box-shadow: 0 0 8px rgba(255, 170, 0, 0.6);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) rotate(var(--point-angle)) translateX(120px) scale(0.8);
+    box-shadow: 0 0 4px rgba(255, 170, 0, 0.2);
+  }
+}
+
+/* Trigger Indicator */
+.trigger-indicator {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  z-index: 20;
+}
+
+.trigger-label {
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 4px 8px;
+  border-radius: 3px;
+  animation: trigger-label-flash 1.2s ease-out;
+  box-shadow: 0 0 8px currentColor;
+}
+
+.trigger-label.heart {
+  color: #ff4444;
+  background: rgba(255, 68, 68, 0.2);
+  border: 1px solid rgba(255, 68, 68, 0.5);
+}
+
+.trigger-label.coil {
+  color: #8b5cf6;
+  background: rgba(139, 92, 246, 0.2);
+  border: 1px solid rgba(139, 92, 246, 0.5);
+}
+
+.trigger-label.anxiety {
+  color: #ffaa00;
+  background: rgba(255, 170, 0, 0.2);
+  border: 1px solid rgba(255, 170, 0, 0.5);
+}
+
+@keyframes trigger-label-flash {
+  0% {
+    opacity: 0;
+    transform: translateX(20px) scale(0.8);
+  }
+  20% {
+    opacity: 1;
+    transform: translateX(0) scale(1.1);
+  }
+  80% {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(-10px) scale(0.9);
+  }
+} 

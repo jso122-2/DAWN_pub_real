@@ -1,0 +1,11 @@
+{
+  "seed_id": "test_bloom_001",
+  "mood": "curious",
+  "bloom_factor": 1.0,
+  "entropy_score": 0.5,
+  "generated_at": "2025-06-10T19:44:22.336618",
+  "fractal_memory": {
+    "raw": "aPS~5|TH@|S^",
+    "note": "ASCII fractal string"
+  }
+}

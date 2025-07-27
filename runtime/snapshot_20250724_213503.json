@@ -1,0 +1,47 @@
+{
+  "timestamp": "2025-07-24T21:35:03.447574",
+  "export_version": "1.0.0",
+  "system_metrics": {
+    "entropy": 0.6365467036534844,
+    "heat": 41.73159466138469,
+    "zone": "CHAOTIC",
+    "active_sigils": 2,
+    "tick_count": 0
+  },
+  "pulse_state": {
+    "entropy": 0.6365467036534844,
+    "heat": 41.73159466138469,
+    "zone": "CHAOTIC",
+    "focus": 0.5026490110572621,
+    "chaos": 0.5092373629227875
+  },
+  "last_forecast": null,
+  "symbolic_state": {
+    "timestamp": "2025-07-24T21:35:03.447574",
+    "organ_synergy": 0.43330036122302595,
+    "heart": {
+      "emotional_charge": 0.7401848060950409,
+      "resonance_state": "gentle",
+      "beat_count": 75
+    },
+    "coil": {
+      "active_paths": 1,
+      "dominant_glyph": "\ud83e\udd1d",
+      "path_count": 1
+    },
+    "lung": {
+      "breathing_phase": "holding",
+      "lung_fullness": 0.8470656626189861,
+      "breath_count": 45
+    },
+    "symbolic_state": {
+      "constellation": "\u25cb\u2728H",
+      "somatic_commentary": "I exist in somatic awareness."
+    }
+  },
+  "system_health": {
+    "status": "operational",
+    "stability_index": 0.3634532963465156,
+    "coherence_level": 0.4522883148269967
+  }
+}

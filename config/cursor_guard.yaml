@@ -1,0 +1,49 @@
+# cursor_guard.yaml
+# DAWN / CLAUDE BUILD ZONE PERMISSIONS — DO NOT CROSS THESE LINES
+
+meta:
+  version: 1.0
+  created: 2024-06-08
+  owner: jackson
+  enforced_by: human + automation
+
+permissions:
+  claude_write_access:
+    allowed_paths:
+      - "claude_cache/"
+      - "waiting_room/done/"
+      - "waiting_room/recycle/"
+    denied_paths:
+      - "dawn_core/"
+      - "codex/"
+      - "sigil_index/"
+      - "memory_ring/active/"
+
+  file_types_allowed:
+    - ".md"
+    - ".json"
+    - ".txt"
+  file_types_denied:
+    - ".py"
+    - ".sh"
+    - ".yaml"
+
+claude_control:
+  max_response_tokens: 2048
+  max_depth_per_task: 3
+  auto_commit: false
+  prompt_requires:
+    - "INTENTION:"
+    - "CONTEXT:"
+    - "OUTPUT FORMAT:"
+    - "CAIRN alignment confirmed"
+
+audit_log:
+  enabled: true
+  save_to: "logs/claude_audit/"
+  track_fields:
+    - timestamp
+    - prompt_hash
+    - output_size
+    - affected_files
+    - temperature_used

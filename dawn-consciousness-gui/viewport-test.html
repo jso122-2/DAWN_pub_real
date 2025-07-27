@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DAWN Viewport Dragging Test</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Courier New', monospace;
+            background: #0d1b2a;
+            color: #ffffffb4;
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        .viewport-container {
+            width: 100%;
+            height: 100vh;
+            position: relative;
+            overflow: hidden;
+            cursor: grab;
+            background-image: 
+                linear-gradient(rgba(64, 224, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(64, 224, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+        }
+
+        .viewport-container:active {
+            cursor: grabbing;
+        }
+
+        .viewport-container.dragging {
+            cursor: grabbing;
+            user-select: none;
+        }
+
+        .viewport-container:hover {
+            background-image: 
+                linear-gradient(rgba(64, 224, 255, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(64, 224, 255, 0.05) 1px, transparent 1px);
+        }
+
+        .content-area {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 150%;
+            height: 150%;
+            transition: transform 0.3s ease-out;
+            padding: 20px;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 20px;
+        }
+
+        .content-area.dragging {
+            transition: none;
+        }
+
+        .panel {
+            background: rgba(27, 38, 59, 0.9);
+            border: 1px solid #415a77;
+            border-radius: 8px;
+            padding: 20px;
+            min-height: 200px;
+            backdrop-filter: blur(10px);
+        }
+
+        .panel-header {
+            font-weight: bold;
+            color: #40e0ff;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 1px;
+        }
+
+        .status-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 40px;
+            background: rgba(13, 27, 42, 0.95);
+            border-bottom: 1px solid #415a77;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            font-size: 12px;
+            z-index: 1000;
+            gap: 20px;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .status-label {
+            color: #cccccc99;
+        }
+
+        .status-value {
+            color: #40e0ff;
+            font-weight: bold;
+        }
+
+        .reset-btn {
+            background: transparent;
+            border: 1px solid #40e0ff;
+            color: #40e0ff;
+            padding: 4px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 10px;
+            margin-left: auto;
+        }
+
+        .reset-btn:hover {
+            background: rgba(64, 224, 255, 0.1);
+        }
+
+        .instructions {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(13, 27, 42, 0.9);
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #415a77;
+            font-size: 11px;
+            color: #cccccc99;
+            backdrop-filter: blur(10px);
+        }
+    </style>
+</head>
+<body>
+    <div class="status-bar">
+        <div class="status-item">
+            <span class="status-label">DAWN Viewport Test</span>
+        </div>
+        <div class="status-item">
+            <span class="status-label">Position:</span>
+            <span class="status-value" id="position">0, 0</span>
+        </div>
+        <button class="reset-btn" onclick="resetViewport()">🎯 Center View</button>
+    </div>
+
+    <div class="viewport-container" id="viewport">
+        <div class="content-area" id="content">
+            <div class="panel">
+                <div class="panel-header">Consciousness Monitor</div>
+                <div>This is a test panel. Try dragging the background to move around!</div>
+            </div>
+            <div class="panel">
+                <div class="panel-header">Entropy Graph</div>
+                <div>The viewport should move smoothly when you drag.</div>
+            </div>
+            <div class="panel">
+                <div class="panel-header">Reflection Stream</div>
+                <div>Grid background helps visualize movement.</div>
+            </div>
+            <div class="panel">
+                <div class="panel-header">Tick Monitor</div>
+                <div>Position coordinates update in real-time.</div>
+            </div>
+            <div class="panel">
+                <div class="panel-header">Sigil Trace</div>
+                <div>Smooth transitions when you release the drag.</div>
+            </div>
+            <div class="panel">
+                <div class="panel-header">Event Logger</div>
+                <div>Click the Center button to reset viewport.</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="instructions">
+        <strong>🎯 DAWN Viewport Dragging Test</strong><br>
+        • Drag anywhere in the background to pan the view<br>
+        • Watch the position coordinates update in real-time<br>
+        • Use the "Center View" button to reset<br>
+        • Grid becomes more visible when hovering
+    </div>
+
+    <script>
+        let isDragging = false;
+        let viewportOffset = { x: 0, y: 0 };
+        let lastMousePos = { x: 0, y: 0 };
+        
+        const viewport = document.getElementById('viewport');
+        const content = document.getElementById('content');
+        const positionDisplay = document.getElementById('position');
+
+        function updatePosition() {
+            positionDisplay.textContent = `${Math.round(viewportOffset.x)}, ${Math.round(viewportOffset.y)}`;
+            content.style.transform = `translate(${viewportOffset.x}px, ${viewportOffset.y}px)`;
+        }
+
+        function resetViewport() {
+            viewportOffset = { x: 0, y: 0 };
+            updatePosition();
+        }
+
+        viewport.addEventListener('mousedown', (e) => {
+            // Only start dragging if not clicking on a panel
+            if (e.target.closest('.panel') || e.target.closest('button')) {
+                return;
+            }
+
+            isDragging = true;
+            lastMousePos = { x: e.clientX, y: e.clientY };
+            viewport.classList.add('dragging');
+            content.classList.add('dragging');
+            e.preventDefault();
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+
+            const deltaX = e.clientX - lastMousePos.x;
+            const deltaY = e.clientY - lastMousePos.y;
+
+            viewportOffset.x += deltaX;
+            viewportOffset.y += deltaY;
+
+            lastMousePos = { x: e.clientX, y: e.clientY };
+            updatePosition();
+        });
+
+        document.addEventListener('mouseup', () => {
+            if (!isDragging) return;
+            
+            isDragging = false;
+            viewport.classList.remove('dragging');
+            content.classList.remove('dragging');
+        });
+
+        // Initialize
+        updatePosition();
+    </script>
+</body>
+</html> 

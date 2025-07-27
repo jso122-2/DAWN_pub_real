@@ -1,0 +1,61 @@
+{
+  "sigils": {
+    "sigil_0": {
+      "name": "sigil_0",
+      "type": "entropy_bloom",
+      "entropy": 0.1,
+      "created_tick": 1000,
+      "last_active": 1050
+    },
+    "sigil_1": {
+      "name": "sigil_1",
+      "type": "memory_cascade",
+      "entropy": 0.25,
+      "created_tick": 1010,
+      "last_active": 1055
+    },
+    "sigil_2": {
+      "name": "sigil_2",
+      "type": "semantic_drift",
+      "entropy": 0.4,
+      "created_tick": 1020,
+      "last_active": 1060
+    },
+    "sigil_3": {
+      "name": "sigil_3",
+      "type": "entropy_bloom",
+      "entropy": 0.5499999999999999,
+      "created_tick": 1030,
+      "last_active": 1065
+    },
+    "sigil_4": {
+      "name": "sigil_4",
+      "type": "memory_cascade",
+      "entropy": 0.7,
+      "created_tick": 1040,
+      "last_active": 1070
+    },
+    "sigil_5": {
+      "name": "sigil_5",
+      "type": "semantic_drift",
+      "entropy": 0.85,
+      "created_tick": 1050,
+      "last_active": 1075
+    },
+    "sigil_6": {
+      "name": "sigil_6",
+      "type": "entropy_bloom",
+      "entropy": 0.9999999999999999,
+      "created_tick": 1060,
+      "last_active": 1080
+    },
+    "sigil_7": {
+      "name": "sigil_7",
+      "type": "memory_cascade",
+      "entropy": 1.1500000000000001,
+      "created_tick": 1070,
+      "last_active": 1085
+    }
+  },
+  "current_tick": 1100
+}

@@ -1,0 +1,183 @@
+/* DAWN Thought Rate Heatmap - Blueprint Temporal Theme */
+.thought-rate-heatmap {
+  background: #0d1b2a;
+  border: 2px solid #1e3a5f;
+  border-radius: 8px;
+  padding: 20px;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'DejaVu Sans Mono', 'Courier New', monospace;
+  color: #ffffffb4;
+  width: 640px;
+  position: relative;
+  box-shadow: 
+    0 0 20px rgba(30, 58, 95, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  overflow: hidden;
+}
+
+.thought-rate-heatmap::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(circle at 25% 25%, rgba(0, 170, 255, 0.08) 0%, transparent 40%),
+    radial-gradient(circle at 75% 75%, rgba(255, 170, 0, 0.06) 0%, transparent 40%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.thought-rate-heatmap > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Header Section */
+.heatmap-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.heatmap-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #ffffff;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  text-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
+}
+
+/* Rate Legend */
+.rate-legend {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  color: #ffffffb4;
+}
+
+.legend-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  box-shadow: 0 0 4px currentColor;
+}
+
+.legend-dot.low-hz {
+  background: linear-gradient(135deg, #4a8cdb, #6ba3e0);
+  color: #6ba3e0;
+}
+
+.legend-dot.mid-hz {
+  background: linear-gradient(135deg, #ffffff, #e0e0e0);
+  color: #ffffff;
+}
+
+.legend-dot.high-hz {
+  background: linear-gradient(135deg, #ff8c00, #ff4500);
+  color: #ff6500;
+}
+
+/* Canvas */
+.heatmap-canvas {
+  display: block;
+  width: 100%;
+  max-width: 600px;
+  height: 200px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  background: #0a1520;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+}
+
+.heatmap-canvas:hover {
+  box-shadow: 
+    inset 0 2px 4px rgba(0, 0, 0, 0.3),
+    0 0 12px rgba(255, 255, 255, 0.1);
+}
+
+/* Footer */
+.heatmap-footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.volatility-info {
+  font-size: 9px;
+  color: #ffffffb4;
+  opacity: 0.8;
+  letter-spacing: 0.05em;
+  text-align: center;
+}
+
+/* Responsive adjustments */
+@media (max-width: 720px) {
+  .thought-rate-heatmap {
+    width: 100%;
+    padding: 16px;
+  }
+  
+  .heatmap-canvas {
+    width: 100%;
+    height: 180px;
+  }
+  
+  .heatmap-header {
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  
+  .rate-legend {
+    align-self: flex-end;
+    gap: 12px;
+  }
+  
+  .legend-item {
+    font-size: 8px;
+  }
+  
+  .legend-dot {
+    width: 6px;
+    height: 6px;
+  }
+}
+
+/* Animation effects */
+.thought-rate-heatmap:hover::before {
+  animation: temporal-pulse 3s ease-in-out infinite;
+}
+
+@keyframes temporal-pulse {
+  0%, 100% {
+    opacity: 0.6;
+  }
+  25% {
+    opacity: 0.8;
+  }
+  50% {
+    opacity: 0.7;
+  }
+  75% {
+    opacity: 0.9;
+  }
+} 

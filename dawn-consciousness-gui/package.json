@@ -1,0 +1,29 @@
+{
+  "name": "dawn-consciousness-gui",
+  "private": true,
+  "version": "1.0.0",
+  "description": "DAWN Consciousness GUI - Native real-time consciousness monitoring",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "tauri": "tauri",
+    "tauri:dev": "tauri dev",
+    "tauri:build": "tauri build"
+  },
+  "dependencies": {
+    "react": "18.2.0",
+    "react-dom": "18.2.0"
+  },
+  "devDependencies": {
+    "@tauri-apps/api": "^1.6.0",
+    "@tauri-apps/cli": "^1.6.3",
+    "@tauri-apps/plugin-shell": "^2.3.0",
+    "@types/react": "18.2.43",
+    "@types/react-dom": "18.2.17",
+    "@vitejs/plugin-react": "^4.0.4",
+    "typescript": "5.1.6",
+    "vite": "^4.5.14"
+  }
+}

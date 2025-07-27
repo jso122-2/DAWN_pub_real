@@ -1,0 +1,623 @@
+# DAWN Matplotlib Visual Processes Integration Blueprint
+
+## Overview
+Integration blueprint for matplotlib-based visualizations in DAWN consciousness engine. Generates server-side plots with terminal-inspired styling, served to the React frontend.
+
+## Architecture
+
+```
+Python Backend (matplotlib) → Base64/WebSocket → React Frontend
+```
+
+## 1. Backend Matplotlib Visualization Engine
+
+### Base Visualization Class
+```python
+# backend/visual/base_visualizer.py
+import matplotlib.pyplot as plt
+import matplotlib
+matplotlib.use('Agg')  # Non-interactive backend
+import numpy as np
+import io
+import base64
+from abc import ABC, abstractmethod
+
+class BaseVisualizer(ABC):
+    def __init__(self):
+        # Terminal-inspired color scheme
+        self.colors = {
+            'bg': '#000000',
+            'fg': '#00ff41',
+            'grid': '#1a1a1a',
+            'accent': '#00cc33',
+            'warning': '#ffb000',
+            'error': '#ff0040',
+            'text': '#f0f0f0'
+        }
+        self.fig_size = (8, 6)
+        self.dpi = 100
+        
+    def setup_plot(self, fig=None, ax=None):
+        """Apply terminal styling to matplotlib plot"""
+        if fig is None or ax is None:
+            fig, ax = plt.subplots(figsize=self.fig_size, dpi=self.dpi)
+            
+        # Terminal black background
+        fig.patch.set_facecolor(self.colors['bg'])
+        ax.set_facecolor(self.colors['bg'])
+        
+        # Terminal green styling
+        ax.spines['bottom'].set_color(self.colors['fg'])
+        ax.spines['top'].set_color(self.colors['fg'])
+        ax.spines['left'].set_color(self.colors['fg'])
+        ax.spines['right'].set_color(self.colors['fg'])
+        ax.tick_params(colors=self.colors['text'])
+        ax.xaxis.label.set_color(self.colors['text'])
+        ax.yaxis.label.set_color(self.colors['text'])
+        ax.title.set_color(self.colors['text'])
+        
+        # Grid styling
+        ax.grid(True, color=self.colors['grid'], linestyle='--', alpha=0.3)
+        
+        return fig, ax
+    
+    def to_base64(self, fig):
+        """Convert matplotlib figure to base64 string"""
+        buffer = io.BytesIO()
+        fig.savefig(buffer, format='png', facecolor=self.colors['bg'], 
+                    edgecolor='none', bbox_inches='tight')
+        buffer.seek(0)
+        image_base64 = base64.b64encode(buffer.read()).decode('utf-8')
+        plt.close(fig)
+        return f"data:image/png;base64,{image_base64}"
+    
+    @abstractmethod
+    def generate(self, data):
+        """Generate visualization from data"""
+        pass
+```
+
+### Consciousness Wave Visualizer
+```python
+# backend/visual/consciousness_wave.py
+from .base_visualizer import BaseVisualizer
+import numpy as np
+
+class ConsciousnessWaveVisualizer(BaseVisualizer):
+    def generate(self, scup_history, window_size=100):
+        fig, ax = self.setup_plot()
+        
+        # Generate smooth wave
+        x = np.linspace(0, len(scup_history), 1000)
+        y = np.interp(x, range(len(scup_history)), scup_history)
+        
+        # Main wave
+        ax.plot(x, y, color=self.colors['fg'], linewidth=2, alpha=0.8)
+        
+        # Fill area under curve
+        ax.fill_between(x, y, alpha=0.2, color=self.colors['fg'])
+        
+        # Add glow effect
+        for width in [4, 8, 12]:
+            ax.plot(x, y, color=self.colors['fg'], linewidth=width, 
+                   alpha=0.05)
+        
+        # Styling
+        ax.set_xlim(0, window_size)
+        ax.set_ylim(0, 100)
+        ax.set_xlabel('TIME', fontfamily='monospace', fontsize=10)
+        ax.set_ylabel('SCUP %', fontfamily='monospace', fontsize=10)
+        ax.set_title('CONSCIOUSNESS WAVE', fontfamily='monospace', 
+                     fontsize=12, pad=20)
+        
+        # Add current value annotation
+        current_value = scup_history[-1] if scup_history else 0
+        ax.text(0.98, 0.98, f'{current_value:.1f}%', 
+                transform=ax.transAxes, fontfamily='monospace',
+                fontsize=20, color=self.colors['fg'],
+                ha='right', va='top')
+        
+        return self.to_base64(fig)
+```
+
+### Neural Network Activity Heatmap
+```python
+# backend/visual/neural_heatmap.py
+class NeuralHeatmapVisualizer(BaseVisualizer):
+    def generate(self, neural_matrix):
+        fig, ax = self.setup_plot()
+        
+        # Create heatmap with terminal colormap
+        cmap = matplotlib.colors.LinearSegmentedColormap.from_list(
+            'terminal', 
+            [(0, '#000000'), (0.3, '#003300'), (0.7, '#00cc33'), (1, '#00ff41')]
+        )
+        
+        im = ax.imshow(neural_matrix, cmap=cmap, aspect='auto', 
+                       interpolation='nearest')
+        
+        # Add colorbar with terminal styling
+        cbar = plt.colorbar(im, ax=ax)
+        cbar.ax.yaxis.set_tick_params(color=self.colors['text'])
+        cbar.outline.set_edgecolor(self.colors['fg'])
+        plt.setp(plt.getp(cbar.ax.axes, 'yticklabels'), 
+                color=self.colors['text'])
+        
+        ax.set_title('NEURAL ACTIVITY MATRIX', fontfamily='monospace', 
+                     fontsize=12, pad=20)
+        ax.set_xlabel('NODES', fontfamily='monospace', fontsize=10)
+        ax.set_ylabel('LAYERS', fontfamily='monospace', fontsize=10)
+        
+        return self.to_base64(fig)
+```
+
+### Radar Chart for Multi-Metrics
+```python
+# backend/visual/metrics_radar.py
+class MetricsRadarVisualizer(BaseVisualizer):
+    def generate(self, metrics_dict):
+        # Radar chart setup
+        categories = list(metrics_dict.keys())
+        values = list(metrics_dict.values())
+        N = len(categories)
+        
+        angles = np.linspace(0, 2 * np.pi, N, endpoint=False).tolist()
+        values += values[:1]  # Complete the circle
+        angles += angles[:1]
+        
+        fig, ax = plt.subplots(figsize=self.fig_size, dpi=self.dpi,
+                              subplot_kw=dict(projection='polar'))
+        fig.patch.set_facecolor(self.colors['bg'])
+        ax.set_facecolor(self.colors['bg'])
+        
+        # Plot data
+        ax.plot(angles, values, color=self.colors['fg'], linewidth=2)
+        ax.fill(angles, values, color=self.colors['fg'], alpha=0.25)
+        
+        # Styling
+        ax.set_ylim(0, 100)
+        ax.set_xticks(angles[:-1])
+        ax.set_xticklabels(categories, fontfamily='monospace', 
+                          color=self.colors['text'])
+        ax.yaxis.set_tick_params(colors=self.colors['text'])
+        ax.grid(True, color=self.colors['grid'], linestyle='--', alpha=0.3)
+        
+        # Terminal-style title
+        plt.title('CONSCIOUSNESS METRICS RADAR', fontfamily='monospace',
+                  fontsize=12, color=self.colors['text'], pad=20)
+        
+        return self.to_base64(fig)
+```
+
+### Histogram with Terminal Styling
+```python
+# backend/visual/entropy_histogram.py
+class EntropyHistogramVisualizer(BaseVisualizer):
+    def generate(self, entropy_data, bins=20):
+        fig, ax = self.setup_plot()
+        
+        # Create histogram
+        n, bins, patches = ax.hist(entropy_data, bins=bins, 
+                                  color=self.colors['fg'], 
+                                  edgecolor=self.colors['accent'],
+                                  alpha=0.7)
+        
+        # Add gradient effect
+        for i, patch in enumerate(patches):
+            patch.set_alpha(0.3 + 0.7 * (i / len(patches)))
+        
+        ax.set_xlabel('ENTROPY VALUE', fontfamily='monospace', fontsize=10)
+        ax.set_ylabel('FREQUENCY', fontfamily='monospace', fontsize=10)
+        ax.set_title('ENTROPY DISTRIBUTION', fontfamily='monospace', 
+                     fontsize=12, pad=20)
+        
+        # Add statistics
+        mean_val = np.mean(entropy_data)
+        ax.axvline(mean_val, color=self.colors['warning'], 
+                  linestyle='--', linewidth=2)
+        ax.text(mean_val, ax.get_ylim()[1] * 0.9, f'μ={mean_val:.3f}',
+                fontfamily='monospace', color=self.colors['warning'],
+                ha='center')
+        
+        return self.to_base64(fig)
+```
+
+### Process Timeline Gantt Chart
+```python
+# backend/visual/process_timeline.py
+class ProcessTimelineVisualizer(BaseVisualizer):
+    def generate(self, process_data):
+        fig, ax = self.setup_plot()
+        
+        # Process data: [{'name': str, 'start': float, 'duration': float}]
+        y_pos = np.arange(len(process_data))
+        
+        for i, proc in enumerate(process_data):
+            ax.barh(i, proc['duration'], left=proc['start'],
+                   color=self.colors['fg'], alpha=0.7,
+                   edgecolor=self.colors['accent'])
+            
+            # Add process name
+            ax.text(proc['start'] - 1, i, proc['name'],
+                   fontfamily='monospace', color=self.colors['text'],
+                   va='center', ha='right', fontsize=9)
+        
+        ax.set_yticks([])
+        ax.set_xlabel('TIME (ms)', fontfamily='monospace', fontsize=10)
+        ax.set_title('PROCESS EXECUTION TIMELINE', fontfamily='monospace',
+                     fontsize=12, pad=20)
+        ax.grid(True, axis='x', color=self.colors['grid'], 
+                linestyle='--', alpha=0.3)
+        
+        return self.to_base64(fig)
+```
+
+## 2. WebSocket Integration
+
+```python
+# backend/visual_stream_handler.py
+import asyncio
+import json
+from typing import Dict, Any
+
+class VisualStreamHandler:
+    def __init__(self):
+        self.visualizers = {
+            'consciousness_wave': ConsciousnessWaveVisualizer(),
+            'neural_heatmap': NeuralHeatmapVisualizer(),
+            'metrics_radar': MetricsRadarVisualizer(),
+            'entropy_histogram': EntropyHistogramVisualizer(),
+            'process_timeline': ProcessTimelineVisualizer()
+        }
+        self.update_intervals = {
+            'consciousness_wave': 0.1,  # 10 FPS
+            'neural_heatmap': 0.5,      # 2 FPS
+            'metrics_radar': 1.0,       # 1 FPS
+            'entropy_histogram': 2.0,    # 0.5 FPS
+            'process_timeline': 0.5      # 2 FPS
+        }
+        
+    async def stream_visualizations(self, websocket):
+        """Stream all visualizations to frontend"""
+        tasks = []
+        for viz_type in self.visualizers:
+            task = asyncio.create_task(
+                self.stream_single_visualization(websocket, viz_type)
+            )
+            tasks.append(task)
+        
+        await asyncio.gather(*tasks)
+    
+    async def stream_single_visualization(self, websocket, viz_type):
+        """Stream a single visualization type"""
+        visualizer = self.visualizers[viz_type]
+        interval = self.update_intervals[viz_type]
+        
+        while True:
+            try:
+                # Get data from consciousness engine
+                data = self.get_visualization_data(viz_type)
+                
+                # Generate visualization
+                image_data = visualizer.generate(data)
+                
+                # Send to frontend
+                await websocket.send(json.dumps({
+                    'type': 'visualization',
+                    'viz_type': viz_type,
+                    'data': image_data,
+                    'timestamp': time.time()
+                }))
+                
+                await asyncio.sleep(interval)
+                
+            except Exception as e:
+                print(f"Error in {viz_type}: {e}")
+                await asyncio.sleep(interval)
+    
+    def get_visualization_data(self, viz_type):
+        """Get data for specific visualization"""
+        if viz_type == 'consciousness_wave':
+            return self.consciousness_engine.get_scup_history(100)
+        elif viz_type == 'neural_heatmap':
+            return self.consciousness_engine.get_neural_matrix()
+        elif viz_type == 'metrics_radar':
+            return {
+                'NEURAL': self.consciousness_engine.neural_activity * 100,
+                'QUANTUM': self.consciousness_engine.quantum_coherence * 100,
+                'CHAOS': self.consciousness_engine.chaos_factor * 100,
+                'MEMORY': self.consciousness_engine.memory_utilization * 100,
+                'PATTERN': self.consciousness_engine.pattern_recognition * 100
+            }
+        elif viz_type == 'entropy_histogram':
+            return self.consciousness_engine.get_entropy_distribution()
+        elif viz_type == 'process_timeline':
+            return self.consciousness_engine.get_process_timeline()
+```
+
+## 3. Frontend React Components
+
+### Matplotlib Display Component
+```typescript
+// MatplotlibVisualizer.tsx
+import React, { useState, useEffect } from 'react';
+import './MatplotlibVisualizer.css';
+
+interface Visualization {
+  type: string;
+  data: string; // base64 image
+  timestamp: number;
+}
+
+export const MatplotlibVisualizer: React.FC = () => {
+  const [visualizations, setVisualizations] = useState<Map<string, Visualization>>(new Map());
+  const [selectedViz, setSelectedViz] = useState<string>('consciousness_wave');
+
+  useEffect(() => {
+    const ws = new WebSocket('ws://localhost:8000/ws');
+    
+    ws.onmessage = (event) => {
+      const message = JSON.parse(event.data);
+      if (message.type === 'visualization') {
+        setVisualizations(prev => {
+          const updated = new Map(prev);
+          updated.set(message.viz_type, {
+            type: message.viz_type,
+            data: message.data,
+            timestamp: message.timestamp
+          });
+          return updated;
+        });
+      }
+    };
+
+    return () => ws.close();
+  }, []);
+
+  const vizTypes = [
+    { id: 'consciousness_wave', name: 'CONSCIOUSNESS WAVE' },
+    { id: 'neural_heatmap', name: 'NEURAL ACTIVITY' },
+    { id: 'metrics_radar', name: 'METRICS RADAR' },
+    { id: 'entropy_histogram', name: 'ENTROPY DISTRIBUTION' },
+    { id: 'process_timeline', name: 'PROCESS TIMELINE' }
+  ];
+
+  return (
+    <div className="matplotlib-visualizer">
+      <div className="viz-controls">
+        {vizTypes.map(({ id, name }) => (
+          <button
+            key={id}
+            className={`viz-button ${selectedViz === id ? 'active' : ''}`}
+            onClick={() => setSelectedViz(id)}
+          >
+            {name}
+          </button>
+        ))}
+      </div>
+      
+      <div className="viz-container">
+        {visualizations.get(selectedViz) && (
+          <img 
+            src={visualizations.get(selectedViz)!.data}
+            alt={selectedViz}
+            className="matplotlib-image"
+          />
+        )}
+      </div>
+      
+      <div className="viz-grid">
+        {Array.from(visualizations.entries()).map(([type, viz]) => (
+          <div key={type} className="viz-thumbnail" onClick={() => setSelectedViz(type)}>
+            <img src={viz.data} alt={type} />
+            <span className="viz-label">{type.replace(/_/g, ' ').toUpperCase()}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+```
+
+### Styles
+```css
+/* MatplotlibVisualizer.css */
+.matplotlib-visualizer {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: var(--black);
+  padding: calc(var(--grid-unit) * 2);
+}
+
+.viz-controls {
+  display: flex;
+  gap: var(--grid-unit);
+  margin-bottom: calc(var(--grid-unit) * 2);
+  border-bottom: 1px solid var(--gray-700);
+  padding-bottom: calc(var(--grid-unit) * 2);
+}
+
+.viz-button {
+  background: transparent;
+  border: 1px solid var(--gray-700);
+  color: var(--gray-400);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  padding: 6px 12px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.viz-button:hover {
+  border-color: var(--gray-600);
+  color: var(--gray-300);
+}
+
+.viz-button.active {
+  background: var(--gray-800);
+  border-color: var(--terminal-green);
+  color: var(--terminal-green);
+  box-shadow: 0 0 10px rgba(0, 255, 65, 0.3);
+}
+
+.viz-container {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--gray-950);
+  border: 1px solid var(--gray-700);
+  margin-bottom: calc(var(--grid-unit) * 2);
+  position: relative;
+  overflow: hidden;
+}
+
+.matplotlib-image {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.viz-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: var(--grid-unit);
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.viz-thumbnail {
+  background: var(--gray-950);
+  border: 1px solid var(--gray-700);
+  padding: var(--grid-unit);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  position: relative;
+}
+
+.viz-thumbnail:hover {
+  border-color: var(--terminal-green);
+  transform: scale(1.05);
+}
+
+.viz-thumbnail img {
+  width: 100%;
+  height: 100px;
+  object-fit: contain;
+}
+
+.viz-label {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  color: var(--gray-400);
+  text-align: center;
+  margin-top: 4px;
+}
+```
+
+## 4. Integration into Activity Monitor
+
+```typescript
+// In ActivityMonitor.tsx
+import { MatplotlibVisualizer } from '../MatplotlibVisualizer';
+
+// Add matplotlib visualizations section
+<div className="monitor-section visualization-section">
+  <div className="section-header">
+    <h3>NEURAL VISUALIZATIONS</h3>
+  </div>
+  <MatplotlibVisualizer />
+</div>
+
+// Update CSS grid
+.monitor-grid {
+  grid-template-columns: 1fr 2fr;
+  grid-template-rows: auto 1fr;
+}
+
+.visualization-section {
+  grid-column: 2;
+  grid-row: 1 / -1;
+}
+```
+
+## 5. Advanced Features
+
+### Real-time Animation
+```python
+# For animated plots
+class AnimatedVisualizer(BaseVisualizer):
+    def generate_animated(self, data_stream, frames=10):
+        """Generate animated GIF"""
+        from matplotlib.animation import FuncAnimation
+        
+        fig, ax = self.setup_plot()
+        
+        def animate(frame):
+            ax.clear()
+            self.setup_plot(fig, ax)
+            # Plot current frame data
+            ax.plot(data_stream[frame], color=self.colors['fg'])
+            
+        anim = FuncAnimation(fig, animate, frames=frames, interval=100)
+        
+        # Save as GIF
+        buffer = io.BytesIO()
+        anim.save(buffer, writer='pillow', format='gif')
+        buffer.seek(0)
+        
+        return base64.b64encode(buffer.read()).decode('utf-8')
+```
+
+### 3D Visualizations
+```python
+# For 3D plots
+from mpl_toolkits.mplot3d import Axes3D
+
+class Neural3DVisualizer(BaseVisualizer):
+    def generate(self, neural_data):
+        fig = plt.figure(figsize=self.fig_size, dpi=self.dpi)
+        ax = fig.add_subplot(111, projection='3d')
+        
+        # Apply terminal styling to 3D plot
+        fig.patch.set_facecolor(self.colors['bg'])
+        ax.set_facecolor(self.colors['bg'])
+        ax.xaxis.pane.fill = False
+        ax.yaxis.pane.fill = False
+        ax.zaxis.pane.fill = False
+        
+        # Plot 3D data
+        ax.scatter(neural_data['x'], neural_data['y'], neural_data['z'],
+                  c=neural_data['activation'], cmap='Greens',
+                  edgecolor=self.colors['fg'], alpha=0.6)
+        
+        return self.to_base64(fig)
+```
+
+## Best Practices
+
+1. **Performance**: Generate plots in separate thread/process
+2. **Caching**: Cache static visualizations
+3. **Compression**: Optimize image size for web transfer
+4. **Error Handling**: Graceful fallback for failed plots
+5. **Responsiveness**: Adjust figure size based on container
+
+## Usage
+
+1. Install dependencies:
+   ```bash
+   pip install matplotlib numpy websockets asyncio
+   ```
+
+2. Start visualization server:
+   ```python
+   # In your FastAPI app
+   @app.websocket("/ws")
+   async def websocket_endpoint(websocket: WebSocket):
+       handler = VisualStreamHandler()
+       await handler.stream_visualizations(websocket)
+   ```
+
+3. Import React component and add to your dashboard

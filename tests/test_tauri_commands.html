@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>DAWN Tauri Command Tester</title>
+    <style>
+        body { font-family: monospace; padding: 20px; background: #1a1a1a; color: #00ff00; }
+        button { 
+            background: #333; color: #00ff00; border: 1px solid #00ff00; 
+            padding: 10px 20px; margin: 5px; cursor: pointer; 
+        }
+        button:hover { background: #444; }
+        .output { 
+            background: #000; border: 1px solid #333; padding: 10px; margin: 10px 0; 
+            height: 300px; overflow-y: auto; 
+        }
+        .success { color: #00ff00; }
+        .error { color: #ff0000; }
+        .info { color: #00ffff; }
+    </style>
+</head>
+<body>
+    <h1>🧠 DAWN Tauri Command Tester</h1>
+    
+    <h2>🎯 Reflex Commands</h2>
+    <button onclick="testResetHeat()">Reset Heat</button>
+    <button onclick="testZeroEntropy()">Zero Entropy</button>
+    <button onclick="testClearSigils()">Clear Sigils</button>
+    <button onclick="testSoftRestart()">Soft Restart</button>
+    <button onclick="testCreateSnapshot()">Create Snapshot</button>
+    
+    <h2>📊 Status Commands</h2>
+    <button onclick="testGetDawnStatus()">Get Status</button>
+    <button onclick="testReadConsciousness()">Read Consciousness</button>
+    
+    <h2>🎪 Frontend Debug</h2>
+    <button onclick="testFrontendData()">Inject Test Data</button>
+    <button onclick="checkSubscribers()">Check Subscribers</button>
+    <button onclick="getCurrentState()">Get Current State</button>
+    <button onclick="clearOutput()">Clear Output</button>
+    
+    <h2>📺 Output</h2>
+    <div id="output" class="output"></div>
+
+    <script>
+        const output = document.getElementById('output');
+        
+        function log(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const div = document.createElement('div');
+            div.className = type;
+            div.innerHTML = `[${timestamp}] ${message}`;
+            output.appendChild(div);
+            output.scrollTop = output.scrollHeight;
+        }
+        
+        function clearOutput() {
+            output.innerHTML = '';
+        }
+        
+        // Test Tauri commands
+        async function testResetHeat() {
+            log('🔥 Testing reset_heat command...', 'info');
+            try {
+                const result = await window.__TAURI__.invoke('reset_heat');
+                log(`✅ reset_heat: ${result}`, 'success');
+            } catch (error) {
+                log(`❌ reset_heat failed: ${error}`, 'error');
+            }
+        }
+        
+        async function testZeroEntropy() {
+            log('⚡ Testing zero_entropy command...', 'info');
+            try {
+                const result = await window.__TAURI__.invoke('zero_entropy');
+                log(`✅ zero_entropy: ${result}`, 'success');
+            } catch (error) {
+                log(`❌ zero_entropy failed: ${error}`, 'error');
+            }
+        }
+        
+        async function testClearSigils() {
+            log('🔮 Testing clear_sigils command...', 'info');
+            try {
+                const result = await window.__TAURI__.invoke('clear_sigils');
+                log(`✅ clear_sigils: ${result}`, 'success');
+            } catch (error) {
+                log(`❌ clear_sigils failed: ${error}`, 'error');
+            }
+        }
+        
+        async function testSoftRestart() {
+            log('🔄 Testing soft_system_restart command...', 'info');
+            try {
+                const result = await window.__TAURI__.invoke('soft_system_restart');
+                log(`✅ soft_system_restart: ${result}`, 'success');
+            } catch (error) {
+                log(`❌ soft_system_restart failed: ${error}`, 'error');
+            }
+        }
+        
+        async function testCreateSnapshot() {
+            log('📸 Testing create_snapshot command...', 'info');
+            try {
+                const result = await window.__TAURI__.invoke('create_snapshot');
+                log(`✅ create_snapshot: ${JSON.stringify(result, null, 2)}`, 'success');
+            } catch (error) {
+                log(`❌ create_snapshot failed: ${error}`, 'error');
+            }
+        }
+        
+        async function testGetDawnStatus() {
+            log('📊 Testing get_dawn_status command...', 'info');
+            try {
+                const result = await window.__TAURI__.invoke('get_dawn_status');
+                log(`✅ get_dawn_status: ${JSON.stringify(result, null, 2)}`, 'success');
+            } catch (error) {
+                log(`❌ get_dawn_status failed: ${error}`, 'error');
+            }
+        }
+        
+        async function testReadConsciousness() {
+            log('🧠 Testing read_consciousness_state command...', 'info');
+            try {
+                const result = await window.__TAURI__.invoke('read_consciousness_state');
+                if (result) {
+                    log(`✅ read_consciousness_state: tick=${result.tick_number}, mood_val=${result.mood_valence?.toFixed(3)}`, 'success');
+                } else {
+                    log(`⚠️ read_consciousness_state: null (no new data)`, 'info');
+                }
+            } catch (error) {
+                log(`❌ read_consciousness_state failed: ${error}`, 'error');
+            }
+        }
+        
+        // Test frontend functions
+        function testFrontendData() {
+            log('🧪 Testing frontend data injection...', 'info');
+            if (window.testDawnData) {
+                window.testDawnData();
+                log('✅ testDawnData() called', 'success');
+            } else {
+                log('❌ testDawnData() not available', 'error');
+            }
+        }
+        
+        function checkSubscribers() {
+            log('👥 Checking subscribers...', 'info');
+            if (window.dawnDebug && window.dawnDebug.getSubscriberCount) {
+                const count = window.dawnDebug.getSubscriberCount();
+                log(`✅ Subscribers: ${count}`, 'success');
+            } else {
+                log('❌ dawnDebug not available', 'error');
+            }
+        }
+        
+        function getCurrentState() {
+            log('📊 Getting current state...', 'info');
+            if (window.dawnDebug && window.dawnDebug.get) {
+                const state = window.dawnDebug.get();
+                if (state) {
+                    log(`✅ Current state: tick=${state.tick_number}, mood=${state.mood}, entropy=${state.entropy?.toFixed(3)}`, 'success');
+                } else {
+                    log('⚠️ No current state available', 'info');
+                }
+            } else {
+                log('❌ dawnDebug not available', 'error');
+            }
+        }
+        
+        // Auto-monitor for tick updates
+        let tickUpdateCount = 0;
+        function startTickMonitoring() {
+            if (window.__TAURI__ && window.__TAURI__.event) {
+                window.__TAURI__.event.listen('tick_update', (event) => {
+                    tickUpdateCount++;
+                    log(`🎯 TICK UPDATE #${tickUpdateCount}: ${JSON.stringify(event.payload)}`, 'success');
+                });
+                log('👂 Started listening for tick_update events', 'info');
+            } else {
+                log('❌ Tauri event system not available', 'error');
+            }
+        }
+        
+        // Start monitoring on load
+        window.addEventListener('load', () => {
+            log('🚀 DAWN Command Tester loaded', 'info');
+            startTickMonitoring();
+        });
+    </script>
+</body>
+</html> 

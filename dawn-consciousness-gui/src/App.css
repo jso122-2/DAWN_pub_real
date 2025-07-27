@@ -1,0 +1,230 @@
+/* DAWN Consciousness GUI - Modular Tabbed Interface */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: 'Courier New', 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace;
+  background: #0a0e1a;
+  color: #e8f4f8;
+  overflow: hidden;
+}
+
+#root {
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+}
+
+.dawn-app {
+  height: 100vh;
+  width: 100vw;
+  background: #0a0e1a;
+  color: #e8f4f8;
+  font-family: 'Courier New', monospace;
+  overflow: hidden;
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(45, 90, 135, 0.1);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(74, 158, 255, 0.5);
+  border-radius: 4px;
+  border: 1px solid rgba(45, 90, 135, 0.3);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(74, 158, 255, 0.7);
+}
+
+::-webkit-scrollbar-corner {
+  background: rgba(45, 90, 135, 0.1);
+}
+
+/* Base Blueprint Panel Styles (shared across all panels) */
+.blueprint-panel {
+  background: linear-gradient(135deg, #0f1419 0%, #1a1f2e 100%);
+  border: 1px solid #2d5a87;
+  border-radius: 8px;
+  box-shadow: 
+    0 4px 12px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(74, 158, 255, 0.1);
+  overflow: hidden;
+  position: relative;
+}
+
+.blueprint-panel::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, #4a9eff 50%, transparent 100%);
+  opacity: 0.3;
+}
+
+.blueprint-panel::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, #2d5a87 20%, #2d5a87 80%, transparent 100%);
+}
+
+/* Text Selection */
+::selection {
+  background: rgba(74, 158, 255, 0.3);
+  color: #e8f4f8;
+}
+
+::-moz-selection {
+  background: rgba(74, 158, 255, 0.3);
+  color: #e8f4f8;
+}
+
+/* Focus Styles */
+button:focus,
+input:focus,
+textarea:focus,
+select:focus {
+  outline: 2px solid rgba(74, 158, 255, 0.5);
+  outline-offset: 2px;
+}
+
+/* Button Base Styles */
+button {
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Input Base Styles */
+input, textarea, select {
+  font-family: inherit;
+  background: rgba(45, 90, 135, 0.1);
+  border: 1px solid #2d5a87;
+  color: #e8f4f8;
+  border-radius: 4px;
+}
+
+input:focus, textarea:focus, select:focus {
+  border-color: #4a9eff;
+  box-shadow: 0 0 8px rgba(74, 158, 255, 0.3);
+}
+
+/* Blueprint Grid Pattern Background */
+.dawn-app::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: 
+    linear-gradient(rgba(45, 90, 135, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(45, 90, 135, 0.05) 1px, transparent 1px);
+  background-size: 50px 50px;
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+@keyframes glow {
+  0%, 100% { box-shadow: 0 0 8px rgba(74, 158, 255, 0.3); }
+  50% { box-shadow: 0 0 16px rgba(74, 158, 255, 0.6); }
+}
+
+/* Utility Classes */
+.text-center { text-align: center; }
+.text-left { text-align: left; }
+.text-right { text-align: right; }
+
+.mb-1 { margin-bottom: 0.5rem; }
+.mb-2 { margin-bottom: 1rem; }
+.mb-3 { margin-bottom: 1.5rem; }
+
+.mt-1 { margin-top: 0.5rem; }
+.mt-2 { margin-top: 1rem; }
+.mt-3 { margin-top: 1.5rem; }
+
+.flex { display: flex; }
+.flex-col { flex-direction: column; }
+.items-center { align-items: center; }
+.justify-center { justify-content: center; }
+.justify-between { justify-content: space-between; }
+
+.hidden { display: none; }
+.visible { display: block; }
+
+/* Color Classes */
+.text-primary { color: #4a9eff; }
+.text-secondary { color: #8ba4c7; }
+.text-success { color: #00ff88; }
+.text-warning { color: #ffa94a; }
+.text-error { color: #ff6b4a; }
+.text-info { color: #a94aff; }
+
+/* Responsive Utilities */
+@media (max-width: 768px) {
+  .dawn-app {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .dawn-app {
+    font-size: 12px;
+  }
+}
+
+/* Loading States */
+.loading {
+  animation: pulse 2s infinite;
+}
+
+.shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(45, 90, 135, 0.1) 0%,
+    rgba(74, 158, 255, 0.1) 50%,
+    rgba(45, 90, 135, 0.1) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+} 
