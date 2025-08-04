@@ -11,7 +11,7 @@ import logging
 from datetime import datetime
 import asyncio
 
-from ..models import KANTopology, FunctionPath, CursorState, NavigationResult
+from ...models import KANTopology, FunctionPath, CursorState, NavigationResult
 
 
 class TrajectoryLearner:

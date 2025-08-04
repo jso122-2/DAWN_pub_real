@@ -6,7 +6,7 @@ Visualizes neural network activation patterns as a heatmap
 import numpy as np
 import matplotlib.pyplot as plt
 from typing import Dict, Optional, List
-from .base_visualizer import BaseVisualizer
+from ...base_visualizer import BaseVisualizer
 
 class NeuralHeatmapVisualizer(BaseVisualizer):
     def __init__(self):

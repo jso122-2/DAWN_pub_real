@@ -1,6 +1,6 @@
 from typing import Dict, Any, List, Optional
 from dataclasses import dataclass
-from .utils import MockTask, MockResponse
+from ...utils import MockTask, MockResponse
 
 @dataclass
 class TestScenario:

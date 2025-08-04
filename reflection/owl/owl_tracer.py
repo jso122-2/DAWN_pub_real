@@ -7,8 +7,18 @@ import sys
 import os
 
 # Add utils to path for clean logger access
-sys.path.append(os.path.join(os.path.dirname(__file__), '../../'))
-from utils.clean_logger import CleanLogger
+# sys.path.append(os.path.join(os.path.dirname(__file__), '../../'))  # Removed to fix relative import issues
+try:
+    from utils.clean_logger import CleanLogger
+except ImportError:
+    # Fallback logger if utils.clean_logger is not available
+    class CleanLogger:
+        def __init__(self, component_name):
+            self.component_name = component_name
+        def log(self, severity, message, data=None):
+            print(f"[{severity}] {message}")
+        def _format_timestamp(self):
+            return "timestamp"
 
 
 class OwlTracer:

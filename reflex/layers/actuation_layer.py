@@ -1,5 +1,5 @@
 from typing import Dict, Any, Optional
-from .base import ActuationLayer, ReflexState, RebloomMode
+from ...base import ActuationLayer, ReflexState, RebloomMode
 from grep.sigil_registry import SigilRegistry
 
 class RebloomController(ActuationLayer):

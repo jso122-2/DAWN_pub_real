@@ -10,8 +10,8 @@ import logging
 from datetime import datetime
 import asyncio
 
-from ..models import KANTopology, SplineNeuron, CachedGlyph
-from ..core.weave_router import WeaveRouter
+from ...models import KANTopology, SplineNeuron, CachedGlyph
+from core.weave_router import WeaveRouter
 
 
 class WeaveKANAdapter:

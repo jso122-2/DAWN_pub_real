@@ -1,4 +1,4 @@
-from .matplotlib_visualizers import (
+from ...matplotlib_visualizers import (
     ConsciousnessWaveVisualizer,
     EntropyThermalVisualizer,
     NeuralActivityVisualizer,

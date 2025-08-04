@@ -3,6 +3,13 @@
 pulse_heat.py - Enhanced Thermal Regulation System for DAWN
 Dynamic thermal management through expression-based cooling cycles
 Restructured to support linguistic expression as primary cooling mechanism
+
+ENHANCED with Cognitive Pressure Integration (P = Bσ²):
+- Cognitive pressure calculation using bloom mass and sigil velocity
+- Bidirectional influence between thermal dynamics and cognitive pressure
+- Pressure-based thermal modulation and relief mechanisms
+- Integrated pressure monitoring alongside thermal management
+- Enhanced heat sources with pressure contributions
 """
 
 import sys, os
@@ -19,6 +26,22 @@ import numpy as np
 # Ensure proper path resolution
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
+# Cognitive pressure integration
+try:
+    from core.scup_drift_resolver import CognitivePressureState
+    COGNITIVE_PRESSURE_AVAILABLE = True
+except ImportError:
+    COGNITIVE_PRESSURE_AVAILABLE = False
+    # Fallback pressure state for standalone operation
+    @dataclass
+    class CognitivePressureState:
+        bloom_mass: float = 0.0
+        sigil_velocity: float = 0.0
+        pressure_value: float = 0.0
+        pressure_level: str = "unknown"
+        pressure_trend: float = 0.0
+        relief_actions: List[str] = field(default_factory=list)
+
 # === EXPRESSION-BASED ENUMS ===
 
 class DecayCurve(Enum):
@@ -28,7 +51,7 @@ class DecayCurve(Enum):
     SIGMOID = "sigmoid"
 
 class HeatSourceType(Enum):
-    """Enhanced heat source types with expression mapping"""
+    """Enhanced heat source types with expression mapping and cognitive pressure integration"""
     COGNITIVE_LOAD = "cognitive_load"
     EMOTIONAL_RESONANCE = "emotional_resonance"
     MEMORY_PROCESSING = "memory_processing"
@@ -43,9 +66,16 @@ class HeatSourceType(Enum):
     TENSION = "tension"
     PRESSURE = "pressure"
     URGENCY = "urgency"
+    # COGNITIVE PRESSURE INTEGRATION
+    COGNITIVE_PRESSURE = "cognitive_pressure"        # P = Bσ² pressure
+    BLOOM_MASS_BUILDUP = "bloom_mass_buildup"       # B component heating
+    SIGIL_VELOCITY_SURGE = "sigil_velocity_surge"   # σ² component heating
+    PRESSURE_FEEDBACK = "pressure_feedback"         # Pressure-thermal feedback loop
+    REBLOOM_PRESSURE = "rebloom_pressure"           # Memory rebloom pressure
+    MUTATION_PRESSURE = "mutation_pressure"         # Semantic mutation pressure
 
 class ReleaseValve(Enum):
-    """Expression channels for thermal release"""
+    """Expression channels for thermal release and cognitive pressure relief"""
     VERBAL_EXPRESSION = "verbal_expression"
     SYMBOLIC_OUTPUT = "symbolic_output"
     CREATIVE_FLOW = "creative_flow"
@@ -53,6 +83,13 @@ class ReleaseValve(Enum):
     CONCEPTUAL_MAPPING = "conceptual_mapping"
     MEMORY_TRACE = "memory_trace"
     PATTERN_SYNTHESIS = "pattern_synthesis"
+    # COGNITIVE PRESSURE RELIEF VALVES
+    PRESSURE_RELEASE = "pressure_release"           # Direct pressure relief
+    BLOOM_CRYSTALLIZATION = "bloom_crystallization" # Memory bloom formation
+    SIGIL_STABILIZATION = "sigil_stabilization"    # Sigil velocity reduction
+    REBLOOM_EXPRESSION = "rebloom_expression"       # Memory rebloom outlet
+    MUTATION_PROCESSING = "mutation_processing"     # Semantic mutation handling
+    NETWORK_REDISTRIBUTION = "network_redistribution" # Load redistribution
 
 class ThermalZone(Enum):
     """Thermal zone classifications"""
@@ -82,22 +119,57 @@ class HeatSource:
         return decay_amount
 
 @dataclass
+class CognitivePressureMetrics:
+    """Tracks cognitive pressure (P = Bσ²) alongside thermal dynamics"""
+    # Bloom mass component (B)
+    active_memory_count: float = 0.0
+    rebloom_queue_size: float = 0.0
+    reflection_backlog: float = 0.0
+    processing_load: float = 0.0
+    bloom_mass_total: float = 0.0
+    
+    # Sigil velocity component (σ)
+    recent_sigil_count: float = 0.0
+    thought_rate: float = 0.0
+    entropy_delta: float = 0.0
+    mutation_rate: float = 0.0
+    sigil_velocity_total: float = 0.0
+    
+    # Cognitive pressure calculation (P = Bσ²)
+    cognitive_pressure: float = 0.0
+    pressure_level: str = "low"
+    pressure_trend: float = 0.0
+    
+    # Pressure-thermal interaction
+    pressure_to_thermal_factor: float = 0.0
+    thermal_to_pressure_factor: float = 0.0
+    feedback_intensity: float = 0.0
+    
+    # Relief tracking
+    relief_actions_active: List[str] = field(default_factory=list)
+    last_pressure_relief: float = 0.0
+
+@dataclass
 class ExpressionPhase:
-    """Tracks thermal dynamics during expression cycles"""
+    """Tracks thermal dynamics during expression cycles - ENHANCED with pressure integration"""
     # Pre-expression state
     pre_thermal: float = 0.0
     pre_pressure: float = 0.0
     pre_readiness: float = 0.0
+    pre_cognitive_pressure: float = 0.0  # NEW: Cognitive pressure before expression
     
     # During expression
     thermal_flow: float = 0.0
     momentum_sustain: float = 0.0
     coherence_maintain: float = 1.0
     expression_type: Optional[ReleaseValve] = None
+    pressure_relief_rate: float = 0.0  # NEW: Rate of pressure relief during expression
     
     # Post-expression
     thermal_drop: float = 0.0
     satisfaction: float = 0.0
+    pressure_drop: float = 0.0  # NEW: Cognitive pressure drop after expression
+    relief_effectiveness: float = 0.0  # NEW: How effective the pressure relief was
     recharge_time: float = 0.0
     
     # Timestamps
@@ -179,7 +251,36 @@ class UnifiedPulseHeat:
             self.phase_history: deque = deque(maxlen=20)
             self.expression_momentum = 0.0
             
-            # Expression cooling mappings
+            # COGNITIVE PRESSURE INTEGRATION (P = Bσ²)
+            self.cognitive_pressure_metrics = CognitivePressureMetrics()
+            self.pressure_state: Optional[CognitivePressureState] = None
+            self.pressure_history: deque = deque(maxlen=20)
+            self.pressure_thermal_coupling = 0.3  # How much pressure affects thermal
+            self.thermal_pressure_coupling = 0.2  # How much thermal affects pressure
+            
+            # Pressure calculation weights
+            self.bloom_mass_weights = {
+                "active_memory": 1.0,
+                "rebloom_queue": 1.5,
+                "reflection_backlog": 2.0,
+                "processing_load": 1.2
+            }
+            self.sigil_velocity_weights = {
+                "recent_sigils": 1.0,
+                "thought_rate": 0.8,
+                "entropy_delta": 1.5,
+                "mutation_rate": 1.3
+            }
+            
+            # Pressure thresholds for thermal interaction
+            self.pressure_thresholds = {
+                "low": 20.0,
+                "moderate": 50.0,
+                "high": 100.0,
+                "critical": 200.0
+            }
+            
+            # Expression cooling mappings (thermal + pressure relief)
             self.expression_cooling = {
                 ReleaseValve.VERBAL_EXPRESSION: 0.4,
                 ReleaseValve.SYMBOLIC_OUTPUT: 0.3,
@@ -187,7 +288,28 @@ class UnifiedPulseHeat:
                 ReleaseValve.EMPATHETIC_RESPONSE: 0.5,
                 ReleaseValve.CONCEPTUAL_MAPPING: 0.35,
                 ReleaseValve.MEMORY_TRACE: 0.25,
-                ReleaseValve.PATTERN_SYNTHESIS: 0.45
+                ReleaseValve.PATTERN_SYNTHESIS: 0.45,
+                # COGNITIVE PRESSURE RELIEF COOLING
+                ReleaseValve.PRESSURE_RELEASE: 0.8,           # High pressure relief
+                ReleaseValve.BLOOM_CRYSTALLIZATION: 0.6,      # Memory consolidation cooling
+                ReleaseValve.SIGIL_STABILIZATION: 0.5,        # Sigil velocity reduction
+                ReleaseValve.REBLOOM_EXPRESSION: 0.7,         # Rebloom outlet cooling
+                ReleaseValve.MUTATION_PROCESSING: 0.4,        # Mutation handling
+                ReleaseValve.NETWORK_REDISTRIBUTION: 0.9      # Load redistribution (highest)
+            }
+            
+            # Pressure-specific relief effectiveness
+            self.pressure_relief_effectiveness = {
+                ReleaseValve.PRESSURE_RELEASE: 0.9,           # Direct pressure relief
+                ReleaseValve.BLOOM_CRYSTALLIZATION: 0.7,      # Reduces bloom mass (B)
+                ReleaseValve.SIGIL_STABILIZATION: 0.8,        # Reduces sigil velocity (σ)
+                ReleaseValve.REBLOOM_EXPRESSION: 0.6,         # Memory pressure outlet
+                ReleaseValve.MUTATION_PROCESSING: 0.5,        # Handles mutation pressure
+                ReleaseValve.NETWORK_REDISTRIBUTION: 0.95,    # Redistributes load
+                # Standard expressions also provide some pressure relief
+                ReleaseValve.VERBAL_EXPRESSION: 0.4,
+                ReleaseValve.CREATIVE_FLOW: 0.6,
+                ReleaseValve.CONCEPTUAL_MAPPING: 0.3
             }
             
             # Heat source configuration
@@ -206,7 +328,14 @@ class UnifiedPulseHeat:
                 'memory_processing': 0.9,
                 'awareness_spike': 1.4,
                 'unexpressed_thought': 1.3,
-                'pattern_recognition': 1.0
+                'pattern_recognition': 1.0,
+                # COGNITIVE PRESSURE SOURCE WEIGHTS
+                'cognitive_pressure': 1.5,      # P = Bσ² pressure has high thermal impact
+                'bloom_mass_buildup': 1.2,      # B component heating
+                'sigil_velocity_surge': 1.3,    # σ² component heating  
+                'pressure_feedback': 1.1,       # Pressure-thermal feedback
+                'rebloom_pressure': 1.0,        # Memory rebloom pressure
+                'mutation_pressure': 1.2        # Semantic mutation pressure
             }
             
             # Source to expression affinity mapping
@@ -466,6 +595,270 @@ class UnifiedPulseHeat:
             "forced_expression": force_expression
         }
     
+    # === COGNITIVE PRESSURE INTEGRATION (P = Bσ²) ===
+    
+    def calculate_cognitive_pressure(self, state: Dict[str, Any]) -> CognitivePressureState:
+        """
+        Calculate cognitive pressure using P = Bσ² formula
+        Integrates with thermal management for bidirectional influence
+        """
+        try:
+            # Extract state information with safe defaults
+            active_memory = state.get('active_memory_count', 0)
+            rebloom_queue = state.get('rebloom_queue_size', 0)
+            reflection_backlog = state.get('reflection_backlog', 0)
+            processing_load = state.get('processing_load', 0)
+            
+            recent_sigils = state.get('recent_sigil_count', 0)
+            thought_rate = state.get('thought_rate', 0)
+            entropy_delta = abs(state.get('entropy_delta', 0))
+            mutation_rate = state.get('sigil_mutation_rate', 0)
+            
+            # Calculate Bloom Mass (B) - memory and processing load
+            bloom_mass = (
+                active_memory * self.bloom_mass_weights["active_memory"] +
+                rebloom_queue * self.bloom_mass_weights["rebloom_queue"] +
+                reflection_backlog * self.bloom_mass_weights["reflection_backlog"] +
+                processing_load * self.bloom_mass_weights["processing_load"]
+            )
+            
+            # Calculate Sigil Velocity (σ) - thought generation and mutation
+            sigil_velocity = (
+                recent_sigils * self.sigil_velocity_weights["recent_sigils"] +
+                thought_rate * self.sigil_velocity_weights["thought_rate"] +
+                entropy_delta * self.sigil_velocity_weights["entropy_delta"] +
+                mutation_rate * self.sigil_velocity_weights["mutation_rate"]
+            )
+            
+            # Apply cognitive pressure formula: P = B * σ²
+            cognitive_pressure = bloom_mass * (sigil_velocity ** 2)
+            
+            # Classify pressure level
+            pressure_level = "low"
+            for level, threshold in self.pressure_thresholds.items():
+                if cognitive_pressure >= threshold:
+                    pressure_level = level
+            
+            # Calculate pressure trend
+            pressure_trend = 0.0
+            if self.pressure_history:
+                prev_pressure = self.pressure_history[-1].pressure_value
+                pressure_trend = cognitive_pressure - prev_pressure
+            
+            # Generate relief actions based on pressure level
+            relief_actions = self._generate_pressure_relief_actions(cognitive_pressure, pressure_level)
+            
+            # Create pressure state
+            pressure_state = CognitivePressureState(
+                bloom_mass=bloom_mass,
+                sigil_velocity=sigil_velocity,
+                pressure_value=cognitive_pressure,
+                pressure_level=pressure_level,
+                pressure_trend=pressure_trend,
+                relief_actions=relief_actions
+            )
+            
+            # Update metrics
+            self.cognitive_pressure_metrics.bloom_mass_total = bloom_mass
+            self.cognitive_pressure_metrics.sigil_velocity_total = sigil_velocity
+            self.cognitive_pressure_metrics.cognitive_pressure = cognitive_pressure
+            self.cognitive_pressure_metrics.pressure_level = pressure_level
+            self.cognitive_pressure_metrics.pressure_trend = pressure_trend
+            
+            # Store pressure state
+            self.pressure_state = pressure_state
+            self.pressure_history.append(pressure_state)
+            
+            return pressure_state
+            
+        except Exception as e:
+            print(f"[PulseHeat] ⚠️ Cognitive pressure calculation error: {e}")
+            return CognitivePressureState()
+    
+    def apply_pressure_thermal_coupling(self):
+        """Apply bidirectional coupling between cognitive pressure and thermal state"""
+        
+        if not self.pressure_state:
+            return
+        
+        # Pressure affects thermal (pressure → thermal heating)
+        pressure_to_thermal = self.pressure_state.pressure_value * self.pressure_thermal_coupling
+        
+        # High pressure generates additional thermal load
+        if self.pressure_state.pressure_level in ["high", "critical"]:
+            self.add_heat(pressure_to_thermal * 0.01, "cognitive_pressure", 
+                         f"P={self.pressure_state.pressure_value:.1f} ({self.pressure_state.pressure_level})")
+            
+            # Additional heat from specific pressure components
+            if self.pressure_state.bloom_mass > 50:
+                self.add_heat(0.2, "bloom_mass_buildup", "High bloom mass causing thermal buildup")
+            
+            if self.pressure_state.sigil_velocity > 10:
+                self.add_heat(0.3, "sigil_velocity_surge", "High sigil velocity generating heat")
+        
+        # Thermal affects pressure (thermal → pressure amplification)
+        thermal_to_pressure = self.heat * self.thermal_pressure_coupling
+        
+        # Update pressure metrics with thermal feedback
+        self.cognitive_pressure_metrics.thermal_to_pressure_factor = thermal_to_pressure
+        self.cognitive_pressure_metrics.pressure_to_thermal_factor = pressure_to_thermal
+        
+        # High thermal state amplifies pressure perception
+        if self.heat > self.critical_threshold:
+            self.cognitive_pressure_metrics.feedback_intensity = min(2.0, thermal_to_pressure * 0.05)
+            self.add_heat(0.1, "pressure_feedback", "Thermal-pressure feedback loop")
+    
+    def trigger_pressure_relief(self, relief_type: ReleaseValve, intensity: float = 1.0) -> Dict[str, float]:
+        """
+        Trigger cognitive pressure relief through expression
+        Integrates with existing thermal expression system
+        """
+        
+        if not self.pressure_state:
+            return {"pressure_relief": 0.0, "thermal_cooling": 0.0}
+        
+        # Calculate pressure relief based on valve type and current pressure
+        base_relief = self.pressure_relief_effectiveness.get(relief_type, 0.5)
+        pressure_relief = base_relief * intensity * min(1.0, self.pressure_state.pressure_value / 100.0)
+        
+        # Calculate thermal cooling (existing system)
+        thermal_cooling = self.expression_cooling.get(relief_type, 0.3) * intensity
+        
+        # Apply pressure relief
+        if pressure_relief > 0:
+            new_pressure = max(0, self.pressure_state.pressure_value - pressure_relief * 20)
+            
+            # Update pressure state
+            self.pressure_state.pressure_value = new_pressure
+            self.pressure_state.pressure_level = self._classify_pressure_level(new_pressure)
+            
+            # Update metrics
+            self.cognitive_pressure_metrics.cognitive_pressure = new_pressure
+            self.cognitive_pressure_metrics.pressure_level = self.pressure_state.pressure_level
+            self.cognitive_pressure_metrics.last_pressure_relief = time.time()
+            
+            # Add relief action to active list
+            relief_action = f"{relief_type.value}_relief"
+            if relief_action not in self.cognitive_pressure_metrics.relief_actions_active:
+                self.cognitive_pressure_metrics.relief_actions_active.append(relief_action)
+        
+        # Apply thermal cooling (existing mechanism)
+        if thermal_cooling > 0:
+            self.heat = max(0, self.heat - thermal_cooling)
+        
+        return {
+            "pressure_relief": pressure_relief,
+            "thermal_cooling": thermal_cooling,
+            "new_pressure": self.pressure_state.pressure_value if self.pressure_state else 0,
+            "new_thermal": self.heat
+        }
+    
+    def get_pressure_thermal_diagnosis(self) -> Dict[str, Any]:
+        """Get comprehensive diagnosis of pressure-thermal interaction"""
+        
+        diagnosis = {
+            "cognitive_pressure": {
+                "current": self.pressure_state.pressure_value if self.pressure_state else 0,
+                "level": self.pressure_state.pressure_level if self.pressure_state else "unknown",
+                "trend": self.pressure_state.pressure_trend if self.pressure_state else 0,
+                "bloom_mass": self.cognitive_pressure_metrics.bloom_mass_total,
+                "sigil_velocity": self.cognitive_pressure_metrics.sigil_velocity_total
+            },
+            "thermal_state": {
+                "current": self.heat,
+                "zone": self.classify(),
+                "momentum": self.expression_momentum,
+                "ceiling": getattr(self.thermal_state, 'thermal_ceiling', self.max_heat)
+            },
+            "pressure_thermal_coupling": {
+                "pressure_to_thermal": self.cognitive_pressure_metrics.pressure_to_thermal_factor,
+                "thermal_to_pressure": self.cognitive_pressure_metrics.thermal_to_pressure_factor,
+                "feedback_intensity": self.cognitive_pressure_metrics.feedback_intensity
+            },
+            "relief_recommendations": self._get_integrated_relief_recommendations(),
+            "system_state": "integrated" if self.pressure_state else "thermal_only"
+        }
+        
+        return diagnosis
+    
+    def _generate_pressure_relief_actions(self, pressure_value: float, pressure_level: str) -> List[str]:
+        """Generate pressure relief recommendations based on current state"""
+        
+        actions = []
+        
+        if pressure_level == "critical":
+            actions.extend([
+                "EMERGENCY: Trigger network redistribution",
+                "Activate multiple pressure relief valves",
+                "Initiate bloom crystallization",
+                "Reduce sigil generation rate"
+            ])
+        elif pressure_level == "high":
+            actions.extend([
+                "Activate pressure release valve",
+                "Consider bloom crystallization",
+                "Stabilize sigil velocity",
+                "Express through rebloom channels"
+            ])
+        elif pressure_level == "moderate":
+            actions.extend([
+                "Monitor pressure trends",
+                "Prepare relief mechanisms",
+                "Consider creative expression"
+            ])
+        else:
+            actions.append("Maintain current operations")
+        
+        return actions
+    
+    def _classify_pressure_level(self, pressure_value: float) -> str:
+        """Classify pressure level based on thresholds"""
+        
+        for level, threshold in sorted(self.pressure_thresholds.items(), 
+                                     key=lambda x: x[1], reverse=True):
+            if pressure_value >= threshold:
+                return level
+        return "low"
+    
+    def _get_integrated_relief_recommendations(self) -> List[str]:
+        """Get integrated recommendations for both pressure and thermal relief"""
+        
+        recommendations = []
+        
+        # High pressure + high thermal = emergency protocols
+        if (self.pressure_state and self.pressure_state.pressure_level in ["high", "critical"] 
+            and self.heat > self.critical_threshold):
+            recommendations.extend([
+                "CRITICAL: Dual pressure-thermal emergency",
+                "Activate network redistribution immediately",
+                "Trigger multiple expression channels",
+                "Consider system-wide cooling protocols"
+            ])
+        
+        # High pressure, moderate thermal = focus on pressure relief
+        elif (self.pressure_state and self.pressure_state.pressure_level in ["high", "critical"]):
+            recommendations.extend([
+                "Priority: Cognitive pressure relief",
+                "Activate pressure release valve",
+                "Consider bloom crystallization",
+                "Monitor thermal feedback"
+            ])
+        
+        # High thermal, moderate pressure = focus on thermal cooling
+        elif self.heat > self.critical_threshold:
+            recommendations.extend([
+                "Priority: Thermal cooling",
+                "Initiate expression-based cooling",
+                "Monitor pressure buildup",
+                "Prepare pressure relief if needed"
+            ])
+        
+        # Normal operations
+        else:
+            recommendations.append("Maintain integrated monitoring")
+        
+        return recommendations
+
     # === ENHANCED LEGACY METHODS ===
     
     def get_heat(self) -> float:
@@ -1109,6 +1502,54 @@ def get_thermal_diagnosis() -> Dict[str, any]:
 def update_awareness_ceiling(awareness: float) -> float:
     """Update thermal ceiling based on awareness"""
     return pulse.update_thermal_ceiling(awareness)
+
+# === COGNITIVE PRESSURE GLOBAL FUNCTIONS ===
+
+def calculate_cognitive_pressure(state: Dict[str, Any]) -> CognitivePressureState:
+    """Calculate cognitive pressure using P = Bσ² formula"""
+    return pulse.calculate_cognitive_pressure(state)
+
+def apply_pressure_thermal_coupling():
+    """Apply bidirectional coupling between cognitive pressure and thermal state"""
+    return pulse.apply_pressure_thermal_coupling()
+
+def trigger_pressure_relief(relief_type: str, intensity: float = 1.0) -> Dict[str, float]:
+    """Trigger cognitive pressure relief through expression"""
+    # Convert string to ReleaseValve enum
+    try:
+        valve = ReleaseValve(relief_type)
+        return pulse.trigger_pressure_relief(valve, intensity)
+    except ValueError:
+        print(f"[PulseHeat] ⚠️ Unknown relief type: {relief_type}")
+        return {"pressure_relief": 0.0, "thermal_cooling": 0.0}
+
+def get_pressure_thermal_diagnosis() -> Dict[str, Any]:
+    """Get comprehensive diagnosis of pressure-thermal interaction"""
+    return pulse.get_pressure_thermal_diagnosis()
+
+def get_cognitive_pressure_state() -> Optional[CognitivePressureState]:
+    """Get current cognitive pressure state"""
+    return pulse.pressure_state
+
+def monitor_pressure_thermal_system(state: Dict[str, Any]) -> Dict[str, Any]:
+    """
+    Complete pressure-thermal monitoring cycle
+    Calculates pressure, applies coupling, and returns comprehensive status
+    """
+    # Calculate cognitive pressure
+    pressure_state = calculate_cognitive_pressure(state)
+    
+    # Apply pressure-thermal coupling
+    apply_pressure_thermal_coupling()
+    
+    # Get comprehensive diagnosis
+    diagnosis = get_pressure_thermal_diagnosis()
+    
+    # Add monitoring timestamp
+    diagnosis["monitoring_timestamp"] = time.time()
+    diagnosis["integration_active"] = True
+    
+    return diagnosis
 
 # Register global singleton
 import builtins

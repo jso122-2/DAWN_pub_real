@@ -8,8 +8,8 @@ from dataclasses import dataclass
 from datetime import datetime
 
 # Import existing DAWN forecasting components
-from .forecasting_models import Passion, Acquaintance, ForecastVector
-from .forecasting_engine import DAWNForecastingEngine
+from ...forecasting_models import Passion, Acquaintance, ForecastVector
+from ...forecasting_engine import DAWNForecastingEngine
 
 logger = logging.getLogger(__name__)
 

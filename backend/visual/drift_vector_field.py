@@ -2,7 +2,7 @@
 Drift Vector Field Visualizer for DAWN
 """
 
-from .base_visualizer import BaseVisualizer
+from ...base_visualizer import BaseVisualizer
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation

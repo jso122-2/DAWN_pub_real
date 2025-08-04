@@ -1,3 +1,5 @@
+# Add parent directory to Python path for imports
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 #!/usr/bin/env python3
 """
 DAWN Visualization #11: Semantic Flow Graph

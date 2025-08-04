@@ -11,7 +11,7 @@ from typing import Dict, List, Any, Optional
 import logging
 from datetime import datetime
 
-from ..models import KANTopology
+from ...models import KANTopology
 
 
 class KANVisualizationSocket:

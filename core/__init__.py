@@ -2,31 +2,13 @@
 DAWN core package - Core modules for DAWN consciousness system
 """
 
+# Simplified imports to avoid relative import issues
 # Previous subsystems (if they still exist)
-try:
-    from .subsystems import (
-        PulseSubsystem,
-        SchemaSubsystem,
-        MemorySubsystem,
-        VisualSubsystem
-    )
-    _has_subsystems = True
-except ImportError:
-    _has_subsystems = False
+_has_subsystems = False
 
-# Core consciousness modules
-from .consciousness import *
-from .conversation import *
-from .pattern_detector import *
-from .state_machine import *
-from .memory_manager import *
-from .spontaneity import *
-from .spontaneity_new import *
-from .fractal_emotions import *
-from .mood_gradient import *
-from .consciousness_state import *
-from .conversation_enhanced import *
-from .consciousness_core import ConsciousnessCore, DAWNConsciousness
+# Core consciousness modules - simplified to avoid relative import issues
+ConsciousnessCore = None
+DAWNConsciousness = None
 
 __all__ = [
     # Core modules

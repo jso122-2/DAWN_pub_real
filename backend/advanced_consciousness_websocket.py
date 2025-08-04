@@ -12,8 +12,8 @@ import logging
 from typing import Dict, Set, Any, Optional, List
 from websockets.server import WebSocketServerProtocol
 
-from .advanced_consciousness_system import AdvancedConsciousnessSystem, create_advanced_consciousness
-from .neural_metrics_service import NeuralMetricsService
+from ...advanced_consciousness_system import AdvancedConsciousnessSystem, create_advanced_consciousness
+from ...neural_metrics_service import NeuralMetricsService
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)

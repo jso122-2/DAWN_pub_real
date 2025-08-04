@@ -1,5 +1,5 @@
 from typing import Dict, Any, List
-from .base import DecisionLayer, ReflexState, RebloomDecision, RebloomMode
+from ...base import DecisionLayer, ReflexState, RebloomDecision, RebloomMode
 
 class RebloomDecisionMaker(DecisionLayer):
     """Standardizes semantic output for the memory system"""

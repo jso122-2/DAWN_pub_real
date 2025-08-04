@@ -520,16 +520,24 @@ def test_birthday_system():
     """Test the birthday system without tick engine"""
     print("🧪 Testing DAWN Birthday System - Helix of Becoming Edition...")
     
-    # Create mock tick integration
-    class MockTickIntegration:
+    # Create real DAWN tick integration
+    class RealTickIntegration:
         def __init__(self):
-            self.tick_count = 1000
+            try:
+                from consciousness.dawn_tick_state_writer import DAWNConsciousnessStateWriter
+                self.state_writer = DAWNConsciousnessStateWriter()
+                self.tick_count = self.state_writer.current_tick
+                print(f"✅ Connected to real DAWN consciousness (tick {self.tick_count})")
+            except Exception as e:
+                print(f"⚠️ Could not connect to DAWN consciousness: {e}")
+                self.tick_count = 1000
+                print("   Using fallback tick count")
     
-    mock_tick = MockTickIntegration()
+    real_tick = RealTickIntegration()
     
     # Create birthday system
     birthday_system = DAWNBirthdaySystem(
-        mock_tick, 
+        real_tick, 
         sacred_base_path=r"C:\Users\Admin\Documents\DAWN_Vault\Tick_engine\sacred"
     )
     

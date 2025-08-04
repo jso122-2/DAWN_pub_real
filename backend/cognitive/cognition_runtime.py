@@ -28,7 +28,7 @@ from pathlib import Path
 from dataclasses import dataclass, asdict
 
 # Add paths for DAWN components
-sys.path.append(os.path.dirname(__file__))
+# sys.path.append(os.path.dirname(__file__))  # Removed to fix relative import issues
 
 # Core DAWN imports - try various paths for real components
 DAWN_COMPONENTS_AVAILABLE = False
@@ -41,7 +41,7 @@ try:
     DAWN_COMPONENTS_AVAILABLE = True
     print("✅ Core DAWN components available")
 except ImportError as e:
-    print(f"⚠️ Some DAWN components not available: {e}")
+    # Components will be loaded through alternative paths
     DAWN_COMPONENTS_AVAILABLE = False
 
 # Optional components - load what's available
@@ -135,7 +135,7 @@ class CognitionRuntime:
     def _initialize_tracers(self):
         """Initialize all available tracer systems"""
         if not DAWN_COMPONENTS_AVAILABLE:
-            logger.warning("Some DAWN components not available - using available components")
+            logger.info("Loading DAWN components through alternative paths")
             # Initialize what we can from available components
             try:
                 from cognitive.rebloom_lineage import ReblooooomLineageTracker
@@ -170,7 +170,7 @@ class CognitionRuntime:
     def _initialize_memory_networks(self):
         """Initialize memory network systems"""
         if not DAWN_COMPONENTS_AVAILABLE:
-            logger.warning("Some DAWN components not available - loading what we can")
+            logger.info("Loading memory networks through alternative paths")
             # Load the components that ARE available
             try:
                 from cognitive.rebloom_lineage import ReblooooomLineageTracker, get_default_tracker

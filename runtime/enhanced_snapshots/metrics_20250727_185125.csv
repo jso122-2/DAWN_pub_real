@@ -1,0 +1,11 @@
+metric,value,unit,category
+tick,1275,count,system
+entropy,0.384,ratio,consciousness
+scup,0.09,ratio,consciousness
+heat,0.312,ratio,consciousness
+drift,0.156,ratio,consciousness
+reblooms,2,count,activity
+sigils,1,count,activity
+tick_time,0.011,seconds,performance
+cpu_usage,0.377,ratio,performance
+memory_usage,0.654,ratio,performance

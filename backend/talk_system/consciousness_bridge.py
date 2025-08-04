@@ -1,10 +1,10 @@
 from typing import Dict, Optional, List
 import asyncio
 import time
-from .sentence_encoder import DAWNSentenceEncoder
-from .semantic_memory import SemanticMemory
-from .resonance_tracker import ResonanceTracker
-from .controlled_generation import ControlledGenerationEngine
+from ...sentence_encoder import DAWNSentenceEncoder
+from ...semantic_memory import SemanticMemory
+from ...resonance_tracker import ResonanceTracker
+from ...controlled_generation import ControlledGenerationEngine
 import json
 
 class DAWNTalkSystem:

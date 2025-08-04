@@ -6,7 +6,7 @@ Visualizes the emotional state distribution as a heatmap
 import numpy as np
 import matplotlib.pyplot as plt
 from typing import Dict, Optional, List, Tuple
-from .base_visualizer import BaseVisualizer
+from ...base_visualizer import BaseVisualizer
 
 class MoodHeatmapVisualizer(BaseVisualizer):
     def __init__(self):

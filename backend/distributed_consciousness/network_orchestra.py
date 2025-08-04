@@ -7,7 +7,7 @@ from collections import defaultdict, deque
 from dataclasses import dataclass, asdict
 import statistics
 
-from .consciousness_node import ConsciousnessNode, ConsciousnessMessage, NodeInfo
+from ...consciousness_node import ConsciousnessNode, ConsciousnessMessage, NodeInfo
 
 @dataclass
 class CollectiveState:

@@ -1,7 +1,7 @@
 import pytest
 import asyncio
 from datetime import datetime, timedelta
-from .helix_import_architecture import (
+from ...helix_import_architecture import (
     helix_import,
     register_genome_component,
     ComponentStatus,

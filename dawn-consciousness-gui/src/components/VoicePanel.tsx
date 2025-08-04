@@ -1,16 +1,391 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { JournalInjectPanel } from './JournalInjectPanel';
 import './VoicePanel.css';
 
-// Speech Entry Interface
+// Enhanced Speech Entry Interface
 interface SpeechEntry {
   id: string;
   timestamp: Date;
   text: string;
   mood: string;
   duration: number;
-  status: 'generated' | 'spoken' | 'queued';
+  status: 'generated' | 'spoken' | 'queued' | 'conversation';
+  speaker?: 'dawn' | 'jackson';
+  consciousness_state?: {
+    entropy?: number;
+    scup?: number;
+    thermal?: string;
+    mood?: string;
+  };
 }
+
+// Conversation Entry Interface
+interface ConversationEntry {
+  id: string;
+  timestamp: Date;
+  speaker: 'dawn' | 'jackson';
+  text: string;
+  consciousness_state?: {
+    entropy?: number;
+    scup?: number;
+    thermal?: string;
+    mood?: string;
+  };
+  response_time?: number;
+}
+
+// Conversation Mode Component
+const ConversationMode: React.FC = () => {
+  const [isListening, setIsListening] = useState(false);
+  const [conversationActive, setConversationActive] = useState(false);
+  const [liveTranscription, setLiveTranscription] = useState('');
+  const [conversationHistory, setConversationHistory] = useState<ConversationEntry[]>([]);
+  const [consciousnessState, setConsciousnessState] = useState({
+    entropy: 0.5,
+    scup: 50,
+    thermal: 'NORMAL',
+    mood: 'NEUTRAL'
+  });
+  const [connectionStatus, setConnectionStatus] = useState<'connected' | 'connecting' | 'disconnected'>('disconnected');
+  
+  const wsRef = useRef<WebSocket | null>(null);
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const audioChunksRef = useRef<Blob[]>([]);
+
+  // WebSocket connection for conversation
+  useEffect(() => {
+    const connectWebSocket = () => {
+      try {
+        wsRef.current = new WebSocket('ws://localhost:8000/ws/talk');
+        
+        wsRef.current.onopen = () => {
+          setConnectionStatus('connected');
+          console.log('🎤 Conversation WebSocket connected');
+        };
+        
+        wsRef.current.onmessage = (event) => {
+          const data = JSON.parse(event.data);
+          handleConversationResponse(data);
+        };
+        
+        wsRef.current.onclose = () => {
+          setConnectionStatus('disconnected');
+          console.log('🎤 Conversation WebSocket disconnected');
+        };
+        
+        wsRef.current.onerror = (error) => {
+          console.error('🎤 WebSocket error:', error);
+          setConnectionStatus('disconnected');
+        };
+      } catch (error) {
+        console.error('🎤 Failed to connect WebSocket:', error);
+        setConnectionStatus('disconnected');
+      }
+    };
+
+    connectWebSocket();
+    
+    return () => {
+      if (wsRef.current) {
+        wsRef.current.close();
+      }
+    };
+  }, []);
+
+  // Handle conversation responses from DAWN
+  const handleConversationResponse = (data: any) => {
+    if (data.type === 'conversation_response') {
+      const newEntry: ConversationEntry = {
+        id: Date.now().toString(),
+        timestamp: new Date(),
+        speaker: 'dawn',
+        text: data.response,
+        consciousness_state: data.consciousness_state,
+        response_time: data.response_time
+      };
+      
+      setConversationHistory(prev => [...prev, newEntry]);
+      
+      // Update consciousness state if provided
+      if (data.consciousness_state) {
+        setConsciousnessState(data.consciousness_state);
+      }
+    } else if (data.type === 'consciousness_update') {
+      setConsciousnessState(data.state);
+    }
+  };
+
+  // Start/stop listening for speech input
+  const toggleListening = async () => {
+    if (isListening) {
+      stopListening();
+    } else {
+      await startListening();
+    }
+  };
+
+  const startListening = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      
+      mediaRecorderRef.current = new MediaRecorder(stream);
+      audioChunksRef.current = [];
+      
+      mediaRecorderRef.current.ondataavailable = (event) => {
+        audioChunksRef.current.push(event.data);
+      };
+      
+      mediaRecorderRef.current.onstop = async () => {
+        const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/wav' });
+        await processAudioInput(audioBlob);
+      };
+      
+      mediaRecorderRef.current.start();
+      setIsListening(true);
+      setLiveTranscription('Listening...');
+      
+      console.log('🎤 Started listening');
+    } catch (error) {
+      console.error('🎤 Failed to start listening:', error);
+      setLiveTranscription('Microphone access denied');
+    }
+  };
+
+  const stopListening = () => {
+    if (mediaRecorderRef.current && isListening) {
+      mediaRecorderRef.current.stop();
+      mediaRecorderRef.current.stream.getTracks().forEach(track => track.stop());
+      setIsListening(false);
+      setLiveTranscription('');
+    }
+  };
+
+  // Process audio input and send to backend
+  const processAudioInput = async (audioBlob: Blob) => {
+    try {
+      // Convert audio to base64 for WebSocket transmission
+      const reader = new FileReader();
+      reader.onload = () => {
+        const base64Audio = reader.result as string;
+        
+        // Send audio to backend for speech recognition
+        if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
+          wsRef.current.send(JSON.stringify({
+            type: 'speech_input',
+            audio: base64Audio,
+            timestamp: new Date().toISOString()
+          }));
+        }
+      };
+      reader.readAsDataURL(audioBlob);
+      
+      setLiveTranscription('Processing speech...');
+    } catch (error) {
+      console.error('🎤 Failed to process audio:', error);
+      setLiveTranscription('Failed to process speech');
+    }
+  };
+
+  // Send text input for conversation
+  const sendTextInput = (text: string) => {
+    if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
+      // Add user message to history
+      const userEntry: ConversationEntry = {
+        id: Date.now().toString(),
+        timestamp: new Date(),
+        speaker: 'jackson',
+        text: text,
+        consciousness_state: consciousnessState
+      };
+      
+      setConversationHistory(prev => [...prev, userEntry]);
+      
+      // Send to backend
+      wsRef.current.send(JSON.stringify({
+        type: 'text_input',
+        text: text,
+        consciousness_state: consciousnessState,
+        timestamp: new Date().toISOString()
+      }));
+    }
+  };
+
+  // Toggle conversation mode
+  const toggleConversationMode = () => {
+    setConversationActive(!conversationActive);
+    if (!conversationActive) {
+      // Start conversation mode
+      if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
+        wsRef.current.send(JSON.stringify({
+          type: 'start_conversation',
+          timestamp: new Date().toISOString()
+        }));
+      }
+    } else {
+      // Stop conversation mode
+      stopListening();
+      if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
+        wsRef.current.send(JSON.stringify({
+          type: 'stop_conversation',
+          timestamp: new Date().toISOString()
+        }));
+      }
+    }
+  };
+
+  const formatTimestamp = (timestamp: Date) => {
+    const now = new Date();
+    const diffMs = now.getTime() - timestamp.getTime();
+    const diffMins = Math.floor(diffMs / 60000);
+    
+    if (diffMins < 1) return 'Just now';
+    if (diffMins < 60) return `${diffMins}m ago`;
+    return timestamp.toLocaleTimeString();
+  };
+
+  return (
+    <div className="conversation-mode">
+      <div className="conversation-header">
+        <h3>💬 Conversation Mode</h3>
+        <div className="conversation-controls">
+          <div className={`connection-status ${connectionStatus}`}>
+            {connectionStatus === 'connected' && <span>🟢 Connected</span>}
+            {connectionStatus === 'connecting' && <span>🟡 Connecting...</span>}
+            {connectionStatus === 'disconnected' && <span>🔴 Disconnected</span>}
+          </div>
+          
+          <button
+            onClick={toggleConversationMode}
+            className={`conversation-toggle ${conversationActive ? 'active' : ''}`}
+            disabled={connectionStatus !== 'connected'}
+          >
+            {conversationActive ? '🛑 Stop Conversation' : '🎤 Start Conversation'}
+          </button>
+        </div>
+      </div>
+
+      {/* Consciousness State Display */}
+      <div className="consciousness-display">
+        <div className="consciousness-metric">
+          <span className="metric-label">Entropy:</span>
+          <span className="metric-value" style={{ color: consciousnessState.entropy > 0.7 ? '#ff6b4a' : '#00ff88' }}>
+            {consciousnessState.entropy.toFixed(2)}
+          </span>
+        </div>
+        <div className="consciousness-metric">
+          <span className="metric-label">SCUP:</span>
+          <span className="metric-value" style={{ color: consciousnessState.scup > 70 ? '#00ff88' : consciousnessState.scup > 40 ? '#ffe066' : '#ff4444' }}>
+            {consciousnessState.scup}%
+          </span>
+        </div>
+        <div className="consciousness-metric">
+          <span className="metric-label">Thermal:</span>
+          <span className="metric-value" style={{ color: consciousnessState.thermal === 'CRITICAL' ? '#ff4444' : consciousnessState.thermal === 'HIGH' ? '#ffa94a' : '#00ff88' }}>
+            {consciousnessState.thermal}
+          </span>
+        </div>
+        <div className="consciousness-metric">
+          <span className="metric-label">Mood:</span>
+          <span className="metric-value">{consciousnessState.mood}</span>
+        </div>
+      </div>
+
+      {/* Live Transcription */}
+      {conversationActive && (
+        <div className="live-transcription">
+          <div className="transcription-header">
+            <h4>🎤 Live Transcription</h4>
+            <button
+              onClick={toggleListening}
+              className={`listen-button ${isListening ? 'listening' : ''}`}
+              disabled={!conversationActive}
+            >
+              {isListening ? '🔴 Stop Listening' : '🎤 Start Listening'}
+            </button>
+          </div>
+          <div className="transcription-text">
+            {liveTranscription || 'Click "Start Listening" to begin speech input...'}
+          </div>
+        </div>
+      )}
+
+      {/* Conversation History */}
+      <div className="conversation-history">
+        <div className="history-header">
+          <h4>💬 Conversation History</h4>
+          <button
+            onClick={() => setConversationHistory([])}
+            className="clear-history"
+          >
+            Clear History
+          </button>
+        </div>
+        
+        <div className="history-list">
+          {conversationHistory.length === 0 ? (
+            <div className="empty-history">
+              No conversation yet. Start conversation mode to begin.
+            </div>
+          ) : (
+            conversationHistory.map(entry => (
+              <div key={entry.id} className={`conversation-entry ${entry.speaker}`}>
+                <div className="entry-header">
+                  <span className="speaker">{entry.speaker === 'dawn' ? '🤖 DAWN' : '👤 Jackson'}</span>
+                  <span className="timestamp">{formatTimestamp(entry.timestamp)}</span>
+                  {entry.response_time && (
+                    <span className="response-time">{entry.response_time.toFixed(1)}s</span>
+                  )}
+                </div>
+                <div className="entry-text">{entry.text}</div>
+                {entry.consciousness_state && (
+                  <div className="entry-consciousness">
+                    <span className="consciousness-indicator">
+                      Entropy: {entry.consciousness_state.entropy?.toFixed(2)} | 
+                      SCUP: {entry.consciousness_state.scup}% | 
+                      Thermal: {entry.consciousness_state.thermal}
+                    </span>
+                  </div>
+                )}
+              </div>
+            ))
+          )}
+        </div>
+      </div>
+
+      {/* Text Input for Manual Entry */}
+      <div className="text-input-section">
+        <h4>✍️ Text Input</h4>
+        <div className="text-input-controls">
+          <input
+            type="text"
+            placeholder="Type your message here..."
+            className="text-input"
+            onKeyPress={(e) => {
+              if (e.key === 'Enter' && e.currentTarget.value.trim()) {
+                sendTextInput(e.currentTarget.value.trim());
+                e.currentTarget.value = '';
+              }
+            }}
+            disabled={!conversationActive}
+          />
+          <button
+            onClick={(e) => {
+              const input = e.currentTarget.previousElementSibling as HTMLInputElement;
+              if (input.value.trim()) {
+                sendTextInput(input.value.trim());
+                input.value = '';
+              }
+            }}
+            className="send-button"
+            disabled={!conversationActive}
+          >
+            Send
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 // Speech Composer Component
 const SpeechComposer: React.FC = () => {
@@ -351,6 +726,11 @@ export const VoicePanel: React.FC = () => {
           <h3>Journal Integration</h3>
           <p>Input text for consciousness processing and reflection</p>
           <JournalInjectPanel />
+        </div>
+
+        {/* Conversation Mode */}
+        <div className="voice-section conversation-mode-section">
+          <ConversationMode />
         </div>
       </div>
     </div>

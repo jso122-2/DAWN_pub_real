@@ -16,7 +16,7 @@ import random
 import math
 
 # Import DAWN Fractal Emotions System
-from .fractal_emotions import EmotionalFractalEngine, EmotionalFractal, EmotionalDepth
+from ...fractal_emotions import EmotionalFractalEngine, EmotionalFractal, EmotionalDepth
 
 # Import DAWN Codex Engine for symbolic reasoning
 from codex import get_schema_health, get_pulse_zone, describe_pulse_zone, summarize_bloom

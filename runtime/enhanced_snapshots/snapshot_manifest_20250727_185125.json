@@ -1,0 +1,36 @@
+{
+  "snapshot_info": {
+    "timestamp": "20250727_185125",
+    "tick": 1275,
+    "engine_version": "Enhanced DAWN Visual Engine v2.0",
+    "generation_time": "2025-07-27T18:51:29.102093"
+  },
+  "consciousness_state": {
+    "entropy": 0.384,
+    "scup": 0.09,
+    "heat": 0.312,
+    "zone": "CRITICAL",
+    "mood": "CONTEMPLATIVE",
+    "reblooms": 2,
+    "sigils": 1
+  },
+  "generated_files": {
+    "dashboard": "runtime\\enhanced_snapshots\\consciousness_dashboard_20250727_185125.png",
+    "entropy_timeline": "runtime\\enhanced_snapshots\\entropy_timeline_20250727_185125.png",
+    "performance_radar": "runtime\\enhanced_snapshots\\performance_radar_20250727_185125.png",
+    "cognitive_network": "runtime\\enhanced_snapshots\\cognitive_network_20250727_185125.png",
+    "overview": "runtime\\enhanced_snapshots\\overview_panel_20250727_185125.png",
+    "json_data": "runtime\\enhanced_snapshots\\snapshot_data_20250727_185125.json",
+    "csv_data": "runtime\\enhanced_snapshots\\metrics_20250727_185125.csv"
+  },
+  "file_count": 7,
+  "visualization_types": [
+    "dashboard",
+    "entropy_timeline",
+    "performance_radar",
+    "cognitive_network",
+    "overview",
+    "json_data",
+    "csv_data"
+  ]
+}

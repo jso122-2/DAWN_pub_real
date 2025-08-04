@@ -1,6 +1,6 @@
 import time
 from typing import Dict, List, Optional, Type
-from .base_visual import BaseVisualProcess
+from ...base_visual import BaseVisualProcess
 import importlib
 import os
 import logging
@@ -9,7 +9,7 @@ import atexit
 import sys
 
 # Import GIF saver
-from .gif_saver import setup_gif_saver
+from ...gif_saver import setup_gif_saver
 
 logger = logging.getLogger(__name__)
 

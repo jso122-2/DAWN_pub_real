@@ -1,0 +1,21 @@
+{
+  "timestamp": "2025-07-27T19:01:59.505933",
+  "tick": 100,
+  "visualization_types": [
+    "emotional_landscape",
+    "cognitive_pulse",
+    "network_flow"
+  ],
+  "update_duration": 1.4332971572875977,
+  "tick_data": {
+    "tick": 100,
+    "entropy": 0.65,
+    "scup": 0.42,
+    "heat": 0.58,
+    "mood": "CONTEMPLATIVE",
+    "zone": "ACTIVE",
+    "reblooms": 3,
+    "sigils": 2,
+    "drift": 0.31
+  }
+}

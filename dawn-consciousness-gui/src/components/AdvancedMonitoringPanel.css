@@ -1,0 +1,337 @@
+.advanced-monitoring-panel {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.panel-header h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.monitoring-grid {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  padding: 16px;
+  overflow-y: auto;
+}
+
+.monitor-card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 16px;
+  backdrop-filter: blur(10px);
+  transition: all 0.2s;
+}
+
+.monitor-card:hover {
+  border-color: rgba(0, 255, 136, 0.3);
+  box-shadow: 0 0 10px rgba(0, 255, 136, 0.1);
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.card-icon {
+  font-size: 18px;
+}
+
+.card-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.card-subtitle {
+  font-size: 12px;
+  color: #888888;
+  margin-left: auto;
+}
+
+/* Mycelial Network */
+.mycelial-visualization {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 300px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  margin-bottom: 12px;
+}
+
+.mycelial-visualization svg {
+  width: 100%;
+  height: 100%;
+}
+
+.network-stats {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: #888888;
+}
+
+.network-stats span {
+  padding: 4px 8px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* Cognitive Pressure */
+.pressure-display {
+  text-align: center;
+}
+
+.pressure-value {
+  font-size: 24px;
+  font-weight: 700;
+  color: #00ff88;
+  margin-bottom: 16px;
+  text-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+}
+
+.pressure-components {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.component {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.component span:first-child {
+  color: #cccccc;
+}
+
+.component span:last-child {
+  color: #ffffff;
+  font-weight: 600;
+}
+
+/* Schema Health */
+.health-components {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.health-component {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.component-name {
+  min-width: 80px;
+  font-size: 14px;
+  color: #cccccc;
+}
+
+.health-bar {
+  flex: 1;
+  height: 8px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.health-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.5s ease;
+  position: relative;
+}
+
+.health-fill::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.3) 50%, transparent 100%);
+  animation: shimmer 2s infinite;
+}
+
+.component-value {
+  min-width: 40px;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: right;
+}
+
+.health-alerts {
+  margin-top: 12px;
+  padding: 8px;
+  background: rgba(255, 170, 0, 0.1);
+  border: 1px solid rgba(255, 170, 0, 0.3);
+  border-radius: 6px;
+}
+
+.alert {
+  font-size: 12px;
+  color: #ffaa00;
+  margin-bottom: 4px;
+}
+
+.alert:last-child {
+  margin-bottom: 0;
+}
+
+/* Reflection Insights */
+.insights-stream {
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.insight-item {
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 6px;
+  margin-bottom: 8px;
+  border-left: 3px solid #00ff88;
+  animation: fadeIn 0.3s ease;
+}
+
+.insight-item:last-child {
+  margin-bottom: 0;
+}
+
+.insight-content {
+  font-size: 14px;
+  color: #ffffff;
+  line-height: 1.4;
+  margin-bottom: 8px;
+}
+
+.insight-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+  color: #888888;
+}
+
+.insight-category {
+  padding: 2px 6px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.1);
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+.insight-time {
+  font-size: 10px;
+}
+
+.no-insights {
+  text-align: center;
+  padding: 32px;
+  color: #888888;
+  font-style: italic;
+}
+
+.no-insights button {
+  margin-top: 8px;
+  background: rgba(0, 255, 136, 0.2);
+  border: 1px solid rgba(0, 255, 136, 0.3);
+  color: #00ff88;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: all 0.2s;
+}
+
+.no-insights button:hover {
+  background: rgba(0, 255, 136, 0.3);
+  border-color: rgba(0, 255, 136, 0.5);
+}
+
+/* Animations */
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .monitoring-grid {
+    gap: 12px;
+    padding: 12px;
+  }
+  
+  .monitor-card {
+    padding: 12px;
+  }
+  
+  .mycelial-visualization {
+    height: 200px;
+  }
+  
+  .pressure-value {
+    font-size: 20px;
+  }
+  
+  .health-component {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+  
+  .component-name {
+    min-width: auto;
+  }
+  
+  .health-bar {
+    width: 100%;
+  }
+  
+  .component-value {
+    min-width: auto;
+    text-align: left;
+  }
+  
+  .insight-meta {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+} 

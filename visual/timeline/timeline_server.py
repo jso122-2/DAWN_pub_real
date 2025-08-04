@@ -6,7 +6,7 @@ import time
 from http.server import SimpleHTTPRequestHandler, HTTPServer
 from threading import Thread
 from urllib.parse import urlparse, parse_qs
-from .event_collector import get_event_stream
+from ...event_collector import get_event_stream
 
 TIMELINE_HTML = os.path.join(os.path.dirname(__file__), 'neural_timeline.html')
 WS_PATH = '/consciousness/timeline'

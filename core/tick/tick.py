@@ -9,9 +9,9 @@ from pathlib import Path
 import yaml
 from typing import Optional, Dict, Any
 
-from .tick_loop import TickLoop
-from .tick_signals import set_signal, get_signal
-from .tick_engine import TickEngine
+from ...tick_loop import TickLoop
+from ...tick_signals import set_signal, get_signal
+from ...tick_engine import TickEngine
 
 log = logging.getLogger(__name__)
 

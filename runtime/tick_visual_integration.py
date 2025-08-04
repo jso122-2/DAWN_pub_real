@@ -27,7 +27,7 @@ sys.path.append(project_root)
 
 # Import visual trigger
 try:
-    from visual_trigger import trigger_visual_snapshot, save_tick_visualization
+    from visual.visual_trigger import trigger_visual_snapshot, save_tick_visualization
     VISUAL_TRIGGER_AVAILABLE = True
 except ImportError as e:
     print(f"⚠️  Visual trigger not available: {e}")

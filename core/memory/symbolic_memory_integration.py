@@ -8,7 +8,7 @@ import asyncio
 from typing import Dict, List, Optional, Any, Callable
 from datetime import datetime
 
-from .memory_chunk import MemoryChunk
+from ...memory_chunk import MemoryChunk
 
 try:
     from cognitive.symbolic_router import get_symbolic_router

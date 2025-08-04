@@ -13,7 +13,7 @@ from pathlib import Path
 from typing import Dict, List, Set
 from datetime import datetime
 
-from .fractal_decoder import FractalDecoder
+from ...fractal_decoder import FractalDecoder
 
 # Configure logging
 logging.basicConfig(

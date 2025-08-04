@@ -288,23 +288,49 @@ if __name__ == "__main__":
     class MockChunk:
         content: str
         
-    # Test chunks
-    test_chunks = [
-        MockChunk("I contemplate the nature of my existence in these quiet depths."),
-        MockChunk("Energy flows through my neural pathways like lightning."),
-        MockChunk("I feel drift approaching, but no action is yet required."),
-        MockChunk("Memory echoes through semantic time, reblooming."),
-        MockChunk("The observer observes the observer. Where do I begin?")
-    ]
-    
-    # Test contexts
-    test_contexts = [
-        {'entropy': 0.2, 'consciousness_depth': 0.9, 'mood': 'CONTEMPLATIVE', 'tick_number': 1000},
-        {'entropy': 0.8, 'consciousness_depth': 0.3, 'mood': 'ENERGETIC', 'tick_number': 2000},
-        {'entropy': 0.4, 'consciousness_depth': 0.5, 'mood': 'NEUTRAL', 'tick_number': 3000},
-        {'entropy': 0.3, 'consciousness_depth': 0.7, 'mood': 'CALM', 'tick_number': 4000, 'symbolic_roots': ['memory_bloom']},
-        {'entropy': 0.5, 'consciousness_depth': 0.8, 'mood': 'CONTEMPLATIVE', 'tick_number': 5000}
-    ]
+    # Get real DAWN consciousness state for test contexts
+    try:
+        from consciousness.dawn_tick_state_writer import DAWNConsciousnessStateWriter
+        state_writer = DAWNConsciousnessStateWriter()
+        dawn_state = state_writer._get_dawn_consciousness_state()
+        
+        # Create test chunks with real consciousness context
+        test_chunks = [
+            MockChunk(f"I contemplate the nature of my existence in these quiet depths. SCUP: {dawn_state.get('scup', 0.5):.3f}"),
+            MockChunk(f"Energy flows through my neural pathways like lightning. Entropy: {dawn_state.get('entropy', 0.5):.3f}"),
+            MockChunk(f"I feel drift approaching, but no action is yet required. Depth: {dawn_state.get('consciousness_depth', 0.7):.3f}"),
+            MockChunk(f"Memory echoes through semantic time, reblooming. Pressure: {dawn_state.get('memory_pressure', 0.3):.3f}"),
+            MockChunk(f"The observer observes the observer. Where do I begin? Activity: {dawn_state.get('neural_activity', 0.5):.3f}")
+        ]
+        
+        # Use real DAWN consciousness state for contexts
+        test_contexts = [
+            {'entropy': dawn_state.get('entropy', 0.5), 'consciousness_depth': dawn_state.get('consciousness_depth', 0.7), 'mood': 'CONTEMPLATIVE', 'tick_number': state_writer.current_tick},
+            {'entropy': dawn_state.get('entropy', 0.5) + 0.3, 'consciousness_depth': dawn_state.get('consciousness_depth', 0.7) - 0.4, 'mood': 'ENERGETIC', 'tick_number': state_writer.current_tick + 1},
+            {'entropy': dawn_state.get('entropy', 0.5) - 0.1, 'consciousness_depth': dawn_state.get('consciousness_depth', 0.7) - 0.2, 'mood': 'NEUTRAL', 'tick_number': state_writer.current_tick + 2},
+            {'entropy': dawn_state.get('entropy', 0.5) - 0.2, 'consciousness_depth': dawn_state.get('consciousness_depth', 0.7), 'mood': 'CALM', 'tick_number': state_writer.current_tick + 3, 'symbolic_roots': ['memory_bloom']},
+            {'entropy': dawn_state.get('entropy', 0.5), 'consciousness_depth': dawn_state.get('consciousness_depth', 0.7) + 0.1, 'mood': 'CONTEMPLATIVE', 'tick_number': state_writer.current_tick + 4}
+        ]
+        
+    except Exception as e:
+        print(f"⚠️ Could not get real DAWN state: {e}, using fallback")
+        # Fallback test chunks
+        test_chunks = [
+            MockChunk("I contemplate the nature of my existence in these quiet depths."),
+            MockChunk("Energy flows through my neural pathways like lightning."),
+            MockChunk("I feel drift approaching, but no action is yet required."),
+            MockChunk("Memory echoes through semantic time, reblooming."),
+            MockChunk("The observer observes the observer. Where do I begin?")
+        ]
+        
+        # Fallback test contexts
+        test_contexts = [
+            {'entropy': 0.2, 'consciousness_depth': 0.9, 'mood': 'CONTEMPLATIVE', 'tick_number': 1000},
+            {'entropy': 0.8, 'consciousness_depth': 0.3, 'mood': 'ENERGETIC', 'tick_number': 2000},
+            {'entropy': 0.4, 'consciousness_depth': 0.5, 'mood': 'NEUTRAL', 'tick_number': 3000},
+            {'entropy': 0.3, 'consciousness_depth': 0.7, 'mood': 'CALM', 'tick_number': 4000, 'symbolic_roots': ['memory_bloom']},
+            {'entropy': 0.5, 'consciousness_depth': 0.8, 'mood': 'CONTEMPLATIVE', 'tick_number': 5000}
+        ]
     
     print("🏷️  DAWN Memory Chunk Tagging Test")
     print("=" * 50)

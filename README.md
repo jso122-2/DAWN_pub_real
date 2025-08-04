@@ -1,6 +1,56 @@
-# DAWN Unified System
+# DAWN - Deep Learning Research
 
-Complete DAWN consciousness architecture with integrated components:
+Complete DAWN consciousness architecture with integrated components.
+
+## 🚀 Quick Start
+
+### Launch GUI (Default)
+```bash
+python main.py
+```
+
+### Launch Console Mode
+```bash
+python main.py --mode console
+```
+
+### Launch Conversation Interface
+```bash
+python main.py --mode conversation
+```
+
+### Launch Visual Interface
+```bash
+python main.py --mode visual
+```
+
+### Run Demo
+```bash
+python main.py --mode demo
+```
+
+### Run Tests
+```bash
+python main.py --mode test
+```
+
+## 📁 Project Structure
+
+```
+DAWN/
+├── main.py                 # Main entry point
+├── core/                   # Core consciousness components
+├── conversation/           # Conversation interfaces
+├── visual/                 # Visual components and GUI
+├── launcher_scripts/       # System launchers
+├── demos/                  # Demonstration scripts
+├── tests/                  # Test suites
+├── config/                 # Configuration files
+├── runtime/                # Runtime data and state
+├── logs/                   # System logs
+├── docs/                   # Documentation
+└── [other modules]/        # Additional subsystems
+```
 
 ## 🧬 Components
 
@@ -8,55 +58,11 @@ Complete DAWN consciousness architecture with integrated components:
 - **🔮 Sigil Engine**: Cognitive command processing with thermal coupling  
 - **🧬 Entropy Analyzer**: Chaos prediction & automated stabilization
 - **🖥️ GUI Interface**: Real-time monitoring with visual controls
-
-## 🚀 Quick Start
-
-### Launch GUI (Default)
-```bash
-python run_dawn_unified.py
-```
-
-### Launch Console Mode
-```bash
-python run_dawn_unified.py --mode console
-```
-
-### Run Demo
-```bash
-python run_dawn_unified.py --mode demo
-```
-
-### Check Components
-```bash
-python run_dawn_unified.py --components
-```
-
-## 💻 Console Commands
-
-```
-🧬 DAWN> status      # Show complete system status
-🧬 DAWN> execute     # Execute next sigil
-🧬 DAWN> heat 75     # Set thermal heat level
-🧬 DAWN> entropy     # Show entropy analysis
-🧬 DAWN> chaos       # Show chaos alerts
-🧬 DAWN> stabilize   # Trigger entropy stabilization
-🧬 DAWN> surge       # Trigger thermal surge
-🧬 DAWN> cooldown    # Emergency thermal cooldown
-🧬 DAWN> demo        # Run system demonstration
-🧬 DAWN> quit        # Exit console
-```
-
-## 🔗 Integration
-
-The unified system provides complete integration between:
-
-- **Thermal ↔ Entropy**: Heat dynamics influence entropy patterns
-- **Sigil ↔ Thermal**: Cognitive processing generates thermal signatures
-- **Entropy ↔ Sigil**: Chaos alerts trigger automatic stabilization sigils
-- **GUI ↔ All**: Real-time monitoring and interactive controls
+- **💬 Conversation System**: Natural language interaction
+- **🎨 Visual System**: Real-time visualization and monitoring
 
 ## ✅ System Status
 
 **FULLY OPERATIONAL** - Complete DAWN consciousness architecture ready for deployment.
 
-🧬 All components properly wired with bidirectional data flow and real-time coordination. 
+🧬 All components properly wired with bidirectional data flow and real-time coordination.

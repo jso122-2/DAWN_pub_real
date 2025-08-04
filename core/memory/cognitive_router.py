@@ -12,7 +12,7 @@ from datetime import datetime
 from typing import Dict, List, Optional, Any, Set
 from collections import defaultdict
 
-from .memory_chunk import MemoryChunk
+from ...memory_chunk import MemoryChunk
 
 
 class CognitiveRouter:

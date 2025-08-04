@@ -30,7 +30,7 @@ import atexit
 
 # Import GIF saver
 try:
-    from .gif_saver import setup_gif_saver
+    from ...gif_saver import setup_gif_saver
 except ImportError:
     try:
         from gif_saver import setup_gif_saver

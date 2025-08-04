@@ -44,7 +44,7 @@ from core.scup_drift_resolver import (
 
 # Import existing DAWN systems for integration
 try:
-    from voice_mood_modulation import VoiceMoodModulator
+    from core.voice_mood_modulation import VoiceMoodModulator
     VOICE_AVAILABLE = True
 except ImportError:
     VOICE_AVAILABLE = False

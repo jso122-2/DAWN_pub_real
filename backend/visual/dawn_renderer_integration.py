@@ -10,10 +10,10 @@ from typing import Dict, List, Any, Optional
 from datetime import datetime
 
 try:
-    from .sigil_renderer import SigilRenderer, create_terminal_renderer, create_minimal_renderer, UrgencyLevel
-    from ..core.pulse_engine import PulseEngine
-    from ..core.memory_router import MemoryRouter
-    from ..core.sigil_manager import SigilManager
+    from ...sigil_renderer import SigilRenderer, create_terminal_renderer, create_minimal_renderer, UrgencyLevel
+    from core.pulse_engine import PulseEngine
+    from core.memory_router import MemoryRouter
+    from core.sigil_manager import SigilManager
     DAWN_CORE_AVAILABLE = True
 except ImportError as e:
     print(f"⚠️ DAWN core components not available: {e}")
@@ -21,7 +21,7 @@ except ImportError as e:
     DAWN_CORE_AVAILABLE = False
     
     # Import local sigil renderer
-    from .sigil_renderer import SigilRenderer, create_terminal_renderer, create_minimal_renderer, UrgencyLevel
+    from ...sigil_renderer import SigilRenderer, create_terminal_renderer, create_minimal_renderer, UrgencyLevel
     
     # Mock implementations
     class MockPulseEngine:

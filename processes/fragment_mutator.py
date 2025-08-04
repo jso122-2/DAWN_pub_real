@@ -234,6 +234,78 @@ class FragmentMutator:
         
         return mutated_fragment, mutation_result
     
+    def update_fragments(self, pressure: float, shi: float, tick: int = None) -> Dict[str, Any]:
+        """
+        Update fragments based on pressure and SHI values
+        
+        Args:
+            pressure: Cognitive pressure value (0-100+)
+            shi: System Health Index (0.0-1.0)
+            tick: Current tick number for logging
+            
+        Returns:
+            Dictionary with update results
+        """
+        import time
+        
+        # Adjust mutation rate based on pressure and SHI
+        base_rate = self.mutation_rate
+        
+        # High pressure increases mutation rate
+        if pressure > 50:
+            adjusted_rate = base_rate * (1.0 + (pressure - 50) / 50)
+        else:
+            adjusted_rate = base_rate
+        
+        # Low SHI decreases mutation rate (system instability)
+        if shi < 0.4:
+            adjusted_rate = adjusted_rate * shi
+        
+        # Ensure rate is within reasonable bounds
+        adjusted_rate = max(0.05, min(0.3, adjusted_rate))
+        
+        logger.info(f"🧬 Fragment mutation: P={pressure:.1f}, SHI={shi:.3f}, rate={adjusted_rate:.3f}")
+        
+        # Load current fragments
+        fragment_path = "processes/fragment_bank.jsonl"
+        if not os.path.exists(fragment_path):
+            logger.warning(f"Fragment file not found: {fragment_path}")
+            return {"mutated_count": 0, "error": "Fragment file not found"}
+        
+        fragments = self.load_fragments(fragment_path)
+        mutations = []
+        
+        # Apply mutations based on adjusted rate
+        fragments_to_mutate = max(1, int(len(fragments) * adjusted_rate))
+        selected_fragments = random.sample(fragments, min(fragments_to_mutate, len(fragments)))
+        
+        for fragment in selected_fragments:
+            mutated_fragment, mutation_result = self.mutate_fragment(fragment, tick or 0)
+            if mutation_result:
+                mutations.append(mutation_result)
+                # Update the fragment in the list
+                fragment_index = fragments.index(fragment)
+                fragments[fragment_index] = mutated_fragment
+        
+        # Save updated fragments
+        backup_path = f"{fragment_path}.backup.{int(time.time())}"
+        shutil.copy2(fragment_path, backup_path)
+        
+        with open(fragment_path, 'w', encoding='utf-8') as f:
+            for fragment in fragments:
+                f.write(json.dumps(fragment, ensure_ascii=False) + '\n')
+        
+        # Log mutations
+        self.log_mutations(mutations, tick or 0)
+        
+        return {
+            "mutated_count": len(mutations),
+            "mutation_rate": adjusted_rate,
+            "pressure": pressure,
+            "shi": shi,
+            "total_fragments": len(fragments)
+        }
+    
     def evolve_fragments(self, input_path: str, output_path: str, tick: int = None) -> Dict[str, Any]:
         """Evolve all fragments and save results"""
         

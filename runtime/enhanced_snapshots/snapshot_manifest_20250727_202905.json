@@ -1,0 +1,26 @@
+{
+  "snapshot_info": {
+    "timestamp": "20250727_202905",
+    "tick": 0,
+    "engine_version": "Enhanced DAWN Visual Engine v2.0",
+    "generation_time": "2025-07-27T20:29:05.866488"
+  },
+  "consciousness_state": {
+    "entropy": 0.5,
+    "scup": 0.5,
+    "heat": 0.5,
+    "zone": "STABLE",
+    "mood": "NEUTRAL",
+    "reblooms": 0,
+    "sigils": 0
+  },
+  "generated_files": {
+    "json_data": "runtime/enhanced_snapshots/snapshot_data_20250727_202905.json",
+    "csv_data": "runtime/enhanced_snapshots/metrics_20250727_202905.csv"
+  },
+  "file_count": 2,
+  "visualization_types": [
+    "json_data",
+    "csv_data"
+  ]
+}

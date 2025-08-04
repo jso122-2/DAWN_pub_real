@@ -12,8 +12,8 @@ from datetime import datetime
 from typing import List, Optional, Dict, Any, Generator
 from pathlib import Path
 
-from .memory_chunk import MemoryChunk
-from .memory_trace_log import EnhancedMemoryTraceLog
+from ...memory_chunk import MemoryChunk
+from ...memory_trace_log import EnhancedMemoryTraceLog
 
 logger = logging.getLogger(__name__)
 
@@ -410,7 +410,7 @@ class DAWNMemoryLoader:
         Returns:
             MemoryChunk: Created memory chunk
         """
-        from .memory_chunk import create_memory_now
+        from ...memory_chunk import create_memory_now
         
         chunk = create_memory_now(
             speaker=speaker,

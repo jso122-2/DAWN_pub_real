@@ -13,26 +13,26 @@ from collections import deque, defaultdict
 from pathlib import Path
 import threading
 
-from .memory_chunk import MemoryChunk, create_memory_now, memory_stats
-from .memory_loader import DAWNMemoryLoader
-from .cognitive_router import CognitiveRouter
-from .vector_index import DAWNVectorIndex, IndexConfig
+from ...memory_chunk import MemoryChunk, create_memory_now, memory_stats
+from ...memory_loader import DAWNMemoryLoader
+from ...cognitive_router import CognitiveRouter
+from ...vector_index import DAWNVectorIndex, IndexConfig
 
 # Integration with existing DAWN memory systems
 try:
-    from .memory_trace_log import EnhancedMemoryTraceLog
+    from ...memory_trace_log import EnhancedMemoryTraceLog
     TRACE_LOG_AVAILABLE = True
 except ImportError:
     TRACE_LOG_AVAILABLE = False
 
 try:
-    from .memory_anchor import MemoryAnchorSystem, AnchorType
+    from ...memory_anchor import MemoryAnchorSystem, AnchorType
     MEMORY_ANCHOR_AVAILABLE = True
 except ImportError:
     MEMORY_ANCHOR_AVAILABLE = False
 
 try:
-    from ..pulse_controller import PulseController
+    from ...pulse_controller import PulseController
     PULSE_CONTROLLER_AVAILABLE = True
 except ImportError:
     PULSE_CONTROLLER_AVAILABLE = False

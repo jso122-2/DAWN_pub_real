@@ -26,7 +26,7 @@ import logging
 
 # Mycelial network integration
 try:
-    from mycelial_network import (
+    from core.mycelial_network import (
         get_mycelial_network, register_consciousness_node, 
         distribute_cognitive_energy, propagate_consciousness_information,
         EnergyType, ThreadType
@@ -431,6 +431,13 @@ class BloomManager:
         # Update tag index
         for tag in child.tags:
             self.tag_index[tag].add(child_id)
+        
+        # MYCELIAL NETWORK INTEGRATION
+        if self.mycelial_integration_enabled and self.mycelial_network:
+            self._register_bloom_in_mycelial_network(child)
+            self._create_mycelial_memory_connection(parent_bloom_id, child_id, 
+                                                   connection_strength=0.9)  # Strong parent-child connection
+            self._distribute_rebloom_energy(parent_bloom_id, child_id, semantic_mutation)
         
         # Log rebloom event
         event = RebloomEvent(
@@ -891,6 +898,496 @@ class BloomManager:
                     queue.append((child_id, depth + 1))
         
         return max_depth
+
+    # ==================================================================
+    # MYCELIAL MITOCHONDRIAL NETWORK INTEGRATION METHODS
+    # ==================================================================
+    
+    def _register_bloom_in_mycelial_network(self, bloom: Bloom) -> bool:
+        """Register a bloom as a node in the mycelial network"""
+        
+        if not self.mycelial_integration_enabled or not self.mycelial_network:
+            return False
+        
+        try:
+            # Determine node type based on bloom characteristics
+            if bloom.depth == 0:
+                node_type = "memory_root"
+            elif bloom.depth < 3:
+                node_type = "memory_branch"
+            else:
+                node_type = "memory_leaf"
+            
+            # Calculate energy capacity based on bloom properties
+            base_capacity = 100.0
+            capacity_modifier = (bloom.resonance * 0.5 + bloom.coherence * 0.3 + bloom.heat * 0.2)
+            energy_capacity = base_capacity * capacity_modifier
+            
+            # Calculate optimal position in 3D network space
+            position = self._calculate_bloom_network_position(bloom)
+            
+            # Register node in mycelial network
+            node = self.mycelial_network.register_node(
+                node_id=f"bloom_{bloom.id}",
+                node_type=node_type,
+                position=position,
+                energy_capacity=energy_capacity,
+                metadata={
+                    "bloom_id": bloom.id,
+                    "seed": bloom.seed[:50],  # Truncated for metadata
+                    "depth": bloom.depth,
+                    "entropy": bloom.entropy,
+                    "resonance": bloom.resonance,
+                    "creation_time": bloom.creation_time.isoformat()
+                }
+            )
+            
+            # Update bloom with mycelial node ID
+            bloom.mycelial_node_id = node.node_id
+            
+            # Initialize energy reserves based on bloom characteristics
+            energy_distribution = self._calculate_initial_energy_distribution(bloom)
+            for energy_type, amount in energy_distribution.items():
+                bloom.energy_reserves[energy_type] = amount
+            
+            self.stats['mycelial_nodes_created'] += 1
+            
+            logger.debug(f"🍄🌸 [BLOOM] Registered bloom {bloom.id} as mycelial node {node.node_id}")
+            return True
+            
+        except Exception as e:
+            logger.error(f"🍄🌸 [BLOOM] Failed to register bloom {bloom.id} in mycelial network: {e}")
+            return False
+    
+    def _create_mycelial_memory_connection(self, source_bloom_id: str, target_bloom_id: str, 
+                                         connection_strength: float = 0.5) -> bool:
+        """Create a mycelial thread connection between two memory blooms"""
+        
+        if not self.mycelial_integration_enabled or not self.mycelial_network:
+            return False
+        
+        if source_bloom_id not in self.blooms or target_bloom_id not in self.blooms:
+            return False
+        
+        try:
+            source_bloom = self.blooms[source_bloom_id]
+            target_bloom = self.blooms[target_bloom_id]
+            
+            if not source_bloom.mycelial_node_id or not target_bloom.mycelial_node_id:
+                return False
+            
+            # Determine thread type based on relationship
+            if target_bloom.parent_id == source_bloom_id:
+                thread_type = ThreadType.MEMORY_THREAD  # Parent-child relationship
+            elif self._calculate_semantic_similarity(source_bloom, target_bloom) > 0.7:
+                thread_type = ThreadType.COGNITIVE_THREAD  # Semantic similarity
+            else:
+                thread_type = ThreadType.INFORMATION_THREAD  # General association
+            
+            # Calculate bandwidth based on connection strength and bloom properties
+            bandwidth = connection_strength * 10.0 * min(source_bloom.coherence, target_bloom.coherence)
+            
+            # Create mycelial thread
+            thread = self.mycelial_network.create_thread(
+                source_node=source_bloom.mycelial_node_id,
+                target_node=target_bloom.mycelial_node_id,
+                thread_type=thread_type,
+                strength=connection_strength,
+                bandwidth=bandwidth
+            )
+            
+            if thread:
+                # Update bloom connections
+                source_bloom.mycelial_connections.add(target_bloom_id)
+                target_bloom.mycelial_connections.add(source_bloom_id)
+                
+                # Store association strength
+                self.association_strength[(source_bloom_id, target_bloom_id)] = connection_strength
+                self.association_strength[(target_bloom_id, source_bloom_id)] = connection_strength
+                
+                self.stats['cross_memory_associations'] += 1
+                
+                logger.debug(f"🍄🌸 [BLOOM] Created mycelial connection: {source_bloom_id} <-> {target_bloom_id} (strength: {connection_strength:.2f})")
+                return True
+            
+        except Exception as e:
+            logger.error(f"🍄🌸 [BLOOM] Failed to create mycelial connection between {source_bloom_id} and {target_bloom_id}: {e}")
+        
+        return False
+    
+    def _distribute_rebloom_energy(self, parent_bloom_id: str, child_bloom_id: str, mutation_intensity: float):
+        """Distribute energy from parent to child during rebloom process"""
+        
+        if not self.mycelial_integration_enabled or not self.mycelial_network:
+            return
+        
+        if parent_bloom_id not in self.blooms or child_bloom_id not in self.blooms:
+            return
+        
+        try:
+            parent_bloom = self.blooms[parent_bloom_id]
+            child_bloom = self.blooms[child_bloom_id]
+            
+            if not parent_bloom.mycelial_node_id:
+                return
+            
+            # Calculate energy transfer amounts based on mutation intensity
+            base_transfer = 20.0
+            mutation_bonus = mutation_intensity * 15.0  # Higher mutation = more energy needed
+            total_transfer = base_transfer + mutation_bonus
+            
+            # Distribute different energy types
+            energy_distributions = {
+                EnergyType.MEMORY_ENERGY: total_transfer * 0.5,    # 50% for memory formation
+                EnergyType.CREATIVE_ENERGY: total_transfer * 0.3,  # 30% for creative mutation
+                EnergyType.COGNITIVE_ENERGY: total_transfer * 0.2  # 20% for processing
+            }
+            
+            for energy_type, amount in energy_distributions.items():
+                if parent_bloom.energy_reserves.get(energy_type.value, 0) >= amount:
+                    # Transfer energy through mycelial network
+                    distributed = self.mycelial_network.distribute_energy(
+                        source_node=parent_bloom.mycelial_node_id,
+                        energy_type=energy_type,
+                        amount=amount,
+                        target_nodes=[child_bloom.mycelial_node_id] if child_bloom.mycelial_node_id else None,
+                        priority=8  # High priority for rebloom energy
+                    )
+                    
+                    if distributed:
+                        # Update bloom energy reserves
+                        parent_bloom.energy_reserves[energy_type.value] -= amount
+                        child_bloom.energy_reserves[energy_type.value] = child_bloom.energy_reserves.get(energy_type.value, 0) + amount
+                        
+                        self.stats['energy_distributions'] += 1
+            
+            logger.debug(f"🍄🌸 [BLOOM] Distributed rebloom energy from {parent_bloom_id} to {child_bloom_id}")
+            
+        except Exception as e:
+            logger.error(f"🍄🌸 [BLOOM] Failed to distribute rebloom energy: {e}")
+    
+    def propagate_memory_activation(self, bloom_id: str, activation_data: Dict[str, Any]) -> List[str]:
+        """Propagate memory activation through mycelial pathways"""
+        
+        if not self.mycelial_integration_enabled or not self.mycelial_network:
+            return []
+        
+        if bloom_id not in self.blooms:
+            return []
+        
+        bloom = self.blooms[bloom_id]
+        if not bloom.mycelial_node_id:
+            return []
+        
+        try:
+            # Prepare activation information
+            activation_info = {
+                "type": "memory_activation",
+                "source_bloom": bloom_id,
+                "activation_data": activation_data,
+                "timestamp": datetime.now().isoformat(),
+                "propagation_strength": bloom.resonance,
+                "semantic_vector": bloom.semantic_vector[:10],  # Truncated for efficiency
+                "tags": list(bloom.tags)
+            }
+            
+            # Propagate through mycelial network
+            propagated_nodes = self.mycelial_network.propagate_information(
+                source_node=bloom.mycelial_node_id,
+                information=activation_info,
+                propagation_depth=3  # Propagate up to 3 hops
+            )
+            
+            # Convert node IDs back to bloom IDs
+            activated_blooms = []
+            for node_id in propagated_nodes:
+                if node_id.startswith("bloom_"):
+                    activated_bloom_id = node_id[6:]  # Remove "bloom_" prefix
+                    if activated_bloom_id in self.blooms:
+                        activated_blooms.append(activated_bloom_id)
+                        # Update bloom activation
+                        self.blooms[activated_bloom_id].network_resonance += 0.1
+            
+            logger.debug(f"🍄🌸 [BLOOM] Propagated activation from {bloom_id} to {len(activated_blooms)} blooms")
+            return activated_blooms
+            
+        except Exception as e:
+            logger.error(f"🍄🌸 [BLOOM] Failed to propagate memory activation from {bloom_id}: {e}")
+            return []
+    
+    def crystallize_memory_cluster(self, cluster_blooms: List[str]) -> Optional[str]:
+        """Crystallize a cluster of related memories through mycelial reinforcement"""
+        
+        if not self.mycelial_integration_enabled or not self.mycelial_network:
+            return None
+        
+        if len(cluster_blooms) < 2:
+            return None
+        
+        try:
+            cluster_id = f"cluster_{int(datetime.now().timestamp())}"
+            
+            # Add all blooms to cluster
+            for bloom_id in cluster_blooms:
+                if bloom_id in self.blooms:
+                    self.memory_clusters[cluster_id].add(bloom_id)
+            
+            # Create stronger connections between cluster members
+            for i, bloom_id1 in enumerate(cluster_blooms):
+                for bloom_id2 in cluster_blooms[i+1:]:
+                    if bloom_id1 in self.blooms and bloom_id2 in self.blooms:
+                        # Strengthen existing connection or create new one
+                        current_strength = self.association_strength.get((bloom_id1, bloom_id2), 0.0)
+                        new_strength = min(1.0, current_strength + 0.3)  # Boost strength
+                        
+                        self._create_mycelial_memory_connection(bloom_id1, bloom_id2, new_strength)
+                        
+                        # Increase crystallization levels
+                        self.blooms[bloom_id1].memory_crystallization += 0.1
+                        self.blooms[bloom_id2].memory_crystallization += 0.1
+            
+            # Distribute crystallization energy throughout cluster
+            total_energy = sum(
+                sum(self.blooms[bloom_id].energy_reserves.values()) 
+                for bloom_id in cluster_blooms 
+                if bloom_id in self.blooms
+            )
+            
+            cluster_energy_per_bloom = total_energy * 0.1 / len(cluster_blooms)  # 10% energy bonus
+            
+            for bloom_id in cluster_blooms:
+                if bloom_id in self.blooms:
+                    bloom = self.blooms[bloom_id]
+                    if bloom.mycelial_node_id:
+                        self.mycelial_network.distribute_energy(
+                            source_node="consciousness_core",  # Energy from core consciousness
+                            energy_type=EnergyType.MEMORY_ENERGY,
+                            amount=cluster_energy_per_bloom,
+                            target_nodes=[bloom.mycelial_node_id],
+                            priority=7  # High priority for crystallization
+                        )
+            
+            self.stats['memory_crystallizations'] += 1
+            
+            logger.info(f"🍄🌸 [BLOOM] Crystallized memory cluster {cluster_id} with {len(cluster_blooms)} blooms")
+            return cluster_id
+            
+        except Exception as e:
+            logger.error(f"🍄🌸 [BLOOM] Failed to crystallize memory cluster: {e}")
+            return None
+    
+    def optimize_mycelial_memory_network(self) -> Dict[str, Any]:
+        """Optimize the mycelial memory network connections and energy flows"""
+        
+        if not self.mycelial_integration_enabled or not self.mycelial_network:
+            return {}
+        
+        try:
+            optimization_start = datetime.now()
+            
+            # Trigger network-wide optimization
+            network_optimizations = self.mycelial_network.optimize_topology()
+            
+            # Memory-specific optimizations
+            memory_optimizations = {
+                "weak_associations_strengthened": 0,
+                "redundant_connections_pruned": 0,
+                "energy_rebalanced": 0,
+                "clusters_optimized": 0
+            }
+            
+            # Strengthen frequently accessed memory pathways
+            for bloom_id, bloom in self.blooms.items():
+                if bloom.access_count > 10 and bloom.mycelial_node_id:
+                    # Strengthen connections to frequently accessed memories
+                    for connected_bloom_id in bloom.mycelial_connections:
+                        if connected_bloom_id in self.blooms:
+                            current_strength = self.association_strength.get((bloom_id, connected_bloom_id), 0.5)
+                            new_strength = min(1.0, current_strength + 0.05)
+                            
+                            if new_strength > current_strength:
+                                self._create_mycelial_memory_connection(bloom_id, connected_bloom_id, new_strength)
+                                memory_optimizations["weak_associations_strengthened"] += 1
+            
+            # Prune very weak connections
+            weak_connections = [
+                (b1, b2) for (b1, b2), strength in self.association_strength.items()
+                if strength < 0.1
+            ]
+            
+            for bloom_id1, bloom_id2 in weak_connections[:10]:  # Limit pruning per optimization
+                if bloom_id1 in self.blooms and bloom_id2 in self.blooms:
+                    self.blooms[bloom_id1].mycelial_connections.discard(bloom_id2)
+                    self.blooms[bloom_id2].mycelial_connections.discard(bloom_id1)
+                    del self.association_strength[(bloom_id1, bloom_id2)]
+                    if (bloom_id2, bloom_id1) in self.association_strength:
+                        del self.association_strength[(bloom_id2, bloom_id1)]
+                    memory_optimizations["redundant_connections_pruned"] += 1
+            
+            # Rebalance energy in memory clusters
+            for cluster_id, cluster_blooms in self.memory_clusters.items():
+                if len(cluster_blooms) > 1:
+                    self._rebalance_cluster_energy(cluster_blooms)
+                    memory_optimizations["clusters_optimized"] += 1
+            
+            # Update network health score
+            health_assessment = self.mycelial_network.monitor_health()
+            self.stats['network_health_score'] = health_assessment['overall_health']
+            
+            self.last_network_optimization = optimization_start
+            
+            optimization_results = {
+                "network_optimizations": network_optimizations,
+                "memory_optimizations": memory_optimizations,
+                "optimization_time": (datetime.now() - optimization_start).total_seconds(),
+                "network_health": health_assessment['overall_health']
+            }
+            
+            logger.info(f"🍄🌸 [BLOOM] Mycelial memory network optimized: {optimization_results}")
+            return optimization_results
+            
+        except Exception as e:
+            logger.error(f"🍄🌸 [BLOOM] Failed to optimize mycelial memory network: {e}")
+            return {}
+    
+    def get_mycelial_memory_state(self) -> Dict[str, Any]:
+        """Get comprehensive state of mycelial memory integration"""
+        
+        if not self.mycelial_integration_enabled:
+            return {"integration_enabled": False}
+        
+        try:
+            network_state = self.mycelial_network.get_network_state() if self.mycelial_network else {}
+            
+            # Calculate memory-specific metrics
+            connected_blooms = sum(1 for b in self.blooms.values() if b.mycelial_node_id)
+            total_connections = sum(len(b.mycelial_connections) for b in self.blooms.values())
+            average_crystallization = np.mean([b.memory_crystallization for b in self.blooms.values()]) if self.blooms else 0.0
+            average_network_resonance = np.mean([b.network_resonance for b in self.blooms.values()]) if self.blooms else 0.0
+            
+            # Energy distribution analysis
+            total_memory_energy = sum(
+                b.energy_reserves.get("MEMORY_ENERGY", 0) for b in self.blooms.values()
+            )
+            total_creative_energy = sum(
+                b.energy_reserves.get("CREATIVE_ENERGY", 0) for b in self.blooms.values()
+            )
+            total_cognitive_energy = sum(
+                b.energy_reserves.get("COGNITIVE_ENERGY", 0) for b in self.blooms.values()
+            )
+            
+            return {
+                "integration_enabled": True,
+                "network_state": network_state,
+                "memory_integration": {
+                    "connected_blooms": connected_blooms,
+                    "total_blooms": len(self.blooms),
+                    "connection_ratio": connected_blooms / len(self.blooms) if self.blooms else 0.0,
+                    "total_mycelial_connections": total_connections,
+                    "memory_clusters": len(self.memory_clusters),
+                    "association_strengths": len(self.association_strength),
+                    "average_crystallization": average_crystallization,
+                    "average_network_resonance": average_network_resonance
+                },
+                "energy_distribution": {
+                    "total_memory_energy": total_memory_energy,
+                    "total_creative_energy": total_creative_energy,
+                    "total_cognitive_energy": total_cognitive_energy,
+                    "energy_balance": {
+                        "memory": total_memory_energy / (total_memory_energy + total_creative_energy + total_cognitive_energy) if (total_memory_energy + total_creative_energy + total_cognitive_energy) > 0 else 0,
+                        "creative": total_creative_energy / (total_memory_energy + total_creative_energy + total_cognitive_energy) if (total_memory_energy + total_creative_energy + total_cognitive_energy) > 0 else 0,
+                        "cognitive": total_cognitive_energy / (total_memory_energy + total_creative_energy + total_cognitive_energy) if (total_memory_energy + total_creative_energy + total_cognitive_energy) > 0 else 0
+                    }
+                },
+                "integration_stats": {
+                    key: value for key, value in self.stats.items()
+                    if key.startswith(('mycelial_', 'energy_', 'cross_memory_', 'memory_', 'network_'))
+                }
+            }
+            
+        except Exception as e:
+            logger.error(f"🍄🌸 [BLOOM] Failed to get mycelial memory state: {e}")
+            return {"integration_enabled": True, "error": str(e)}
+    
+    # Helper methods for mycelial integration
+    
+    def _calculate_bloom_network_position(self, bloom: Bloom) -> Tuple[float, float, float]:
+        """Calculate optimal 3D position for bloom in mycelial network"""
+        
+        # Base position on bloom depth and semantic properties
+        depth_factor = bloom.depth * 0.1  # Deeper blooms further from center
+        entropy_factor = (bloom.entropy - 0.5) * 2.0  # Entropy affects spread
+        coherence_factor = bloom.coherence * 0.5  # Coherence affects clustering
+        
+        # Create position with some structure but allow variation
+        x = depth_factor + entropy_factor * 0.3 + (hash(bloom.id) % 100 - 50) / 100.0
+        y = coherence_factor + bloom.heat * 0.2 + (hash(bloom.seed) % 100 - 50) / 100.0
+        z = bloom.complexity + bloom.resonance * 0.1 + (hash(bloom.creation_time.isoformat()) % 100 - 50) / 100.0
+        
+        return (x, y, z)
+    
+    def _calculate_initial_energy_distribution(self, bloom: Bloom) -> Dict[str, float]:
+        """Calculate initial energy distribution for a bloom"""
+        
+        base_energy = 50.0
+        
+        # Adjust energy based on bloom characteristics
+        memory_energy = base_energy * (0.4 + bloom.resonance * 0.3)
+        creative_energy = base_energy * (0.3 + bloom.heat * 0.2)
+        cognitive_energy = base_energy * (0.3 + bloom.coherence * 0.2)
+        
+        return {
+            "MEMORY_ENERGY": memory_energy,
+            "CREATIVE_ENERGY": creative_energy,
+            "COGNITIVE_ENERGY": cognitive_energy
+        }
+    
+    def _calculate_semantic_similarity(self, bloom1: Bloom, bloom2: Bloom) -> float:
+        """Calculate semantic similarity between two blooms"""
+        
+        # Simple cosine similarity between semantic vectors
+        vec1 = np.array(bloom1.semantic_vector)
+        vec2 = np.array(bloom2.semantic_vector)
+        
+        if np.linalg.norm(vec1) == 0 or np.linalg.norm(vec2) == 0:
+            return 0.0
+        
+        similarity = np.dot(vec1, vec2) / (np.linalg.norm(vec1) * np.linalg.norm(vec2))
+        return max(0.0, min(1.0, similarity))
+    
+    def _rebalance_cluster_energy(self, cluster_blooms: Set[str]):
+        """Rebalance energy within a memory cluster"""
+        
+        if not cluster_blooms:
+            return
+        
+        # Calculate total energy in cluster
+        total_energies = {"MEMORY_ENERGY": 0.0, "CREATIVE_ENERGY": 0.0, "COGNITIVE_ENERGY": 0.0}
+        
+        valid_blooms = []
+        for bloom_id in cluster_blooms:
+            if bloom_id in self.blooms:
+                bloom = self.blooms[bloom_id]
+                valid_blooms.append(bloom)
+                for energy_type in total_energies:
+                    total_energies[energy_type] += bloom.energy_reserves.get(energy_type, 0.0)
+        
+        if not valid_blooms:
+            return
+        
+        # Calculate target energy per bloom
+        target_per_bloom = {
+            energy_type: total / len(valid_blooms)
+            for energy_type, total in total_energies.items()
+        }
+        
+        # Redistribute energy towards target
+        for bloom in valid_blooms:
+            for energy_type, target in target_per_bloom.items():
+                current = bloom.energy_reserves.get(energy_type, 0.0)
+                if current < target * 0.8:  # If significantly below target
+                    needed = (target - current) * 0.1  # Gradual redistribution
+                    bloom.energy_reserves[energy_type] = current + needed
 
 
 # Integration with DAWN Codex Engine

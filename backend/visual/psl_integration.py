@@ -36,7 +36,7 @@ import signal
 import atexit
 
 try:
-    from .gif_saver import setup_gif_saver
+    from ...gif_saver import setup_gif_saver
 except ImportError:
     from gif_saver import setup_gif_saver
 

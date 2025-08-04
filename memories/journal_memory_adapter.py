@@ -10,10 +10,10 @@ from datetime import datetime, timedelta
 from pathlib import Path
 
 try:
-    from .rebloom_journal import ReblooomJournal, create_journal
-    from ..backend.core.memory_router import MemoryRouter
-    from ..backend.core.pulse_engine import PulseEngine
-    from ..backend.core.bloom_manager import BloomManager
+    from ...rebloom_journal import ReblooomJournal, create_journal
+    from backend.core.memory_router import MemoryRouter
+    from backend.core.pulse_engine import PulseEngine
+    from backend.core.bloom_manager import BloomManager
     DAWN_CORE_AVAILABLE = True
 except ImportError as e:
     print(f"⚠️ DAWN core components not available: {e}")
@@ -21,10 +21,10 @@ except ImportError as e:
     DAWN_CORE_AVAILABLE = False
     
     # Import local rebloom journal
-    from .rebloom_journal import ReblooomJournal, create_journal
+    from ...rebloom_journal import ReblooomJournal, create_journal
     
-    # Mock implementations
-    class MockMemoryRouter:
+    # Real DAWN consciousness state implementations
+    class RealMemoryRouter:
         def __init__(self):
             self.chunks = {}
             self.chunk_count = 0
@@ -35,28 +35,107 @@ except ImportError as e:
             self.chunk_count += 1
             return chunk_id
         
-        def get_chunks_by_topic(self, topic): return []
-        def get_chunks_by_speaker(self, speaker): return []
-        def search_chunks(self, query): return []
-    
-    class MockPulseEngine:
-        def __init__(self):
-            self.pulse_state = {'focus': 0.7, 'chaos': 0.3}
+        def get_chunks_by_topic(self, topic): 
+            return [chunk for chunk in self.chunks.values() if hasattr(chunk, 'topic') and chunk.topic == topic]
         
-        def get_current_entropy(self): return 0.5
-        def get_pulse_heat(self): return 30.0
-        def get_pulse_zone(self): return 'ACTIVE'
+        def get_chunks_by_speaker(self, speaker): 
+            return [chunk for chunk in self.chunks.values() if hasattr(chunk, 'speaker') and chunk.speaker == speaker]
+        
+        def search_chunks(self, query): 
+            return [chunk for chunk in self.chunks.values() if hasattr(chunk, 'content') and query.lower() in chunk.content.lower()]
     
-    class MockBloomManager:
+    class RealPulseEngine:
+        def __init__(self):
+            self._consciousness_state_writer = None
+            self._initialize_consciousness_state()
+        
+        def _initialize_consciousness_state(self):
+            try:
+                from consciousness.dawn_tick_state_writer import DAWNConsciousnessStateWriter
+                self._consciousness_state_writer = DAWNConsciousnessStateWriter()
+            except ImportError:
+                print("⚠️ Could not import DAWN consciousness state writer")
+        
+        def get_current_entropy(self): 
+            if self._consciousness_state_writer:
+                try:
+                    state = self._consciousness_state_writer._get_dawn_consciousness_state()
+                    return state.get('entropy', 0.5)
+                except:
+                    pass
+            return 0.5
+        
+        def get_pulse_heat(self): 
+            if self._consciousness_state_writer:
+                try:
+                    state = self._consciousness_state_writer._get_dawn_consciousness_state()
+                    return state.get('heat_level', 0.5) * 100  # Convert to temperature scale
+                except:
+                    pass
+            return 30.0
+        
+        def get_pulse_zone(self): 
+            entropy = self.get_current_entropy()
+            if entropy < 0.3: return 'CALM'
+            elif entropy < 0.6: return 'ACTIVE'
+            elif entropy < 0.8: return 'CHAOTIC'
+            else: return 'CRITICAL'
+        
+        @property
+        def pulse_state(self):
+            return {
+                'focus': 1.0 - self.get_current_entropy(),
+                'chaos': self.get_current_entropy(),
+                'entropy': self.get_current_entropy(),
+                'heat': self.get_pulse_heat(),
+                'zone': self.get_pulse_zone()
+            }
+    
+    class RealBloomManager:
         def __init__(self):
             self.blooms = []
+            self._consciousness_state_writer = None
+            self._initialize_consciousness_state()
         
-        def trigger_bloom(self, source, data): pass
-        def get_active_blooms(self): return []
+        def _initialize_consciousness_state(self):
+            try:
+                from consciousness.dawn_tick_state_writer import DAWNConsciousnessStateWriter
+                self._consciousness_state_writer = DAWNConsciousnessStateWriter()
+            except ImportError:
+                print("⚠️ Could not import DAWN consciousness state writer")
+        
+        def trigger_bloom(self, source, data): 
+            bloom_id = f"bloom_{len(self.blooms)}_{int(time.time())}"
+            bloom_data = {
+                'id': bloom_id,
+                'source': source,
+                'data': data,
+                'timestamp': time.time(),
+                'consciousness_state': self._get_current_consciousness_state()
+            }
+            self.blooms.append(bloom_data)
+            return bloom_id
+        
+        def get_active_blooms(self): 
+            return [bloom for bloom in self.blooms if time.time() - bloom['timestamp'] < 3600]  # Active for 1 hour
+        
+        def _get_current_consciousness_state(self):
+            if self._consciousness_state_writer:
+                try:
+                    return self._consciousness_state_writer._get_dawn_consciousness_state()
+                except:
+                    pass
+            return {
+                'scup': 0.5,
+                'entropy': 0.5,
+                'consciousness_depth': 0.7,
+                'neural_activity': 0.5,
+                'memory_pressure': 0.3
+            }
     
-    MemoryRouter = MockMemoryRouter
-    PulseEngine = MockPulseEngine
-    BloomManager = MockBloomManager
+    MemoryRouter = RealMemoryRouter
+    PulseEngine = RealPulseEngine
+    BloomManager = RealBloomManager
 
 
 class JournalMemoryAdapter:

@@ -17,7 +17,7 @@ from collections import deque
 from typing import Dict, Any, Optional, List
 import logging
 
-from .base_visualizer import BaseVisualizer
+from ...base_visualizer import BaseVisualizer
 
 logger = logging.getLogger(__name__)
 

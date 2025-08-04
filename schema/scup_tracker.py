@@ -13,7 +13,7 @@ from statistics import mean, stdev
 import re
 import json
 
-from .scup_math import (
+from ...scup_math import (
     SCUPInputs, SCUPOutputs, compute_basic_scup, compute_enhanced_scup,
     compute_recovery_scup, compute_legacy_scup, classify_zone
 )

@@ -184,7 +184,7 @@ def integrate_with_tick_loop(tick_data: Dict[str, Any], tick_context: Any = None
     Add this call to your tick_loop.py after .mmap is written:
     
     ```python
-    from tick_integration import integrate_with_tick_loop
+    from .tick_integration import integrate_with_tick_loop
     
     # After .mmap write, before tick end:
     cognition_result = integrate_with_tick_loop(state)
@@ -200,7 +200,7 @@ def setup_gui_integration(window_emit_callback: Callable):
     Call this during initialization to enable window.emit() functionality:
     
     ```python
-    from tick_integration import setup_gui_integration
+    from .tick_integration import setup_gui_integration
     
     def emit_to_gui(event_type, data):
         # Your Tauri/GUI emission logic
@@ -230,7 +230,7 @@ def example_tick_loop_integration():
     print("\n1. Simple Integration Pattern:")
     print("""
 # In your tick_loop.py, after .mmap is written:
-from tick_integration import integrate_with_tick_loop
+from .tick_integration import integrate_with_tick_loop
 
 async def _execute_tick(self):
     # ... existing tick processing ...
@@ -254,7 +254,7 @@ async def _execute_tick(self):
     print("\n2. Advanced Integration with GUI Events:")
     print("""
 # Setup during initialization:
-from tick_integration import setup_gui_integration
+from .tick_integration import setup_gui_integration
 
 def emit_to_tauri(event_type, data):
     # Your Tauri integration
@@ -277,7 +277,7 @@ cognition_result = integrate_with_tick_loop(current_state)
     print("\n3. Performance Monitoring Pattern:")
     print("""
 # Monitor integration performance:
-from tick_integration import get_tick_bridge
+from .tick_integration import get_tick_bridge
 
 bridge = get_tick_bridge()
 stats = bridge.get_integration_stats()

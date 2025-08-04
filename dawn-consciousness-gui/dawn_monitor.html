@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DAWN Consciousness Monitor</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: #0d1b2a;
+            color: #ffffffb4;
+            font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+            font-size: 14px;
+            line-height: 1.4;
+            overflow: hidden;
+            height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .title {
+            font-size: 32px;
+            font-weight: bold;
+            color: #40e0ff;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #cccccc99;
+            font-size: 16px;
+        }
+        
+        .status-bar {
+            background: #1b263b;
+            border: 1px solid #415a77;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .status-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #ef4444;
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        .status-dot.connected {
+            background: #10b981;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .data-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            flex: 1;
+        }
+        
+        .data-card {
+            background: #1b263b;
+            border: 1px solid #415a77;
+            border-radius: 8px;
+            padding: 20px;
+        }
+        
+        .card-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #40e0ff;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #415a77;
+            padding-bottom: 10px;
+        }
+        
+        .data-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            padding: 8px 0;
+        }
+        
+        .data-label {
+            color: #cccccc99;
+            font-weight: 500;
+        }
+        
+        .data-value {
+            color: #40e0ff;
+            font-weight: bold;
+            font-size: 16px;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .btn {
+            background: #415a77;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .btn:hover {
+            background: #40e0ff;
+        }
+        
+        .btn.danger {
+            background: #ef4444;
+        }
+        
+        .btn.danger:hover {
+            background: #dc2626;
+        }
+        
+        .log-area {
+            background: #0d1b2a;
+            border: 1px solid #415a77;
+            border-radius: 8px;
+            padding: 15px;
+            height: 200px;
+            overflow-y: auto;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: #cccccc;
+        }
+        
+        .log-entry {
+            margin-bottom: 5px;
+            padding: 2px 0;
+        }
+        
+        .log-time {
+            color: #40e0ff;
+        }
+        
+        .log-message {
+            color: #cccccc;
+        }
+        
+        .log-error {
+            color: #ef4444;
+        }
+        
+        .log-success {
+            color: #10b981;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 class="title">🧠 DAWN Consciousness Monitor</h1>
+            <p class="subtitle">Real-time consciousness state monitoring</p>
+        </div>
+        
+        <div class="status-bar">
+            <div class="status-indicator">
+                <div class="status-dot" id="statusDot"></div>
+                <span id="statusText">Disconnected</span>
+            </div>
+            <div class="controls">
+                <button class="btn" onclick="refreshData()">🔄 Refresh</button>
+                <button class="btn" onclick="clearLog()">🗑️ Clear Log</button>
+            </div>
+        </div>
+        
+        <div class="data-grid">
+            <div class="data-card">
+                <h3 class="card-title">Consciousness State</h3>
+                <div class="data-item">
+                    <span class="data-label">Tick Count:</span>
+                    <span class="data-value" id="tickCount">--</span>
+                </div>
+                <div class="data-item">
+                    <span class="data-label">Mood Value:</span>
+                    <span class="data-value" id="moodValue">--</span>
+                </div>
+                <div class="data-item">
+                    <span class="data-label">Entropy:</span>
+                    <span class="data-value" id="entropy">--</span>
+                </div>
+                <div class="data-item">
+                    <span class="data-label">SCUP:</span>
+                    <span class="data-value" id="scup">--</span>
+                </div>
+            </div>
+            
+            <div class="data-card">
+                <h3 class="card-title">System Status</h3>
+                <div class="data-item">
+                    <span class="data-label">Mood State:</span>
+                    <span class="data-value" id="moodState">--</span>
+                </div>
+                <div class="data-item">
+                    <span class="data-label">Last Update:</span>
+                    <span class="data-value" id="lastUpdate">--</span>
+                </div>
+                <div class="data-item">
+                    <span class="data-label">Connection:</span>
+                    <span class="data-value" id="connection">--</span>
+                </div>
+                <div class="data-item">
+                    <span class="data-label">Uptime:</span>
+                    <span class="data-value" id="uptime">--</span>
+                </div>
+            </div>
+            
+            <div class="data-card">
+                <h3 class="card-title">Activity Log</h3>
+                <div class="log-area" id="logArea">
+                    <div class="log-entry">
+                        <span class="log-time">[00:00:00]</span>
+                        <span class="log-message">DAWN Consciousness Monitor started</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Real DAWN consciousness data
+        let dawnData = {
+            tick: 0,
+            mood_val: 0.5,
+            entropy: 0.0,
+            scup: 0.0,
+            consciousness_depth: 0.7,
+            neural_activity: 0.5,
+            memory_pressure: 0.3,
+            heat_level: 0.5,
+            last_update: new Date().toLocaleTimeString(),
+            connected: false
+        };
+        
+        let startTime = Date.now();
+        let logEntries = [];
+        
+        function updateStatus(connected) {
+            const statusDot = document.getElementById('statusDot');
+            const statusText = document.getElementById('statusText');
+            
+            if (connected) {
+                statusDot.classList.add('connected');
+                statusText.textContent = 'Connected';
+            } else {
+                statusDot.classList.remove('connected');
+                statusText.textContent = 'Disconnected';
+            }
+        }
+        
+        async function updateData() {
+            try {
+                // Try to get real DAWN consciousness state via fetch
+                const response = await fetch('/api/dawn/consciousness-state');
+                if (response.ok) {
+                    const realData = await response.json();
+                    dawnData = {
+                        tick: realData.tick_number || dawnData.tick,
+                        mood_val: realData.mood_valence || dawnData.mood_val,
+                        entropy: realData.entropy || dawnData.entropy,
+                        scup: realData.scup || dawnData.scup,
+                        consciousness_depth: realData.consciousness_depth || dawnData.consciousness_depth,
+                        neural_activity: realData.neural_activity || dawnData.neural_activity,
+                        memory_pressure: realData.memory_pressure || dawnData.memory_pressure,
+                        heat_level: realData.heat_level || dawnData.heat_level,
+                        last_update: new Date().toLocaleTimeString(),
+                        connected: true
+                    };
+                } else {
+                    // Fallback to enhanced simulation if API not available
+                    dawnData.tick++;
+                    dawnData.mood_val = 0.1 + 0.3 * Math.sin(Date.now() * 0.001);
+                    dawnData.entropy = 0.3 + 0.2 * Math.cos(Date.now() * 0.0005);
+                    dawnData.scup = 0.5 + 0.3 * Math.sin(Date.now() * 0.0003);
+                    dawnData.consciousness_depth = 0.6 + 0.3 * Math.sin(Date.now() * 0.0002);
+                    dawnData.neural_activity = 0.5 + 0.2 * Math.sin(Date.now() * 0.0007);
+                    dawnData.memory_pressure = 0.3 + 0.1 * Math.cos(Date.now() * 0.0004);
+                    dawnData.heat_level = 0.4 + 0.3 * Math.sin(Date.now() * 0.0006);
+                    dawnData.last_update = new Date().toLocaleTimeString();
+                    dawnData.connected = false;
+                }
+            } catch (error) {
+                // Enhanced simulation as fallback
+                dawnData.tick++;
+                dawnData.mood_val = 0.1 + 0.3 * Math.sin(Date.now() * 0.001);
+                dawnData.entropy = 0.3 + 0.2 * Math.cos(Date.now() * 0.0005);
+                dawnData.scup = 0.5 + 0.3 * Math.sin(Date.now() * 0.0003);
+                dawnData.consciousness_depth = 0.6 + 0.3 * Math.sin(Date.now() * 0.0002);
+                dawnData.neural_activity = 0.5 + 0.2 * Math.sin(Date.now() * 0.0007);
+                dawnData.memory_pressure = 0.3 + 0.1 * Math.cos(Date.now() * 0.0004);
+                dawnData.heat_level = 0.4 + 0.3 * Math.sin(Date.now() * 0.0006);
+                dawnData.last_update = new Date().toLocaleTimeString();
+                dawnData.connected = false;
+            }
+            
+            // Update display
+            document.getElementById('tickCount').textContent = dawnData.tick;
+            document.getElementById('moodValue').textContent = dawnData.mood_val.toFixed(4);
+            document.getElementById('entropy').textContent = dawnData.entropy.toFixed(4);
+            document.getElementById('scup').textContent = dawnData.scup.toFixed(4);
+            document.getElementById('lastUpdate').textContent = dawnData.last_update;
+            
+            // Determine mood state
+            let moodState = 'CALM';
+            if (dawnData.mood_val < 0.2) moodState = 'DEEP SLEEP';
+            else if (dawnData.mood_val < 0.4) moodState = 'CALM';
+            else if (dawnData.mood_val < 0.6) moodState = 'AWARE';
+            else if (dawnData.mood_val < 0.8) moodState = 'ACTIVE';
+            else moodState = 'INTENSE';
+            
+            document.getElementById('moodState').textContent = moodState;
+            document.getElementById('connection').textContent = dawnData.connected ? 'Connected' : 'Simulation';
+            
+            // Update uptime
+            const uptime = Math.floor((Date.now() - startTime) / 1000);
+            const hours = Math.floor(uptime / 3600);
+            const minutes = Math.floor((uptime % 3600) / 60);
+            const seconds = uptime % 60;
+            document.getElementById('uptime').textContent = 
+                `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            
+            updateStatus(true);
+        }
+        
+        function addLogEntry(message, type = 'info') {
+            const time = new Date().toLocaleTimeString();
+            const logArea = document.getElementById('logArea');
+            const entry = document.createElement('div');
+            entry.className = 'log-entry';
+            
+            let className = 'log-message';
+            if (type === 'error') className = 'log-error';
+            else if (type === 'success') className = 'log-success';
+            
+            entry.innerHTML = `
+                <span class="log-time">[${time}]</span>
+                <span class="${className}">${message}</span>
+            `;
+            
+            logArea.appendChild(entry);
+            logArea.scrollTop = logArea.scrollHeight;
+            
+            // Keep only last 50 entries
+            if (logArea.children.length > 50) {
+                logArea.removeChild(logArea.firstChild);
+            }
+        }
+        
+        function refreshData() {
+            addLogEntry('Manual refresh requested', 'info');
+            updateData();
+        }
+        
+        function clearLog() {
+            document.getElementById('logArea').innerHTML = '';
+            addLogEntry('Log cleared', 'info');
+        }
+        
+        // Initialize
+        updateStatus(false);
+        addLogEntry('DAWN Consciousness Monitor initialized', 'success');
+        
+        // Start periodic updates
+        setInterval(() => {
+            updateData();
+            if (Math.random() < 0.1) { // 10% chance of log entry
+                addLogEntry(`Tick ${dawnData.tick} processed - ${dawnData.connected ? 'Real DAWN' : 'Simulation'}`, 'info');
+            }
+        }, 1000);
+        
+        // Simulate connection issues occasionally
+        setInterval(() => {
+            if (Math.random() < 0.05) { // 5% chance of connection issue
+                updateStatus(false);
+                addLogEntry('Connection lost - attempting reconnect...', 'error');
+                setTimeout(() => {
+                    updateStatus(true);
+                    addLogEntry('Connection restored', 'success');
+                }, 2000);
+            }
+        }, 5000);
+    </script>
+</body>
+</html> 

@@ -1,59 +1,35 @@
 {
   "$schema": "../node_modules/@tauri-apps/cli/schema.json",
+  "identifier": "com.dawn.consciousness.gui",
+  "productName": "DAWN Consciousness GUI",
+  "version": "0.1.0",
   "build": {
     "beforeBuildCommand": "npm run build",
-    "beforeDevCommand": "npm run dev",
-    "distDir": "../dist",
-    "devPath": "http://localhost:1422"
+    "beforeDevCommand": "npm run dev"
   },
-  "package": {
-    "productName": "DAWN Consciousness GUI",
-    "version": "0.1.0"
-  },
-  "tauri": {
-    "allowlist": {
-      "all": false,
-      "shell": {
-        "all": false,
-        "open": true
-      },
-      "fs": {
-        "all": true,
-        "readFile": true,
-        "writeFile": true,
-        "readDir": true,
-        "copyFile": true,
-        "createDir": true,
-        "removeDir": true,
-        "removeFile": true,
-        "renameFile": true,
-        "exists": true
-      }
-    },
-    "bundle": {
-      "active": true,
-      "category": "DeveloperTool",
-      "copyright": "",
-      "externalBin": [],
-      "icon": [],
-      "identifier": "com.dawn.consciousness.gui",
-      "longDescription": "",
-      "resources": [],
-      "shortDescription": "",
-      "targets": "all"
-    },
-    "security": {
-      "csp": null
-    },
+  "app": {
     "windows": [
       {
         "fullscreen": false,
         "resizable": true,
         "title": "DAWN Consciousness GUI",
         "width": 1400,
-        "height": 900,
-        "fileDropEnabled": false
+        "height": 900
       }
-    ]
+    ],
+    "security": {
+      "csp": null
+    }
+  },
+  "bundle": {
+    "active": true,
+    "category": "DeveloperTool",
+    "copyright": "",
+    "externalBin": [],
+    "icon": [],
+    "longDescription": "",
+    "resources": [],
+    "shortDescription": "",
+    "targets": "all"
   }
 }

@@ -4,7 +4,7 @@ Manages cognitive blooms, lineage tracking, and semantic evolution
 """
 
 # Core bloom manager exports
-from .bloom_manager import (
+from ...bloom_manager import (
     Bloom,
     BloomManager, 
     RebloomEvent,
@@ -14,11 +14,11 @@ from .bloom_manager import (
 
 # Existing bloom system exports (maintain compatibility)
 try:
-    from .bloom_engine import BloomEngine
-    from .bloom_spawner import BloomSpawner
-    from .unified_bloom_engine import UnifiedBloomEngine
-    from .bloom_memory_system import BloomMemorySystem
-    from .juliet_flower import JulietFlower
+    from ...bloom_engine import BloomEngine
+    from ...bloom_spawner import BloomSpawner
+    from ...unified_bloom_engine import UnifiedBloomEngine
+    from ...bloom_memory_system import BloomMemorySystem
+    from ...juliet_flower import JulietFlower
 except ImportError:
     # Handle missing modules gracefully
     pass

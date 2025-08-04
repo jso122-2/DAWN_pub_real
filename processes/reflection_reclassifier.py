@@ -38,11 +38,11 @@ class ReflectionClassifier:
         
         # State extraction patterns
         self.state_patterns = {
-            'entropy': r'entropy.{0,10}(\d+\.?\d*)',
-            'depth': r'depth.{0,10}(\d+\.?\d*)',
-            'heat': r'heat.{0,10}(\d+\.?\d*)',
-            'scup': r'scup.{0,10}(\d+\.?\d*)%?',
-            'coherence': r'coherence.{0,10}(\d+\.?\d*)%?'
+            'entropy': r'at entropy (\d+\.\d+)',
+            'depth': r'depth (\d+\.?\d*)',
+            'heat': r'heat (\d+\.?\d*)',
+            'scup': r'scup (\d+\.?\d*)%?',
+            'coherence': r'coherence (\d+\.?\d*)%?'
         }
         
         # Mood inference patterns

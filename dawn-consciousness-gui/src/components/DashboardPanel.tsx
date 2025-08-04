@@ -1,128 +1,207 @@
-import React, { useState, useEffect } from 'react';
-import { ConsciousnessDisplay } from './ConsciousnessDisplay';
-import { TickMonitorPanel } from './TickMonitorPanel';
-import { DriftGraphPanel } from './DriftGraphPanel';
-import { ThoughtRateHeatmap } from './ThoughtRateHeatmap';
+import React from 'react';
+import { Colors, Font, Spacing, PanelStyles, Transitions } from '../theme/theme_tokens';
 import './DashboardPanel.css';
 
-// System Status Component
-const SystemStatusWidget: React.FC = () => {
-  const [systemStatus, setSystemStatus] = useState({
-    tick: 1247,
-    entropy: 0.342,
-    mood: 'contemplative',
-    scup: 0.087,
-    uptime: '12m 34s',
-    version: 'v1.3.0a',
-    hash: 'dawn_471',
-    cpuUsage: 23.4,
-    memoryUsage: 67.2,
-    diskUsage: 45.8
-  });
+// Standardized Panel Wrapper Component
+interface DashboardPanelProps {
+  title: string;
+  children: React.ReactNode;
+  icon?: string;
+  className?: string;
+  isLive?: boolean;
+  onToggle?: () => void;
+  onExport?: () => void;
+  onSnapshot?: () => void;
+  variant?: 'default' | 'cognition' | 'symbolic' | 'reflection';
+}
 
-  // Update status periodically
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setSystemStatus(prev => ({
-        ...prev,
-        tick: prev.tick + Math.floor(Math.random() * 3) + 1,
-        entropy: Math.max(0, Math.min(1, prev.entropy + (Math.random() - 0.5) * 0.05)),
-        scup: Math.max(0, Math.min(1, prev.scup + (Math.random() - 0.5) * 0.02)),
-        cpuUsage: Math.max(0, Math.min(100, prev.cpuUsage + (Math.random() - 0.5) * 5)),
-        memoryUsage: Math.max(0, Math.min(100, prev.memoryUsage + (Math.random() - 0.5) * 3)),
-        uptime: `${Math.floor((Date.now() / 1000) / 60)}m ${Math.floor((Date.now() / 1000) % 60)}s`
-      }));
-    }, 1000);
+export const DashboardPanel: React.FC<DashboardPanelProps> = ({
+  title,
+  children,
+  icon,
+  className = '',
+  isLive = false,
+  onToggle,
+  onExport,
+  onSnapshot,
+  variant = 'default'
+}) => {
+  const getVariantColor = () => {
+    switch (variant) {
+      case 'cognition': return Colors.cognitionCore;
+      case 'symbolic': return Colors.symbolicLayer;
+      case 'reflection': return Colors.reflectionStream;
+      default: return Colors.textAccent;
+    }
+  };
 
-    return () => clearInterval(interval);
-  }, []);
+  const variantColor = getVariantColor();
 
   return (
-    <div className="system-status-widget">
-      <div className="status-header">
-        <h3>System Status</h3>
-        <div className="live-indicator" title="Live monitoring active"></div>
-      </div>
-      
-      <div className="status-grid">
-        {/* Core Metrics */}
-        <div className="status-section core-metrics">
-          <h4>Core Metrics</h4>
-          <div className="metric-row">
-            <span className="metric-label">TICK</span>
-            <span className="metric-value tick">{systemStatus.tick}</span>
-          </div>
-          <div className="metric-row">
-            <span className="metric-label">ENTROPY</span>
-            <span className="metric-value entropy">{systemStatus.entropy.toFixed(3)}</span>
-          </div>
-          <div className="metric-row">
-            <span className="metric-label">SCUP</span>
-            <span className="metric-value scup">{systemStatus.scup.toFixed(3)}</span>
-          </div>
-          <div className="metric-row">
-            <span className="metric-label">MOOD</span>
-            <span className="metric-value mood">{systemStatus.mood}</span>
-          </div>
+    <div 
+      className={`dashboard-panel ${className}`}
+      style={{
+        ...PanelStyles.base,
+        borderColor: isLive ? variantColor : Colors.backgroundTertiary,
+        transition: Transitions.panel,
+      }}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.borderColor = variantColor;
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.borderColor = isLive ? variantColor : Colors.backgroundTertiary;
+      }}
+    >
+      {/* Panel Header */}
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        padding: `${Spacing.sm} ${Spacing.panelPadding}`,
+        borderBottom: `1px solid ${Colors.backgroundTertiary}`,
+        minHeight: '40px',
+      }}>
+        {/* Title Section */}
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: Spacing.xs,
+        }}>
+          {icon && (
+            <span style={{
+              fontSize: Font.size.sm,
+              color: variantColor,
+            }}>
+              {icon}
+            </span>
+          )}
+          <h3 style={{
+            fontSize: Font.size.sm,
+            color: Colors.textPrimary,
+            margin: 0,
+            textTransform: 'uppercase',
+            letterSpacing: Font.letterSpacing.wide,
+            fontFamily: Font.mono,
+            fontWeight: Font.weight.semibold,
+          }}>
+            {title}
+          </h3>
+          {isLive && (
+            <div style={{
+              width: '6px',
+              height: '6px',
+              borderRadius: '50%',
+              backgroundColor: Colors.connected,
+              animation: 'pulse 2s ease-in-out infinite',
+            }} />
+          )}
         </div>
 
-        {/* System Resources */}
-        <div className="status-section resources">
-          <h4>Resources</h4>
-          <div className="resource-bar">
-            <span className="resource-label">CPU</span>
-            <div className="progress-bar">
-              <div 
-                className="progress-fill cpu" 
-                style={{ width: `${systemStatus.cpuUsage}%` }}
-              ></div>
-            </div>
-            <span className="resource-value">{systemStatus.cpuUsage.toFixed(1)}%</span>
-          </div>
-          <div className="resource-bar">
-            <span className="resource-label">Memory</span>
-            <div className="progress-bar">
-              <div 
-                className="progress-fill memory" 
-                style={{ width: `${systemStatus.memoryUsage}%` }}
-              ></div>
-            </div>
-            <span className="resource-value">{systemStatus.memoryUsage.toFixed(1)}%</span>
-          </div>
-          <div className="resource-bar">
-            <span className="resource-label">Disk</span>
-            <div className="progress-bar">
-              <div 
-                className="progress-fill disk" 
-                style={{ width: `${systemStatus.diskUsage}%` }}
-              ></div>
-            </div>
-            <span className="resource-value">{systemStatus.diskUsage.toFixed(1)}%</span>
-          </div>
-        </div>
-
-        {/* System Info */}
-        <div className="status-section system-info">
-          <h4>System Info</h4>
-          <div className="info-row">
-            <span className="info-label">Version</span>
-            <span className="info-value">{systemStatus.version}</span>
-          </div>
-          <div className="info-row">
-            <span className="info-label">Hash</span>
-            <span className="info-value">{systemStatus.hash}</span>
-          </div>
-          <div className="info-row">
-            <span className="info-label">Uptime</span>
-            <span className="info-value">{systemStatus.uptime}</span>
-          </div>
+        {/* Control Buttons */}
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: Spacing.xs,
+        }}>
+          {onToggle && (
+            <button
+              style={{
+                background: 'transparent',
+                border: 'none',
+                color: Colors.textSecondary,
+                fontSize: Font.size.xs,
+                cursor: 'pointer',
+                padding: '2px 4px',
+                borderRadius: '2px',
+                transition: Transitions.button,
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.color = variantColor;
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.color = Colors.textSecondary;
+              }}
+              onClick={onToggle}
+              title="Toggle panel"
+            >
+              ⏸
+            </button>
+          )}
+          {onExport && (
+            <button
+              style={{
+                background: 'transparent',
+                border: 'none',
+                color: Colors.textSecondary,
+                fontSize: Font.size.xs,
+                cursor: 'pointer',
+                padding: '2px 4px',
+                borderRadius: '2px',
+                transition: Transitions.button,
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.color = variantColor;
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.color = Colors.textSecondary;
+              }}
+              onClick={onExport}
+              title="Export data"
+            >
+              ↗
+            </button>
+          )}
+          {onSnapshot && (
+            <button
+              style={{
+                background: 'transparent',
+                border: 'none',
+                color: Colors.textSecondary,
+                fontSize: Font.size.xs,
+                cursor: 'pointer',
+                padding: '2px 4px',
+                borderRadius: '2px',
+                transition: Transitions.button,
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.color = variantColor;
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.color = Colors.textSecondary;
+              }}
+              onClick={onSnapshot}
+              title="Take snapshot"
+            >
+              📸
+            </button>
+          )}
         </div>
       </div>
+
+      {/* Panel Content */}
+      <div style={{
+        flex: 1,
+        padding: Spacing.panelPadding,
+        overflow: 'auto',
+        minHeight: 0,
+      }}>
+        {children}
+      </div>
+
+      {/* Inject pulse animation */}
+      <style>
+        {`
+          @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+          }
+        `}
+      </style>
     </div>
   );
 };
 
-// Panel Component
+// Legacy Panel Component (for backward compatibility)
 interface PanelProps {
   title: string;
   children: React.ReactNode;
@@ -130,55 +209,16 @@ interface PanelProps {
   className?: string;
 }
 
-const Panel: React.FC<PanelProps> = ({ title, children, icon, className = '' }) => {
+export const Panel: React.FC<PanelProps> = ({ title, children, icon, className = '' }) => {
   return (
-    <div className={`dashboard-panel ${className}`}>
-      <div className="panel-header">
-        <div className="panel-title">
-          {icon && <span className="panel-icon">{icon}</span>}
-          {title}
-        </div>
-      </div>
-      <div className="panel-content">
-        {children}
-      </div>
-    </div>
+    <DashboardPanel 
+      title={title}
+      icon={icon}
+      className={className}
+    >
+      {children}
+    </DashboardPanel>
   );
 };
 
-export const DashboardPanel: React.FC = () => {
-  return (
-    <div className="dashboard-container">
-      <div className="dashboard-header">
-        <h2>System Dashboard</h2>
-        <p>Real-time monitoring of DAWN consciousness vitals, mood dynamics, and system performance</p>
-      </div>
-
-      <div className="dashboard-grid">
-        {/* Row 1: Core Consciousness and System Status */}
-        <div className="dashboard-row row-primary">
-          <Panel title="Consciousness State" icon="🧠" className="consciousness-panel">
-            <ConsciousnessDisplay />
-          </Panel>
-          
-          <SystemStatusWidget />
-        </div>
-
-        {/* Row 2: Processing Monitors */}
-        <div className="dashboard-row row-secondary">
-          <Panel title="Tick Monitor" icon="⚡" className="tick-panel">
-            <TickMonitorPanel />
-          </Panel>
-          
-          <Panel title="Entropy Drift" icon="🌊" className="entropy-panel">
-            <DriftGraphPanel />
-          </Panel>
-          
-          <Panel title="Thought Rate" icon="💭" className="thought-panel">
-            <ThoughtRateHeatmap />
-          </Panel>
-        </div>
-      </div>
-    </div>
-  );
-}; 
+export default DashboardPanel; 

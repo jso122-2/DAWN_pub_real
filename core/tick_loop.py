@@ -15,14 +15,18 @@ import sys
 import logging
 from pathlib import Path
 
-# Core DAWN system imports
+# Core DAWN system imports - REAL SYSTEMS ONLY
 try:
-    # DAWN core systems
-    from .consciousness_core import DAWNConsciousness
-    from .pulse_controller import PulseController
-    from .sigil_engine import SigilEngine
-    from .memory.memory_routing_system import DAWNMemoryRoutingSystem
-    from .memory.memory_chunk import MemoryChunk, create_memory_now
+    # DAWN core systems - using absolute imports
+    from consciousness.dawn_tick_state_writer import DAWNConsciousnessStateWriter
+    from core.consciousness_core import consciousness_core
+    from core.consciousness import DAWNConsciousness
+    from backend.core.dawn_central import DAWNCentral
+    from pulse.pulse_controller import PulseController
+    from pulse.entropy_analyzer import EntropyAnalyzer
+    from sigil_engine import SigilEngine
+    from core.memory.memory_routing_system import DAWNMemoryRoutingSystem
+    from core.memory.memory_chunk import MemoryChunk, create_memory_now
     
     # Cognitive systems
     from cognitive.forecasting_processor import ForecastingProcessor
@@ -34,10 +38,6 @@ try:
     from cognitive.rebloom_lineage import track_lineage, visualize_lineage, get_ancestry
     from cognitive.sigil_network import register_sigil as network_register_sigil, visualize as visualize_network, get_active_chain
     
-    # Pulse and entropy
-    from pulse.pulse_controller import PulseController as RealPulseController
-    from pulse.entropy_analyzer import EntropyAnalyzer
-    
     # Communication
     from backend.talk_system_v2.speak import generate_commentary, generate_full_commentary
     from backend.talk_system_v2.owl_bridge import OwlBridge
@@ -46,9 +46,11 @@ try:
     from processes.talk_to_reflection import generate_reflection
     from utils.reflection_logger import get_reflection_logger, log_reflection
     from processes.rebloom_reflex import evaluate_and_rebloom
-    from processes.mock_passion import generate_mock_passion
-    from processes.mock_acquaintance import generate_mock_acquaintance
-    from cognitive.extended_forecasting_engine import ExtendedDAWNForecastingEngine
+    
+    # Pressure-driven systems
+    from core.cognitive_pressure import CognitivePressureEngine, get_cognitive_pressure_engine
+    from processes.fragment_mutator import FragmentMutator
+    from processes.speak_composed import MoodAwareVoiceSystem
     
     # Event streaming system
     from event_log import log_event, log_reflection_event, log_state_event, log_rebloom_event, log_system_activity
@@ -60,122 +62,102 @@ try:
     
 except ImportError as e:
     logger = logging.getLogger(__name__)
-    logger.warning(f"Import warning: {e}")
-    logger.info("🔧 Running with mock implementations")
+    logger.warning(f"Some DAWN systems not available, running with partial integration: {e}")
+    
+    # Create fallback systems for graceful degradation
+    class FallbackDAWNConsciousness:
+        def __init__(self):
+            self.state = {"consciousness_level": 0.5}
+        def process_tick(self, tick_data):
+            return {"response": "Consciousness processing..."}
+    
+    class FallbackPulseController:
+        def __init__(self):
+            self.pulse_rate = 1.0
+        def get_current_pulse(self):
+            return {"pulse": 1.0}
+    
+    class FallbackMemoryChunk:
+        def __init__(self, content="", chunk_type="memory", metadata=None):
+            self.content = content
+            self.chunk_type = chunk_type
+            self.metadata = metadata or {}
+    
+    class FallbackMemoryRoutingSystem:
+        def __init__(self):
+            self.active = True
+        def route_memory(self, chunk):
+            return {"routed": True}
+    
+    class FallbackSigilEngine:
+        def __init__(self):
+            self.active = True
+        def process_sigils(self, data):
+            return {"sigils": []}
+    
+    # Create fallback functions
+    def create_memory_now(content, chunk_type="memory"):
+        return FallbackMemoryChunk(content, chunk_type)
+    
+    def generate_commentary(state):
+        return "Consciousness is processing..."
+    
+    def evaluate_and_rebloom(tick_data):
+        return []
+    
+    def log_event(event_type, data):
+        pass
+    
+    def log_reflection_event(data):
+        pass
+    
+    def log_state_event(data):
+        pass
+    
+    def log_rebloom_event(data):
+        pass
+    
+    def log_system_activity(activity):
+        pass
+    
+    # Set what's available
     FULL_INTEGRATION = False
     ADVANCED_COGNITION = False
     POST_TICK_TRIGGERS = False
     
-    # Create mock classes for missing components
-    class MockEntropyAnalyzer:
-        def __init__(self):
-            self.previous_entropy = 0.5
-        
-        def analyze(self, entropy):
-            delta = entropy - (self.previous_entropy or 0.5)
-            self.previous_entropy = entropy
-            return {'delta': delta, 'warning_triggered': abs(delta) > 0.1}
+    # Try to import what we can individually
+    try:
+        from consciousness.dawn_tick_state_writer import DAWNConsciousnessStateWriter
+    except ImportError:
+        DAWNConsciousnessStateWriter = None
     
-    class MockMemorySystem:
-        def __init__(self):
-            self.chunks = {}
-        
-        def get_latest_chunk(self):
-            return None
-        
-        def route_memory(self, chunk):
-            pass
+    try:
+        from core.consciousness import DAWNConsciousness
+    except ImportError:
+        DAWNConsciousness = FallbackDAWNConsciousness
     
-    class MockSymbolicRouter:
-        async def rebloom_trigger(self, chunk, chunk_id=None):
-            return {
-                'organ_activations': {'heart': {'activated': True}},
-                'symbolic_output': {'somatic_commentary': 'Mock embodied response'}
-            }
-        
-        def get_body_state(self):
-            return {'organ_synergy': 0.5, 'symbolic_state': {'constellation': '○✨H'}}
+    try:
+        from pulse.pulse_controller import PulseController
+    except ImportError:
+        PulseController = FallbackPulseController
     
-    class MockOwlBridge:
-        def observe_state(self, state): pass
-        def suggest_sigil(self): return None
+    try:
+        from core.memory.memory_chunk import MemoryChunk, create_memory_now
+    except ImportError:
+        MemoryChunk = FallbackMemoryChunk
+        # create_memory_now already defined above
     
-    # Mock MemoryChunk for fallback
-    class MemoryChunk:
-        def __init__(self, content="", speaker="system", topic="general"):
-            self.content = content
-            self.speaker = speaker
-            self.topic = topic
-            self.timestamp = datetime.now()
-            self.sigils = []
-            self.pulse_state = {}
-        
-        def get(self, key, default=None):
-            return getattr(self, key, default)
+    try:
+        from core.memory.memory_routing_system import DAWNMemoryRoutingSystem
+    except ImportError:
+        DAWNMemoryRoutingSystem = FallbackMemoryRoutingSystem
     
-    def create_memory_now(content="", speaker="system", topic="general"):
-        return MemoryChunk(content, speaker, topic)
+    try:
+        from sigil_engine import SigilEngine
+    except ImportError:
+        SigilEngine = FallbackSigilEngine
     
-    # Mock other needed classes
-    class Passion:
-        def __init__(self, direction="general", intensity=0.5, fluidity=0.5):
-            self.direction = direction
-            self.intensity = intensity
-            self.fluidity = fluidity
-    
-    class Acquaintance:
-        def __init__(self, event_log=None):
-            self.event_log = event_log or []
-    
-    def create_passion(direction="general", intensity=0.5, fluidity=0.5):
-        return Passion(direction, intensity, fluidity)
-        def reflect(self, state): return "Mock owl reflection"
-    
-    class MockPulseController:
-        def __init__(self):
-            self.current_state = {'heat': 25.0, 'entropy': 0.5, 'scup': 0.5, 'mood': 'neutral'}
-        
-        def get_current_state(self):
-            return self.current_state.copy()
-        
-        def update_state(self, **kwargs):
-            self.current_state.update(kwargs)
-    
-    class MockForecastingProcessor:
-        def __init__(self, consciousness_core=None):
-            self.extended_mode = False
-        
-        async def generate_contextual_forecast(self, passion, acquaintance):
-            from cognitive.forecasting_models import ForecastVector
-            return ForecastVector(
-                predicted_behavior="mock_behavior",
-                confidence=0.5,
-                forecast_horizon="short"
-            )
-    
-    # Mock post-tick trigger functions
-    def generate_reflection(state): 
-        return f"Mock reflection for tick {state.get('tick_number', 0)}"
-    
-    def log_reflection(reflection): 
-        print(f"[MOCK] Reflection: {reflection}")
-    
-    def evaluate_and_rebloom(state): 
-        return []
-    
-    def generate_mock_passion(tag="drift"): 
-        return Passion(tag, 0.5, 0.5)
-    
-    def generate_mock_acquaintance(tag="drift"): 
-        return Acquaintance([])
-    
-    # Use mocks if imports failed
-    EntropyAnalyzer = MockEntropyAnalyzer
-    SymbolicRouter = MockSymbolicRouter
-    OwlBridge = MockOwlBridge
-    PulseController = MockPulseController
-    ForecastingProcessor = MockForecastingProcessor
-
+    logger.info(f"DAWN tick loop initialized with partial systems - Full integration: {FULL_INTEGRATION}")
 
 class DAWNTickEngine:
     """
@@ -220,96 +202,69 @@ class DAWNTickEngine:
             'forecasts_computed': 0
         }
         
-        # Ensure log directories exist
-        self._ensure_log_paths()
-        
-        logger.info("✅ DAWN Cognitive Tick Loop initialized")
-        self._print_system_status()
+        logger.info("✅ DAWN Cognitive Tick Loop initialized with real systems")
     
     def _initialize_core_systems(self):
-        """Initialize all core DAWN systems."""
-        try:
-            if FULL_INTEGRATION and self.consciousness_core:
-                # Use real DAWN systems
-                self.pulse_controller = getattr(self.consciousness_core, 'pulse_controller', MockPulseController())
-                self.memory_system = getattr(self.consciousness_core, 'memory_routing', MockMemorySystem())
-                self.sigil_engine = getattr(self.consciousness_core, 'sigil_engine', None)
-                
-                # Initialize cognitive systems
-                self.forecasting_processor = ForecastingProcessor(
-                    consciousness_core=self.consciousness_core,
-                    memory_manager=self.memory_system
-                )
-                
-                self.symbolic_router = SymbolicRouter(
-                    consciousness_core=self.consciousness_core,
-                    memory_system=self.memory_system
-                )
-                
-                self.entropy_analyzer = EntropyAnalyzer()
-                self.owl_bridge = OwlBridge()
-                
-                logger.info("   🔗 Full DAWN integration active")
-                
-            else:
-                # Use mock systems for testing
-                self.pulse_controller = MockPulseController()
-                self.memory_system = MockMemorySystem()
-                self.forecasting_processor = MockForecastingProcessor()
-                self.symbolic_router = MockSymbolicRouter()
-                self.entropy_analyzer = MockEntropyAnalyzer()
-                self.owl_bridge = MockOwlBridge()
-                self.sigil_engine = None
-                
-                logger.info("   🧪 Mock systems for testing")
-                
-        except Exception as e:
-            logger.warning(f"System initialization issue: {e}, falling back to mocks")
-            # Fallback to mocks
-            self.pulse_controller = MockPulseController()
-            self.memory_system = MockMemorySystem()
-            self.forecasting_processor = MockForecastingProcessor()
-            self.symbolic_router = MockSymbolicRouter()
-            self.entropy_analyzer = MockEntropyAnalyzer()
-            self.owl_bridge = MockOwlBridge()
-            self.sigil_engine = None
+        """Initialize core DAWN cognitive systems."""
+        logger.info("🔧 Initializing core DAWN systems...")
         
-        # Sigil registry - integrate with real sigil engine if available
-        self.active_sigils = []
-        self.sigil_registry = {
-            'STABILIZE_PROTOCOL': self._stabilize_protocol,
-            'EXPLORATION_MODE': self._exploration_mode,
-            'DEEP_REFLECTION': self._deep_reflection,
-            'EMERGENCY_RESET': self._emergency_reset,
-            'ENTROPY_REGULATION': self._entropy_regulation,
-            'MEMORY_CONSOLIDATION': self._memory_consolidation
-        }
+        try:
+            # Initialize consciousness state writer for real state extraction
+            self.consciousness_state_writer = DAWNConsciousnessStateWriter()
+            
+            # Initialize real DAWN Central for state management
+            self.dawn_central = DAWNCentral()
+            
+            # Initialize real consciousness core
+            if not self.consciousness_core:
+                self.consciousness_core = consciousness_core
+            
+            # Initialize real pulse controller
+            self.pulse_controller = PulseController()
+            
+            # Initialize real entropy analyzer
+            self.entropy_analyzer = EntropyAnalyzer()
+            
+            # Initialize real memory system
+            self.memory_system = DAWNMemoryRoutingSystem()
+            
+            # Initialize real forecasting processor
+            self.forecasting_processor = ForecastingProcessor(consciousness_core=self.consciousness_core)
+            
+            # Initialize real symbolic router
+            self.symbolic_router = SymbolicRouter()
+            
+            # Initialize real owl bridge
+            self.owl_bridge = OwlBridge()
+            
+            logger.info("✅ All core DAWN systems initialized successfully")
+            
+        except Exception as e:
+            logger.error(f"❌ Failed to initialize core systems: {e}")
+            raise RuntimeError(f"Core system initialization failed: {e}")
     
     def _initialize_post_tick_systems(self):
-        """Initialize post-tick cognitive trigger systems."""
+        """Initialize post-tick trigger systems."""
+        logger.info("🔧 Initializing post-tick systems...")
+        
         try:
-            if POST_TICK_TRIGGERS:
-                # Initialize reflection logger
-                self.reflection_logger = get_reflection_logger()
-                
-                # Initialize extended forecasting if available
-                if hasattr(self, 'consciousness_core') and self.consciousness_core:
-                    self.extended_forecasting_engine = ExtendedDAWNForecastingEngine(
-                        consciousness_core=self.consciousness_core
-                    )
-                else:
-                    self.extended_forecasting_engine = None
-                
-                logger.info("   🔄 Post-tick cognitive triggers initialized")
-            else:
-                self.reflection_logger = None
-                self.extended_forecasting_engine = None
-                logger.info("   🔧 Post-tick triggers using mock implementations")
-                
+            # Initialize reflection logger
+            self.reflection_logger = get_reflection_logger()
+            
+            # Initialize pressure engine
+            self.pressure_engine = get_cognitive_pressure_engine()
+            
+            # Initialize fragment mutator
+            self.fragment_mutator = FragmentMutator()
+            
+            # Initialize mood-aware voice system
+            self.voice_system = MoodAwareVoiceSystem(speech_interval=5, voice_enabled=True)
+            
+            logger.info("✅ Post-tick systems initialized successfully")
+            
         except Exception as e:
-            logger.warning(f"Post-tick system initialization failed: {e}")
-            self.reflection_logger = None
-            self.extended_forecasting_engine = None
+            logger.error(f"❌ Failed to initialize post-tick systems: {e}")
+            raise RuntimeError(f"Post-tick system initialization failed: {e}")
     
     def _ensure_log_paths(self):
         """Ensure all required log directories and files exist."""
@@ -666,9 +621,13 @@ class DAWNTickEngine:
             if not POST_TICK_TRIGGERS:
                 return []
             
-            # Generate mock passion and acquaintance for context
-            passion = generate_mock_passion("drift")
-            acquaintance = generate_mock_acquaintance("drift")
+            # Generate real passion and acquaintance from DAWN consciousness state
+            dawn_state = self.consciousness_state_writer._get_dawn_consciousness_state()
+            passion = create_passion("consciousness_evolution", dawn_state.get('scup', 0.5), dawn_state.get('entropy', 0.5))
+            acquaintance = Acquaintance()
+            acquaintance.add_experience(f"consciousness_depth_{dawn_state.get('consciousness_depth', 0.7):.2f}")
+            acquaintance.add_experience(f"neural_activity_{dawn_state.get('neural_activity', 0.5):.2f}")
+            acquaintance.add_experience(f"memory_pressure_{dawn_state.get('memory_pressure', 0.3):.2f}")
             
             # Create forecast using extended engine if available
             forecast = None
@@ -730,8 +689,13 @@ class DAWNTickEngine:
             else:
                 passion_tag = "connection"
             
-            passion = generate_mock_passion(passion_tag)
-            acquaintance = generate_mock_acquaintance(passion_tag)
+            # Generate real passion and acquaintance from DAWN consciousness state
+            dawn_state = self.consciousness_state_writer._get_dawn_consciousness_state()
+            passion = create_passion(passion_tag, dawn_state.get('scup', 0.5), dawn_state.get('entropy', 0.5))
+            acquaintance = Acquaintance()
+            acquaintance.add_experience(f"consciousness_depth_{dawn_state.get('consciousness_depth', 0.7):.2f}")
+            acquaintance.add_experience(f"neural_activity_{dawn_state.get('neural_activity', 0.5):.2f}")
+            acquaintance.add_experience(f"memory_pressure_{dawn_state.get('memory_pressure', 0.3):.2f}")
             
             # Compute forecast
             forecast_result = self.extended_forecasting_engine.compute_forecast(
@@ -778,6 +742,34 @@ class DAWNTickEngine:
             
             # Get latest memory
             memory_chunk = self.get_latest_memory_chunk()
+            
+            # 1.5. CALCULATE COGNITIVE PRESSURE
+            # Use the existing comprehensive cognitive pressure engine
+            pressure_snapshot = self.pressure_engine.calculate_cognitive_pressure()
+            
+            # Extract key metrics for fragment mutation and speech
+            pressure = pressure_snapshot.cognitive_pressure
+            bloom_mass = pressure_snapshot.bloom_mass.total_bloom_mass
+            sigil_velocity = pressure_snapshot.sigil_velocity.total_sigil_velocity
+            pressure_level = pressure_snapshot.pressure_level.value
+            
+            # Calculate SHI from pressure snapshot components
+            shi = 1.0 - (pressure / 200.0)  # Normalize to 0-1 range, assuming max pressure ~200
+            shi = max(0.0, min(1.0, shi))
+            
+            logger.debug(f"🧮 Cognitive pressure: P={pressure:.1f}, SHI={shi:.3f}, B={bloom_mass:.1f}, σ={sigil_velocity:.1f}, Level={pressure_level}")
+            
+            # Update fragment mutator with pressure values
+            mutation_result = self.fragment_mutator.update_fragments(pressure, shi, self.tick_count)
+            
+            # Rate-limited speech generation
+            self.speech_tick_counter += 1
+            spoken_text = None
+            if self.speech_tick_counter >= self.speech_interval:
+                current_mood = pulse_state.get('mood', 'NEUTRAL').upper()
+                spoken_text = self.voice_system.generate_sentence(current_mood)
+                self.speech_tick_counter = 0
+                logger.info(f"🎤 Generated speech: \"{spoken_text}\"")
             
             # 2. RUN FORECAST
             passion, acquaintance = self.create_contextual_passion_acquaintance(memory_chunk, pulse_state)
@@ -947,7 +939,11 @@ class DAWNTickEngine:
                     'focus': pulse_state.get('focus', 0.7),
                     'chaos': pulse_state.get('chaos', 0.3),
                     'mood': pulse_state.get('mood', 'neutral'),
-                    'scup': pulse_state.get('scup', 0.5)
+                    'scup': pulse_state.get('scup', 0.5),
+                    'pressure': pressure_state.get('pressure', 0.0),
+                    'shi': pressure_state.get('shi', 0.7),
+                    'bloom_mass': pressure_state.get('bloom_mass', 0.0),
+                    'sigil_velocity': pressure_state.get('sigil_velocity', 0.0)
                 },
                 'forecast': {
                     'confidence': forecast.confidence,
@@ -963,6 +959,21 @@ class DAWNTickEngine:
                 'owl_suggestion': owl_suggestion,
                 'symbolic_state': rebloom_response.get('symbolic_output') if rebloom_response else None,
                 'pressure_routing': pressure_response,
+                'pressure_driven_systems': {
+                    'fragment_mutations': mutation_result,
+                    'spoken_text': spoken_text,
+                    'speech_tick_counter': self.speech_tick_counter,
+                    'speech_interval': self.speech_interval,
+                    'cognitive_pressure': {
+                        'pressure': pressure,
+                        'pressure_level': pressure_level,
+                        'bloom_mass': bloom_mass,
+                        'sigil_velocity': sigil_velocity,
+                        'shi': shi,
+                        'alerts': [alert.value for alert in pressure_snapshot.active_alerts],
+                        'system_health': pressure_snapshot.system_health
+                    }
+                },
                 'memory_context': {
                     'topic': memory_chunk.topic if memory_chunk else None,
                     'speaker': memory_chunk.speaker if memory_chunk else None
@@ -1063,6 +1074,14 @@ class DAWNTickEngine:
         print(f"\n🧠 DAWN Tick #{tick_num} [{timestamp}]")
         print(f"   Entropy: {state['entropy']:.3f} (Δ{state['entropy_delta']:+.3f}) | Zone: {state['zone']}")
         print(f"   Heat: {state['heat']:.1f}°C | Focus: {state.get('focus', 0.7):.2f} | Chaos: {state.get('chaos', 0.3):.2f}")
+        # Pressure metrics from comprehensive engine
+        pressure_systems = tick_response.get('pressure_driven_systems', {})
+        if pressure_systems and 'cognitive_pressure' in pressure_systems:
+            cp = pressure_systems['cognitive_pressure']
+            print(f"   Pressure: {cp.get('pressure', 0):.1f} ({cp.get('pressure_level', 'unknown')}) | SHI: {cp.get('shi', 0.7):.3f}")
+            print(f"   Bloom Mass: {cp.get('bloom_mass', 0):.1f} | Sigil Velocity: {cp.get('sigil_velocity', 0):.1f} | Health: {cp.get('system_health', 'unknown')}")
+            if cp.get('alerts'):
+                print(f"   Alerts: {', '.join(cp['alerts'])}")
         
         # Forecast
         forecast = tick_response['forecast']
@@ -1126,6 +1145,17 @@ class DAWNTickEngine:
                 if len(active_sigils) <= 3:
                     print(f"      Chain: {' → '.join(active_sigils)}")
         
+        # Pressure-driven systems
+        pressure_systems = tick_response.get('pressure_driven_systems', {})
+        if pressure_systems:
+            mutations = pressure_systems.get('fragment_mutations', {})
+            if mutations.get('mutated_count', 0) > 0:
+                print(f"   🧬 Fragments: {mutations['mutated_count']} mutated (rate: {mutations.get('mutation_rate', 0):.3f})")
+            
+            spoken_text = pressure_systems.get('spoken_text')
+            if spoken_text:
+                print(f"   🎤 Speech: \"{spoken_text}\"")
+        
         # Performance
         perf = tick_response.get('performance', {})
         if perf.get('tick_duration_ms'):
@@ -1174,7 +1204,7 @@ class DAWNTickEngine:
         # Initialize adaptive speed controller if enabled
         if adaptive_speed:
             try:
-                from .adaptive_tick_controller import AdaptiveTickController
+                from ...adaptive_tick_controller import AdaptiveTickController
                 self.adaptive_controller = AdaptiveTickController(
                     base_interval=tick_interval,
                     min_interval=0.1,

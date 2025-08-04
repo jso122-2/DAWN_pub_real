@@ -11,7 +11,7 @@ import logging
 from datetime import datetime
 import asyncio
 
-from ..models import SplineNeuron, CachedGlyph, KANTopology
+from ...models import SplineNeuron, CachedGlyph, KANTopology
 
 
 class WeaveRouter:

@@ -6,7 +6,7 @@ import asyncio
 import logging
 from typing import Dict, List, Callable, Any
 from collections import defaultdict
-from .async_utils import run_maybe_async
+from ...async_utils import run_maybe_async
 
 logger = logging.getLogger(__name__)
 

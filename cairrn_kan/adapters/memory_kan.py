@@ -10,7 +10,7 @@ import logging
 from datetime import datetime, timedelta
 import asyncio
 
-from ..models import KANTopology, SplineNeuron, CachedGlyph
+from ...models import KANTopology, SplineNeuron, CachedGlyph
 
 
 class MemoryKANAdapter:

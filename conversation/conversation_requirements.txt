@@ -1,0 +1,22 @@
+# DAWN Conversation System Dependencies
+# Speech recognition and text-to-speech for interactive conversation
+
+# Speech recognition
+SpeechRecognition>=3.8.1
+
+# Audio processing for speech recognition
+PyAudio>=0.2.11
+
+# Text-to-speech (primary)
+pyttsx3>=2.90
+
+# Alternative TTS engines
+# espeak-ng (system package on Ubuntu: sudo apt install espeak-ng)
+# festival (system package on Ubuntu: sudo apt install festival)
+
+# Additional audio processing
+numpy>=1.21.0
+
+# For microphone access on Windows
+# pip install pyaudio
+# If PyAudio fails on Windows, try: pip install pipwin && pipwin install pyaudio 

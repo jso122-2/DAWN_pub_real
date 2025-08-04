@@ -1,0 +1,44 @@
+{
+  "timestamp": "2025-07-27T21:51:29.108885",
+  "results": {
+    "backend": {
+      "status": "running",
+      "processes": [
+        "root     48715  5.0  0.0  16048 12064 pts/3    S+   21:51   0:00 python launch_dawn_organized.py --component core --test",
+        "root     48734  0.0  0.0  16228 12708 pts/3    S+   21:51   0:00 /root/miniconda3/envs/dawn/bin/python integration/test_dawn_connection.py",
+        "root     1653937 0.1  0.9 1982528 315524 pts/0 Sl+  20:08   0:11 python launch_dawn.py"
+      ]
+    },
+    "mmap": {
+      "status": "found",
+      "files": [
+        {
+          "name": "dawn_consciousness.mmap",
+          "size": 8192064,
+          "modified": "2025-07-27T17:22:29.588454",
+          "age_seconds": 16139.486240148544
+        }
+      ]
+    },
+    "tauri": {
+      "status": "not_running",
+      "gui_found": true
+    },
+    "visuals": {
+      "status": "missing",
+      "component": "visual_trigger.py"
+    },
+    "enhanced_visuals": {
+      "status": "missing",
+      "component": "enhanced_visual_engine.py"
+    },
+    "data_flow": {
+      "status": "no_data"
+    }
+  },
+  "summary": {
+    "working_systems": 2,
+    "total_systems": 6,
+    "overall_health": "needs_attention"
+  }
+}

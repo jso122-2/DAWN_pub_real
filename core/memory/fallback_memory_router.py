@@ -6,8 +6,8 @@ import json
 from datetime import datetime
 from pathlib import Path
 from typing import List, Dict, Optional
-from .fallback_stats import FallbackStatistics
-from .fallback_priority import FallbackPriorityTree, FallbackNode, FallbackCategory
+from ...fallback_stats import FallbackStatistics
+from ...fallback_priority import FallbackPriorityTree, FallbackNode, FallbackCategory
 
 class FallbackMemoryRouter:
     """Routes cognition through stable memory lanes during instability."""

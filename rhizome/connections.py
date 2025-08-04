@@ -23,7 +23,7 @@ import json
 
 # Core imports
 from core.schema_anomaly_logger import log_anomaly, AnomalySeverity
-from .rhizome_map import RhizomeMap, RhizomeNode, RhizomeConnection, ConnectionType, NodeType
+from ...rhizome_map import RhizomeMap, RhizomeNode, RhizomeConnection, ConnectionType, NodeType
 
 class ConnectionState(Enum):
     """States of a connection lifecycle"""

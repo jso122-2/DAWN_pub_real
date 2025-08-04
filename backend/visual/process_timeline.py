@@ -6,7 +6,7 @@ Visualizes the timeline of different processes and their states
 import numpy as np
 import matplotlib.pyplot as plt
 from typing import Dict, Optional, List
-from .base_visualizer import BaseVisualizer
+from ...base_visualizer import BaseVisualizer
 
 class ProcessTimelineVisualizer(BaseVisualizer):
     def __init__(self):

@@ -1,0 +1,13 @@
+{
+  "conversation_id": "manual_conv_1753630572",
+  "start_time": "2025-07-28T01:36:12.593701",
+  "end_time": "2025-07-28T01:37:54.458664",
+  "mode": "technical",
+  "stats": {
+    "total_messages": 3,
+    "user_messages": 3,
+    "dawn_messages": 3
+  },
+  "conversation_memory": [
+    {
+      "timestamp": 

@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 
 # Import SCUP optimizer for intelligent logging
 try:
-    from .scup_logger_optimizer import monitor_scup, register_scup_commentary
+    from ...scup_logger_optimizer import monitor_scup, register_scup_commentary
 except ImportError:
     # Fallback functions if optimizer not available
     def monitor_scup(scup_value: float, context: str = "System") -> Optional[str]:
@@ -201,8 +201,8 @@ class OwlBridge:
         
         try:
             # Create a basic sigil for the suggestion
-            from ..schema.sigil import Sigil
-            from ..core.sigil_engine import CognitiveHouse
+            from schema.sigil import Sigil
+            from core.sigil_engine import CognitiveHouse
             
             # Map sigil names to cognitive houses
             house_mapping = {

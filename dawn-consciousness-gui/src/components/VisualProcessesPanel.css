@@ -419,4 +419,59 @@
   .mode-tab {
     justify-content: flex-start;
   }
+}
+
+/* Consciousness Analytics Panel Styles */
+.consciousness-row {
+  grid-template-columns: 1fr;
+  margin-bottom: 20px;
+}
+
+.consciousness-analytics-panel {
+  min-height: 500px;
+  border: 2px solid rgba(0, 255, 136, 0.3);
+  background: linear-gradient(135deg, rgba(0, 255, 136, 0.05) 0%, rgba(0, 200, 100, 0.02) 100%);
+  box-shadow: 0 8px 24px rgba(0, 255, 136, 0.1);
+}
+
+.consciousness-analytics-panel .panel-header {
+  background: rgba(0, 255, 136, 0.1);
+  border-bottom: 1px solid rgba(0, 255, 136, 0.3);
+}
+
+.consciousness-analytics-panel .panel-title {
+  color: #00ff88;
+  text-shadow: 0 0 8px rgba(0, 255, 136, 0.3);
+}
+
+.full-width {
+  grid-column: 1 / -1;
+}
+
+/* Enhanced visual effects for consciousness panel */
+.consciousness-analytics-panel::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent 0%, #00ff88 50%, transparent 100%);
+  opacity: 0.8;
+  z-index: 1;
+}
+
+.consciousness-analytics-panel .panel-content {
+  position: relative;
+  padding: 0;
+}
+
+@media (max-width: 768px) {
+  .consciousness-analytics-panel {
+    min-height: 400px;
+  }
+  
+  .consciousness-row {
+    margin-bottom: 15px;
+  }
 } 

@@ -2,9 +2,9 @@ import json
 from datetime import datetime
 from pathlib import Path
 from typing import Dict, Any, List
-from ..reflex_system import ReflexSystem
-from .utils import MockTask, MockClaude, MockCAIRNMatrix, generate_test_tasks
-from .scenarios import TestScenario, ScenarioFactory, run_scenario_test
+from ...reflex_system import ReflexSystem
+from ...utils import MockTask, MockClaude, MockCAIRNMatrix, generate_test_tasks
+from ...scenarios import TestScenario, ScenarioFactory, run_scenario_test
 
 class ReflexTestRunner:
     """Test runner for the reflex system"""

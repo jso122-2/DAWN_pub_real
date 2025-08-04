@@ -1491,7 +1491,7 @@ class DAWNUnifiedDashboard:
         
         # Use optimized SCUP logging to prevent spam
         try:
-            from ..core.scup_logger_optimizer import monitor_scup
+            from core.scup_logger_optimizer import monitor_scup
             scup_message = monitor_scup(scup, "Owl")
             if scup_message:
                 self.add_commentary("Owl", scup_message)

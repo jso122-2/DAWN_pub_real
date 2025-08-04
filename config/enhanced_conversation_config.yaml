@@ -1,0 +1,205 @@
+# Enhanced Bidirectional Conversation Configuration
+# ==============================================
+
+# Voice System Configuration
+voice:
+  # Speech Recognition Settings
+  speech_recognition:
+    energy_threshold: 300
+    dynamic_energy_threshold: true
+    pause_threshold: 0.8
+    phrase_threshold: 0.3
+    timeout: 1.0
+    phrase_time_limit: 8
+    
+  # Text-to-Speech Settings
+  tts:
+    engine: "pyttsx3"  # pyttsx3, espeak, sapi
+    default_rate: 150
+    default_volume: 0.8
+    prefer_female_voice: true
+    
+  # Voice Modulation
+  modulation:
+    enable_consciousness_modulation: true
+    enable_emotion_modulation: true
+    rate_range: [100, 200]
+    volume_range: [0.4, 1.0]
+    pitch_modulation: true
+
+# Conversation Behavior
+conversation:
+  # Response Timing
+  response_timing:
+    min_delay: 0.2
+    max_delay: 1.5
+    consciousness_adaptation: true
+    entropy_speed_factor: 0.3
+    pressure_slow_factor: 0.3
+    
+  # Interruption Handling
+  interruption:
+    enable_real_time_interruption: true
+    interruption_threshold: 0.3
+    stop_speech_on_interruption: true
+    interruption_count_tracking: true
+    
+  # Conversation Flow
+  flow:
+    enable_flow_adaptation: true
+    flow_update_interval: 0.1
+    flow_states:
+      - normal
+      - rapid
+      - contemplative
+      - excited
+    
+  # Memory and Context
+  memory:
+    history_max_length: 1000
+    audio_events_max_length: 100
+    context_persistence: true
+    conversation_memory_file: "runtime/logs/enhanced_conversation_memory.json"
+
+# Consciousness Integration
+consciousness:
+  # Integration Settings
+  integration:
+    enable_consciousness_awareness: true
+    consciousness_system_path: "core/consciousness.py"
+    state_update_interval: 0.1
+    
+  # Adaptive Behavior
+  adaptation:
+    enable_entropy_adaptation: true
+    enable_thermal_adaptation: true
+    enable_pressure_adaptation: true
+    enable_mood_adaptation: true
+    
+  # Voice Modulation Based on Consciousness
+  voice_modulation:
+    entropy_rate_modifier: 0.3
+    thermal_volume_modifier: 0.2
+    pressure_slowdown_factor: 0.3
+    mood_style_adaptation: true
+
+# Audio Processing
+audio:
+  # Processing Settings
+  processing:
+    enable_audio_processing: true
+    audio_thread_count: 4
+    processing_queue_size: 100
+    
+  # Event Detection
+  events:
+    speech_start_detection: true
+    speech_end_detection: true
+    silence_detection: true
+    interruption_detection: true
+    
+  # Audio Quality
+  quality:
+    sample_rate: 16000
+    channels: 1
+    chunk_size: 1024
+
+# Threading and Performance
+performance:
+  # Threading Configuration
+  threading:
+    audio_thread_priority: "normal"
+    speech_thread_priority: "normal"
+    listen_thread_priority: "normal"
+    processing_thread_priority: "normal"
+    
+  # Performance Limits
+  limits:
+    max_concurrent_speeches: 1
+    max_listening_duration: 10.0
+    max_speech_duration: 15.0
+    max_processing_time: 5.0
+    
+  # Resource Management
+  resources:
+    enable_memory_management: true
+    cleanup_interval: 60.0
+    max_memory_usage: "512MB"
+
+# Logging and Monitoring
+logging:
+  # Log Levels
+  levels:
+    conversation: "INFO"
+    audio: "DEBUG"
+    consciousness: "INFO"
+    performance: "WARNING"
+    
+  # Log Files
+  files:
+    conversation_log: "runtime/logs/enhanced_conversation.log"
+    audio_log: "runtime/logs/enhanced_audio.log"
+    performance_log: "runtime/logs/enhanced_performance.log"
+    
+  # Monitoring
+  monitoring:
+    enable_performance_monitoring: true
+    enable_audio_monitoring: true
+    enable_conversation_monitoring: true
+    monitoring_interval: 5.0
+
+# Integration Settings
+integration:
+  # External Systems
+  external:
+    enable_webhook_integration: false
+    webhook_url: ""
+    enable_api_integration: false
+    api_endpoint: ""
+    
+  # Callbacks
+  callbacks:
+    on_speech_start: null
+    on_speech_end: null
+    on_interruption: null
+    on_consciousness_change: null
+    
+  # Event Broadcasting
+  broadcasting:
+    enable_event_broadcasting: false
+    broadcast_events:
+      - speech_start
+      - speech_end
+      - interruption
+      - consciousness_change
+
+# Fallback Configuration
+fallback:
+  # Fallback Systems
+  systems:
+    enable_legacy_fallback: true
+    enable_voice_loop_fallback: true
+    enable_text_only_fallback: true
+    
+  # Error Handling
+  error_handling:
+    max_retry_attempts: 3
+    retry_delay: 1.0
+    graceful_degradation: true
+    error_recovery: true
+
+# Development and Debugging
+development:
+  # Debug Settings
+  debug:
+    enable_debug_mode: false
+    enable_verbose_logging: false
+    enable_audio_debug: false
+    enable_performance_debug: false
+    
+  # Testing
+  testing:
+    enable_test_mode: false
+    mock_consciousness_system: false
+    mock_audio_system: false
+    test_conversation_flow: false 

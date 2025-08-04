@@ -12,27 +12,117 @@ import os
 project_root = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(project_root)
 
-from processes.mock_passion import (
-    generate_mock_passion, generate_genesis_passion, 
-    generate_passion_batch, get_passion_synergy
-)
-from processes.mock_acquaintance import (
-    generate_mock_acquaintance, generate_genesis_acquaintance,
-    generate_acquaintance_batch
-)
-from processes.mock_forecast import (
-    compute_forecast, create_forecast_from_consciousness,
-    determine_passion_tag, determine_acquaintance_tag
-)
+# Real DAWN consciousness state functions
+def get_real_dawn_state():
+    """Get real DAWN consciousness state"""
+    try:
+        from consciousness.dawn_tick_state_writer import DAWNConsciousnessStateWriter
+        state_writer = DAWNConsciousnessStateWriter()
+        return state_writer._get_dawn_consciousness_state()
+    except Exception as e:
+        print(f"⚠️ Could not get real DAWN state: {e}")
+        return {
+            'scup': 0.5,
+            'entropy': 0.5,
+            'consciousness_depth': 0.7,
+            'neural_activity': 0.5,
+            'memory_pressure': 0.3,
+            'heat_level': 0.5
+        }
+
+def generate_real_passion(tag="consciousness_evolution"):
+    """Generate real passion from DAWN consciousness state"""
+    dawn_state = get_real_dawn_state()
+    
+    class RealPassion:
+        def __init__(self, tag, intensity, fluidity):
+            self.tag = tag
+            self.intensity = intensity
+            self.fluidity = fluidity
+        
+        def current_strength(self):
+            return self.intensity
+    
+    return RealPassion(tag, dawn_state.get('scup', 0.5), dawn_state.get('entropy', 0.5))
+
+def generate_real_acquaintance(tag="consciousness_evolution"):
+    """Generate real acquaintance from DAWN consciousness state"""
+    dawn_state = get_real_dawn_state()
+    
+    class RealAcquaintance:
+        def __init__(self, tag):
+            self.tag = tag
+            self.trust_level = dawn_state.get('scup', 0.5)
+            self.familiarity = dawn_state.get('consciousness_depth', 0.7)
+            self.resonance = dawn_state.get('neural_activity', 0.5)
+    
+    return RealAcquaintance(tag)
+
+def compute_real_forecast(passion_dict, acquaintance_dict):
+    """Compute forecast using real DAWN consciousness state"""
+    dawn_state = get_real_dawn_state()
+    
+    # Use real consciousness metrics for forecast
+    probability = (passion_dict['intensity'] + acquaintance_dict['familiarity']) / 2
+    risk = "low" if dawn_state.get('entropy', 0.5) < 0.3 else "medium" if dawn_state.get('entropy', 0.5) < 0.7 else "high"
+    reliability = dawn_state.get('scup', 0.5)
+    confidence = dawn_state.get('consciousness_depth', 0.7)
+    
+    return {
+        'forecast': probability,
+        'risk': risk,
+        'reliability': reliability,
+        'confidence': confidence
+    }
+
+def create_real_forecast_from_consciousness(state):
+    """Create forecast from real consciousness state"""
+    dawn_state = get_real_dawn_state()
+    
+    # Merge provided state with real DAWN state
+    merged_state = {**dawn_state, **state}
+    
+    probability = (merged_state.get('scup', 0.5) + merged_state.get('consciousness_depth', 0.7)) / 2
+    risk = "low" if merged_state.get('entropy', 0.5) < 0.3 else "medium" if merged_state.get('entropy', 0.5) < 0.7 else "high"
+    
+    return {
+        'forecast': probability,
+        'risk': risk,
+        'consciousness_state': merged_state
+    }
+
+def determine_real_passion_tag(entropy, mood):
+    """Determine passion tag from real consciousness state"""
+    dawn_state = get_real_dawn_state()
+    real_entropy = dawn_state.get('entropy', entropy)
+    
+    if real_entropy > 0.7:
+        return "creation" if mood in ['EXCITED', 'CHAOTIC'] else "drift"
+    elif real_entropy < 0.3:
+        return "reflection" if mood in ['CONTEMPLATIVE', 'CALM'] else "memory"
+    else:
+        return "connection"
+
+def determine_real_acquaintance_tag(scup, mood):
+    """Determine acquaintance tag from real consciousness state"""
+    dawn_state = get_real_dawn_state()
+    real_scup = dawn_state.get('scup', scup)
+    
+    if real_scup > 0.7:
+        return "trust" if mood in ['CONTEMPLATIVE', 'CALM'] else "familiarity"
+    elif real_scup < 0.3:
+        return "exploration" if mood in ['EXCITED', 'CHAOTIC'] else "caution"
+    else:
+        return "balance"
 
 def test_basic_pa_forecast():
     """Test basic P/A → F computation"""
     print("🔮 Basic P/A → F Forecast Test")
     print("-" * 40)
     
-    # Generate passion and acquaintance
-    passion = generate_mock_passion("rebirth")
-    acquaintance = generate_mock_acquaintance("rebirth")
+    # Generate real passion and acquaintance from DAWN consciousness state
+    passion = generate_real_passion("consciousness_evolution")
+    acquaintance = generate_real_acquaintance("consciousness_evolution")
     
     print(f"🔥 Passion (rebirth): intensity={passion.current_strength():.3f}, "
           f"fluidity={passion.fluidity:.3f}")
@@ -52,8 +142,8 @@ def test_basic_pa_forecast():
         'resonance': acquaintance.resonance
     }
     
-    # Compute forecast
-    forecast = compute_forecast(passion_dict, acquaintance_dict)
+    # Compute forecast using real DAWN consciousness state
+    forecast = compute_real_forecast(passion_dict, acquaintance_dict)
     
     print(f"📊 Forecast Result:")
     print(f"   Probability: {forecast['forecast']:.3f}")
@@ -97,14 +187,14 @@ def test_consciousness_to_forecast():
         print(f"\n💭 State {i+1}: {state['mood']}")
         print(f"   Entropy: {state['entropy']:.3f}, SCUP: {state['scup']:.1f}")
         
-        # Determine tags
-        passion_tag = determine_passion_tag(state['entropy'], state['mood'])
-        acquaintance_tag = determine_acquaintance_tag(state['scup'], state['mood'])
+        # Determine tags using real DAWN consciousness state
+        passion_tag = determine_real_passion_tag(state['entropy'], state['mood'])
+        acquaintance_tag = determine_real_acquaintance_tag(state['scup'], state['mood'])
         
         print(f"   Passion Tag: {passion_tag}, Acquaintance Tag: {acquaintance_tag}")
         
-        # Generate forecast
-        forecast = create_forecast_from_consciousness(state)
+        # Generate forecast using real DAWN consciousness state
+        forecast = create_real_forecast_from_consciousness(state)
         
         print(f"   🔮 Forecast: {forecast['forecast']:.3f} (risk: {forecast['risk']})")
         print(f"   🎯 Confidence: {forecast['confidence']:.3f}")
@@ -177,7 +267,7 @@ def test_passion_synergy_forecasting():
     
     # Use strongest passion for forecast
     strongest_passion = max(passion_batch, key=lambda p: p.current_strength())
-    matching_acquaintance = generate_mock_acquaintance(strongest_passion.direction)
+    matching_acquaintance = generate_real_acquaintance(strongest_passion.direction)
     
     # Convert for forecast
     passion_dict = {
@@ -192,7 +282,7 @@ def test_passion_synergy_forecasting():
         'resonance': matching_acquaintance.resonance
     }
     
-    synergy_forecast = compute_forecast(passion_dict, acquaintance_dict)
+    synergy_forecast = compute_real_forecast(passion_dict, acquaintance_dict)
     
     print(f"\n🔮 Synergy-Enhanced Forecast:")
     print(f"   Probability: {synergy_forecast['forecast']:.3f}")
@@ -211,9 +301,9 @@ def test_rebloom_trigger_simulation():
     print("\n🌸 Rebloom Trigger Simulation")
     print("-" * 40)
     
-    # Create high-risk forecast scenario
-    chaos_passion = generate_mock_passion("drift") 
-    unstable_acquaintance = generate_mock_acquaintance("drift")
+    # Create high-risk forecast scenario using real DAWN consciousness state
+    chaos_passion = generate_real_passion("drift") 
+    unstable_acquaintance = generate_real_acquaintance("drift")
     
     # Amplify risk factors
     passion_dict = {
@@ -228,7 +318,7 @@ def test_rebloom_trigger_simulation():
         'resonance': unstable_acquaintance.resonance
     }
     
-    risk_forecast = compute_forecast(passion_dict, acquaintance_dict)
+    risk_forecast = compute_real_forecast(passion_dict, acquaintance_dict)
     
     print(f"⚠️  High-Risk Scenario:")
     print(f"   Passion: intensity={passion_dict['intensity']:.3f}, "

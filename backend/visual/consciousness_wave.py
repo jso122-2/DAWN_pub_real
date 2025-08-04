@@ -6,7 +6,7 @@ Visualizes the wave-like patterns of consciousness states
 import numpy as np
 import matplotlib.pyplot as plt
 from typing import Dict, Optional
-from .base_visualizer import BaseVisualizer
+from ...base_visualizer import BaseVisualizer
 import time
 
 class ConsciousnessWaveVisualizer(BaseVisualizer):

@@ -16,7 +16,7 @@ from simulate_pulse_drift import simulate_pulse_drift
 from simulate_claude_burst import ClaudeBurstSimulator
 from simulate_owl_read import OwlReadSimulator
 from simulate_bloom_cycle import BloomCycleSimulator
-from tests.simulate_tracer_tick import simulate_tracer_tick
+from .simulate_tracer_tick import simulate_tracer_tick
 
 # Constants
 LOGS_DIR = "logs"

@@ -10,7 +10,7 @@ from typing import Dict, List, Any, Optional
 import logging
 from datetime import datetime
 
-from ..models import CursorState, KANTopology
+from ...models import CursorState, KANTopology
 from ..cursor.function_navigator import FunctionNavigator
 
 

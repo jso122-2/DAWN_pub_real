@@ -1,6 +1,6 @@
 from typing import Dict, Any, List
 from dataclasses import dataclass
-from .base import EvaluationLayer, ReflexState, RebloomMode
+from ...base import EvaluationLayer, ReflexState, RebloomMode
 
 @dataclass
 class SemanticSignal:

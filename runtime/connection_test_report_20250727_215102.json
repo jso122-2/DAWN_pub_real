@@ -1,0 +1,40 @@
+{
+  "timestamp": "2025-07-27T21:51:02.820246",
+  "results": {
+    "backend": {
+      "status": "not_running",
+      "processes": []
+    },
+    "mmap": {
+      "status": "found",
+      "files": [
+        {
+          "name": "dawn_consciousness.mmap",
+          "size": 8192064,
+          "modified": "2025-07-27T17:22:29.588454",
+          "age_seconds": 16110.114414453506
+        }
+      ]
+    },
+    "tauri": {
+      "status": "not_running",
+      "gui_found": true
+    },
+    "visuals": {
+      "status": "missing",
+      "component": "visual_trigger.py"
+    },
+    "enhanced_visuals": {
+      "status": "missing",
+      "component": "enhanced_visual_engine.py"
+    },
+    "data_flow": {
+      "status": "no_data"
+    }
+  },
+  "summary": {
+    "working_systems": 1,
+    "total_systems": 6,
+    "overall_health": "needs_attention"
+  }
+}

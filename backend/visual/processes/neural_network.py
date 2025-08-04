@@ -1,6 +1,6 @@
 import numpy as np
 import cv2
-from ..base_visual import BaseVisualProcess
+from ...base_visual import BaseVisualProcess
 
 class VisualProcess(BaseVisualProcess):
     """Neural network visualization process."""

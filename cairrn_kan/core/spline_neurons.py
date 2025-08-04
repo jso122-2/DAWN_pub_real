@@ -19,7 +19,7 @@ try:
     from models import SplineFunction, CachedGlyph, SplineNeuron
 except ImportError:
     # Fallback import structure
-    from ..models import SplineFunction, CachedGlyph, SplineNeuron
+    from ...models import SplineFunction, CachedGlyph, SplineNeuron
 
 
 class LearnableSplineFunction(SplineFunction):

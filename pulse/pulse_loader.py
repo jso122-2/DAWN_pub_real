@@ -9,8 +9,8 @@ import logging
 from typing import Tuple, Optional, Dict, Any
 from pathlib import Path
 
-from .pulse_layer import UnifiedPulseHeat
-from .scup_tracker import SCUPTracker
+from ...pulse_layer import UnifiedPulseHeat
+from ...scup_tracker import SCUPTracker
 
 # Configure logging
 logging.basicConfig(

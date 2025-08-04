@@ -8,10 +8,10 @@ This package contains the reflex components for the DAWN consciousness system:
 - FractalColorizer: Mood-color mapping and visualization
 """
 
-from .reflex_executor import ReflexExecutor
-from .symbolic_notation import SymbolicNotation, NotationMode
-from .owl_panel import OwlPanel, OwlCommentType, OwlEntry
-from .fractal_colorizer import FractalColorizer, ColorSpace
+from ...reflex_executor import ReflexExecutor
+from ...symbolic_notation import SymbolicNotation, NotationMode
+from ...owl_panel import OwlPanel, OwlCommentType, OwlEntry
+from ...fractal_colorizer import FractalColorizer, ColorSpace
 
 __version__ = "1.0.0"
 __author__ = "DAWN Consciousness System"

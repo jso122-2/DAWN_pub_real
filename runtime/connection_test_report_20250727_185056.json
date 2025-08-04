@@ -1,0 +1,40 @@
+{
+  "timestamp": "2025-07-27T18:50:56.316289",
+  "results": {
+    "backend": {
+      "status": "not_running",
+      "processes": []
+    },
+    "mmap": {
+      "status": "found",
+      "files": [
+        {
+          "name": "dawn_consciousness.mmap",
+          "size": 8192064,
+          "modified": "2025-07-27T17:22:29.588454",
+          "age_seconds": 5294.578957557678
+        }
+      ]
+    },
+    "tauri": {
+      "status": "not_running",
+      "gui_found": true
+    },
+    "visuals": {
+      "status": "partial",
+      "error": "Script attention_map did not generate output file\nScript correlation_matrix did not generate output file\nScript state_transition_graph did not generate output file\nTraceback (most recent call last):\n  File \"\\\\wsl$\\Ubuntu\\root\\DAWN_Vault\\Tick_engine\\Tick_engine\\visual_trigger.py\", line 286, in <module>\n    print(f\"\\u2705 Rendered {len(rendered)} visualizations:\")\n  File \"C:\\Users\\Admin\\anaconda3\\Lib\\encodings\\cp1252.py\", line 19, in encode\n    return codecs.charmap_encode(input,self.errors,encoding_table)[0]\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nUnicodeEncodeError: 'charmap' codec can't encode character '\\u2705' in position 0: character maps to <undefined>\n"
+    },
+    "enhanced_visuals": {
+      "status": "partial",
+      "error": "2025-07-27 18:50:52,569 - numexpr.utils - INFO - Note: NumExpr detected 12 cores but \"NUMEXPR_MAX_THREADS\" not set, so enforcing safe limit of 8.\n2025-07-27 18:50:52,569 - numexpr.utils - INFO - NumExpr defaulting to 8 threads.\nTraceback (most recent call last):\n  File \"\\\\wsl$\\Ubuntu\\root\\DAWN_Vault\\Tick_engine\\Tick_engine\\enhanced_visual_engine.py\", line 957, in <module>\n    main() \n    ^^^^^^\n  File \"\\\\wsl$\\Ubuntu\\root\\DAWN_Vault\\Tick_engine\\Tick_engine\\enhanced_visual_engine.py\", line 937, in main\n    print(f\"\\U0001f3a8 Generating enhanced visual snapshot...\")\n  File \"C:\\Users\\Admin\\anaconda3\\Lib\\encodings\\cp1252.py\", line 19, in encode\n    return codecs.charmap_encode(input,self.errors,encoding_table)[0]\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nUnicodeEncodeError: 'charmap' codec can't encode character '\\U0001f3a8' in position 0: character maps to <undefined>\n"
+    },
+    "data_flow": {
+      "status": "no_data"
+    }
+  },
+  "summary": {
+    "working_systems": 1,
+    "total_systems": 6,
+    "overall_health": "needs_attention"
+  }
+}

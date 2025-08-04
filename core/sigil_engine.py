@@ -17,7 +17,7 @@ from datetime import datetime, timedelta
 
 # Import DAWN Pulse Controller
 try:
-    from .pulse_controller import PulseController
+    from ...pulse_controller import PulseController
     PULSE_CONTROLLER_AVAILABLE = True
 except ImportError:
     print("⚠️ Pulse Controller not available, using fallback")
@@ -25,8 +25,8 @@ except ImportError:
     PulseController = None
 
 # Import existing components
-from ..schema.sigil import Sigil
-from ..pulse.scup_tracker import SCUPTracker
+from schema.sigil import Sigil
+from pulse.scup_tracker import SCUPTracker
 
 # Sigil trace logging
 try:

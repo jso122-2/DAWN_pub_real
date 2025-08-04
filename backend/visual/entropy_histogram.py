@@ -6,7 +6,7 @@ Visualizes the distribution of entropy values in the system
 import numpy as np
 import matplotlib.pyplot as plt
 from typing import Dict, Optional
-from .base_visualizer import BaseVisualizer
+from ...base_visualizer import BaseVisualizer
 
 class EntropyHistogramVisualizer(BaseVisualizer):
     def __init__(self):

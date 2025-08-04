@@ -6,7 +6,7 @@ Visualizes system metrics in a radar/spider chart format
 import numpy as np
 import matplotlib.pyplot as plt
 from typing import Dict, Optional, List
-from .base_visualizer import BaseVisualizer
+from ...base_visualizer import BaseVisualizer
 
 class MetricsRadarVisualizer(BaseVisualizer):
     def __init__(self):

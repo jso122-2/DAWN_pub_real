@@ -10,7 +10,7 @@ from typing import Dict, List, Any, Optional, Tuple
 from datetime import datetime
 import logging
 
-from ..models import KANTopology, SplineNeuron, KANConfig
+from ...models import KANTopology, SplineNeuron, KANConfig
 
 
 class KANTopologyManager:

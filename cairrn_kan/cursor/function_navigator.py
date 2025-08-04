@@ -22,8 +22,8 @@ try:
     from cursor.interpretability import SplineInterpreter
 except ImportError:
     # Fallback import structure
-    from ..models import CursorState, FunctionPath, NavigationResult, NavigationStep, KANTopology
-    from ..core.spline_neurons import SplineNeuronManager
+    from ...models import CursorState, FunctionPath, NavigationResult, NavigationStep, KANTopology
+    from core.spline_neurons import SplineNeuronManager
     from ..cursor.interpretability import SplineInterpreter
 
 

@@ -1,7 +1,7 @@
 # /bloom_core/synthesis_logic.py
 
 from rhizome.rhizome_pathfinder import find_path
-from .spawn_bloom import spawn_bloom
+from ...spawn_bloom import spawn_bloom
 
 SYNTHESIS_THRESHOLD = 2.5
 REINFORCEMENT_TRACKER = {}

@@ -740,7 +740,7 @@ class DAWNConsciousness:
     def _initialize_tick_engine(self):
         """Initialize the DAWN autonomous cognitive tick engine."""
         try:
-            from .tick_loop import integrate_tick_engine
+            from ...tick_loop import integrate_tick_engine
             
             # Initialize tick engine with full consciousness integration
             self.tick_engine = integrate_tick_engine(self)

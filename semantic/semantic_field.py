@@ -16,11 +16,11 @@ from backend.cognitive.mood_urgency_probe import get_mood_probe
 from backend.cognitive.entropy_fluctuation import get_entropy_fluctuation
 from backend.cognitive.qualia_kernel import get_qualia_kernel
 from pulse.pulse_heat import pulse, PulseHeat, add_heat
-from .field_types import (
+from ...field_types import (
     NodeCharge, SemanticVector, RhizomicConnection, 
     SemanticNode, RhizomicSemanticField
 )
-from .field_initializer import (
+from ...field_initializer import (
     get_current_field,
     add_concept,
     activate_pathway,

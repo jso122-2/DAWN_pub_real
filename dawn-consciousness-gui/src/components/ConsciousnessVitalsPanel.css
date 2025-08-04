@@ -1,0 +1,298 @@
+.consciousness-vitals-panel {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.panel-header h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.tick-counter {
+  background: rgba(0, 255, 136, 0.2);
+  color: #00ff88;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.vitals-grid {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  padding: 16px;
+  overflow-y: auto;
+}
+
+.vital-card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 12px;
+  backdrop-filter: blur(10px);
+  transition: all 0.2s;
+}
+
+.vital-card:hover {
+  border-color: rgba(0, 255, 136, 0.3);
+  box-shadow: 0 0 10px rgba(0, 255, 136, 0.1);
+}
+
+.vital-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.vital-icon {
+  font-size: 16px;
+}
+
+.vital-label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #cccccc;
+}
+
+.vital-value {
+  font-size: 16px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+/* Entropy Graph */
+.entropy-card .vital-graph {
+  height: 60px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.entropy-card svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* Thermal Indicator */
+.thermal-card .thermal-indicator {
+  height: 20px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
+  overflow: hidden;
+  position: relative;
+}
+
+.thermal-bar {
+  height: 100%;
+  border-radius: 10px;
+  transition: width 0.5s ease;
+  position: relative;
+}
+
+.thermal-bar::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.3) 50%, transparent 100%);
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+/* SCUP Visualization */
+.scup-card .scup-visualization {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 80px;
+}
+
+.scup-circle {
+  position: relative;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.3);
+  border: 3px solid rgba(255, 255, 255, 0.2);
+}
+
+.scup-fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: conic-gradient(from 0deg, currentColor 0deg, transparent 0deg);
+  transition: transform 0.5s ease;
+}
+
+.scup-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 12px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+/* Rebloom Indicator */
+.rebloom-card .rebloom-indicator {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 40px;
+}
+
+.rebloom-dots {
+  display: flex;
+  gap: 8px;
+}
+
+.rebloom-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  transition: all 0.3s ease;
+}
+
+.rebloom-dot.active {
+  background: #00ff88;
+  box-shadow: 0 0 8px rgba(0, 255, 136, 0.5);
+  animation: pulse 1s infinite;
+}
+
+/* Zone Indicator */
+.zone-card .zone-indicator {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 40px;
+}
+
+.zone-light {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+
+/* Mood Indicator */
+.mood-card .mood-indicator {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 40px;
+}
+
+.mood-pulse {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  animation: pulse 1.5s infinite;
+}
+
+/* Zone Value Colors */
+.zone-value {
+  font-weight: 600;
+}
+
+.zone-value[style*="STABLE"] {
+  color: #00ff88;
+}
+
+.zone-value[style*="ACTIVE"] {
+  color: #ffaa00;
+}
+
+.zone-value[style*="CRITICAL"] {
+  color: #ff4444;
+}
+
+/* Mood Value Colors */
+.mood-value {
+  font-weight: 600;
+}
+
+.mood-value[style*="FOCUSED"] {
+  color: #00ff88;
+}
+
+.mood-value[style*="CONTEMPLATIVE"] {
+  color: #0088ff;
+}
+
+.mood-value[style*="DREAMING"] {
+  color: #8800ff;
+}
+
+/* Footer */
+.vitals-footer {
+  padding: 12px 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.last-update {
+  font-size: 12px;
+  color: #888888;
+  text-align: center;
+}
+
+/* Animations */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.1);
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .vitals-grid {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    padding: 12px;
+  }
+  
+  .vital-card {
+    padding: 8px;
+  }
+  
+  .scup-circle {
+    width: 50px;
+    height: 50px;
+  }
+  
+  .scup-text {
+    font-size: 10px;
+  }
+} 

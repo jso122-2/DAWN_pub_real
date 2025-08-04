@@ -19,7 +19,7 @@ try:
     from models import CachedGlyph, SplineNeuron, NavigationStep
 except ImportError:
     # Fallback import structure
-    from ..models import CachedGlyph, SplineNeuron, NavigationStep
+    from ...models import CachedGlyph, SplineNeuron, NavigationStep
 
 
 class SplineInterpreter:

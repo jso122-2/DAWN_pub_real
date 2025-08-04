@@ -3,7 +3,7 @@
 Rhizome Module - Network pathfinding and graph operations for DAWN
 """
 
-from .rhizome_pathfinder import (
+from ...rhizome_pathfinder import (
     # Core classes
     RhizomeNetwork,
     RhizomePathfinder,

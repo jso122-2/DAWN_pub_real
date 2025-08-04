@@ -11,7 +11,7 @@ import logging
 from datetime import datetime, timedelta
 import asyncio
 
-from ..models import KANTopology, SplineNeuron, CairrConfig
+from ...models import KANTopology, SplineNeuron, CairrConfig
 
 
 class EntropyEngine:

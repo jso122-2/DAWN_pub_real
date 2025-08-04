@@ -82,8 +82,9 @@ class DAWNUnifiedLauncher:
         self._try_import_component("complete_system", 
                                  "integration.complete_dawn_system_integration", "integrate_complete_dawn_system")
         
-        # GUI components
-        self._try_import_component("gui", "gui.dawn_gui_tk", "DAWNGui")
+        # GUI components - try multiple locations
+        self._try_import_component("gui", "BP.fractal_canvas", "DAWNGui")
+        self._try_import_component("gui_alt", "demo_scripts.integrate_log_manager_example", "DAWNGui")
         self._try_import_component("tkinter", "tkinter", "Tk")
         
         # Show detection results
@@ -221,21 +222,37 @@ class DAWNUnifiedLauncher:
     
     def _start_gui(self):
         """Start GUI if available"""
-        if not (self.components.get("gui", {}).get("available") and 
-                self.components.get("tkinter", {}).get("available")):
+        if not self.components.get("tkinter", {}).get("available"):
+            return False
+        
+        # Try to find an available GUI component
+        gui_component = None
+        if self.components.get("gui", {}).get("available"):
+            gui_component = "gui"
+        elif self.components.get("gui_alt", {}).get("available"):
+            gui_component = "gui_alt"
+        
+        if not gui_component:
             return False
         
         try:
             print("🖥️ Starting consciousness visualization...")
             
             import tkinter as tk
-            gui_class = self.components["gui"]["class"]
+            gui_class = self.components[gui_component]["class"]
             
             self.root = tk.Tk()
             self.root.title("DAWN Unified Consciousness")
             self.root.geometry("1200x800")
             
-            self.gui = gui_class(self.root, external_queue=self.data_queue)
+            # Try to initialize GUI with different parameter sets
+            try:
+                self.gui = gui_class(self.root, external_queue=self.data_queue)
+            except TypeError:
+                try:
+                    self.gui = gui_class(self.root)
+                except TypeError:
+                    self.gui = gui_class()
             
             # Add unified control panel
             self._add_unified_controls()

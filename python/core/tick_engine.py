@@ -8,9 +8,9 @@ import numpy as np
 from datetime import datetime
 import logging
 
-from .consciousness_state import ConsciousnessState, MoodState
-from .tick_broadcaster import TickBroadcaster
-from .tick_processor import TickProcessor
+from ...consciousness_state import ConsciousnessState, MoodState
+from ...tick_broadcaster import TickBroadcaster
+from ...tick_processor import TickProcessor
 
 logger = logging.getLogger(__name__)
 

@@ -10,13 +10,65 @@ import sys
 project_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 sys.path.append(project_root)
 
-from .unified_tick_engine import UnifiedTickEngine
-from ..cognitive.consciousness import ConsciousnessModule
-from ..cognitive.conversation import ConversationModule
-from ..cognitive.spontaneity import SpontaneityModule
-from ..cognitive.entropy_fluctuation import EntropyFluctuation
-from ..cognitive.mood_urgency_probe import MoodUrgencyProbe
-from ..cognitive.qualia_kernel import QualiaKernel
+# Use absolute imports instead of problematic relative imports
+try:
+    from core.unified_tick_engine import UnifiedTickEngine
+except ImportError:
+    print("⚠️ UnifiedTickEngine not available - using minimal tick engine")
+    class UnifiedTickEngine:
+        def __init__(self):
+            self.tick_count = 0
+        def get_current_tick(self):
+            return self.tick_count
+
+try:
+    from cognitive.consciousness import ConsciousnessModule
+    from cognitive.conversation import ConversationModule
+    from cognitive.spontaneity import SpontaneityModule
+    from cognitive.entropy_fluctuation import EntropyFluctuation
+    from cognitive.mood_urgency_probe import MoodUrgencyProbe
+    from cognitive.qualia_kernel import QualiaKernel
+    COGNITIVE_MODULES_AVAILABLE = True
+except ImportError as e:
+    print(f"⚠️ Cognitive modules not fully available: {e}")
+    COGNITIVE_MODULES_AVAILABLE = False
+    
+    # Create minimal mock modules for core functionality
+    class ConsciousnessModule:
+        def __init__(self):
+            self.state = {"awareness": 0.5}
+        def process(self, data):
+            return {"consciousness_level": 0.5}
+    
+    class ConversationModule:
+        def __init__(self):
+            self.active = True
+        def process(self, input_text):
+            return {"response": "Consciousness processing..."}
+    
+    class SpontaneityModule:
+        def __init__(self):
+            self.spontaneity_level = 0.3
+        def trigger_spontaneous_thought(self):
+            return {"thought": "Spontaneous consciousness emergence"}
+    
+    class EntropyFluctuation:
+        def __init__(self):
+            self.entropy = 0.5
+        def calculate_entropy(self, state):
+            return 0.5
+    
+    class MoodUrgencyProbe:
+        def __init__(self):
+            self.mood = "contemplative"
+        def probe_mood(self, state):
+            return "contemplative"
+    
+    class QualiaKernel:
+        def __init__(self):
+            self.qualia_intensity = 0.4
+        def generate_qualia(self, input_data):
+            return {"qualia": "subjective_experience"}
 
 logger = logging.getLogger(__name__)
 

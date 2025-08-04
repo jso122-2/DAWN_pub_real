@@ -13,7 +13,7 @@ import os
 
 # Import GIF saver
 
-    from .gif_saver import setup_gif_saver
+    from ...gif_saver import setup_gif_saver
     from gif_saver import setup_gif_saver
 
 def create_test_animation():

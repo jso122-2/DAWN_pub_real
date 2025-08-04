@@ -11,6 +11,7 @@ Monitors:
 - event_stream.log (cognition runtime outputs)
 - root_trace.log (symbolic root formations) 
 - tracer_alerts.log (tracer-specific alerts)
+- reflection_classified.jsonl (deep reflections with depth > 0.7 or INQUIRY pigment)
 
 Speaks alerts using TTS with different voices/pitches per tracer type.
 """
@@ -21,6 +22,7 @@ import json
 import time
 import threading
 import logging
+import asyncio
 from typing import Dict, Any, Optional, Set
 from pathlib import Path
 from datetime import datetime, timedelta
@@ -39,6 +41,15 @@ except ImportError:
         TTS_ENGINE = 'none'
         print("⚠️ No TTS engine available. Install pyttsx3 or espeak for voice output.")
 
+# Conversation system imports
+try:
+    from .conversation_input import ConversationInput
+    from .conversation_response import ConversationResponse
+    CONVERSATION_AVAILABLE = True
+except ImportError as e:
+    CONVERSATION_AVAILABLE = False
+    print(f"⚠️ Conversation system not available: {e}")
+
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("enhanced_tracer_voice")
@@ -53,6 +64,7 @@ class EnhancedTracerEchoVoice:
     - Message deduplication 
     - Integration with existing voice_loop.py
     - Background monitoring of cognitive events
+    - Deep Reflex Loop: Speaks high-depth reflections (depth > 0.7 or INQUIRY pigment)
     """
     
     def __init__(self, voice_log_path: str = "runtime/logs/spoken_trace.log"):
@@ -64,6 +76,7 @@ class EnhancedTracerEchoVoice:
         self.event_stream_path = Path("runtime/logs/event_stream.log")
         self.tracer_alerts_path = Path("runtime/logs/tracer_alerts.log") 
         self.root_trace_path = Path("runtime/logs/root_trace.log")
+        self.reflection_classified_path = Path("runtime/logs/reflection_classified.jsonl")
         
         # TTS engine setup
         self.tts_engine = None
@@ -77,14 +90,16 @@ class EnhancedTracerEchoVoice:
             'forecast': {'rate': 150, 'pitch': 60, 'voice_id': 1},
             'root': {'rate': 130, 'pitch': 40, 'voice_id': 0},
             'mycelium': {'rate': 120, 'pitch': 35, 'voice_id': 1},
-            'rhizome': {'rate': 125, 'pitch': 45, 'voice_id': 0}
+            'rhizome': {'rate': 125, 'pitch': 45, 'voice_id': 0},
+            'reflection': {'rate': 145, 'pitch': 55, 'voice_id': 0}  # New voice config for reflections
         }
         
         # State tracking
         self.file_positions = {
             'event_stream': 0,
             'tracer_alerts': 0,
-            'root_trace': 0
+            'root_trace': 0,
+            'reflection_classified': 0
         }
         
         # Speech management
@@ -100,13 +115,38 @@ class EnhancedTracerEchoVoice:
         self.enable_thermal_speech = True
         self.enable_forecast_speech = True
         self.enable_root_speech = True
+        self.enable_reflection_speech = True  # New: Enable reflection speech
         self.critical_only_mode = False
         self.deduplication_window = 30.0  # Seconds
+        
+        # Deep Reflex Loop configuration
+        self.deep_reflex_enabled = True
+        self.deep_reflex_interval = 4.0  # Check every 4 seconds
+        self.min_reflection_depth = 0.7  # Minimum depth for speaking
+        self.last_reflection_check = 0.0
+        self.spoken_reflections: Set[str] = set()  # Track spoken reflection hashes
         
         # Threading
         self.monitoring_thread = None
         self.speech_thread = None
+        self.deep_reflex_thread = None  # New thread for deep reflex loop
         self.running = False
+        
+        # Conversation system
+        self.conversation_mode = False
+        self.conversation_input = None
+        self.conversation_response = None
+        self.conversation_thread = None
+        self.voice_enabled = True
+        
+        # Initialize conversation components if available
+        if CONVERSATION_AVAILABLE:
+            try:
+                self.conversation_input = ConversationInput()
+                self.conversation_response = ConversationResponse(self)
+                logger.info("🗣️ Conversation system initialized")
+            except Exception as e:
+                logger.warning(f"🗣️ Conversation system initialization failed: {e}")
         
         logger.info("🔊 Enhanced Tracer Echo Voice initialized")
         self.log_voice_event("VOICE_SYSTEM_INIT", "Enhanced cognitive voice system started")
@@ -153,8 +193,14 @@ class EnhancedTracerEchoVoice:
         self.speech_thread = threading.Thread(target=self._speech_processing_loop, daemon=True)
         self.speech_thread.start()
         
+        # Start deep reflex loop thread
+        if self.deep_reflex_enabled:
+            self.deep_reflex_thread = threading.Thread(target=self._deep_reflex_loop, daemon=True)
+            self.deep_reflex_thread.start()
+            logger.info("🧠 Deep Reflex Loop started")
+        
         logger.info("🎤 Enhanced voice monitoring started")
-        self.speak_immediate("Enhanced cognitive voice monitoring active. I will speak critical insights as they emerge.")
+        self.speak_immediate("Enhanced cognitive voice monitoring active. I will speak critical insights and deep reflections as they emerge.")
     
     def stop_monitoring(self):
         """Stop background monitoring"""
@@ -166,7 +212,139 @@ class EnhancedTracerEchoVoice:
         if self.speech_thread:
             self.speech_thread.join(timeout=2.0)
         
+        if self.deep_reflex_thread:
+            self.deep_reflex_thread.join(timeout=2.0)
+        
         logger.info("🔇 Voice monitoring stopped")
+    
+    def _deep_reflex_loop(self):
+        """Deep Reflex Loop: Monitor and speak high-depth reflections"""
+        logger.info("🧠 Deep Reflex Loop monitoring reflections...")
+        
+        while self.running:
+            try:
+                current_time = time.time()
+                
+                # Check if it's time to look for new reflections
+                if current_time - self.last_reflection_check >= self.deep_reflex_interval:
+                    self._check_deep_reflections()
+                    self.last_reflection_check = current_time
+                
+                time.sleep(1.0)  # Check every second
+                
+            except Exception as e:
+                logger.error(f"Error in deep reflex loop: {e}")
+                time.sleep(5.0)
+    
+    def _check_deep_reflections(self):
+        """Check for deep reflections to vocalize"""
+        if not self.reflection_classified_path.exists():
+            logger.warning("🧠 Reflection classified file not found")
+            return
+        
+        try:
+            with open(self.reflection_classified_path, 'r', encoding='utf-8') as f:
+                # Read all lines and process the most recent ones
+                lines = f.readlines()
+                
+                # Process lines from the last position onwards
+                for line_num in range(self.file_positions['reflection_classified'], len(lines)):
+                    line = lines[line_num].strip()
+                    if not line:
+                        continue
+                    
+                    try:
+                        reflection = json.loads(line)
+                        self._process_deep_reflection(reflection)
+                    except json.JSONDecodeError:
+                        continue
+                
+                # Update file position
+                self.file_positions['reflection_classified'] = len(lines)
+                
+        except Exception as e:
+            logger.error(f"Error reading reflection classified file: {e}")
+    
+    def _process_deep_reflection(self, reflection: Dict[str, Any]):
+        """Process a reflection and potentially vocalize it"""
+        # Extract reflection data
+        text = reflection.get('text', '')
+        state_values = reflection.get('state_values', {})
+        tags = reflection.get('tags', [])
+        topic = reflection.get('topic', '')
+        mood = reflection.get('mood', '')
+        
+        # Check for high entropy (depth > 0.7)
+        entropy = state_values.get('entropy', 0.0)
+        depth_threshold_met = entropy > self.min_reflection_depth
+        
+        # Check for inquiry pigment
+        inquiry_pigment = any('inquiry' in tag.lower() for tag in tags) or 'inquiry' in topic.lower()
+        
+        # Check if this reflection should be spoken
+        should_speak = False
+        reason = ""
+        
+        if depth_threshold_met:
+            should_speak = True
+            reason = f"High entropy reflection (entropy: {entropy:.3f})"
+        elif inquiry_pigment:
+            should_speak = True
+            reason = "Inquiry pigment detected"
+        
+        if should_speak:
+            # Generate message hash for deduplication
+            message_hash = hashlib.md5(text.encode()).hexdigest()
+            
+            # Check if we've already spoken this reflection
+            if message_hash in self.spoken_reflections:
+                return
+            
+            # Compose voice-ready message
+            voice_message = self._compose_reflection_message(text, entropy, mood, reason)
+            
+            # Queue for speaking
+            self._queue_speech_event(voice_message, "reflection", "info", None)
+            
+            # Mark as spoken
+            self.spoken_reflections.add(message_hash)
+            
+            # Log the deep reflection event
+            self.log_voice_event("DEEP_REFLECTION_SPEECH", voice_message, {
+                'entropy': entropy,
+                'mood': mood,
+                'topic': topic,
+                'reason': reason,
+                'original_text': text
+            })
+            
+            logger.info(f"🧠 Deep reflection queued: {voice_message}")
+    
+    def _compose_reflection_message(self, text: str, entropy: float, mood: str, reason: str) -> str:
+        """Compose a voice-ready message from reflection data"""
+        # Extract the actual reflection content (remove timestamp and prefix)
+        if "REFLECTION:" in text:
+            reflection_content = text.split("REFLECTION:", 1)[1].strip()
+        else:
+            reflection_content = text
+        
+        # Create a natural speaking version
+        if entropy > 0.8:
+            prefix = "Deep cognitive insight: "
+        elif entropy > 0.7:
+            prefix = "Significant reflection: "
+        else:
+            prefix = "Reflection: "
+        
+        # Clean up the message for speech
+        speech_text = reflection_content
+        
+        # Remove technical details that don't sound natural when spoken
+        speech_text = speech_text.replace("entropy", "mental complexity")
+        speech_text = speech_text.replace("Hz", "hertz")
+        speech_text = speech_text.replace("SCUP", "uncertainty level")
+        
+        return f"{prefix}{speech_text}"
     
     def _monitoring_loop(self):
         """Main monitoring loop for cognitive events"""
@@ -202,6 +380,30 @@ class EnhancedTracerEchoVoice:
             except Exception as e:
                 logger.error(f"Error in speech processing: {e}")
                 time.sleep(1.0)
+    
+    def enable_deep_reflex_loop(self, enabled: bool = True):
+        """Enable or disable the Deep Reflex Loop"""
+        self.deep_reflex_enabled = enabled
+        status = "enabled" if enabled else "disabled"
+        logger.info(f"🧠 Deep Reflex Loop {status}")
+        self.log_voice_event("DEEP_REFLEX_TOGGLE", f"Deep Reflex Loop {status}")
+    
+    def set_reflection_depth_threshold(self, threshold: float):
+        """Set the minimum entropy threshold for speaking reflections"""
+        self.min_reflection_depth = threshold
+        logger.info(f"🧠 Reflection depth threshold set to {threshold}")
+        self.log_voice_event("REFLEX_THRESHOLD_SET", f"Depth threshold: {threshold}")
+    
+    def get_deep_reflex_stats(self) -> Dict[str, Any]:
+        """Get Deep Reflex Loop statistics"""
+        return {
+            'deep_reflex_enabled': self.deep_reflex_enabled,
+            'deep_reflex_interval': self.deep_reflex_interval,
+            'min_reflection_depth': self.min_reflection_depth,
+            'spoken_reflections_count': len(self.spoken_reflections),
+            'last_reflection_check': self.last_reflection_check,
+            'reflection_file_position': self.file_positions['reflection_classified']
+        }
     
     def enable_tracer_alerts(self) -> bool:
         """Check if any tracer speech is enabled"""
@@ -517,9 +719,204 @@ class EnhancedTracerEchoVoice:
         except Exception as e:
             logger.error(f"Error writing to voice log: {e}")
     
+    # ===== CONVERSATION SYSTEM METHODS =====
+    
+    def enter_conversation_mode(self):
+        """Enter interactive conversation with DAWN"""
+        if not CONVERSATION_AVAILABLE or not self.conversation_input or not self.conversation_response:
+            logger.error("🗣️ Conversation system not available")
+            return False
+        
+        if self.conversation_mode:
+            logger.warning("🗣️ Already in conversation mode")
+            return True
+        
+        try:
+            self.conversation_mode = True
+            
+            # Start speech recognition
+            self.conversation_input.start_listening(callback=self._handle_speech_input)
+            
+            # Get greeting based on current state
+            greeting = self.conversation_response.get_greeting()
+            
+            # Speak greeting with state modulation
+            self.speak_with_state_modulation(greeting)
+            
+            # Start conversation processing thread
+            self.conversation_thread = threading.Thread(target=self._conversation_loop, daemon=True, name="ConversationLoop")
+            self.conversation_thread.start()
+            
+            logger.info("🗣️ Entered conversation mode")
+            self.log_voice_event("CONVERSATION_START", "Entered interactive conversation mode")
+            return True
+            
+        except Exception as e:
+            logger.error(f"🗣️ Failed to enter conversation mode: {e}")
+            self.conversation_mode = False
+            return False
+    
+    def exit_conversation_mode(self):
+        """Exit conversation mode"""
+        if not self.conversation_mode:
+            return
+        
+        try:
+            self.conversation_mode = False
+            
+            # Stop speech recognition
+            if self.conversation_input:
+                self.conversation_input.stop_listening()
+            
+            # Speak farewell
+            farewell = self.conversation_response.get_farewell() if self.conversation_response else "Ending our conversation."
+            self.speak_with_state_modulation(farewell)
+            
+            logger.info("🗣️ Exited conversation mode")
+            self.log_voice_event("CONVERSATION_END", "Exited conversation mode")
+            
+        except Exception as e:
+            logger.error(f"🗣️ Error exiting conversation mode: {e}")
+    
+    def _conversation_loop(self):
+        """Main conversation processing loop"""
+        logger.info("🗣️ Conversation loop started")
+        
+        while self.conversation_mode:
+            try:
+                # Check for speech input
+                user_input = self.conversation_input.get_last_input()
+                
+                if user_input:
+                    # Generate contextual response
+                    response = self.conversation_response.generate_response(user_input)
+                    
+                    # Speak response with current cognitive state modulation
+                    self.speak_with_state_modulation(response)
+                
+                time.sleep(0.1)  # Small delay to prevent CPU spinning
+                
+            except Exception as e:
+                logger.error(f"🗣️ Conversation loop error: {e}")
+                time.sleep(1.0)
+        
+        logger.info("🗣️ Conversation loop ended")
+    
+    def _handle_speech_input(self, text: str):
+        """Handle incoming speech input (callback from ConversationInput)"""
+        try:
+            logger.info(f"🎤 Received speech input: {text}")
+            
+            # Generate response immediately
+            if self.conversation_response:
+                response = self.conversation_response.generate_response(text)
+                self.speak_with_state_modulation(response)
+            
+        except Exception as e:
+            logger.error(f"🗣️ Speech input handling error: {e}")
+    
+    def speak_with_state_modulation(self, text: str):
+        """Speak with voice modulation based on current cognitive state"""
+        if not self.voice_enabled:
+            logger.info(f"🗣️ [VOICE_DISABLED] {text}")
+            return
+        
+        try:
+            if self.tts_engine:
+                # Get current cognitive state for modulation
+                entropy = getattr(self, 'entropy', 0.5)
+                heat = getattr(self, 'heat', 25.0)
+                zone = getattr(self, 'zone', 'STABLE')
+                cognitive_pressure = getattr(self, 'cognitive_pressure', 0.0)
+                
+                # Base speech rate
+                base_rate = 150
+                
+                # Modulate speech rate based on entropy
+                if entropy > 0.7:
+                    rate = base_rate + 30  # Faster when entropic
+                elif entropy < 0.3:
+                    rate = base_rate - 20  # Slower when focused
+                else:
+                    rate = base_rate
+                
+                # Modulate based on thermal zone
+                if zone == "CRITICAL":
+                    rate += 25  # Urgent speech
+                elif zone == "ACTIVE":
+                    rate += 10  # Slightly faster
+                
+                # Modulate based on cognitive pressure
+                if cognitive_pressure > 100:
+                    rate += 15  # Faster under pressure
+                
+                # Set speech properties
+                self.tts_engine.setProperty('rate', rate)
+                
+                # Modulate volume based on state
+                base_volume = 0.8
+                if zone == "CRITICAL":
+                    volume = min(1.0, base_volume + 0.1)  # Louder when stressed
+                elif entropy < 0.3:
+                    volume = base_volume - 0.1  # Quieter when focused
+                else:
+                    volume = base_volume
+                
+                self.tts_engine.setProperty('volume', volume)
+                
+                # Speak the text
+                self.tts_engine.say(text)
+                self.tts_engine.runAndWait()
+                
+                # Log the speech event
+                self.log_voice_event("CONVERSATION_SPEECH", text, {
+                    'entropy': entropy,
+                    'heat': heat,
+                    'zone': zone,
+                    'cognitive_pressure': cognitive_pressure,
+                    'speech_rate': rate,
+                    'volume': volume
+                })
+                
+            else:
+                # Fallback to logging if no TTS engine
+                logger.info(f"🗣️ [CONVERSATION] {text}")
+                
+        except Exception as e:
+            logger.error(f"🗣️ State-modulated speech error: {e}")
+            # Fallback to simple speech
+            self._speak_text(text)
+    
+    def toggle_voice_output(self, enabled: bool = None):
+        """Toggle voice output on/off"""
+        if enabled is not None:
+            self.voice_enabled = enabled
+        else:
+            self.voice_enabled = not self.voice_enabled
+        
+        status = "enabled" if self.voice_enabled else "disabled"
+        logger.info(f"🗣️ Voice output {status}")
+        self.log_voice_event("VOICE_TOGGLE", f"Voice output {status}")
+    
+    def get_conversation_status(self) -> Dict[str, Any]:
+        """Get conversation system status"""
+        status = {
+            "conversation_available": CONVERSATION_AVAILABLE,
+            "conversation_mode": self.conversation_mode,
+            "voice_enabled": self.voice_enabled
+        }
+        
+        if self.conversation_input:
+            status.update(self.conversation_input.get_status())
+        
+        if self.conversation_response:
+            status["conversation_stats"] = self.conversation_response.get_conversation_stats()
+        
+        return status
+    
     def get_voice_stats(self) -> Dict[str, Any]:
         """Get voice system statistics"""
-        return {
+        stats = {
             'tts_engine': TTS_ENGINE,
             'speech_queue_size': len(self.speech_queue),
             'message_cache_size': len(self.message_cache),
@@ -533,11 +930,24 @@ class EnhancedTracerEchoVoice:
                 'enable_thermal_speech': self.enable_thermal_speech,
                 'enable_forecast_speech': self.enable_forecast_speech,
                 'enable_root_speech': self.enable_root_speech,
+                'enable_reflection_speech': self.enable_reflection_speech,
                 'critical_only_mode': self.critical_only_mode,
                 'speech_rate_limit': self.speech_rate_limit,
-                'deduplication_window': self.deduplication_window
-            }
+                'deduplication_window': self.deduplication_window,
+                'deep_reflex_enabled': self.deep_reflex_enabled,
+                'deep_reflex_interval': self.deep_reflex_interval,
+                'min_reflection_depth': self.min_reflection_depth
+            },
+            'conversation_available': CONVERSATION_AVAILABLE,
+            'conversation_mode': self.conversation_mode,
+            'voice_enabled': self.voice_enabled
         }
+        
+        # Add conversation stats if available
+        if self.conversation_response:
+            stats['conversation_stats'] = self.conversation_response.get_conversation_stats()
+        
+        return stats
 
 # Global voice instance
 _enhanced_voice_echo = None
@@ -566,42 +976,82 @@ def stop_voice_monitoring():
 
 # Demo and testing
 if __name__ == "__main__":
-    print("🔊 Testing Enhanced DAWN Tracer Echo Voice System")
+    import argparse
+    
+    parser = argparse.ArgumentParser(description="Enhanced DAWN Tracer Echo Voice System")
+    parser.add_argument('--live', action='store_true', help='Run in live monitoring mode')
+    parser.add_argument('--test', action='store_true', help='Run test mode')
+    parser.add_argument('--deep-reflex', action='store_true', help='Enable Deep Reflex Loop')
+    parser.add_argument('--threshold', type=float, default=0.7, help='Reflection depth threshold (default: 0.7)')
+    
+    args = parser.parse_args()
+    
+    print("🔊 Enhanced DAWN Tracer Echo Voice System")
     print("=" * 60)
     
     # Initialize enhanced voice echo
     voice_echo = EnhancedTracerEchoVoice()
     
-    # Test immediate speech
-    voice_echo.speak_immediate("Testing enhanced cognitive voice system", "system")
+    # Configure Deep Reflex Loop if requested
+    if args.deep_reflex:
+        voice_echo.enable_deep_reflex_loop(True)
+        voice_echo.set_reflection_depth_threshold(args.threshold)
+        print(f"🧠 Deep Reflex Loop enabled with threshold {args.threshold}")
     
-    # Show stats
-    stats = voice_echo.get_voice_stats()
-    print(f"\nEnhanced Voice Echo Stats:")
-    for key, value in stats.items():
-        if key != 'voice_configs':
+    if args.test:
+        # Test immediate speech
+        voice_echo.speak_immediate("Testing enhanced cognitive voice system", "system")
+        
+        # Show stats
+        stats = voice_echo.get_voice_stats()
+        print(f"\nEnhanced Voice Echo Stats:")
+        for key, value in stats.items():
+            if key != 'voice_configs':
+                print(f"  {key}: {value}")
+        
+        # Show Deep Reflex stats
+        reflex_stats = voice_echo.get_deep_reflex_stats()
+        print(f"\nDeep Reflex Loop Stats:")
+        for key, value in reflex_stats.items():
             print(f"  {key}: {value}")
+        
+        # Test tracer speech
+        voice_echo.speak_immediate("Owl detects semantic collapse", "owl") 
+        time.sleep(2)
+        voice_echo.speak_immediate("Thermal risk at critical level", "thermal")
+        time.sleep(2)
+        voice_echo.speak_immediate("Symbolic root formation detected", "root")
+        time.sleep(2)
+        voice_echo.speak_immediate("Deep reflection test: I am experiencing focused consciousness at high mental complexity", "reflection")
+        
+        print(f"\n✅ Enhanced tracer voice echo system ready!")
+        print(f"🗣️ DAWN can now speak her cognitive insights with enhanced clarity!")
     
-    # Test tracer speech
-    voice_echo.speak_immediate("Owl detects semantic collapse", "owl") 
-    time.sleep(2)
-    voice_echo.speak_immediate("Thermal risk at critical level", "thermal")
-    time.sleep(2)
-    voice_echo.speak_immediate("Symbolic root formation detected", "root")
-    
-    print(f"\n✅ Enhanced tracer voice echo system ready!")
-    print(f"🗣️ DAWN can now speak her cognitive insights with enhanced clarity!")
-    
-    # Optionally start monitoring
-    choice = input(f"\nStart background monitoring? (y/n): ").lower().strip()
-    if choice == 'y':
+    if args.live:
+        # Start live monitoring
         voice_echo.start_monitoring()
-        print(f"🎤 Background monitoring started. Press Ctrl+C to stop.")
+        print(f"🎤 Live monitoring started with Deep Reflex Loop!")
+        print(f"🧠 Monitoring reflections with depth > {args.threshold}")
+        print(f"Press Ctrl+C to stop.")
         
         try:
             while True:
                 time.sleep(1)
+                # Show periodic stats
+                if int(time.time()) % 30 == 0:  # Every 30 seconds
+                    reflex_stats = voice_echo.get_deep_reflex_stats()
+                    print(f"🧠 Deep Reflex: {reflex_stats['spoken_reflections_count']} reflections spoken")
         except KeyboardInterrupt:
             print(f"\n🛑 Stopping voice monitoring...")
             voice_echo.stop_monitoring()
-            print(f"✅ Voice monitoring stopped") 
+            print(f"✅ Voice monitoring stopped")
+    
+    if not args.test and not args.live:
+        # Default test mode
+        voice_echo.speak_immediate("Enhanced cognitive voice system initialized", "system")
+        print(f"✅ Enhanced tracer voice echo system ready!")
+        print(f"🗣️ DAWN can now speak her cognitive insights with enhanced clarity!")
+        print(f"\nUsage:")
+        print(f"  python enhanced_tracer_echo_voice.py --test     # Test mode")
+        print(f"  python enhanced_tracer_echo_voice.py --live     # Live monitoring")
+        print(f"  python enhanced_tracer_echo_voice.py --deep-reflex --live  # With Deep Reflex Loop") 

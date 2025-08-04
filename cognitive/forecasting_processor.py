@@ -10,8 +10,8 @@ from datetime import datetime, timedelta
 from typing import Dict, List, Optional, Any, Tuple
 import logging
 
-from .forecasting_engine import DAWNForecastingEngine, get_forecasting_engine
-from .forecasting_models import Passion, Acquaintance, ForecastVector, create_passion, passion_from_consciousness_state
+from ...forecasting_engine import DAWNForecastingEngine, get_forecasting_engine
+from ...forecasting_models import Passion, Acquaintance, ForecastVector, create_passion, passion_from_consciousness_state
 
 logger = logging.getLogger(__name__)
 
@@ -37,7 +37,7 @@ class ForecastingProcessor:
         
         # Initialize forecasting engine (try extended first, fallback to standard)
         try:
-            from .forecasting_engine import initialize_extended_forecasting_engine
+            from ...forecasting_engine import initialize_extended_forecasting_engine
             self.engine = initialize_extended_forecasting_engine(consciousness_core)
             self.extended_mode = True
             logger.info("🔮 Using Extended DAWN Forecasting Engine")

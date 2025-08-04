@@ -21,7 +21,7 @@ from .core.entropy_engine import EntropyEngine
 from .cursor.function_navigator import FunctionNavigator
 from .cursor.interpretability import SplineInterpreter
 from .cursor.trajectory_learner import TrajectoryLearner
-from .models import (
+from ...models import (
     SplineNeuron, KANTopology, CursorState, FunctionPath, 
     NavigationResult, CachedGlyph, KANConfig, CairrConfig,
     LearnableSplineFunction

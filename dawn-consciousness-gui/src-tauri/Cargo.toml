@@ -1,32 +1,25 @@
 [package]
-name = "dawn-gui"
-version = "0.1.0"
-description = "DAWN Consciousness Visualization Interface"
-authors = ["DAWN Project"]
+name = "dawn-consciousness-gui"
+version = "1.0.0"
+description = "DAWN Consciousness GUI - Native consciousness monitoring interface"
+authors = ["DAWN Team"]
 license = ""
 repository = ""
+default-run = "dawn-consciousness-gui"
 edition = "2021"
+rust-version = "1.60"
 
 [build-dependencies]
-tauri-build = { version = "1.5", features = [] }
+tauri-build = { version = "2.0", features = [] }
 
 [dependencies]
-# Tauri core - using specific compatible version
-tauri = { version = "1.5", features = [ "fs-all", "shell-open",
-    "devtools"] }
-
-# Serialization
-serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
-
-# Time handling
-chrono = { version = "0.4", features = ["serde"] }
-
-# Memory mapping
+serde = { version = "1.0", features = ["derive"] }
+tauri = { version = "2.0", features = ["shell-open"] }
+tauri-plugin-shell = "2.0"
 memmap2 = "0.7"
-
-# Async runtime
-tokio = { version = "1.0", features = ["time", "rt-multi-thread", "macros"] }
+tokio = { version = "1.0", features = ["full"] }
+chrono = { version = "0.4", features = ["serde"] }
 
 [features]
 # by default Tauri runs in production mode

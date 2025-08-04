@@ -235,7 +235,7 @@ from statistics import mean, stdev
 import re
 import json
 
-from .scup_math import (
+from ...scup_math import (
     SCUPInputs, SCUPOutputs, compute_basic_scup, compute_enhanced_scup,
     compute_recovery_scup, compute_legacy_scup, classify_zone
 )
@@ -564,11 +564,11 @@ Consolidates: scup.py, scup_engine.py, scup_loop.py, scup_recovery.py
 Generated: {timestamp}
 """
 
-from .scup_math import (
+from ...scup_math import (
     SCUPInputs, SCUPOutputs, compute_basic_scup, compute_enhanced_scup,
     compute_recovery_scup, compute_legacy_scup, classify_zone
 )
-from .scup_tracker import SCUPTracker, compute_scup, calculate_SCUP, log_scup
+from ...scup_tracker import SCUPTracker, compute_scup, calculate_SCUP, log_scup
 
 # Re-export everything for backward compatibility
 __all__ = [

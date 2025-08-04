@@ -10,7 +10,7 @@ from typing import Dict, List, Optional, Any, Tuple
 from dataclasses import dataclass, field
 from datetime import datetime
 
-from .base_visual import BaseVisualProcess
+from ...base_visual import BaseVisualProcess
 
 logger = logging.getLogger(__name__)
 

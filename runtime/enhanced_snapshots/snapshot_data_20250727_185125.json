@@ -1,0 +1,35 @@
+{
+  "metadata": {
+    "timestamp": "20250727_185125",
+    "tick": 1275,
+    "generated_by": "Enhanced DAWN Visual Engine v2.0",
+    "snapshot_type": "comprehensive"
+  },
+  "consciousness_state": {
+    "tick": 1275,
+    "entropy": 0.384,
+    "scup": 0.09,
+    "heat": 0.312,
+    "drift": 0.156,
+    "zone": "CRITICAL",
+    "mood": "CONTEMPLATIVE",
+    "reblooms": 2,
+    "sigils": 1,
+    "tick_time": 0.011,
+    "cpu_usage": 0.377,
+    "memory_usage": 0.654,
+    "timestamp": "2025-07-27T18:51:25.547294"
+  },
+  "computed_metrics": {
+    "stability_index": 0.616,
+    "activity_level": 0.237,
+    "cognitive_load": 0.09,
+    "system_efficiency": -0.09999999999999987
+  },
+  "analysis": {
+    "mood": "CONTEMPLATIVE",
+    "zone": "CRITICAL",
+    "trend": "stable",
+    "alerts": []
+  }
+}

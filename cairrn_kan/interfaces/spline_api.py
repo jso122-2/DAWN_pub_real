@@ -21,8 +21,8 @@ import os
 # sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 try:
-    from ..models import CursorState, NavigationResult, KANTopology, CachedGlyph
-    from ..core.spline_neurons import SplineNeuronManager
+    from ...models import CursorState, NavigationResult, KANTopology, CachedGlyph
+    from core.spline_neurons import SplineNeuronManager
     from ..cursor.function_navigator import FunctionNavigator
     from ..cursor.interpretability import SplineInterpreter
     from ..adapters.claude_kan import ClaudeKANAdapter

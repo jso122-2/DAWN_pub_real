@@ -34,7 +34,7 @@ from datetime import datetime
 
 # Import GIF saver
 try:
-    from .gif_saver import setup_gif_saver
+    from ...gif_saver import setup_gif_saver
 except ImportError:
     from gif_saver import setup_gif_saver
 

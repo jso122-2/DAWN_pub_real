@@ -11,8 +11,8 @@ from typing import Dict, List, Optional, Tuple
 import random
 
 # Import DAWN forecasting components
-from .forecasting_models import Passion, Acquaintance, ForecastVector, create_passion, create_acquaintance_with_events
-from .forecasting_engine import DAWNForecastingEngine
+from ...forecasting_models import Passion, Acquaintance, ForecastVector, create_passion, create_acquaintance_with_events
+from ...forecasting_engine import DAWNForecastingEngine
 
 
 # Predefined target profiles with different passion/acquaintance combinations

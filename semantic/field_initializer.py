@@ -8,7 +8,7 @@ import logging
 from typing import Dict, List, Optional
 from datetime import datetime
 
-from .field_types import NodeCharge, RhizomicSemanticField
+from ...field_types import NodeCharge, RhizomicSemanticField
 
 # Configure logging
 logging.basicConfig(

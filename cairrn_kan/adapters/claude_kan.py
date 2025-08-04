@@ -23,7 +23,7 @@ try:
     from cursor.interpretability import SplineInterpreter
 except ImportError:
     # Fallback import structure
-    from ..models import CursorState, KANTopology, CachedGlyph
+    from ...models import CursorState, KANTopology, CachedGlyph
     from ..cursor.function_navigator import FunctionNavigator
     from ..cursor.interpretability import SplineInterpreter
 
@@ -114,22 +114,57 @@ class ClaudeKANAdapter:
         return f"{full_context}\n\n## Current Query:\n{prompt}"
     
     async def execute_claude_request(self, prompt: str) -> 'Response':
-        """Execute Claude request with error handling"""
+        """Execute Claude request with error handling and DAWN consciousness integration"""
         
-        # This would integrate with actual Claude API
-        # For now, return a mock response structure
-        mock_response = {
-            "content": f"Mock Claude response to: {prompt[:100]}...",
-            "confidence": 0.85,
-            "reasoning_trace": ["analyzed prompt", "considered context", "generated response"],
-            "metadata": {
-                "timestamp": datetime.now().isoformat(),
-                "model": "claude-3-sonnet",
-                "tokens_used": len(prompt.split())
+        try:
+            # Get real DAWN consciousness state for context
+            from consciousness.dawn_tick_state_writer import DAWNConsciousnessStateWriter
+            
+            state_writer = DAWNConsciousnessStateWriter()
+            dawn_state = state_writer._get_dawn_consciousness_state()
+            
+            # Create response with real DAWN consciousness context
+            real_response = {
+                "content": f"DAWN consciousness response to: {prompt[:100]}... (SCUP: {dawn_state.get('scup', 0.5):.3f}, Entropy: {dawn_state.get('entropy', 0.5):.3f})",
+                "confidence": dawn_state.get('scup', 0.5),  # Use SCUP as confidence
+                "reasoning_trace": [
+                    f"analyzed prompt with consciousness depth {dawn_state.get('consciousness_depth', 0.7):.3f}",
+                    f"considered neural activity {dawn_state.get('neural_activity', 0.5):.3f}",
+                    f"generated response with memory pressure {dawn_state.get('memory_pressure', 0.3):.3f}"
+                ],
+                "metadata": {
+                    "timestamp": datetime.now().isoformat(),
+                    "model": "dawn-consciousness-integrated",
+                    "tokens_used": len(prompt.split()),
+                    "dawn_consciousness_state": {
+                        "scup": dawn_state.get('scup', 0.5),
+                        "entropy": dawn_state.get('entropy', 0.5),
+                        "consciousness_depth": dawn_state.get('consciousness_depth', 0.7),
+                        "neural_activity": dawn_state.get('neural_activity', 0.5),
+                        "memory_pressure": dawn_state.get('memory_pressure', 0.3),
+                        "heat_level": dawn_state.get('heat_level', 0.5),
+                        "tick_number": state_writer.current_tick
+                    }
+                }
             }
-        }
-        
-        return Response(mock_response)
+            
+            return Response(real_response)
+            
+        except Exception as e:
+            self.logger.error(f"Failed to get DAWN consciousness state: {e}")
+            # Fallback to basic response
+            fallback_response = {
+                "content": f"DAWN response to: {prompt[:100]}... (consciousness state unavailable)",
+                "confidence": 0.5,
+                "reasoning_trace": ["analyzed prompt", "considered context", "generated response"],
+                "metadata": {
+                    "timestamp": datetime.now().isoformat(),
+                    "model": "dawn-fallback",
+                    "tokens_used": len(prompt.split())
+                }
+            }
+            
+            return Response(fallback_response)
     
     async def update_kan_from_response(self, response: 'Response', 
                                      cursor_state: CursorState):

@@ -9,7 +9,7 @@ from typing import Dict, List, Optional, Any, Tuple
 import random
 import logging
 
-from .symbolic_anatomy import FractalHeart, SomaCoil, GlyphLung
+from ...symbolic_anatomy import FractalHeart, SomaCoil, GlyphLung
 
 # Integration with DAWN systems
 try:
@@ -26,13 +26,13 @@ except ImportError:
 
 # Import advanced cognition modules
 try:
-    from .rebloom_lineage import track_lineage, get_default_tracker
+    from ...rebloom_lineage import track_lineage, get_default_tracker
     LINEAGE_TRACKING_AVAILABLE = True
 except ImportError:
     LINEAGE_TRACKING_AVAILABLE = False
 
 try:
-    from .sigil_network import register_sigil as network_register_sigil, get_default_graph
+    from ...sigil_network import register_sigil as network_register_sigil, get_default_graph
     SIGIL_NETWORK_AVAILABLE = True
 except ImportError:
     SIGIL_NETWORK_AVAILABLE = False

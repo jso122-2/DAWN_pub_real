@@ -37,14 +37,14 @@ import atexit
 
 # Import GIF saver
 
-    from .gif_saver import setup_gif_saver
+    from ...gif_saver import setup_gif_saver
     from gif_saver import setup_gif_saver
 import signal
 import atexit
 
 # Import GIF saver
 
-    from .gif_saver import setup_gif_saver
+    from ...gif_saver import setup_gif_saver
     from gif_saver import setup_gif_saver
 
 logger = logging.getLogger(__name__)

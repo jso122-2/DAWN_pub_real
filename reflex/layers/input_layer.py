@@ -1,6 +1,6 @@
 from typing import Dict, Any, Optional
 from dataclasses import dataclass
-from .base import InputLayer, ReflexState
+from ...base import InputLayer, ReflexState
 
 @dataclass
 class PromptAuditResult:

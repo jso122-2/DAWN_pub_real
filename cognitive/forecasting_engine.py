@@ -10,7 +10,7 @@ from datetime import datetime
 from typing import Dict, List, Optional, Tuple, Any
 import logging
 
-from .forecasting_models import Passion, Acquaintance, ForecastVector
+from ...forecasting_models import Passion, Acquaintance, ForecastVector
 
 logger = logging.getLogger(__name__)
 
@@ -398,7 +398,7 @@ def initialize_forecasting_engine(consciousness_core) -> DAWNForecastingEngine:
 def initialize_extended_forecasting_engine(consciousness_core):
     """Initialize and register extended forecasting engine with consciousness core."""
     try:
-        from .extended_forecasting_engine import ExtendedDAWNForecastingEngine
+        from ...extended_forecasting_engine import ExtendedDAWNForecastingEngine
         engine = ExtendedDAWNForecastingEngine(consciousness_core)
         
         # Register with consciousness subsystems if available
