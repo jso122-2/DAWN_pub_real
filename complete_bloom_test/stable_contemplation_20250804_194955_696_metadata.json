@@ -1,0 +1,101 @@
+{
+  "fractal_generation": {
+    "timestamp": "2025-08-04T19:49:55.776263",
+    "version": "dawn_bloom_fractal_v1.0",
+    "fractal_string": "R6-MULTI-Bv0.1+-E0.30-STBL-D0+",
+    "output_size": 768,
+    "layer_count": 5
+  },
+  "consciousness_parameters": {
+    "bloom_entropy": 0.3,
+    "mood_valence": 0.1,
+    "drift_vector": 0.05,
+    "rebloom_depth": 6,
+    "sigil_saturation": 0.5,
+    "pulse_zone": "stable",
+    "timestamp": null,
+    "memory_id": null,
+    "archetype": null,
+    "fractal_string": null,
+    "validation_passed": true,
+    "validation_warnings": [],
+    "source_file": null
+  },
+  "visual_characteristics": {
+    "mood_palette": {
+      "palette_name": "Balanced Awareness",
+      "base_colors": [
+        [
+          44,
+          20,
+          56
+        ],
+        [
+          39,
+          25,
+          70
+        ],
+        [
+          31,
+          35,
+          84
+        ],
+        [
+          36,
+          63,
+          98
+        ]
+      ],
+      "glow_colors": [
+        [
+          92,
+          36,
+          119
+        ],
+        [
+          69,
+          41,
+          133
+        ],
+        [
+          47,
+          54,
+          147
+        ],
+        [
+          51,
+          99,
+          161
+        ]
+      ],
+      "brightness_multiplier": 0.55,
+      "glow_radius": 7.5
+    },
+    "shape_complexity": {
+      "shape_archetype": "Nested Mandala",
+      "complexity_mode": "ComplexityMode.MULTI_LAYER",
+      "petal_count": 3,
+      "edge_roughness": 0.30000000000000004,
+      "symmetry_factor": 0.8
+    },
+    "drift_transformation": {
+      "center_offset": [
+        0.015,
+        0.010000000000000002
+      ],
+      "rotation_angle": 0.02617993877991494,
+      "pulse_zone": "stable"
+    }
+  },
+  "files": {
+    "fractal_image": "complete_bloom_test\\stable_contemplation_20250804_194955_696.png",
+    "metadata_file": "complete_bloom_test\\stable_contemplation_20250804_194955_696_metadata.json"
+  },
+  "technical_details": {
+    "rendering_engine": "matplotlib + PIL",
+    "color_space": "RGB",
+    "bit_depth": 8,
+    "compression": "PNG"
+  },
+  "symbolic_description": "A nested mandala emerging from balanced awareness, encoded as R6-MULTI-Bv0.1+-E0.30-STBL-D0+"
+}

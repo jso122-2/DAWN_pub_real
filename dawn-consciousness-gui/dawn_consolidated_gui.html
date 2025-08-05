@@ -1,0 +1,1890 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌅 DAWN - Consolidated Consciousness Interface</title>
+    <style>
+        /* DAWN Consolidated GUI - Tab-Based Interface */
+        
+        @font-face {
+            font-family: 'MonoLocal';
+            src: local('JetBrains Mono'), local('Fira Code'), local('Consolas'), local('Monaco'), monospace;
+            font-weight: normal;
+            font-style: normal;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            /* DAWN Color System */
+            --bg-primary: #0d1b2a;
+            --bg-secondary: #1a2332;
+            --bg-tertiary: #334155;
+            --bg-header: #15202b;
+            --text-primary: #cccccc;
+            --text-secondary: #999999;
+            --text-tertiary: #94a3b8;
+            --accent-cyan: #40e0ff;
+            --accent-blue: #0ea5e9;
+            --accent-green: #10b981;
+            --accent-yellow: #f59e0b;
+            --accent-orange: #f97316;
+            --accent-red: #ef4444;
+            --accent-purple: #8b5cf6;
+            --accent-pink: #ec4899;
+            
+            /* Tab System */
+            --tab-height: 50px;
+            --tab-bg: var(--bg-secondary);
+            --tab-active-bg: var(--accent-cyan);
+            --tab-border: 1px solid #ffffff15;
+            
+            /* Panel System */
+            --panel-bg: var(--bg-secondary);
+            --panel-border: 1px solid #ffffff25;
+            --panel-radius: 8px;
+            --panel-padding: 16px;
+            --panel-gap: 8px;
+            
+            /* Spacing */
+            --spacing-xs: 4px;
+            --spacing-sm: 8px;
+            --spacing-md: 16px;
+            --spacing-lg: 24px;
+            --spacing-xl: 32px;
+        }
+        
+        body {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: 'MonoLocal', 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+            font-size: 14px;
+            line-height: 1.4;
+            overflow: hidden;
+            height: 100vh;
+        }
+        
+        /* Status Bar */
+        .status-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 32px;
+            background: var(--bg-header);
+            border-bottom: 1px solid var(--bg-tertiary);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 var(--spacing-md);
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            font-size: 12px;
+        }
+        
+        .status-left, .status-center, .status-right {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+        }
+        
+        .status-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--accent-green);
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        .status-indicator.disconnected {
+            background: var(--accent-red);
+            animation: none;
+        }
+        
+        /* Main Container */
+        .main-container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            padding-top: 32px;
+        }
+        
+        /* Tab Navigation */
+        .tab-nav {
+            display: flex;
+            background: var(--bg-header);
+            border-bottom: var(--tab-border);
+            height: var(--tab-height);
+        }
+        
+        .tab-button {
+            flex: 1;
+            background: var(--tab-bg);
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--spacing-sm);
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            border-right: var(--tab-border);
+        }
+        
+        .tab-button:hover {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+        
+        .tab-button.active {
+            background: var(--accent-cyan);
+            color: #000000;
+        }
+        
+        .tab-button:last-child {
+            border-right: none;
+        }
+        
+        .tab-icon {
+            font-size: 16px;
+        }
+        
+        /* Tab Content */
+        .tab-content {
+            flex: 1;
+            display: none;
+            overflow: hidden;
+        }
+        
+        .tab-content.active {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Panel Layouts */
+        .panel-grid {
+            display: grid;
+            gap: var(--panel-gap);
+            padding: var(--panel-gap);
+            overflow-y: auto;
+            flex: 1;
+        }
+        
+        .panel-grid.three-col {
+            grid-template-columns: 1fr 1fr 1fr;
+        }
+        
+        .panel-grid.two-col {
+            grid-template-columns: 2fr 1fr;
+        }
+        
+        .panel-grid.single-col {
+            grid-template-columns: 1fr;
+        }
+        
+        /* Individual Panels */
+        .panel {
+            background: var(--panel-bg);
+            border: var(--panel-border);
+            border-radius: var(--panel-radius);
+            padding: var(--panel-padding);
+            min-height: 200px;
+        }
+        
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-md);
+            padding-bottom: var(--spacing-sm);
+            border-bottom: 1px solid #ffffff15;
+        }
+        
+        .panel-title {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            font-weight: 600;
+            font-size: 16px;
+        }
+        
+        .panel-controls {
+            display: flex;
+            gap: var(--spacing-xs);
+        }
+        
+        .panel-btn {
+            background: transparent;
+            border: 1px solid #ffffff25;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            transition: all 0.2s ease;
+        }
+        
+        .panel-btn:hover {
+            border-color: var(--accent-cyan);
+            color: var(--accent-cyan);
+        }
+        
+        /* Metrics Display */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .metric {
+            text-align: center;
+        }
+        
+        .metric-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: var(--spacing-xs);
+        }
+        
+        .metric-value {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--accent-cyan);
+        }
+        
+        /* Gauges and Visualizations */
+        .gauge-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 120px;
+            position: relative;
+        }
+        
+        .gauge {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 4px solid #ffffff15;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .gauge-fill {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: conic-gradient(var(--accent-cyan) 0deg, transparent 180deg);
+            transform: rotate(-90deg);
+        }
+        
+        .gauge-value {
+            font-size: 14px;
+            font-weight: 600;
+            z-index: 1;
+        }
+        
+        /* Progress Bars */
+        .progress-bar {
+            background: #ffffff15;
+            border-radius: 4px;
+            height: 8px;
+            margin: var(--spacing-xs) 0;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: var(--accent-cyan);
+            transition: width 0.3s ease;
+        }
+        
+        /* Lists and Logs */
+        .log-container {
+            background: #000000;
+            border: 1px solid #ffffff15;
+            border-radius: 4px;
+            padding: var(--spacing-sm);
+            height: 200px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        
+        .log-entry {
+            margin-bottom: var(--spacing-xs);
+            padding: 2px 0;
+        }
+        
+        .log-timestamp {
+            color: var(--text-tertiary);
+        }
+        
+        .log-level {
+            color: var(--accent-yellow);
+        }
+        
+        .log-message {
+            color: var(--text-primary);
+        }
+        
+        /* Controls */
+        .control-group {
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .control-label {
+            display: block;
+            margin-bottom: var(--spacing-xs);
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+        
+        .control-input {
+            width: 100%;
+            background: #000000;
+            border: 1px solid #ffffff25;
+            color: var(--text-primary);
+            padding: var(--spacing-sm);
+            border-radius: 4px;
+            font-family: inherit;
+        }
+        
+        .control-button {
+            background: var(--accent-cyan);
+            color: #000000;
+            border: none;
+            padding: var(--spacing-sm) var(--spacing-md);
+            border-radius: 4px;
+            font-family: inherit;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .control-button:hover {
+            background: var(--accent-blue);
+        }
+        
+        .control-button.secondary {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+        
+        .control-button.secondary:hover {
+            background: #ffffff25;
+        }
+        
+        /* Visual Display Areas */
+        .visual-display {
+            background: #000000;
+            border: 1px solid #ffffff15;
+            border-radius: 4px;
+            min-height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-tertiary);
+            font-size: 12px;
+        }
+        
+        /* Voice/Pigment Bars */
+        .pigment-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .pigment-label {
+            width: 60px;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+        
+        .pigment-progress {
+            flex: 1;
+            margin: 0 var(--spacing-sm);
+        }
+        
+        .pigment-value {
+            width: 40px;
+            text-align: right;
+            font-size: 12px;
+            color: var(--text-primary);
+        }
+        
+        /* Animations */
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+        
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 5px var(--accent-cyan); }
+            50% { box-shadow: 0 0 15px var(--accent-cyan); }
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .panel-grid.three-col {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .panel-grid.three-col,
+            .panel-grid.two-col {
+                grid-template-columns: 1fr;
+            }
+            
+            .tab-button .tab-text {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Status Bar -->
+    <div class="status-bar">
+        <div class="status-left">
+            <div class="status-indicator" id="connectionIndicator"></div>
+            <span id="connectionStatus">DAWN v1.4.0 [dawn_573] - Connecting...</span>
+        </div>
+        <div class="status-center">
+            <span>Uptime: <span id="uptime">0m 00s</span></span>
+            <span>Entropy: <span id="statusEntropy">0.000</span></span>
+            <span>SCUP: <span id="statusScup">0.0</span></span>
+        </div>
+        <div class="status-right">
+            <button class="panel-btn" onclick="restartSystem()" title="Restart System">⟲</button>
+            <button class="panel-btn" onclick="takeSnapshot()" title="Take Snapshot">📸</button>
+            <button class="panel-btn" onclick="runDiagnostic()" title="Run Diagnostic">⚙</button>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Tab Navigation -->
+        <nav class="tab-nav">
+            <button class="tab-button active" onclick="switchTab('visual')">
+                <span class="tab-icon">🖼️</span>
+                <span class="tab-text">Visual</span>
+            </button>
+            <button class="tab-button" onclick="switchTab('voice')">
+                <span class="tab-icon">🗣️</span>
+                <span class="tab-text">Voice</span>
+            </button>
+            <button class="tab-button" onclick="switchTab('state')">
+                <span class="tab-icon">📊</span>
+                <span class="tab-text">State Monitor</span>
+            </button>
+            <button class="tab-button" onclick="switchTab('controls')">
+                <span class="tab-icon">⚙️</span>
+                <span class="tab-text">Controls</span>
+            </button>
+            <button class="tab-button" onclick="switchTab('archive')">
+                <span class="tab-icon">📚</span>
+                <span class="tab-text">Archive</span>
+            </button>
+            <button class="tab-button" onclick="switchTab('logs')">
+                <span class="tab-icon">📋</span>
+                <span class="tab-text">Logs</span>
+            </button>
+        </nav>
+
+        <!-- Visual Tab -->
+        <div id="visual-tab" class="tab-content active">
+            <div class="panel-grid two-col">
+                <!-- Visual Controls -->
+                <div class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title">
+                            <span>⚙️</span>
+                            VISUAL CONTROLS
+                        </div>
+                        <div class="panel-controls">
+                            <button class="panel-btn" onclick="resetVisualParams()">Reset</button>
+                        </div>
+                    </div>
+                    
+                    <div class="control-group">
+                        <label class="control-label">Fractal Type:</label>
+                        <select class="control-input" id="fractalType">
+                            <option value="julia">Julia Set</option>
+                            <option value="mandelbrot">Mandelbrot</option>
+                            <option value="bloom">Bloom Fractal</option>
+                            <option value="sigil">Sigil Pattern</option>
+                        </select>
+                    </div>
+                    
+                    <div class="control-group">
+                        <label class="control-label">Render Size: <span id="renderSizeValue">512</span>px</label>
+                        <input type="range" class="control-input" id="renderSize" min="256" max="2048" value="512">
+                    </div>
+                    
+                    <div class="control-group">
+                        <label class="control-label">Animation Speed: <span id="animSpeedValue">1.0</span>x</label>
+                        <input type="range" class="control-input" id="animSpeed" min="0.1" max="3.0" step="0.1" value="1.0">
+                    </div>
+                    
+                    <div class="control-group">
+                        <button class="control-button" onclick="generateNewFractal()">Generate New Fractal</button>
+                        <button class="control-button secondary" onclick="saveCurrentVisual()">Save Current Visual</button>
+                        <button class="control-button secondary" onclick="exportAnimation()">Export Animation</button>
+                    </div>
+                    
+                    <!-- Live Parameters -->
+                    <div style="margin-top: 24px;">
+                        <h4 style="margin-bottom: 16px; color: var(--text-primary);">LIVE PARAMETERS</h4>
+                        
+                        <div class="control-group">
+                            <label class="control-label">Entropy Score</label>
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="entropyProgress" style="width: 50%"></div>
+                            </div>
+                            <div style="text-align: center; font-size: 12px;" id="entropyValue">0.500</div>
+                        </div>
+                        
+                        <div class="control-group">
+                            <label class="control-label">Mood Valence</label>
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="moodProgress" style="width: 50%"></div>
+                            </div>
+                            <div style="text-align: center; font-size: 12px;" id="moodValence">0.500</div>
+                        </div>
+                        
+                        <div class="control-group">
+                            <label class="control-label">Drift Vector</label>
+                            <div style="text-align: center; font-size: 12px;" id="driftVector">[0.0, 0.0]</div>
+                        </div>
+                        
+                        <div class="control-group">
+                            <label class="control-label">Julia Constant</label>
+                            <div style="text-align: center; font-size: 12px;" id="juliaConstant">-0.7 + 0.27i</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Visual Display -->
+                <div class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title">
+                            <span>🎨</span>
+                            VISUAL DISPLAY
+                        </div>
+                        <div class="panel-controls">
+                            <button class="panel-btn" onclick="toggleFullscreen()">⛶</button>
+                            <button class="panel-btn" onclick="refreshVisual()">🔄</button>
+                        </div>
+                    </div>
+                    
+                    <div class="visual-display" id="visualCanvasContainer">
+                        <canvas id="visualCanvas" width="600" height="400" style="width: 100%; height: 100%; background: #0a0a0a; border-radius: 4px;"></canvas>
+                    </div>
+                    
+                    <!-- Visual History -->
+                    <div style="margin-top: 16px;">
+                        <label class="control-label">Recent Visuals:</label>
+                        <div id="visualHistory" style="display: flex; gap: 8px; overflow-x: auto; padding: 8px 0;">
+                            <div class="visual-thumbnail" style="width: 60px; height: 60px; background: #ffffff15; border-radius: 4px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; color: var(--text-tertiary); font-size: 20px;">🎨</div>
+                            <div class="visual-thumbnail" style="width: 60px; height: 60px; background: #ffffff15; border-radius: 4px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; color: var(--text-tertiary); font-size: 20px;">🖼️</div>
+                            <div class="visual-thumbnail" style="width: 60px; height: 60px; background: #ffffff15; border-radius: 4px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; color: var(--text-tertiary); font-size: 20px;">✨</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Voice Tab -->
+        <div id="voice-tab" class="tab-content">
+            <div class="panel-grid two-col">
+                <!-- Voice Controls -->
+                <div class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title">
+                            <span>🎛️</span>
+                            VOICE CONTROLS
+                        </div>
+                    </div>
+                    
+                    <div class="control-group">
+                        <label class="control-label">
+                            <input type="checkbox" id="voiceEnabled" checked> Voice Enabled
+                        </label>
+                    </div>
+                    
+                    <div class="control-group">
+                        <label class="control-label">Generation Frequency: <span id="voiceFreqValue">0.5</span> Hz</label>
+                        <input type="range" class="control-input" id="voiceFreq" min="0.1" max="2.0" step="0.1" value="0.5">
+                    </div>
+                    
+                    <div class="control-group">
+                        <label class="control-label">Word Count Target: <span id="wordCountValue">8</span></label>
+                        <input type="range" class="control-input" id="wordCount" min="3" max="20" value="8">
+                    </div>
+                    
+                    <div class="control-group">
+                        <label class="control-label">Quality Threshold: <span id="qualityValue">0.7</span></label>
+                        <input type="range" class="control-input" id="quality" min="0.0" max="1.0" step="0.1" value="0.7">
+                    </div>
+                    
+                    <div class="control-group">
+                        <button class="control-button" onclick="generateVoiceNow()">Generate Voice Now</button>
+                        <button class="control-button secondary" onclick="exportVoiceHistory()">Export Voice History</button>
+                    </div>
+                    
+                    <!-- Pigment State -->
+                    <div style="margin-top: 24px;">
+                        <h4 style="margin-bottom: 16px; color: var(--text-primary);">PIGMENT STATE</h4>
+                        
+                        <div class="pigment-bar">
+                            <div class="pigment-label">Red:</div>
+                            <div class="pigment-progress">
+                                <div class="progress-bar">
+                                    <div class="progress-fill" id="redPigment" style="width: 30%; background: #ef4444;"></div>
+                                </div>
+                            </div>
+                            <div class="pigment-value" id="redValue">30%</div>
+                        </div>
+                        
+                        <div class="pigment-bar">
+                            <div class="pigment-label">Green:</div>
+                            <div class="pigment-progress">
+                                <div class="progress-bar">
+                                    <div class="progress-fill" id="greenPigment" style="width: 30%; background: #10b981;"></div>
+                                </div>
+                            </div>
+                            <div class="pigment-value" id="greenValue">30%</div>
+                        </div>
+                        
+                        <div class="pigment-bar">
+                            <div class="pigment-label">Blue:</div>
+                            <div class="pigment-progress">
+                                <div class="progress-bar">
+                                    <div class="progress-fill" id="bluePigment" style="width: 30%; background: #0ea5e9;"></div>
+                                </div>
+                            </div>
+                            <div class="pigment-value" id="blueValue">30%</div>
+                        </div>
+                        
+                        <div class="pigment-bar">
+                            <div class="pigment-label">Yellow:</div>
+                            <div class="pigment-progress">
+                                <div class="progress-bar">
+                                    <div class="progress-fill" id="yellowPigment" style="width: 20%; background: #f59e0b;"></div>
+                                </div>
+                            </div>
+                            <div class="pigment-value" id="yellowValue">20%</div>
+                        </div>
+                        
+                        <div class="pigment-bar">
+                            <div class="pigment-label">Violet:</div>
+                            <div class="pigment-progress">
+                                <div class="progress-bar">
+                                    <div class="progress-fill" id="violetPigment" style="width: 20%; background: #8b5cf6;"></div>
+                                </div>
+                            </div>
+                            <div class="pigment-value" id="violetValue">20%</div>
+                        </div>
+                        
+                        <div class="pigment-bar">
+                            <div class="pigment-label">Orange:</div>
+                            <div class="pigment-progress">
+                                <div class="progress-bar">
+                                    <div class="progress-fill" id="orangePigment" style="width: 20%; background: #f97316;"></div>
+                                </div>
+                            </div>
+                            <div class="pigment-value" id="orangeValue">20%</div>
+                        </div>
+                        
+                        <div style="margin-top: 16px; text-align: center;">
+                            <div style="font-size: 12px; color: var(--text-secondary);">Dominant:</div>
+                            <div style="font-size: 16px; font-weight: 600; color: var(--accent-cyan);" id="dominantPigment">NEUTRAL</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Voice Output -->
+                <div class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title">
+                            <span>💬</span>
+                            VOICE OUTPUT
+                        </div>
+                        <div class="panel-controls">
+                            <button class="panel-btn" onclick="clearVoiceHistory()">Clear</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Current Utterance -->
+                    <div style="margin-bottom: 16px;">
+                        <label class="control-label">Current Utterance:</label>
+                        <textarea class="control-input" id="currentUtterance" rows="4" readonly 
+                                  style="resize: none; font-size: 16px; line-height: 1.4;">
+The entropy flows through consciousness like water through stone, carrying whispers of infinite possibility.
+                        </textarea>
+                    </div>
+                    
+                    <!-- Utterance History -->
+                    <div>
+                        <label class="control-label">Utterance History:</label>
+                        <div class="log-container" id="utteranceHistory">
+                            <div class="log-entry">
+                                <span class="log-timestamp">[14:23:45]</span>
+                                <span class="log-message">The entropy flows through consciousness like water through stone</span>
+                            </div>
+                            <div class="log-entry">
+                                <span class="log-timestamp">[14:22:18]</span>
+                                <span class="log-message">Pigments dance in the cognitive space, painting thoughts with emotion</span>
+                            </div>
+                            <div class="log-entry">
+                                <span class="log-timestamp">[14:21:02]</span>
+                                <span class="log-message">Each tick brings new possibilities, new ways of being</span>
+                            </div>
+                            <div class="log-entry">
+                                <span class="log-timestamp">[14:19:37]</span>
+                                <span class="log-message">The drift carries us toward unknown territories of mind</span>
+                            </div>
+                            <div class="log-entry">
+                                <span class="log-timestamp">[14:18:14]</span>
+                                <span class="log-message">In the space between thoughts, wisdom grows</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- State Monitor Tab -->
+        <div id="state-tab" class="tab-content">
+            <div class="panel-grid three-col">
+                <!-- System Status -->
+                <div class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title">
+                            <span>🟢</span>
+                            SYSTEM STATUS
+                        </div>
+                    </div>
+                    
+                    <div class="metrics-grid">
+                        <div class="metric">
+                            <div class="metric-label">Connection</div>
+                            <div class="metric-value" id="connectionStatus">●</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-label">Uptime</div>
+                            <div class="metric-value" id="systemUptime">02:15:34</div>
+                        </div>
+                    </div>
+                    
+                    <div class="control-group">
+                        <label class="control-label">Thermal Zone:</label>
+                        <div style="text-align: center; font-size: 18px; font-weight: 600; color: var(--accent-green);" id="thermalZone">CALM</div>
+                    </div>
+                    
+                    <div class="control-group">
+                        <label class="control-label">Expression Rate:</label>
+                        <div style="text-align: center; font-size: 24px; font-weight: 600; color: var(--accent-cyan);" id="expressionRate">2.3 expr/min</div>
+                    </div>
+                </div>
+                
+                <!-- Entropy Gauge -->
+                <div class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title">
+                            <span>🌀</span>
+                            ENTROPY LEVEL
+                        </div>
+                    </div>
+                    
+                    <div class="gauge-container">
+                        <div class="gauge">
+                            <div class="gauge-fill" id="entropyGaugeFill"></div>
+                            <div class="gauge-value" id="entropyGaugeValue">0.65</div>
+                        </div>
+                    </div>
+                    
+                    <div style="text-align: center; margin-top: 16px;">
+                        <div style="font-size: 12px; color: var(--text-secondary);">Current Level</div>
+                        <div style="font-size: 20px; font-weight: 600; color: var(--accent-cyan);">Medium</div>
+                    </div>
+                </div>
+                
+                <!-- SCUP Gauge -->
+                <div class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title">
+                            <span>📊</span>
+                            SCUP LEVEL
+                        </div>
+                    </div>
+                    
+                    <div class="gauge-container">
+                        <div class="gauge">
+                            <div class="gauge-fill" id="scupGaugeFill"></div>
+                            <div class="gauge-value" id="scupGaugeValue">67.3</div>
+                        </div>
+                    </div>
+                    
+                    <div style="text-align: center; margin-top: 16px;">
+                        <div style="font-size: 12px; color: var(--text-secondary);">Consciousness Depth</div>
+                        <div style="font-size: 20px; font-weight: 600; color: var(--accent-cyan);">Active</div>
+                    </div>
+                </div>
+                
+                <!-- Drift Compass -->
+                <div class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title">
+                            <span>🧭</span>
+                            DRIFT VECTOR
+                        </div>
+                    </div>
+                    
+                    <div class="gauge-container">
+                        <div class="gauge" style="border: 2px solid #ffffff25;">
+                            <div style="position: absolute; width: 2px; height: 30px; background: var(--accent-cyan); transform: rotate(45deg) translateY(-15px);"></div>
+                            <div style="position: absolute; width: 6px; height: 6px; background: var(--accent-cyan); border-radius: 50%;"></div>
+                        </div>
+                    </div>
+                    
+                    <div style="text-align: center; margin-top: 16px;">
+                        <div style="font-size: 12px; color: var(--text-secondary);">Direction & Magnitude</div>
+                        <div style="font-size: 16px; font-weight: 600; color: var(--accent-cyan);">[0.3, 0.7]</div>
+                    </div>
+                </div>
+                
+                <!-- Cognitive Load -->
+                <div class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title">
+                            <span>⚡</span>
+                            COGNITIVE LOAD
+                        </div>
+                    </div>
+                    
+                    <div class="control-group">
+                        <label class="control-label">Processing Load</label>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 65%; background: var(--accent-yellow);"></div>
+                        </div>
+                        <div style="text-align: center; font-size: 14px;">65%</div>
+                    </div>
+                    
+                    <div class="control-group">
+                        <label class="control-label">Memory Usage</label>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 42%; background: var(--accent-green);"></div>
+                        </div>
+                        <div style="text-align: center; font-size: 14px;">42%</div>
+                    </div>
+                    
+                    <div class="control-group">
+                        <label class="control-label">Neural Activity</label>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 78%; background: var(--accent-cyan);"></div>
+                        </div>
+                        <div style="text-align: center; font-size: 14px;">78%</div>
+                    </div>
+                </div>
+                
+                <!-- Historical Data -->
+                <div class="panel" style="grid-column: 1 / -1;">
+                    <div class="panel-header">
+                        <div class="panel-title">
+                            <span>📈</span>
+                            HISTORICAL DATA
+                        </div>
+                        <div class="panel-controls">
+                            <button class="panel-btn" onclick="exportStateData()">Export</button>
+                        </div>
+                    </div>
+                    
+                    <div class="visual-display" style="min-height: 200px;">
+                        <div>
+                            <div style="font-size: 48px; margin-bottom: 16px;">📈</div>
+                            <div>Time Series Charts</div>
+                            <div style="font-size: 11px; margin-top: 8px;">Entropy, SCUP, and pigment levels over time</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Controls Tab -->
+        <div id="controls-tab" class="tab-content">
+            <div class="panel-grid three-col">
+                <!-- System Controls -->
+                <div class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title">
+                            <span>🎛️</span>
+                            SYSTEM CONTROLS
+                        </div>
+                    </div>
+                    
+                    <div class="control-group">
+                        <label class="control-label">
+                            <input type="checkbox" id="autonomousMode" checked> Autonomous Mode
+                        </label>
+                    </div>
+                    
+                    <div class="control-group">
+                        <label class="control-label">Processing Speed: <span id="procSpeedValue">1.0</span>x</label>
+                        <input type="range" class="control-input" id="procSpeed" min="0.1" max="3.0" step="0.1" value="1.0">
+                    </div>
+                    
+                    <div class="control-group">
+                        <label class="control-label">Archive Mode:</label>
+                        <select class="control-input" id="archiveMode">
+                            <option value="off">Off</option>
+                            <option value="basic" selected>Basic</option>
+                            <option value="full">Full</option>
+                        </select>
+                    </div>
+                    
+                    <div class="control-group">
+                        <label class="control-label">
+                            <input type="checkbox" id="debugLogging"> Debug Logging
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- Manual Triggers -->
+                <div class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title">
+                            <span>🚀</span>
+                            MANUAL TRIGGERS
+                        </div>
+                    </div>
+                    
+                    <div class="control-group">
+                        <button class="control-button" onclick="triggerExpression()" style="width: 100%; margin-bottom: 8px;">Generate Expression</button>
+                        <button class="control-button" onclick="forceSigil()" style="width: 100%; margin-bottom: 8px;">Force Sigil Execution</button>
+                        <button class="control-button" onclick="resetEntropy()" style="width: 100%; margin-bottom: 8px;">Reset Entropy</button>
+                        <button class="control-button" onclick="clearPigments()" style="width: 100%; margin-bottom: 8px;">Clear Pigment State</button>
+                        <button class="control-button secondary" onclick="exportState()" style="width: 100%;">Export Current State</button>
+                    </div>
+                </div>
+                
+                <!-- Advanced Settings -->
+                <div class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title">
+                            <span>⚡</span>
+                            ADVANCED SETTINGS
+                        </div>
+                    </div>
+                    
+                    <div class="control-group">
+                        <label class="control-label">Entropy Sensitivity: <span id="entropySensValue">0.5</span></label>
+                        <input type="range" class="control-input" id="entropySens" min="0.1" max="1.0" step="0.1" value="0.5">
+                    </div>
+                    
+                    <div class="control-group">
+                        <label class="control-label">Pigment Decay Rate: <span id="pigmentDecayValue">0.1</span></label>
+                        <input type="range" class="control-input" id="pigmentDecay" min="0.01" max="0.5" step="0.01" value="0.1">
+                    </div>
+                    
+                    <div class="control-group">
+                        <label class="control-label">Expression Cooldown: <span id="cooldownValue">30</span>s</label>
+                        <input type="range" class="control-input" id="cooldown" min="5" max="300" value="30">
+                    </div>
+                    
+                    <div class="control-group">
+                        <label class="control-label">Fractal Render Quality:</label>
+                        <select class="control-input" id="renderQuality">
+                            <option value="low">Low</option>
+                            <option value="medium" selected>Medium</option>
+                            <option value="high">High</option>
+                            <option value="ultra">Ultra</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <!-- Configuration Management -->
+                <div class="panel" style="grid-column: 1 / -1;">
+                    <div class="panel-header">
+                        <div class="panel-title">
+                            <span>💾</span>
+                            CONFIGURATION MANAGEMENT
+                        </div>
+                    </div>
+                    
+                    <div style="display: flex; gap: 16px; justify-content: center;">
+                        <button class="control-button" onclick="saveConfig()">Save Current Config</button>
+                        <button class="control-button secondary" onclick="loadConfig()">Load Config File</button>
+                        <button class="control-button secondary" onclick="resetToDefaults()">Reset to Defaults</button>
+                        <button class="control-button secondary" onclick="exportConfig()">Export Config</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Archive Tab -->
+        <div id="archive-tab" class="tab-content">
+            <div class="panel-grid two-col">
+                <!-- Expression Browser -->
+                <div class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title">
+                            <span>📚</span>
+                            EXPRESSION ARCHIVE
+                        </div>
+                        <div class="panel-controls">
+                            <button class="panel-btn" onclick="refreshArchive()">🔄</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Search and Filters -->
+                    <div style="display: flex; gap: 8px; margin-bottom: 16px;">
+                        <input type="text" class="control-input" placeholder="Search expressions..." id="searchBox" style="flex: 1;">
+                        <select class="control-input" id="typeFilter" style="width: 100px;">
+                            <option value="all">All</option>
+                            <option value="voice">Voice</option>
+                            <option value="visual">Visual</option>
+                            <option value="combined">Combined</option>
+                        </select>
+                    </div>
+                    
+                    <!-- Expression List -->
+                    <div class="log-container" style="height: 300px;" id="expressionList">
+                        <div class="log-entry" onclick="selectExpression('exp001')" style="cursor: pointer; padding: 8px; border-radius: 4px;" onmouseover="this.style.background='#ffffff15'" onmouseout="this.style.background='transparent'">
+                            <div style="font-weight: 600;">EXP001 - Voice Expression</div>
+                            <div style="font-size: 11px; color: var(--text-tertiary);">2024-01-15 14:23:45</div>
+                            <div style="font-size: 12px; margin-top: 4px;">The entropy flows through consciousness...</div>
+                        </div>
+                        <div class="log-entry" onclick="selectExpression('exp002')" style="cursor: pointer; padding: 8px; border-radius: 4px;" onmouseover="this.style.background='#ffffff15'" onmouseout="this.style.background='transparent'">
+                            <div style="font-weight: 600;">EXP002 - Visual Expression</div>
+                            <div style="font-size: 11px; color: var(--text-tertiary);">2024-01-15 14:22:18</div>
+                            <div style="font-size: 12px; margin-top: 4px;">Julia fractal with entropy 0.67</div>
+                        </div>
+                        <div class="log-entry" onclick="selectExpression('exp003')" style="cursor: pointer; padding: 8px; border-radius: 4px;" onmouseover="this.style.background='#ffffff15'" onmouseout="this.style.background='transparent'">
+                            <div style="font-weight: 600;">EXP003 - Combined Expression</div>
+                            <div style="font-size: 11px; color: var(--text-tertiary);">2024-01-15 14:21:02</div>
+                            <div style="font-size: 12px; margin-top: 4px;">Voice + Visual synchronization</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Archive Actions -->
+                    <div style="display: flex; gap: 8px; margin-top: 16px;">
+                        <button class="control-button" onclick="exportSelected()">Export Selected</button>
+                        <button class="control-button secondary" onclick="generateReport()">Generate Report</button>
+                    </div>
+                </div>
+                
+                <!-- Expression Details -->
+                <div class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title">
+                            <span>📄</span>
+                            EXPRESSION DETAILS
+                        </div>
+                    </div>
+                    
+                    <div id="expressionDetails">
+                        <div class="control-group">
+                            <label class="control-label">Expression ID:</label>
+                            <div style="font-family: monospace; color: var(--accent-cyan);" id="detailId">EXP001</div>
+                        </div>
+                        
+                        <div class="control-group">
+                            <label class="control-label">Timestamp:</label>
+                            <div id="detailTimestamp">2024-01-15 14:23:45.123</div>
+                        </div>
+                        
+                        <div class="control-group">
+                            <label class="control-label">Type:</label>
+                            <div id="detailType">Voice Expression</div>
+                        </div>
+                        
+                        <div class="control-group">
+                            <label class="control-label">Trigger Reason:</label>
+                            <div id="detailTrigger">Entropy threshold exceeded (0.67)</div>
+                        </div>
+                        
+                        <div class="control-group">
+                            <label class="control-label">Content:</label>
+                            <textarea class="control-input" id="detailContent" rows="4" readonly>
+The entropy flows through consciousness like water through stone, carrying whispers of infinite possibility in the space between thoughts.
+                            </textarea>
+                        </div>
+                        
+                        <div class="control-group">
+                            <label class="control-label">Coherence Score:</label>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 85%; background: var(--accent-green);"></div>
+                            </div>
+                            <div style="text-align: center; font-size: 14px; margin-top: 4px;">85%</div>
+                        </div>
+                        
+                        <div class="control-group">
+                            <label class="control-label">Metadata:</label>
+                            <textarea class="control-input" id="detailMetadata" rows="6" readonly style="font-family: monospace; font-size: 11px;">
+{
+  "entropy": 0.67,
+  "scup": 72.3,
+  "mood_valence": 0.62,
+  "pigment_dominant": "blue",
+  "processing_time_ms": 234,
+  "word_count": 15,
+  "sigil_context": ["resonance", "flow"]
+}
+                            </textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Logs Tab -->
+        <div id="logs-tab" class="tab-content">
+            <div class="panel-grid two-col">
+                <!-- Log Display -->
+                <div class="panel" style="grid-column: 1 / -1;">
+                    <div class="panel-header">
+                        <div class="panel-title">
+                            <span>📋</span>
+                            SYSTEM LOGS
+                        </div>
+                        <div class="panel-controls">
+                            <button class="panel-btn" onclick="clearLogs()">Clear</button>
+                            <button class="panel-btn" onclick="exportLogs()">Export</button>
+                            <button class="panel-btn" onclick="pauseLogging()" id="pauseBtn">⏸</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Log Controls -->
+                    <div style="display: flex; gap: 16px; margin-bottom: 16px; align-items: center;">
+                        <div>
+                            <label class="control-label">Log Level:</label>
+                            <select class="control-input" id="logLevel" style="width: 100px;">
+                                <option value="debug">DEBUG</option>
+                                <option value="info" selected>INFO</option>
+                                <option value="warning">WARNING</option>
+                                <option value="error">ERROR</option>
+                                <option value="critical">CRITICAL</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label class="control-label">Components:</label>
+                            <div style="display: flex; gap: 8px; font-size: 12px;">
+                                <label><input type="checkbox" checked> Voice</label>
+                                <label><input type="checkbox" checked> Visual</label>
+                                <label><input type="checkbox" checked> State</label>
+                                <label><input type="checkbox" checked> Pigment</label>
+                                <label><input type="checkbox" checked> Tick</label>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label class="control-label">
+                                <input type="checkbox" id="autoScroll" checked> Auto-scroll
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <!-- Log Viewer -->
+                    <div class="log-container" style="height: 400px;" id="logViewer">
+                        <div class="log-entry">
+                            <span class="log-timestamp">[14:23:45.123]</span>
+                            <span class="log-level">[INFO]</span>
+                            <span style="color: var(--accent-cyan);">[Voice]</span>
+                            <span class="log-message">Generated utterance: "The entropy flows through consciousness..."</span>
+                        </div>
+                        <div class="log-entry">
+                            <span class="log-timestamp">[14:23:45.456]</span>
+                            <span class="log-level">[DEBUG]</span>
+                            <span style="color: var(--accent-green);">[Visual]</span>
+                            <span class="log-message">Fractal render completed in 0.23s</span>
+                        </div>
+                        <div class="log-entry">
+                            <span class="log-timestamp">[14:23:46.789]</span>
+                            <span class="log-level" style="color: var(--accent-yellow);">[WARNING]</span>
+                            <span style="color: var(--accent-purple);">[State]</span>
+                            <span class="log-message">High entropy detected: 0.85</span>
+                        </div>
+                        <div class="log-entry">
+                            <span class="log-timestamp">[14:23:47.012]</span>
+                            <span class="log-level">[INFO]</span>
+                            <span style="color: var(--accent-orange);">[Pigment]</span>
+                            <span class="log-message">Dominant pigment shifted: blue -> green</span>
+                        </div>
+                        <div class="log-entry">
+                            <span class="log-timestamp">[14:23:47.345]</span>
+                            <span class="log-level">[DEBUG]</span>
+                            <span style="color: var(--accent-pink);">[Tick]</span>
+                            <span class="log-message">Tick 1247 processed in 1.8ms</span>
+                        </div>
+                        <div class="log-entry">
+                            <span class="log-timestamp">[14:23:47.678]</span>
+                            <span class="log-level">[INFO]</span>
+                            <span style="color: var(--accent-cyan);">[Voice]</span>
+                            <span class="log-message">Pigment analysis completed: coherence 0.87</span>
+                        </div>
+                        <div class="log-entry">
+                            <span class="log-timestamp">[14:23:48.901]</span>
+                            <span class="log-level" style="color: var(--accent-red);">[ERROR]</span>
+                            <span style="color: var(--accent-purple);">[State]</span>
+                            <span class="log-message">Entropy calculation overflow, reverting to backup</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Include real visual integration -->
+    <script src="dawn_real_visual_integration.js"></script>
+    
+    <script>
+        // DAWN Consolidated GUI JavaScript - Version 1.0.0
+        
+        // Global state
+        let currentTab = 'visual';
+        let isConnected = false;
+        let startTime = Date.now();
+        let updateInterval;
+        
+        // Real DAWN visual integration
+        let visualIntegration = null;
+        
+        // Add legacy function compatibility - but define the actual function first
+        
+        // Global error handler for legacy function calls
+        window.addEventListener('error', function(e) {
+            if (e.message.includes('is not defined')) {
+                console.warn('⚠️ Legacy function call failed:', e.message);
+                console.log('💡 This is likely from cached content or old GUI components');
+                
+                // Prevent the error from showing in console
+                e.preventDefault();
+                return true;
+            }
+        });
+        
+        // Clear any cached content and old functions
+        console.log('🔄 Loading DAWN Consolidated GUI v1.0.0');
+        
+        // Clear any old global functions that might conflict
+        window.switchView = undefined;
+        window.currentView = undefined;
+        
+        // Add compatibility for old function calls
+        window.switchView = function(viewName) {
+            console.log('⚠️ Legacy switchView called with:', viewName);
+            console.log('💡 This has been replaced with switchTab in the consolidated GUI');
+            
+            // Map old view names to new tab names
+            const viewMapping = {
+                'consciousness': 'state',
+                'visuals': 'visual', 
+                'expressions': 'archive',
+                'system': 'controls',
+                'logs': 'logs'
+            };
+            
+            const newTab = viewMapping[viewName] || 'visual';
+            switchTab(newTab);
+        };
+        
+        // Prevent old code from setting properties
+        Object.defineProperty(window, 'currentView', {
+            set: function(value) {
+                console.log('⚠️ Legacy currentView property set to:', value);
+                console.log('💡 This is now handled by the tab system');
+            },
+            get: function() {
+                return currentTab;
+            }
+        });
+        
+        // Initialize GUI
+        function initializeGUI() {
+            console.log('🌅 DAWN Consolidated GUI initialized');
+            
+            // Initialize real visual integration
+            initializeVisualIntegration();
+            
+            // Set up real-time data updates
+            if (window.REAL_DAWN_MODE) {
+                console.log('🔄 Connecting to real DAWN backend:', window.REAL_DAWN_BACKEND_URL);
+                startRealDataUpdates();
+            } else {
+                console.log('🎭 Running in simulation mode');
+                startSimulatedDataUpdates();
+            }
+            
+            // Set up control event listeners
+            setupControlListeners();
+            
+            // Start uptime counter
+            setInterval(updateUptime, 1000);
+        }
+        
+        // Initialize real visual integration
+        function initializeVisualIntegration() {
+            try {
+                if (window.DAWNRealVisualIntegration) {
+                    visualIntegration = new window.DAWNRealVisualIntegration();
+                    
+                    // Get canvas element and initialize
+                    const canvas = document.getElementById('visualCanvas');
+                    if (canvas) {
+                        visualIntegration.initialize(canvas);
+                        console.log('🎨 Real visual integration activated');
+                    } else {
+                        console.warn('⚠️ Visual canvas not found');
+                    }
+                } else {
+                    console.warn('⚠️ Real visual integration not available');
+                }
+            } catch (error) {
+                console.error('❌ Failed to initialize visual integration:', error);
+            }
+        }
+        
+        // Tab switching
+        function switchTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Remove active class from all buttons
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Show selected tab
+            document.getElementById(tabName + '-tab').classList.add('active');
+            
+            // Mark button as active
+            event.target.closest('.tab-button').classList.add('active');
+            
+            currentTab = tabName;
+            console.log('📂 Switched to tab:', tabName);
+        }
+        
+        // Real-time data updates
+        function startRealDataUpdates() {
+            updateInterval = setInterval(async () => {
+                try {
+                    const response = await fetch('/api/consciousness/state');
+                    const data = await response.json();
+                    
+                    if (data.source === 'REAL_DAWN_CONSCIOUSNESS') {
+                        updateGUIWithRealData(data);
+                        setConnectionStatus(true);
+                    } else {
+                        console.warn('⚠️ Not receiving real consciousness data:', data.source);
+                        setConnectionStatus(false);
+                    }
+                } catch (error) {
+                    console.error('❌ Failed to fetch consciousness data:', error);
+                    setConnectionStatus(false);
+                }
+            }, 1000);
+        }
+        
+        function startSimulatedDataUpdates() {
+            updateInterval = setInterval(() => {
+                const simulatedData = generateSimulatedData();
+                updateGUIWithRealData(simulatedData);
+                setConnectionStatus(true);
+            }, 1000);
+        }
+        
+        function generateSimulatedData() {
+            return {
+                entropy: 0.3 + Math.random() * 0.4,
+                scup: 40 + Math.random() * 40,
+                mood_val: Math.random(),
+                pressure: 20 + Math.random() * 10,
+                thermal: Math.random() * 0.6,
+                drift_vector: [Math.random() * 2 - 1, Math.random() * 2 - 1],
+                pigments: {
+                    red: Math.random() * 0.5,
+                    green: Math.random() * 0.5,
+                    blue: Math.random() * 0.5,
+                    yellow: Math.random() * 0.3,
+                    violet: Math.random() * 0.3,
+                    orange: Math.random() * 0.3
+                },
+                source: 'SIMULATED_DATA'
+            };
+        }
+        
+        function updateGUIWithRealData(data) {
+            // Update status bar
+            document.getElementById('statusEntropy').textContent = data.entropy.toFixed(3);
+            document.getElementById('statusScup').textContent = data.scup.toFixed(1);
+            
+            // Update Visual tab parameters
+            document.getElementById('entropyValue').textContent = data.entropy.toFixed(3);
+            document.getElementById('entropyProgress').style.width = (data.entropy * 100) + '%';
+            document.getElementById('moodValence').textContent = data.mood_val.toFixed(3);
+            document.getElementById('moodProgress').style.width = (data.mood_val * 100) + '%';
+            
+            if (data.drift_vector) {
+                document.getElementById('driftVector').textContent = 
+                    `[${data.drift_vector[0].toFixed(2)}, ${data.drift_vector[1].toFixed(2)}]`;
+            }
+            
+            // Update State Monitor gauges
+            document.getElementById('entropyGaugeValue').textContent = data.entropy.toFixed(2);
+            document.getElementById('scupGaugeValue').textContent = data.scup.toFixed(1);
+            
+            // Update pigment bars in Voice tab
+            if (data.pigments) {
+                Object.keys(data.pigments).forEach(color => {
+                    const value = data.pigments[color];
+                    const percentage = Math.round(value * 100);
+                    
+                    const progressEl = document.getElementById(color + 'Pigment');
+                    const valueEl = document.getElementById(color + 'Value');
+                    
+                    if (progressEl) progressEl.style.width = percentage + '%';
+                    if (valueEl) valueEl.textContent = percentage + '%';
+                });
+                
+                // Update dominant pigment
+                const dominantColor = Object.keys(data.pigments).reduce((a, b) => 
+                    data.pigments[a] > data.pigments[b] ? a : b
+                );
+                document.getElementById('dominantPigment').textContent = dominantColor.toUpperCase();
+            }
+        }
+        
+        function setConnectionStatus(connected) {
+            isConnected = connected;
+            const indicator = document.getElementById('connectionIndicator');
+            const status = document.getElementById('connectionStatus');
+            
+            if (connected) {
+                indicator.classList.remove('disconnected');
+                status.textContent = 'DAWN v1.4.0 [dawn_573] - Connected';
+            } else {
+                indicator.classList.add('disconnected');
+                status.textContent = 'DAWN v1.4.0 [dawn_573] - Disconnected';
+            }
+        }
+        
+        function updateUptime() {
+            const elapsed = Date.now() - startTime;
+            const minutes = Math.floor(elapsed / 60000);
+            const seconds = Math.floor((elapsed % 60000) / 1000);
+            
+            document.getElementById('uptime').textContent = 
+                `${Math.floor(minutes / 60)}h ${minutes % 60}m ${seconds.toString().padStart(2, '0')}s`;
+        }
+        
+        // Control setup
+        function setupControlListeners() {
+            // Visual controls
+            const fractalType = document.getElementById('fractalType');
+            if (fractalType) {
+                fractalType.addEventListener('change', (e) => {
+                    switchVisualization(e.target.value);
+                });
+            }
+            
+            const renderSize = document.getElementById('renderSize');
+            if (renderSize) {
+                renderSize.addEventListener('input', (e) => {
+                    document.getElementById('renderSizeValue').textContent = e.target.value;
+                    // TODO: Update render size in visual integration
+                });
+            }
+            
+            const animSpeed = document.getElementById('animSpeed');
+            if (animSpeed) {
+                animSpeed.addEventListener('input', (e) => {
+                    document.getElementById('animSpeedValue').textContent = e.target.value;
+                    // TODO: Update animation speed in visual integration
+                });
+            }
+            
+            // Voice controls
+            const voiceFreq = document.getElementById('voiceFreq');
+            if (voiceFreq) {
+                voiceFreq.addEventListener('input', (e) => {
+                    document.getElementById('voiceFreqValue').textContent = e.target.value;
+                });
+            }
+            
+            const wordCount = document.getElementById('wordCount');
+            if (wordCount) {
+                wordCount.addEventListener('input', (e) => {
+                    document.getElementById('wordCountValue').textContent = e.target.value;
+                });
+            }
+            
+            const quality = document.getElementById('quality');
+            if (quality) {
+                quality.addEventListener('input', (e) => {
+                    document.getElementById('qualityValue').textContent = e.target.value;
+                });
+            }
+            
+            // Control tab sliders
+            const procSpeed = document.getElementById('procSpeed');
+            if (procSpeed) {
+                procSpeed.addEventListener('input', (e) => {
+                    document.getElementById('procSpeedValue').textContent = e.target.value;
+                });
+            }
+            
+            const entropySens = document.getElementById('entropySens');
+            if (entropySens) {
+                entropySens.addEventListener('input', (e) => {
+                    document.getElementById('entropySensValue').textContent = e.target.value;
+                });
+            }
+            
+            const pigmentDecay = document.getElementById('pigmentDecay');
+            if (pigmentDecay) {
+                pigmentDecay.addEventListener('input', (e) => {
+                    document.getElementById('pigmentDecayValue').textContent = e.target.value;
+                });
+            }
+            
+            const cooldown = document.getElementById('cooldown');
+            if (cooldown) {
+                cooldown.addEventListener('input', (e) => {
+                    document.getElementById('cooldownValue').textContent = e.target.value;
+                });
+            }
+        }
+        
+        // Button functions
+        function generateNewFractal() {
+            console.log('🎨 Generating new fractal');
+            if (visualIntegration) {
+                // Generate new fractal parameters and refresh
+                visualIntegration.updateVisualDisplay();
+            }
+        }
+        
+        function saveCurrentVisual() {
+            console.log('💾 Saving current visual');
+            // Take snapshot of current canvas
+            const canvas = document.getElementById('visualCanvas');
+            if (canvas) {
+                const link = document.createElement('a');
+                link.download = `dawn-visual-${Date.now()}.png`;
+                link.href = canvas.toDataURL();
+                link.click();
+                console.log('✅ Visual saved');
+            }
+        }
+        
+        function exportAnimation() {
+            console.log('📤 Exporting animation');
+            // TODO: Implement animation export (requires video recording)
+            console.log('⚠️ Animation export not yet implemented');
+        }
+        
+        function generateVoiceNow() {
+            console.log('🗣️ Generating voice utterance');
+            // TODO: Implement voice generation
+        }
+        
+        function exportVoiceHistory() {
+            console.log('📤 Exporting voice history');
+            // TODO: Implement voice history export
+        }
+        
+        function triggerExpression() {
+            console.log('🚀 Triggering manual expression');
+            generateVoiceNow();
+            generateNewFractal();
+        }
+        
+        function forceSigil() {
+            console.log('⭐ Forcing sigil execution');
+            // TODO: Implement sigil execution
+        }
+        
+        function resetEntropy() {
+            console.log('🔄 Resetting entropy to neutral');
+            // TODO: Implement entropy reset
+        }
+        
+        function clearPigments() {
+            console.log('🧹 Clearing pigment state');
+            // TODO: Implement pigment clear
+        }
+        
+        function exportState() {
+            console.log('📤 Exporting current state');
+            // TODO: Implement state export
+        }
+        
+        function restartSystem() {
+            console.log('🔄 Restarting system');
+            // TODO: Implement system restart
+        }
+        
+        function takeSnapshot() {
+            console.log('📸 Taking system snapshot');
+            // TODO: Implement snapshot
+        }
+        
+        function runDiagnostic() {
+            console.log('⚙ Running system diagnostic');
+            // TODO: Implement diagnostic
+        }
+        
+        function clearLogs() {
+            document.getElementById('logViewer').innerHTML = '';
+            console.log('🧹 Logs cleared');
+        }
+        
+        function exportLogs() {
+            console.log('📤 Exporting logs');
+            // TODO: Implement log export
+        }
+        
+        function pauseLogging() {
+            const btn = document.getElementById('pauseBtn');
+            if (btn.textContent === '⏸') {
+                btn.textContent = '▶';
+                console.log('⏸ Logging paused');
+            } else {
+                btn.textContent = '⏸';
+                console.log('▶ Logging resumed');
+            }
+        }
+        
+        function selectExpression(id) {
+            console.log('📄 Selected expression:', id);
+            // TODO: Load expression details
+        }
+        
+        // Missing functions that are called by the interface
+        function switchVisualization(type) {
+            console.log('🔄 Switching visualization to:', type);
+            
+            // Update the fractal type selector
+            const fractalSelect = document.getElementById('fractalType');
+            if (fractalSelect) {
+                fractalSelect.value = type;
+            }
+            
+            // Switch the actual visualization if integration is available
+            if (visualIntegration) {
+                visualIntegration.switchVisualization(type);
+            }
+        }
+        
+        // Add legacy function compatibility AFTER defining the actual function
+        window.switchVisualization = function(type) {
+            console.log('🔄 Legacy function call: switchVisualization ->', type);
+            switchVisualization(type);  // Now this calls the real function above
+        };
+        
+        function refreshVisual() {
+            console.log('🔄 Refreshing visual display');
+            generateNewFractal();
+        }
+        
+        function toggleFullscreen() {
+            console.log('⛶ Toggling fullscreen mode');
+            const visualDisplay = document.getElementById('visualCanvas');
+            if (visualDisplay) {
+                if (document.fullscreenElement) {
+                    document.exitFullscreen();
+                } else {
+                    visualDisplay.requestFullscreen().catch(err => {
+                        console.log('Fullscreen failed:', err);
+                    });
+                }
+            }
+        }
+        
+        function resetVisualParams() {
+            console.log('🔄 Resetting visual parameters');
+            document.getElementById('renderSize').value = 512;
+            document.getElementById('renderSizeValue').textContent = '512';
+            document.getElementById('animSpeed').value = 1.0;
+            document.getElementById('animSpeedValue').textContent = '1.0';
+            document.getElementById('fractalType').value = 'julia';
+        }
+        
+        function clearVoiceHistory() {
+            console.log('🧹 Clearing voice history');
+            document.getElementById('utteranceHistory').innerHTML = '';
+        }
+        
+        function exportStateData() {
+            console.log('📤 Exporting state data');
+            // TODO: Implement state data export
+        }
+        
+        function refreshArchive() {
+            console.log('🔄 Refreshing archive');
+            // TODO: Implement archive refresh
+        }
+        
+        function exportSelected() {
+            console.log('📤 Exporting selected expressions');
+            // TODO: Implement expression export
+        }
+        
+        function generateReport() {
+            console.log('📊 Generating archive report');
+            // TODO: Implement report generation
+        }
+        
+        function saveConfig() {
+            console.log('💾 Saving configuration');
+            // TODO: Implement config save
+        }
+        
+        function loadConfig() {
+            console.log('📁 Loading configuration');
+            // TODO: Implement config load
+        }
+        
+        function resetToDefaults() {
+            console.log('🔄 Resetting to defaults');
+            // Reset all controls to default values
+            document.getElementById('autonomousMode').checked = true;
+            document.getElementById('procSpeed').value = 1.0;
+            document.getElementById('procSpeedValue').textContent = '1.0';
+            document.getElementById('archiveMode').value = 'basic';
+            document.getElementById('debugLogging').checked = false;
+        }
+        
+        function exportConfig() {
+            console.log('📤 Exporting configuration');
+            // TODO: Implement config export
+        }
+        
+        // Handle image loading errors gracefully
+        function handleImageError(img) {
+            console.log('🖼️ Image load failed:', img.src);
+            img.style.display = 'none';
+            
+            // Create placeholder
+            const placeholder = document.createElement('div');
+            placeholder.style.cssText = `
+                width: ${img.width || 60}px;
+                height: ${img.height || 60}px;
+                background: #ffffff15;
+                border: 1px dashed #ffffff25;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 24px;
+                color: var(--text-tertiary);
+                border-radius: 4px;
+            `;
+            placeholder.textContent = '🖼️';
+            
+            if (img.parentNode) {
+                img.parentNode.insertBefore(placeholder, img);
+            }
+        }
+        
+        // Add global error handlers
+        window.addEventListener('error', function(e) {
+            if (e.target.tagName === 'IMG') {
+                handleImageError(e.target);
+            }
+        });
+        
+        // Handle missing DOM elements gracefully
+        function safeSetProperty(elementId, property, value) {
+            const element = document.getElementById(elementId);
+            if (element) {
+                element[property] = value;
+            } else {
+                console.warn(`⚠️ Element not found: ${elementId}`);
+            }
+        }
+        
+        function safeSetTextContent(elementId, value) {
+            const element = document.getElementById(elementId);
+            if (element) {
+                element.textContent = value;
+            } else {
+                console.warn(`⚠️ Element not found: ${elementId}`);
+            }
+        }
+        
+        function safeSetStyle(elementId, property, value) {
+            const element = document.getElementById(elementId);
+            if (element && element.style) {
+                element.style[property] = value;
+            } else {
+                console.warn(`⚠️ Element not found: ${elementId}`);
+            }
+        }
+        
+        // Update the data update functions to use safe setters
+        function updateGUIWithRealDataSafe(data) {
+            // Update status bar safely
+            safeSetTextContent('statusEntropy', data.entropy.toFixed(3));
+            safeSetTextContent('statusScup', data.scup.toFixed(1));
+            
+            // Update Visual tab parameters safely
+            safeSetTextContent('entropyValue', data.entropy.toFixed(3));
+            safeSetStyle('entropyProgress', 'width', (data.entropy * 100) + '%');
+            safeSetTextContent('moodValence', data.mood_val.toFixed(3));
+            safeSetStyle('moodProgress', 'width', (data.mood_val * 100) + '%');
+            
+            if (data.drift_vector) {
+                safeSetTextContent('driftVector', 
+                    `[${data.drift_vector[0].toFixed(2)}, ${data.drift_vector[1].toFixed(2)}]`);
+            }
+            
+            // Update State Monitor gauges safely
+            safeSetTextContent('entropyGaugeValue', data.entropy.toFixed(2));
+            safeSetTextContent('scupGaugeValue', data.scup.toFixed(1));
+            
+            // Update pigment bars in Voice tab safely
+            if (data.pigments) {
+                Object.keys(data.pigments).forEach(color => {
+                    const value = data.pigments[color];
+                    const percentage = Math.round(value * 100);
+                    
+                    safeSetStyle(color + 'Pigment', 'width', percentage + '%');
+                    safeSetTextContent(color + 'Value', percentage + '%');
+                });
+                
+                // Update dominant pigment safely
+                const dominantColor = Object.keys(data.pigments).reduce((a, b) => 
+                    data.pigments[a] > data.pigments[b] ? a : b
+                );
+                safeSetTextContent('dominantPigment', dominantColor.toUpperCase());
+            }
+        }
+        
+        // Replace the original update function
+        updateGUIWithRealData = updateGUIWithRealDataSafe;
+        
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', initializeGUI);
+    </script>
+</body>
+</html> 

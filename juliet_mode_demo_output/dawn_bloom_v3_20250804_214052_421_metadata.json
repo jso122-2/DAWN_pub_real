@@ -1,0 +1,36 @@
+{
+  "bloom_id": "dawn_bloom_v3_20250804_214052_421",
+  "timestamp": "2025-08-04T21:41:05.899922",
+  "version": "3.0_enhanced",
+  "parameters": {
+    "bloom_entropy": 0.8,
+    "mood_valence": -0.3,
+    "drift_vector": 0.4,
+    "rebloom_depth": 7,
+    "sigil_saturation": 0.7,
+    "pulse_zone": "fragile"
+  },
+  "visual_characteristics": {
+    "bloom_shape": "irregular organic form with chaotic edges with gentle asymmetric bias and moderate shell complexity",
+    "color_mode": "cool balanced tones with moderate brightness",
+    "pulse_description": "delicate, flickering edges with uncertain boundaries"
+  },
+  "consciousness_state": {
+    "archetype": "Deep Chaos",
+    "entropy_state": "chaotic",
+    "emotional_tone": "cool",
+    "directional_bias": "gentle"
+  },
+  "summary": "Fragmenting Memory touched by quiet sadness and reaching outward, shaped delicate as morning mist.",
+  "files": {
+    "fractal_image": "juliet_mode_demo_output/dawn_bloom_v3_20250804_214052_421.png",
+    "metadata": "dawn_bloom_v3_20250804_214052_421_metadata.json"
+  },
+  "juliet_mode": true,
+  "clarity_optimizations": {
+    "reduced_glow": true,
+    "capped_noise_opacity": true,
+    "structural_priority": true,
+    "clarity_mode_forced": false
+  }
+}

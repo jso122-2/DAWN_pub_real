@@ -1,0 +1,36 @@
+{
+  "bloom_id": "dawn_bloom_v3_20250804_214013_122",
+  "timestamp": "2025-08-04T21:40:32.635632",
+  "version": "3.0_enhanced",
+  "parameters": {
+    "bloom_entropy": 0.5,
+    "mood_valence": 0.1,
+    "drift_vector": 0.0,
+    "rebloom_depth": 6,
+    "sigil_saturation": 0.8,
+    "pulse_zone": "transcendent"
+  },
+  "visual_characteristics": {
+    "bloom_shape": "flowing petal structure with moderate complexity with centered symmetry and moderate shell complexity",
+    "color_mode": "neutral equilibrium palette with high intensity and vivid glow",
+    "pulse_description": "ethereal, expansive energy reaching beyond form"
+  },
+  "consciousness_state": {
+    "archetype": "Transcendent Equilibrium",
+    "entropy_state": "flowing",
+    "emotional_tone": "warm",
+    "directional_bias": "centered"
+  },
+  "summary": "A flowing memory touched by dawn, poised in equilibrium ethereal beyond form.",
+  "files": {
+    "fractal_image": "dawn_consciousness_blooms/dawn_bloom_v3_20250804_214013_122.png",
+    "metadata": "dawn_bloom_v3_20250804_214013_122_metadata.json"
+  },
+  "juliet_mode": false,
+  "clarity_optimizations": {
+    "reduced_glow": false,
+    "capped_noise_opacity": false,
+    "structural_priority": true,
+    "clarity_mode_forced": false
+  }
+}

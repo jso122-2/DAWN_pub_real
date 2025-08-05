@@ -1,0 +1,101 @@
+{
+  "fractal_generation": {
+    "timestamp": "2025-08-04T19:49:56.035531",
+    "version": "dawn_bloom_fractal_v1.0",
+    "fractal_string": "R6-MULTI-Bv0.8--E0.20-FRAG-D6-",
+    "output_size": 512,
+    "layer_count": 5
+  },
+  "consciousness_parameters": {
+    "bloom_entropy": 0.2,
+    "mood_valence": -0.8,
+    "drift_vector": -0.6,
+    "rebloom_depth": 6,
+    "sigil_saturation": 0.4,
+    "pulse_zone": "fragile",
+    "timestamp": null,
+    "memory_id": null,
+    "archetype": null,
+    "fractal_string": null,
+    "validation_passed": true,
+    "validation_warnings": [],
+    "source_file": null
+  },
+  "visual_characteristics": {
+    "mood_palette": {
+      "palette_name": "Deep Introspection",
+      "base_colors": [
+        [
+          31,
+          11,
+          38
+        ],
+        [
+          32,
+          18,
+          51
+        ],
+        [
+          32,
+          28,
+          63
+        ],
+        [
+          40,
+          49,
+          76
+        ]
+      ],
+      "glow_colors": [
+        [
+          71,
+          22,
+          89
+        ],
+        [
+          61,
+          31,
+          102
+        ],
+        [
+          53,
+          46,
+          114
+        ],
+        [
+          61,
+          78,
+          127
+        ]
+      ],
+      "brightness_multiplier": 0.5,
+      "glow_radius": 6.0
+    },
+    "shape_complexity": {
+      "shape_archetype": "Nested Mandala",
+      "complexity_mode": "ComplexityMode.MULTI_LAYER",
+      "petal_count": 3,
+      "edge_roughness": 0.23333333333333336,
+      "symmetry_factor": 0.8666666666666667
+    },
+    "drift_transformation": {
+      "center_offset": [
+        -0.18,
+        -0.12
+      ],
+      "rotation_angle": -0.31415926535897926,
+      "pulse_zone": "fragile"
+    }
+  },
+  "files": {
+    "fractal_image": "consciousness_evolution\\evolution_step_01_deep_despair_20250804_194955_985.png",
+    "metadata_file": "consciousness_evolution\\evolution_step_01_deep_despair_20250804_194955_985_metadata.json"
+  },
+  "technical_details": {
+    "rendering_engine": "matplotlib + PIL",
+    "color_space": "RGB",
+    "bit_depth": 8,
+    "compression": "PNG"
+  },
+  "symbolic_description": "A nested mandala emerging from deep introspection, encoded as R6-MULTI-Bv0.8--E0.20-FRAG-D6-"
+}

@@ -218,26 +218,48 @@ class DAWNVisualIntegration:
             logger.warning("Visual data queue full, dropping tick")
     
     def generate_visualization(self, module_id: str, data: Dict[str, Any]) -> Optional[str]:
-        """Generate a specific visualization"""
-        if module_id not in self.visual_modules:
-            logger.warning(f"Unknown visual module: {module_id}")
-            return None
-        
+        """Generate a text-based visualization for the specified module"""
         try:
-            module_info = self.visual_modules[module_id]
-            module_path = module_info['path']
+            module_info = self.visual_modules.get(module_id)
+            if not module_info:
+                return None
             
-            # Import the visual module
+            module_path = Path(module_info['path'])
+            if not module_path.exists():
+                # Try alternate paths
+                alternate_paths = [
+                    Path(f"backend/visual/{module_path.name}"),
+                    Path(f"visual/{module_path.name}"),
+                    Path(module_path.name)
+                ]
+                
+                module_path = None
+                for alt_path in alternate_paths:
+                    if alt_path.exists():
+                        module_path = alt_path
+                        break
+                        
+                if not module_path:
+                    logger.warning(f"Module file not found: {module_id}")
+                    return None
+            
+            # Import the visual module with proper namespace
             spec = importlib.util.spec_from_file_location(module_id, module_path)
             if spec and spec.loader:
                 module = importlib.util.module_from_spec(spec)
+                
+                # Ensure sys is available in the module namespace
+                import sys
+                module.sys = sys
+                
+                # Execute the module
                 spec.loader.exec_module(module)
                 
                 # Create a simple text-based visualization based on the module type
                 return self._create_text_visualization(module_id, data, module_info)
                     
         except Exception as e:
-            logger.error(f"Error generating visualization for {module_id}: {e}")
+            print(f"Error generating visualization for {module_id}: {e}")
             return None
     
     def _create_text_visualization(self, module_id: str, data: Dict[str, Any], module_info: Dict[str, Any]) -> str:

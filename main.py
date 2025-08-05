@@ -16,6 +16,11 @@ from pathlib import Path
 project_root = Path(__file__).parent
 sys.path.insert(0, str(project_root))
 
+# Add dawn-consciousness-gui to path
+dawn_gui_path = project_root / "dawn-consciousness-gui"
+if dawn_gui_path.exists():
+    sys.path.insert(0, str(dawn_gui_path))
+
 def main():
     """Main entry point for DAWN system"""
     parser = argparse.ArgumentParser(
@@ -25,6 +30,7 @@ def main():
 Examples:
   python main.py                    # Launch default GUI mode
   python main.py --mode console     # Launch console mode
+  python main.py --mode offline-gui # Launch offline consciousness GUI
   python main.py --mode conversation # Launch conversation interface
   python main.py --mode visual      # Launch visual interface
   python main.py --mode demo        # Run demonstration mode
@@ -34,7 +40,7 @@ Examples:
     
     parser.add_argument(
         '--mode', 
-        choices=['gui', 'console', 'conversation', 'visual', 'demo', 'test'],
+        choices=['gui', 'console', 'conversation', 'visual', 'demo', 'test', 'offline-gui'],
         default='gui',
         help='Launch mode (default: gui)'
     )
@@ -58,28 +64,66 @@ Examples:
     print(f"🚀 Launching in {args.mode} mode...")
     
     try:
-        if args.mode == 'gui':
-            # Try the unified launcher first
+        if args.mode == 'offline-gui':
+            # Launch the fully offline consciousness GUI
             try:
-                from launcher_scripts.launch_dawn_unified import main as launch_unified
-                print("🎯 Using unified launcher...")
-                launch_unified()
+                import subprocess
+                print("🎯 Using DAWN Offline Consciousness GUI...")
+                
+                # Change to GUI directory and run offline launcher
+                gui_dir = project_root / "dawn-consciousness-gui"
+                if gui_dir.exists():
+                    launcher_path = gui_dir / "launch_offline_gui.py"
+                    if launcher_path.exists():
+                        subprocess.run([sys.executable, str(launcher_path)], cwd=str(gui_dir))
+                    else:
+                        # Use quick start as fallback
+                        quick_start_path = gui_dir / "quick_start.py"
+                        if quick_start_path.exists():
+                            subprocess.run([sys.executable, str(quick_start_path)], cwd=str(gui_dir))
+                        else:
+                            print("❌ Offline GUI launcher not found")
+                            return 1
+                else:
+                    raise ImportError("DAWN consciousness GUI directory not found")
+                    
+            except Exception as e:
+                print(f"⚠️ Offline GUI not available: {e}")
+                # Fall back to regular GUI
+                print("🔄 Falling back to regular GUI mode...")
+                args.mode = 'gui'
+                # Continue to regular GUI handling
+                
+        elif args.mode == 'gui':
+            # Try the DAWN consciousness GUI with integrated backend
+            try:
+                from launcher_scripts.launch_dawn_with_consciousness_gui import main as launch_consciousness_gui
+                print("🎯 Using DAWN Consciousness GUI with integrated backend...")
+                launch_consciousness_gui()
+                    
             except ImportError as e:
-                print(f"⚠️ Unified launcher not available: {e}")
-                # Fallback to other GUI options
+                print(f"⚠️ DAWN Consciousness GUI not available: {e}")
+                # Try the unified launcher second
                 try:
-                    from launcher_scripts.launch_dawn_gui import main as launch_gui
-                    print("🎯 Using DAWN GUI launcher...")
-                    launch_gui()
-                except ImportError:
+                    from launcher_scripts.launch_dawn_unified import main as launch_unified
+                    print("🎯 Using unified launcher...")
+                    launch_unified()
+                except ImportError as e:
+                    print(f"⚠️ Unified launcher not available: {e}")
+                    # Fallback to other GUI options
                     try:
-                        from launcher_scripts.launch_local_gui import main as launch_local_gui
-                        print("🎯 Using local GUI launcher...")
-                        launch_local_gui()
+                        from launcher_scripts.launch_dawn_gui import main as launch_gui
+                        print("🎯 Using DAWN GUI launcher...")
+                        launch_gui()
                     except ImportError:
-                        print("❌ No GUI launcher available, falling back to console mode")
-                        from launcher_scripts.launch_dawn_unified import main as launch_console
-                        launch_console()
+                        try:
+                            from launcher_scripts.launch_local_gui import main as launch_local_gui
+                            print("🎯 Using local GUI launcher...")
+                            launch_local_gui()
+                        except ImportError:
+                            print("❌ No GUI launcher available, falling back to console mode")
+                            from launcher_scripts.launch_dawn_unified import main as launch_console
+                            launch_console()
                         
         elif args.mode == 'console':
             # Use the unified launcher for console mode

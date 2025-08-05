@@ -1,0 +1,19 @@
+{
+  "timestamp": 1754303319.1419017,
+  "bloom_number": 3,
+  "fractal_string": "𝜁𝜇𝜃𝜂𝜇𝛿𝜁𝜁𝜆𝛽",
+  "bloom_summary": "Memory fragments coalesce into coherent patterns",
+  "entropy": 0.6,
+  "mood_state": {
+    "valence": -0.5457990564688326,
+    "arousal": 0.29375947667601887
+  },
+  "rebloom_depth": 3,
+  "bloom_type": "memory_bloom",
+  "generation_method": "test_simulation",
+  "visual_complexity": 0.3050285639044999,
+  "cognitive_pressure": 0.7067314861607714,
+  "consciousness_zone": "STRESSED",
+  "neural_activity": 0.2519288886286123,
+  "thought_coherence": 0.637395680510622
+}

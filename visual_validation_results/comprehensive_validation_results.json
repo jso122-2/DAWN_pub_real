@@ -1,0 +1,812 @@
+{
+  "timestamp": "2025-08-04 19:57:47",
+  "memory_analysis": {},
+  "parameter_tests": {
+    "entropy": {
+      "low_entropy": {
+        "value": 0.1,
+        "complexity": 0.37607103101797684,
+        "edge_roughness": 0.9
+      },
+      "high_entropy": {
+        "value": 0.9,
+        "complexity": 0.37607103101797684,
+        "edge_roughness": 0.9
+      },
+      "visual_difference": 0.0,
+      "edge_difference": 0.0,
+      "sensitivity_score": 0.0
+    },
+    "mood_valence": {
+      "negative_valence": {
+        "value": -0.8,
+        "color_variance": 0.1264815654488581,
+        "complexity": 0.3041662900104421
+      },
+      "positive_valence": {
+        "value": 0.8,
+        "color_variance": 0.1264815654488581,
+        "complexity": 0.3041662900104421
+      },
+      "color_difference": 0.0,
+      "complexity_difference": 0.0,
+      "sensitivity_score": 0.0
+    },
+    "rebloom_depth": {
+      "shallow_depth": {
+        "value": 3,
+        "complexity": 0.2924734759683955,
+        "symmetry": 0.2647050914586456
+      },
+      "deep_depth": {
+        "value": 9,
+        "complexity": 0.2924734759683955,
+        "symmetry": 0.2647050914586456
+      },
+      "complexity_difference": 0.0,
+      "symmetry_difference": 0.0,
+      "sensitivity_score": 0.0
+    },
+    "drift_vector": {
+      "negative_drift": {
+        "value": -0.8,
+        "motion_magnitude": 0.0,
+        "symmetry": 0.040745360381560514
+      },
+      "positive_drift": {
+        "value": 0.8,
+        "motion_magnitude": 0.0,
+        "symmetry": 0.040745360381560514
+      },
+      "motion_difference": 0.0,
+      "symmetry_difference": 0.0,
+      "sensitivity_score": 0.0
+    }
+  },
+  "comparison_results": [
+    {
+      "memory_id": "dawn_memory_20250804_190728_661",
+      "consciousness_params": {
+        "bloom_entropy": 0.2,
+        "mood_valence": 0.4,
+        "drift_vector": 0.1,
+        "rebloom_depth": 3,
+        "sigil_saturation": 0.5,
+        "pulse_zone": "crystalline"
+      },
+      "old_analysis": {
+        "complexity_score": 0.3,
+        "color_variance": 0.2,
+        "symmetry_measure": 0.9,
+        "edge_roughness": 0.1,
+        "motion_magnitude": 0.0,
+        "transparency_variation": 0.0,
+        "overall_visual_complexity": 0.25,
+        "parameter_sensitivity": 0.2
+      },
+      "new_analysis": {
+        "complexity_score": 0.10445608101807945,
+        "color_variance": 0.09305408509916029,
+        "symmetry_measure": 0.28925284013813846,
+        "edge_roughness": 0.23333333333333336,
+        "motion_magnitude": 0.0,
+        "transparency_variation": 0.0,
+        "overall_visual_complexity": 0.2270970732976282,
+        "parameter_sensitivity": 0.12124955886308143
+      },
+      "complexity_improvement": -0.02290292670237179,
+      "visual_difference_score": 0.10165336783929037,
+      "parameter_correlation": 0.12124955886308143,
+      "comparison_image_path": "visual_validation_results\\comparisons\\dawn_memory_20250804_190728_661_comparison.png",
+      "analysis_report_path": "visual_validation_results\\analyses\\dawn_memory_20250804_190728_661_analysis.json"
+    },
+    {
+      "memory_id": "dawn_memory_20250804_191213_813",
+      "consciousness_params": {
+        "bloom_entropy": 0.2,
+        "mood_valence": 0.4,
+        "drift_vector": 0.1,
+        "rebloom_depth": 3,
+        "sigil_saturation": 0.5,
+        "pulse_zone": "crystalline"
+      },
+      "old_analysis": {
+        "complexity_score": 0.3,
+        "color_variance": 0.2,
+        "symmetry_measure": 0.9,
+        "edge_roughness": 0.1,
+        "motion_magnitude": 0.0,
+        "transparency_variation": 0.0,
+        "overall_visual_complexity": 0.25,
+        "parameter_sensitivity": 0.2
+      },
+      "new_analysis": {
+        "complexity_score": 0.10445608101807945,
+        "color_variance": 0.09305408509916029,
+        "symmetry_measure": 0.28925284013813846,
+        "edge_roughness": 0.23333333333333336,
+        "motion_magnitude": 0.0,
+        "transparency_variation": 0.0,
+        "overall_visual_complexity": 0.2270970732976282,
+        "parameter_sensitivity": 0.12124955886308143
+      },
+      "complexity_improvement": -0.02290292670237179,
+      "visual_difference_score": 0.10165336783929037,
+      "parameter_correlation": 0.12124955886308143,
+      "comparison_image_path": "visual_validation_results\\comparisons\\dawn_memory_20250804_191213_813_comparison.png",
+      "analysis_report_path": "visual_validation_results\\analyses\\dawn_memory_20250804_191213_813_analysis.json"
+    },
+    {
+      "memory_id": "dawn_memory_20250804_191057_907",
+      "consciousness_params": {
+        "bloom_entropy": 0.9,
+        "mood_valence": 0.8,
+        "drift_vector": 0.7,
+        "rebloom_depth": 8,
+        "sigil_saturation": 0.9,
+        "pulse_zone": "surge"
+      },
+      "old_analysis": {
+        "complexity_score": 0.3,
+        "color_variance": 0.2,
+        "symmetry_measure": 0.9,
+        "edge_roughness": 0.1,
+        "motion_magnitude": 0.0,
+        "transparency_variation": 0.0,
+        "overall_visual_complexity": 0.25,
+        "parameter_sensitivity": 0.2
+      },
+      "new_analysis": {
+        "complexity_score": 0.24039790797387933,
+        "color_variance": 0.17084315963400146,
+        "symmetry_measure": 0.07214101697002617,
+        "edge_roughness": 0.9,
+        "motion_magnitude": 0.0,
+        "transparency_variation": 0.0,
+        "overall_visual_complexity": 0.4268598009249589,
+        "parameter_sensitivity": 0.4112529478902005
+      },
+      "complexity_improvement": 0.1768598009249589,
+      "visual_difference_score": 0.3881127488151594,
+      "parameter_correlation": 0.4112529478902005,
+      "comparison_image_path": "visual_validation_results\\comparisons\\dawn_memory_20250804_191057_907_comparison.png",
+      "analysis_report_path": "visual_validation_results\\analyses\\dawn_memory_20250804_191057_907_analysis.json"
+    },
+    {
+      "memory_id": "dawn_memory_20250804_190739_664",
+      "consciousness_params": {
+        "bloom_entropy": 0.5,
+        "mood_valence": 0.1,
+        "drift_vector": 0.0,
+        "rebloom_depth": 6,
+        "sigil_saturation": 0.8,
+        "pulse_zone": "transcendent"
+      },
+      "old_analysis": {
+        "complexity_score": 0.3,
+        "color_variance": 0.2,
+        "symmetry_measure": 0.9,
+        "edge_roughness": 0.1,
+        "motion_magnitude": 0.0,
+        "transparency_variation": 0.0,
+        "overall_visual_complexity": 0.25,
+        "parameter_sensitivity": 0.2
+      },
+      "new_analysis": {
+        "complexity_score": 0.17741194999210166,
+        "color_variance": 0.1157485707975536,
+        "symmetry_measure": 0.2647050914586456,
+        "edge_roughness": 0.5,
+        "motion_magnitude": 0.0,
+        "transparency_variation": 0.0,
+        "overall_visual_complexity": 0.2984322808654121,
+        "parameter_sensitivity": 0.2347245712392661
+      },
+      "complexity_improvement": 0.048432280865412125,
+      "visual_difference_score": 0.08315685210467821,
+      "parameter_correlation": 0.2347245712392661,
+      "comparison_image_path": "visual_validation_results\\comparisons\\dawn_memory_20250804_190739_664_comparison.png",
+      "analysis_report_path": "visual_validation_results\\analyses\\dawn_memory_20250804_190739_664_analysis.json"
+    },
+    {
+      "memory_id": "dawn_memory_20250804_191055_091",
+      "consciousness_params": {
+        "bloom_entropy": 0.9,
+        "mood_valence": 0.8,
+        "drift_vector": 0.7,
+        "rebloom_depth": 8,
+        "sigil_saturation": 0.9,
+        "pulse_zone": "surge"
+      },
+      "old_analysis": {
+        "complexity_score": 0.3,
+        "color_variance": 0.2,
+        "symmetry_measure": 0.9,
+        "edge_roughness": 0.1,
+        "motion_magnitude": 0.0,
+        "transparency_variation": 0.0,
+        "overall_visual_complexity": 0.25,
+        "parameter_sensitivity": 0.2
+      },
+      "new_analysis": {
+        "complexity_score": 0.24039790797387933,
+        "color_variance": 0.17084315963400146,
+        "symmetry_measure": 0.07214101697002617,
+        "edge_roughness": 0.9,
+        "motion_magnitude": 0.0,
+        "transparency_variation": 0.0,
+        "overall_visual_complexity": 0.4268598009249589,
+        "parameter_sensitivity": 0.4112529478902005
+      },
+      "complexity_improvement": 0.1768598009249589,
+      "visual_difference_score": 0.3881127488151594,
+      "parameter_correlation": 0.4112529478902005,
+      "comparison_image_path": "visual_validation_results\\comparisons\\dawn_memory_20250804_191055_091_comparison.png",
+      "analysis_report_path": "visual_validation_results\\analyses\\dawn_memory_20250804_191055_091_analysis.json"
+    },
+    {
+      "memory_id": "dawn_memory_20250804_190732_594",
+      "consciousness_params": {
+        "bloom_entropy": 0.9,
+        "mood_valence": 0.8,
+        "drift_vector": 0.7,
+        "rebloom_depth": 8,
+        "sigil_saturation": 0.9,
+        "pulse_zone": "surge"
+      },
+      "old_analysis": {
+        "complexity_score": 0.3,
+        "color_variance": 0.2,
+        "symmetry_measure": 0.9,
+        "edge_roughness": 0.1,
+        "motion_magnitude": 0.0,
+        "transparency_variation": 0.0,
+        "overall_visual_complexity": 0.25,
+        "parameter_sensitivity": 0.2
+      },
+      "new_analysis": {
+        "complexity_score": 0.24039790797387933,
+        "color_variance": 0.17084315963400146,
+        "symmetry_measure": 0.07214101697002617,
+        "edge_roughness": 0.9,
+        "motion_magnitude": 0.0,
+        "transparency_variation": 0.0,
+        "overall_visual_complexity": 0.4268598009249589,
+        "parameter_sensitivity": 0.4112529478902005
+      },
+      "complexity_improvement": 0.1768598009249589,
+      "visual_difference_score": 0.3881127488151594,
+      "parameter_correlation": 0.4112529478902005,
+      "comparison_image_path": "visual_validation_results\\comparisons\\dawn_memory_20250804_190732_594_comparison.png",
+      "analysis_report_path": "visual_validation_results\\analyses\\dawn_memory_20250804_190732_594_analysis.json"
+    },
+    {
+      "memory_id": "dawn_memory_20250804_190724_953",
+      "consciousness_params": {
+        "bloom_entropy": 0.3,
+        "mood_valence": -0.4,
+        "drift_vector": -0.5,
+        "rebloom_depth": 9,
+        "sigil_saturation": 0.6,
+        "pulse_zone": "flowing"
+      },
+      "old_analysis": {
+        "complexity_score": 0.3,
+        "color_variance": 0.2,
+        "symmetry_measure": 0.9,
+        "edge_roughness": 0.1,
+        "motion_magnitude": 0.0,
+        "transparency_variation": 0.0,
+        "overall_visual_complexity": 0.25,
+        "parameter_sensitivity": 0.2
+      },
+      "new_analysis": {
+        "complexity_score": 0.15421530697077057,
+        "color_variance": 0.08975929098093016,
+        "symmetry_measure": 0.2258902685222164,
+        "edge_roughness": 0.30000000000000004,
+        "motion_magnitude": 0.0,
+        "transparency_variation": 0.0,
+        "overall_visual_complexity": 0.26403839658297396,
+        "parameter_sensitivity": 0.14692778729427908
+      },
+      "complexity_improvement": 0.014038396582973955,
+      "visual_difference_score": 0.06711060928869489,
+      "parameter_correlation": 0.14692778729427908,
+      "comparison_image_path": "visual_validation_results\\comparisons\\dawn_memory_20250804_190724_953_comparison.png",
+      "analysis_report_path": "visual_validation_results\\analyses\\dawn_memory_20250804_190724_953_analysis.json"
+    },
+    {
+      "memory_id": "dawn_memory_20250804_190711_256",
+      "consciousness_params": {
+        "bloom_entropy": 0.9,
+        "mood_valence": 0.8,
+        "drift_vector": 0.7,
+        "rebloom_depth": 8,
+        "sigil_saturation": 0.9,
+        "pulse_zone": "surge"
+      },
+      "old_analysis": {
+        "complexity_score": 0.3,
+        "color_variance": 0.2,
+        "symmetry_measure": 0.9,
+        "edge_roughness": 0.1,
+        "motion_magnitude": 0.0,
+        "transparency_variation": 0.0,
+        "overall_visual_complexity": 0.25,
+        "parameter_sensitivity": 0.2
+      },
+      "new_analysis": {
+        "complexity_score": 0.24039790797387933,
+        "color_variance": 0.17084315963400146,
+        "symmetry_measure": 0.07214101697002617,
+        "edge_roughness": 0.9,
+        "motion_magnitude": 0.0,
+        "transparency_variation": 0.0,
+        "overall_visual_complexity": 0.4268598009249589,
+        "parameter_sensitivity": 0.4112529478902005
+      },
+      "complexity_improvement": 0.1768598009249589,
+      "visual_difference_score": 0.3881127488151594,
+      "parameter_correlation": 0.4112529478902005,
+      "comparison_image_path": "visual_validation_results\\comparisons\\dawn_memory_20250804_190711_256_comparison.png",
+      "analysis_report_path": "visual_validation_results\\analyses\\dawn_memory_20250804_190711_256_analysis.json"
+    },
+    {
+      "memory_id": "dawn_memory_20250804_190706_194",
+      "consciousness_params": {
+        "bloom_entropy": 0.2,
+        "mood_valence": 0.4,
+        "drift_vector": 0.1,
+        "rebloom_depth": 3,
+        "sigil_saturation": 0.5,
+        "pulse_zone": "crystalline"
+      },
+      "old_analysis": {
+        "complexity_score": 0.3,
+        "color_variance": 0.2,
+        "symmetry_measure": 0.9,
+        "edge_roughness": 0.1,
+        "motion_magnitude": 0.0,
+        "transparency_variation": 0.0,
+        "overall_visual_complexity": 0.25,
+        "parameter_sensitivity": 0.2
+      },
+      "new_analysis": {
+        "complexity_score": 0.10445608101807945,
+        "color_variance": 0.09305408509916029,
+        "symmetry_measure": 0.28925284013813846,
+        "edge_roughness": 0.23333333333333336,
+        "motion_magnitude": 0.0,
+        "transparency_variation": 0.0,
+        "overall_visual_complexity": 0.2270970732976282,
+        "parameter_sensitivity": 0.12124955886308143
+      },
+      "complexity_improvement": -0.02290292670237179,
+      "visual_difference_score": 0.10165336783929037,
+      "parameter_correlation": 0.12124955886308143,
+      "comparison_image_path": "visual_validation_results\\comparisons\\dawn_memory_20250804_190706_194_comparison.png",
+      "analysis_report_path": "visual_validation_results\\analyses\\dawn_memory_20250804_190706_194_analysis.json"
+    },
+    {
+      "memory_id": "dawn_memory_20250804_191217_611",
+      "consciousness_params": {
+        "bloom_entropy": 0.9,
+        "mood_valence": 0.8,
+        "drift_vector": 0.7,
+        "rebloom_depth": 8,
+        "sigil_saturation": 0.9,
+        "pulse_zone": "surge"
+      },
+      "old_analysis": {
+        "complexity_score": 0.3,
+        "color_variance": 0.2,
+        "symmetry_measure": 0.9,
+        "edge_roughness": 0.1,
+        "motion_magnitude": 0.0,
+        "transparency_variation": 0.0,
+        "overall_visual_complexity": 0.25,
+        "parameter_sensitivity": 0.2
+      },
+      "new_analysis": {
+        "complexity_score": 0.24039790797387933,
+        "color_variance": 0.17084315963400146,
+        "symmetry_measure": 0.07214101697002617,
+        "edge_roughness": 0.9,
+        "motion_magnitude": 0.0,
+        "transparency_variation": 0.0,
+        "overall_visual_complexity": 0.4268598009249589,
+        "parameter_sensitivity": 0.4112529478902005
+      },
+      "complexity_improvement": 0.1768598009249589,
+      "visual_difference_score": 0.3881127488151594,
+      "parameter_correlation": 0.4112529478902005,
+      "comparison_image_path": "visual_validation_results\\comparisons\\dawn_memory_20250804_191217_611_comparison.png",
+      "analysis_report_path": "visual_validation_results\\analyses\\dawn_memory_20250804_191217_611_analysis.json"
+    },
+    {
+      "memory_id": "dawn_memory_20250804_190743_959",
+      "consciousness_params": {
+        "bloom_entropy": 0.3,
+        "mood_valence": -0.4,
+        "drift_vector": -0.5,
+        "rebloom_depth": 9,
+        "sigil_saturation": 0.6,
+        "pulse_zone": "flowing"
+      },
+      "old_analysis": {
+        "complexity_score": 0.3,
+        "color_variance": 0.2,
+        "symmetry_measure": 0.9,
+        "edge_roughness": 0.1,
+        "motion_magnitude": 0.0,
+        "transparency_variation": 0.0,
+        "overall_visual_complexity": 0.25,
+        "parameter_sensitivity": 0.2
+      },
+      "new_analysis": {
+        "complexity_score": 0.15421530697077057,
+        "color_variance": 0.08975929098093016,
+        "symmetry_measure": 0.2258902685222164,
+        "edge_roughness": 0.30000000000000004,
+        "motion_magnitude": 0.0,
+        "transparency_variation": 0.0,
+        "overall_visual_complexity": 0.26403839658297396,
+        "parameter_sensitivity": 0.14692778729427908
+      },
+      "complexity_improvement": 0.014038396582973955,
+      "visual_difference_score": 0.06711060928869489,
+      "parameter_correlation": 0.14692778729427908,
+      "comparison_image_path": "visual_validation_results\\comparisons\\dawn_memory_20250804_190743_959_comparison.png",
+      "analysis_report_path": "visual_validation_results\\analyses\\dawn_memory_20250804_190743_959_analysis.json"
+    },
+    {
+      "memory_id": "dawn_memory_20250804_190754_400",
+      "consciousness_params": {
+        "bloom_entropy": 0.5,
+        "mood_valence": 0.1,
+        "drift_vector": 0.0,
+        "rebloom_depth": 6,
+        "sigil_saturation": 0.8,
+        "pulse_zone": "transcendent"
+      },
+      "old_analysis": {
+        "complexity_score": 0.3,
+        "color_variance": 0.2,
+        "symmetry_measure": 0.9,
+        "edge_roughness": 0.1,
+        "motion_magnitude": 0.0,
+        "transparency_variation": 0.0,
+        "overall_visual_complexity": 0.25,
+        "parameter_sensitivity": 0.2
+      },
+      "new_analysis": {
+        "complexity_score": 0.17741194999210166,
+        "color_variance": 0.1157485707975536,
+        "symmetry_measure": 0.2647050914586456,
+        "edge_roughness": 0.5,
+        "motion_magnitude": 0.0,
+        "transparency_variation": 0.0,
+        "overall_visual_complexity": 0.2984322808654121,
+        "parameter_sensitivity": 0.2347245712392661
+      },
+      "complexity_improvement": 0.048432280865412125,
+      "visual_difference_score": 0.08315685210467821,
+      "parameter_correlation": 0.2347245712392661,
+      "comparison_image_path": "visual_validation_results\\comparisons\\dawn_memory_20250804_190754_400_comparison.png",
+      "analysis_report_path": "visual_validation_results\\analyses\\dawn_memory_20250804_190754_400_analysis.json"
+    },
+    {
+      "memory_id": "dawn_memory_20250804_191049_835",
+      "consciousness_params": {
+        "bloom_entropy": 0.2,
+        "mood_valence": 0.4,
+        "drift_vector": 0.1,
+        "rebloom_depth": 3,
+        "sigil_saturation": 0.5,
+        "pulse_zone": "crystalline"
+      },
+      "old_analysis": {
+        "complexity_score": 0.3,
+        "color_variance": 0.2,
+        "symmetry_measure": 0.9,
+        "edge_roughness": 0.1,
+        "motion_magnitude": 0.0,
+        "transparency_variation": 0.0,
+        "overall_visual_complexity": 0.25,
+        "parameter_sensitivity": 0.2
+      },
+      "new_analysis": {
+        "complexity_score": 0.10445608101807945,
+        "color_variance": 0.09305408509916029,
+        "symmetry_measure": 0.28925284013813846,
+        "edge_roughness": 0.23333333333333336,
+        "motion_magnitude": 0.0,
+        "transparency_variation": 0.0,
+        "overall_visual_complexity": 0.2270970732976282,
+        "parameter_sensitivity": 0.12124955886308143
+      },
+      "complexity_improvement": -0.02290292670237179,
+      "visual_difference_score": 0.10165336783929037,
+      "parameter_correlation": 0.12124955886308143,
+      "comparison_image_path": "visual_validation_results\\comparisons\\dawn_memory_20250804_191049_835_comparison.png",
+      "analysis_report_path": "visual_validation_results\\analyses\\dawn_memory_20250804_191049_835_analysis.json"
+    },
+    {
+      "memory_id": "dawn_memory_20250804_191053_809",
+      "consciousness_params": {
+        "bloom_entropy": 0.2,
+        "mood_valence": 0.4,
+        "drift_vector": 0.1,
+        "rebloom_depth": 3,
+        "sigil_saturation": 0.5,
+        "pulse_zone": "crystalline"
+      },
+      "old_analysis": {
+        "complexity_score": 0.3,
+        "color_variance": 0.2,
+        "symmetry_measure": 0.9,
+        "edge_roughness": 0.1,
+        "motion_magnitude": 0.0,
+        "transparency_variation": 0.0,
+        "overall_visual_complexity": 0.25,
+        "parameter_sensitivity": 0.2
+      },
+      "new_analysis": {
+        "complexity_score": 0.10445608101807945,
+        "color_variance": 0.09305408509916029,
+        "symmetry_measure": 0.28925284013813846,
+        "edge_roughness": 0.23333333333333336,
+        "motion_magnitude": 0.0,
+        "transparency_variation": 0.0,
+        "overall_visual_complexity": 0.2270970732976282,
+        "parameter_sensitivity": 0.12124955886308143
+      },
+      "complexity_improvement": -0.02290292670237179,
+      "visual_difference_score": 0.10165336783929037,
+      "parameter_correlation": 0.12124955886308143,
+      "comparison_image_path": "visual_validation_results\\comparisons\\dawn_memory_20250804_191053_809_comparison.png",
+      "analysis_report_path": "visual_validation_results\\analyses\\dawn_memory_20250804_191053_809_analysis.json"
+    },
+    {
+      "memory_id": "dawn_memory_20250804_191404_601",
+      "consciousness_params": {
+        "bloom_entropy": 0.3,
+        "mood_valence": -0.4,
+        "drift_vector": -0.3,
+        "rebloom_depth": 5,
+        "sigil_saturation": 0.6,
+        "pulse_zone": "stable"
+      },
+      "old_analysis": {
+        "complexity_score": 0.3,
+        "color_variance": 0.2,
+        "symmetry_measure": 0.9,
+        "edge_roughness": 0.1,
+        "motion_magnitude": 0.0,
+        "transparency_variation": 0.0,
+        "overall_visual_complexity": 0.25,
+        "parameter_sensitivity": 0.2
+      },
+      "new_analysis": {
+        "complexity_score": 0.13955427556978414,
+        "color_variance": 0.08975929098093016,
+        "symmetry_measure": 0.16968765615447545,
+        "edge_roughness": 0.30000000000000004,
+        "motion_magnitude": 0.0,
+        "transparency_variation": 0.0,
+        "overall_visual_complexity": 0.2708806096362262,
+        "parameter_sensitivity": 0.14692778729427908
+      },
+      "complexity_improvement": 0.020880609636226177,
+      "visual_difference_score": 0.07395282234194711,
+      "parameter_correlation": 0.14692778729427908,
+      "comparison_image_path": "visual_validation_results\\comparisons\\dawn_memory_20250804_191404_601_comparison.png",
+      "analysis_report_path": "visual_validation_results\\analyses\\dawn_memory_20250804_191404_601_analysis.json"
+    },
+    {
+      "memory_id": "dawn_memory_20250804_191427_567",
+      "consciousness_params": {
+        "bloom_entropy": 0.3,
+        "mood_valence": -0.4,
+        "drift_vector": -0.3,
+        "rebloom_depth": 5,
+        "sigil_saturation": 0.6,
+        "pulse_zone": "stable"
+      },
+      "old_analysis": {
+        "complexity_score": 0.3,
+        "color_variance": 0.2,
+        "symmetry_measure": 0.9,
+        "edge_roughness": 0.1,
+        "motion_magnitude": 0.0,
+        "transparency_variation": 0.0,
+        "overall_visual_complexity": 0.25,
+        "parameter_sensitivity": 0.2
+      },
+      "new_analysis": {
+        "complexity_score": 0.13955427556978414,
+        "color_variance": 0.08975929098093016,
+        "symmetry_measure": 0.16968765615447545,
+        "edge_roughness": 0.30000000000000004,
+        "motion_magnitude": 0.0,
+        "transparency_variation": 0.0,
+        "overall_visual_complexity": 0.2708806096362262,
+        "parameter_sensitivity": 0.14692778729427908
+      },
+      "complexity_improvement": 0.020880609636226177,
+      "visual_difference_score": 0.07395282234194711,
+      "parameter_correlation": 0.14692778729427908,
+      "comparison_image_path": "visual_validation_results\\comparisons\\dawn_memory_20250804_191427_567_comparison.png",
+      "analysis_report_path": "visual_validation_results\\analyses\\dawn_memory_20250804_191427_567_analysis.json"
+    },
+    {
+      "memory_id": "dawn_memory_20250804_191612_584",
+      "consciousness_params": {
+        "bloom_entropy": 0.25,
+        "mood_valence": 0.1,
+        "drift_vector": 0.0,
+        "rebloom_depth": 7,
+        "sigil_saturation": 0.9,
+        "pulse_zone": "flowing"
+      },
+      "old_analysis": {
+        "complexity_score": 0.3,
+        "color_variance": 0.2,
+        "symmetry_measure": 0.9,
+        "edge_roughness": 0.1,
+        "motion_magnitude": 0.0,
+        "transparency_variation": 0.0,
+        "overall_visual_complexity": 0.25,
+        "parameter_sensitivity": 0.2
+      },
+      "new_analysis": {
+        "complexity_score": 0.152525407719501,
+        "color_variance": 0.1237535574060492,
+        "symmetry_measure": 0.32345601829267545,
+        "edge_roughness": 0.2666666666666667,
+        "motion_magnitude": 0.0,
+        "transparency_variation": 0.0,
+        "overall_visual_complexity": 0.24581713013852505,
+        "parameter_sensitivity": 0.14379273388848146
+      },
+      "complexity_improvement": -0.004182869861474953,
+      "visual_difference_score": 0.0603901359729935,
+      "parameter_correlation": 0.14379273388848146,
+      "comparison_image_path": "visual_validation_results\\comparisons\\dawn_memory_20250804_191612_584_comparison.png",
+      "analysis_report_path": "visual_validation_results\\analyses\\dawn_memory_20250804_191612_584_analysis.json"
+    },
+    {
+      "memory_id": "dawn_memory_20250804_191632_454",
+      "consciousness_params": {
+        "bloom_entropy": 0.3,
+        "mood_valence": -0.4,
+        "drift_vector": -0.3,
+        "rebloom_depth": 5,
+        "sigil_saturation": 0.6,
+        "pulse_zone": "stable"
+      },
+      "old_analysis": {
+        "complexity_score": 0.3,
+        "color_variance": 0.2,
+        "symmetry_measure": 0.9,
+        "edge_roughness": 0.1,
+        "motion_magnitude": 0.0,
+        "transparency_variation": 0.0,
+        "overall_visual_complexity": 0.25,
+        "parameter_sensitivity": 0.2
+      },
+      "new_analysis": {
+        "complexity_score": 0.13955427556978414,
+        "color_variance": 0.08975929098093016,
+        "symmetry_measure": 0.16968765615447545,
+        "edge_roughness": 0.30000000000000004,
+        "motion_magnitude": 0.0,
+        "transparency_variation": 0.0,
+        "overall_visual_complexity": 0.2708806096362262,
+        "parameter_sensitivity": 0.14692778729427908
+      },
+      "complexity_improvement": 0.020880609636226177,
+      "visual_difference_score": 0.07395282234194711,
+      "parameter_correlation": 0.14692778729427908,
+      "comparison_image_path": "visual_validation_results\\comparisons\\dawn_memory_20250804_191632_454_comparison.png",
+      "analysis_report_path": "visual_validation_results\\analyses\\dawn_memory_20250804_191632_454_analysis.json"
+    },
+    {
+      "memory_id": "dawn_memory_20250804_191223_892",
+      "consciousness_params": {
+        "bloom_entropy": 0.3,
+        "mood_valence": -0.4,
+        "drift_vector": -0.3,
+        "rebloom_depth": 5,
+        "sigil_saturation": 0.6,
+        "pulse_zone": "stable"
+      },
+      "old_analysis": {
+        "complexity_score": 0.3,
+        "color_variance": 0.2,
+        "symmetry_measure": 0.9,
+        "edge_roughness": 0.1,
+        "motion_magnitude": 0.0,
+        "transparency_variation": 0.0,
+        "overall_visual_complexity": 0.25,
+        "parameter_sensitivity": 0.2
+      },
+      "new_analysis": {
+        "complexity_score": 0.13955427556978414,
+        "color_variance": 0.08975929098093016,
+        "symmetry_measure": 0.16968765615447545,
+        "edge_roughness": 0.30000000000000004,
+        "motion_magnitude": 0.0,
+        "transparency_variation": 0.0,
+        "overall_visual_complexity": 0.2708806096362262,
+        "parameter_sensitivity": 0.14692778729427908
+      },
+      "complexity_improvement": 0.020880609636226177,
+      "visual_difference_score": 0.07395282234194711,
+      "parameter_correlation": 0.14692778729427908,
+      "comparison_image_path": "visual_validation_results\\comparisons\\dawn_memory_20250804_191223_892_comparison.png",
+      "analysis_report_path": "visual_validation_results\\analyses\\dawn_memory_20250804_191223_892_analysis.json"
+    },
+    {
+      "memory_id": "dawn_memory_20250804_191522_548",
+      "consciousness_params": {
+        "bloom_entropy": 0.35,
+        "mood_valence": 0.6,
+        "drift_vector": 0.3,
+        "rebloom_depth": 9,
+        "sigil_saturation": 0.8,
+        "pulse_zone": "flowing"
+      },
+      "old_analysis": {
+        "complexity_score": 0.3,
+        "color_variance": 0.2,
+        "symmetry_measure": 0.9,
+        "edge_roughness": 0.1,
+        "motion_magnitude": 0.0,
+        "transparency_variation": 0.0,
+        "overall_visual_complexity": 0.25,
+        "parameter_sensitivity": 0.2
+      },
+      "new_analysis": {
+        "complexity_score": 0.16042048068025744,
+        "color_variance": 0.13733890986539185,
+        "symmetry_measure": 0.23944527844666408,
+        "edge_roughness": 0.35,
+        "motion_magnitude": 0.0,
+        "transparency_variation": 1.1102230246251565e-16,
+        "overall_visual_complexity": 0.2802048704878228,
+        "parameter_sensitivity": 0.18120167295961753
+      },
+      "complexity_improvement": 0.030204870487822777,
+      "visual_difference_score": 0.049003197528205256,
+      "parameter_correlation": 0.18120167295961753,
+      "comparison_image_path": "visual_validation_results\\comparisons\\dawn_memory_20250804_191522_548_comparison.png",
+      "analysis_report_path": "visual_validation_results\\analyses\\dawn_memory_20250804_191522_548_analysis.json"
+    }
+  ],
+  "correlation_scores": {
+    "overall_system_improvement": 0.05021350825904801,
+    "entropy_sensitivity": 0.0,
+    "valence_sensitivity": 0.0,
+    "depth_sensitivity": 0.0,
+    "drift_sensitivity": 0.0,
+    "average_parameter_correlation": 0.21692614034293575,
+    "average_visual_difference": 0.15772850644639913
+  },
+  "summary_statistics": {
+    "total_memories_analyzed": 20,
+    "average_complexity_improvement": 0.05021350825904801,
+    "parameter_sensitivity_scores": {
+      "entropy": 0.0,
+      "mood_valence": 0.0,
+      "rebloom_depth": 0.0,
+      "drift_vector": 0.0
+    },
+    "visual_system_performance": {
+      "average_parameter_correlation": 0.21692614034293575,
+      "average_visual_difference": 0.15772850644639913,
+      "system_responsiveness": 0.0
+    }
+  }
+}

@@ -1,6 +1,5 @@
-# Add parent directory to Python path for imports
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 #!/usr/bin/env python3
+# Add parent directory to Python path for imports
 """
 Fixed DAWN SCUP Zone Animator
 Real-time SCUP zone visualization with cognitive state mapping
@@ -12,9 +11,6 @@ with proper cognitive zone terminology.
 
 import json
 import os
-import os
-import os
-import os
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
@@ -23,8 +19,9 @@ import sys
 import time
 from collections import deque
 import argparse
-import os
 
+
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 class SCUPZoneAnimator:
     def __init__(self, data_source="stdin", buffer_size=100):
         self.data_source = data_source

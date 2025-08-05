@@ -1,0 +1,101 @@
+{
+  "fractal_generation": {
+    "timestamp": "2025-08-04T19:49:55.290264",
+    "version": "dawn_bloom_fractal_v1.0",
+    "fractal_string": "R12-JULIET-Bv0.8+-E0.90-SURG-D9+",
+    "output_size": 768,
+    "layer_count": 5
+  },
+  "consciousness_parameters": {
+    "bloom_entropy": 0.9,
+    "mood_valence": 0.8,
+    "drift_vector": 0.9,
+    "rebloom_depth": 12,
+    "sigil_saturation": 0.95,
+    "pulse_zone": "surge",
+    "timestamp": null,
+    "memory_id": null,
+    "archetype": null,
+    "fractal_string": null,
+    "validation_passed": true,
+    "validation_warnings": [],
+    "source_file": null
+  },
+  "visual_characteristics": {
+    "mood_palette": {
+      "palette_name": "Creative Fire",
+      "base_colors": [
+        [
+          118,
+          82,
+          34
+        ],
+        [
+          138,
+          72,
+          28
+        ],
+        [
+          158,
+          62,
+          32
+        ],
+        [
+          138,
+          47,
+          40
+        ]
+      ],
+      "glow_colors": [
+        [
+          239,
+          156,
+          46
+        ],
+        [
+          255,
+          118,
+          27
+        ],
+        [
+          255,
+          81,
+          27
+        ],
+        [
+          255,
+          64,
+          49
+        ]
+      ],
+      "brightness_multiplier": 0.7749999999999999,
+      "glow_radius": 14.25
+    },
+    "shape_complexity": {
+      "shape_archetype": "Scattered Remembrance",
+      "complexity_mode": "ComplexityMode.JULIET_SET",
+      "petal_count": 8,
+      "edge_roughness": 0.9,
+      "symmetry_factor": 0.19999999999999993
+    },
+    "drift_transformation": {
+      "center_offset": [
+        0.27,
+        0.18000000000000002
+      ],
+      "rotation_angle": 0.47123889803846897,
+      "pulse_zone": "surge"
+    }
+  },
+  "files": {
+    "fractal_image": "complete_bloom_test\\euphoric_creative_breakthrough_20250804_194955_183.png",
+    "metadata_file": "complete_bloom_test\\euphoric_creative_breakthrough_20250804_194955_183_metadata.json"
+  },
+  "technical_details": {
+    "rendering_engine": "matplotlib + PIL",
+    "color_space": "RGB",
+    "bit_depth": 8,
+    "compression": "PNG"
+  },
+  "symbolic_description": "A scattered remembrance emerging from creative fire, encoded as R12-JULIET-Bv0.8+-E0.90-SURG-D9+"
+}

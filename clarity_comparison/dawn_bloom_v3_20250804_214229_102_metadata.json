@@ -1,0 +1,36 @@
+{
+  "bloom_id": "dawn_bloom_v3_20250804_214229_102",
+  "timestamp": "2025-08-04T21:42:47.370981",
+  "version": "3.0_enhanced",
+  "parameters": {
+    "bloom_entropy": 0.85,
+    "mood_valence": -0.6,
+    "drift_vector": 0.7,
+    "rebloom_depth": 8,
+    "sigil_saturation": 0.8,
+    "pulse_zone": "volatile"
+  },
+  "visual_characteristics": {
+    "bloom_shape": "irregular organic form with chaotic edges with strong directional asymmetry and deep recursive layering",
+    "color_mode": "deep cool blues and purples with high intensity and vivid glow",
+    "pulse_description": "chaotic, explosive energy with irregular patterns"
+  },
+  "consciousness_state": {
+    "archetype": "Deep Chaos",
+    "entropy_state": "chaotic",
+    "emotional_tone": "deep",
+    "directional_bias": "strong"
+  },
+  "summary": "A bloom of consciousness cooled by reflection, scattered thought reaching outward explosive with raw power.",
+  "files": {
+    "fractal_image": "clarity_comparison/dawn_bloom_v3_20250804_214229_102.png",
+    "metadata": "dawn_bloom_v3_20250804_214229_102_metadata.json"
+  },
+  "juliet_mode": true,
+  "clarity_optimizations": {
+    "reduced_glow": true,
+    "capped_noise_opacity": true,
+    "structural_priority": true,
+    "clarity_mode_forced": true
+  }
+}

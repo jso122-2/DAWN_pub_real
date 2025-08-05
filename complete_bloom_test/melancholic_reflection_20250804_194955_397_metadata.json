@@ -1,0 +1,101 @@
+{
+  "fractal_generation": {
+    "timestamp": "2025-08-04T19:49:55.477264",
+    "version": "dawn_bloom_fractal_v1.0",
+    "fractal_string": "R5-MULTI-Bv0.3--E0.50-FRAG-D1-",
+    "output_size": 768,
+    "layer_count": 5
+  },
+  "consciousness_parameters": {
+    "bloom_entropy": 0.5,
+    "mood_valence": -0.3,
+    "drift_vector": -0.1,
+    "rebloom_depth": 5,
+    "sigil_saturation": 0.6,
+    "pulse_zone": "fragile",
+    "timestamp": null,
+    "memory_id": null,
+    "archetype": null,
+    "fractal_string": null,
+    "validation_passed": true,
+    "validation_warnings": [],
+    "source_file": null
+  },
+  "visual_characteristics": {
+    "mood_palette": {
+      "palette_name": "Deep Introspection",
+      "base_colors": [
+        [
+          45,
+          4,
+          45
+        ],
+        [
+          44,
+          12,
+          61
+        ],
+        [
+          40,
+          22,
+          76
+        ],
+        [
+          36,
+          36,
+          91
+        ]
+      ],
+      "glow_colors": [
+        [
+          121,
+          3,
+          121
+        ],
+        [
+          96,
+          18,
+          137
+        ],
+        [
+          74,
+          34,
+          152
+        ],
+        [
+          56,
+          56,
+          167
+        ]
+      ],
+      "brightness_multiplier": 0.6,
+      "glow_radius": 9.0
+    },
+    "shape_complexity": {
+      "shape_archetype": "Layered Garden",
+      "complexity_mode": "ComplexityMode.MULTI_LAYER",
+      "petal_count": 5,
+      "edge_roughness": 0.5,
+      "symmetry_factor": 0.6000000000000001
+    },
+    "drift_transformation": {
+      "center_offset": [
+        -0.03,
+        -0.020000000000000004
+      ],
+      "rotation_angle": -0.05235987755982988,
+      "pulse_zone": "fragile"
+    }
+  },
+  "files": {
+    "fractal_image": "complete_bloom_test\\melancholic_reflection_20250804_194955_397.png",
+    "metadata_file": "complete_bloom_test\\melancholic_reflection_20250804_194955_397_metadata.json"
+  },
+  "technical_details": {
+    "rendering_engine": "matplotlib + PIL",
+    "color_space": "RGB",
+    "bit_depth": 8,
+    "compression": "PNG"
+  },
+  "symbolic_description": "A layered garden emerging from deep introspection, encoded as R5-MULTI-Bv0.3--E0.50-FRAG-D1-"
+}

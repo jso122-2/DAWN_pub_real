@@ -1,0 +1,94 @@
+{
+  "created": "2025-08-04T19:12:32.082563",
+  "total_memories": 10,
+  "pattern_families": {
+    "moderate_recursive_crystalline": 8,
+    "deep_recursive_crystalline": 1,
+    "moderate_recursive_balanced": 1
+  },
+  "consciousness_archetypes": {
+    "Balanced Awareness": 10
+  },
+  "memories": [
+    {
+      "memory_id": "dawn_memory_20250804_191223_892",
+      "timestamp": "2025-08-04T19:12:32.075112",
+      "fractal_string": "R3-FS4-Dv2-PzSTBL",
+      "archetype": "Balanced Awareness",
+      "pattern_family": "moderate_recursive_crystalline",
+      "consciousness_hash": "26911e09a110"
+    },
+    {
+      "memory_id": "dawn_memory_20250804_191318_126",
+      "timestamp": "2025-08-04T19:13:26.259672",
+      "fractal_string": "R3-FS4-Dv2-PzSTBL",
+      "archetype": "Balanced Awareness",
+      "pattern_family": "moderate_recursive_crystalline",
+      "consciousness_hash": "26911e09a110"
+    },
+    {
+      "memory_id": "dawn_memory_20250804_191404_601",
+      "timestamp": "2025-08-04T19:14:10.766161",
+      "fractal_string": "R3-FS4-Dv2-PzSTBL",
+      "archetype": "Balanced Awareness",
+      "pattern_family": "moderate_recursive_crystalline",
+      "consciousness_hash": "26911e09a110"
+    },
+    {
+      "memory_id": "dawn_memory_20250804_191427_567",
+      "timestamp": "2025-08-04T19:14:35.478812",
+      "fractal_string": "R3-FS4-Dv2-PzSTBL",
+      "archetype": "Balanced Awareness",
+      "pattern_family": "moderate_recursive_crystalline",
+      "consciousness_hash": "26911e09a110"
+    },
+    {
+      "memory_id": "dawn_memory_20250804_191435_502",
+      "timestamp": "2025-08-04T19:15:22.523427",
+      "fractal_string": "R4-FS4-Dv3-PzFLOW",
+      "archetype": "Balanced Awareness",
+      "pattern_family": "moderate_recursive_crystalline",
+      "consciousness_hash": "437ad38ccf75"
+    },
+    {
+      "memory_id": "dawn_memory_20250804_191522_548",
+      "timestamp": "2025-08-04T19:16:12.558789",
+      "fractal_string": "R5-FS4-Dv2-PzFLOW",
+      "archetype": "Balanced Awareness",
+      "pattern_family": "deep_recursive_crystalline",
+      "consciousness_hash": "f78cb170e99f"
+    },
+    {
+      "memory_id": "dawn_memory_20250804_191632_454",
+      "timestamp": "2025-08-04T19:16:40.726373",
+      "fractal_string": "R3-FS4-Dv2-PzSTBL",
+      "archetype": "Balanced Awareness",
+      "pattern_family": "moderate_recursive_crystalline",
+      "consciousness_hash": "26911e09a110"
+    },
+    {
+      "memory_id": "dawn_memory_20250804_191612_584",
+      "timestamp": "2025-08-04T19:16:56.596788",
+      "fractal_string": "R4-FS4-Dv1-PzFLOW",
+      "archetype": "Balanced Awareness",
+      "pattern_family": "moderate_recursive_crystalline",
+      "consciousness_hash": "94949961ebdc"
+    },
+    {
+      "memory_id": "dawn_memory_20250804_191656_628",
+      "timestamp": "2025-08-04T19:17:09.254058",
+      "fractal_string": "R4-FS3-Dv2-PzFLOW",
+      "archetype": "Balanced Awareness",
+      "pattern_family": "moderate_recursive_balanced",
+      "consciousness_hash": "b30e0a33e004"
+    },
+    {
+      "memory_id": "dawn_memory_20250804_191640_762",
+      "timestamp": "2025-08-04T19:17:31.511178",
+      "fractal_string": "R4-FS4-Dv3-PzFLOW",
+      "archetype": "Balanced Awareness",
+      "pattern_family": "moderate_recursive_crystalline",
+      "consciousness_hash": "437ad38ccf75"
+    }
+  ]
+}

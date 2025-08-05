@@ -1,0 +1,47 @@
+{
+  "bloom_id": "comparison_bloom_2",
+  "seed_id": "test_seed",
+  "timestamp": "2025-08-04T20:40:20.375826",
+  "mood_valence": 0.5,
+  "entropy_score": 0.7,
+  "rebloom_depth": 2,
+  "bloom_factor": 1.5,
+  "sigil_saturation": 0.7,
+  "lineage_depth": 3,
+  "thermal_level": 0.4,
+  "scup_coherence": 0.8,
+  "drift_vector": [
+    0.1,
+    -0.05
+  ],
+  "pulse_phase": 1.2,
+  "state": "spawning",
+  "parent_id": null,
+  "shape_complexity": {
+    "edge_roughness": 0.6399999999999999,
+    "petal_count": 7,
+    "symmetry_factor": 0.4800000000000001,
+    "branching_depth": 4,
+    "spiral_tightness": 0.6900000000000002
+  },
+  "julia_constant": {
+    "real": 0.603200106660978,
+    "imag": 0.24298933418663418
+  },
+  "fractal_string": "C|CT|\u25cb|9|J[0.603,0.243]|\ud83c\udf21\ufe0f",
+  "color_palette": [
+    "#e6680d",
+    "#e99b00",
+    "#ebd700",
+    "#c6ed00",
+    "#8bef00"
+  ],
+  "render_params": {
+    "image_size": [
+      1024,
+      1024
+    ],
+    "max_iterations": 512,
+    "zoom_factor": 1.72425
+  }
+}

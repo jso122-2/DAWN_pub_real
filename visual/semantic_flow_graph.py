@@ -1,6 +1,5 @@
-# Add parent directory to Python path for imports
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 #!/usr/bin/env python3
+# Add parent directory to Python path for imports
 """
 DAWN Visualization #11: Semantic Flow Graph
 A dynamic network visualization showing how meaning propagates through DAWN's
@@ -19,6 +18,7 @@ from dataclasses import dataclass, field
 from typing import List, Dict, Set, Tuple, Optional
 import numpy as np
 
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 try:
     import pygame
     import pygame.gfxdraw

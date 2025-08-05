@@ -1,0 +1,101 @@
+{
+  "fractal_generation": {
+    "timestamp": "2025-08-04T19:48:35.059431",
+    "version": "dawn_bloom_fractal_v1.0",
+    "fractal_string": "R9-JULIET-Bv0.6+-E0.80-SURG-D7+",
+    "output_size": 512,
+    "layer_count": 5
+  },
+  "consciousness_parameters": {
+    "bloom_entropy": 0.8,
+    "mood_valence": 0.6,
+    "drift_vector": 0.7,
+    "rebloom_depth": 9,
+    "sigil_saturation": 0.9,
+    "pulse_zone": "surge",
+    "timestamp": null,
+    "memory_id": null,
+    "archetype": null,
+    "fractal_string": null,
+    "validation_passed": true,
+    "validation_warnings": [],
+    "source_file": null
+  },
+  "visual_characteristics": {
+    "mood_palette": {
+      "palette_name": "Creative Fire",
+      "base_colors": [
+        [
+          114,
+          89,
+          43
+        ],
+        [
+          133,
+          85,
+          40
+        ],
+        [
+          153,
+          79,
+          46
+        ],
+        [
+          133,
+          63,
+          51
+        ]
+      ],
+      "glow_colors": [
+        [
+          228,
+          171,
+          65
+        ],
+        [
+          247,
+          146,
+          52
+        ],
+        [
+          255,
+          115,
+          53
+        ],
+        [
+          247,
+          98,
+          72
+        ]
+      ],
+      "brightness_multiplier": 0.75,
+      "glow_radius": 13.5
+    },
+    "shape_complexity": {
+      "shape_archetype": "Scattered Remembrance",
+      "complexity_mode": "ComplexityMode.JULIET_SET",
+      "petal_count": 9,
+      "edge_roughness": 0.8,
+      "symmetry_factor": 0.29999999999999993
+    },
+    "drift_transformation": {
+      "center_offset": [
+        0.21,
+        0.13999999999999999
+      ],
+      "rotation_angle": 0.36651914291880916,
+      "pulse_zone": "surge"
+    }
+  },
+  "files": {
+    "fractal_image": "test_bloom_fractals\\creative_turbulence_20250804_194834_989.png",
+    "metadata_file": "test_bloom_fractals\\creative_turbulence_20250804_194834_989_metadata.json"
+  },
+  "technical_details": {
+    "rendering_engine": "matplotlib + PIL",
+    "color_space": "RGB",
+    "bit_depth": 8,
+    "compression": "PNG"
+  },
+  "symbolic_description": "A scattered remembrance emerging from creative fire, encoded as R9-JULIET-Bv0.6+-E0.80-SURG-D7+"
+}

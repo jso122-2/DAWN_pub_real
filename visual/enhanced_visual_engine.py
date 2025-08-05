@@ -1,6 +1,5 @@
-# Add parent directory to Python path for imports
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 #!/usr/bin/env python3
+# Add parent directory to Python path for imports
 """
 Enhanced DAWN Visual Engine - Comprehensive Consciousness Visualization System
 Creates rich, multi-layered visual snapshots of DAWN's consciousness state
@@ -18,6 +17,7 @@ from pathlib import Path
 from typing import Dict, Any, List, Optional, Tuple
 import numpy as np
 
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)

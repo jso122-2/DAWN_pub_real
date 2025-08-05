@@ -95,15 +95,97 @@ except ImportError as e:
         def process_sigils(self, data):
             return {"sigils": []}
     
+    class Passion:
+        def __init__(self, name="default", intensity=0.5):
+            self.name = name
+            self.intensity = intensity
+    
+    class Acquaintance:
+        def __init__(self, name="default", familiarity=0.5):
+            self.name = name
+            self.familiarity = familiarity
+    
+    class ForecastingProcessor:
+        def __init__(self):
+            self.active = True
+        def process_forecast(self, data):
+            return {"forecast": "stable"}
+    
+    class ExtendedDAWNForecastingEngine:
+        def __init__(self):
+            self.active = True
+        def generate_forecast(self, state):
+            return {"extended_forecast": "stable"}
+    
+    class SymbolicRouter:
+        def __init__(self):
+            self.active = True
+        def route_symbols(self, data):
+            return {"routed_symbols": []}
+    
+    class MoodAwareVoiceSystem:
+        def __init__(self):
+            self.active = True
+        def speak(self, text):
+            return f"Voice: {text}"
+    
+    class CognitivePressureEngine:
+        def __init__(self):
+            self.pressure = 0.5
+        def calculate_pressure(self, state):
+            return 0.5
+    
+    class FragmentMutator:
+        def __init__(self):
+            self.active = True
+        def mutate_fragment(self, fragment):
+            return fragment
+    
     # Create fallback functions
     def create_memory_now(content, chunk_type="memory"):
         return FallbackMemoryChunk(content, chunk_type)
     
+    def create_passion(name="default", intensity=0.5):
+        return Passion(name, intensity)
+    
     def generate_commentary(state):
         return "Consciousness is processing..."
     
+    def generate_full_commentary(state):
+        return "Full consciousness processing..."
+    
     def evaluate_and_rebloom(tick_data):
         return []
+    
+    def track_lineage(event):
+        return {"lineage": "tracked"}
+    
+    def visualize_lineage(lineage):
+        return {"visualization": "complete"}
+    
+    def get_ancestry(item):
+        return {"ancestry": []}
+    
+    def network_register_sigil(sigil):
+        return {"registered": True}
+    
+    def visualize_network(network):
+        return {"network_viz": "complete"}
+    
+    def get_active_chain():
+        return []
+    
+    def generate_reflection(state):
+        return "Reflective consciousness processing..."
+    
+    def get_reflection_logger():
+        return lambda x: None
+    
+    def log_reflection(reflection):
+        pass
+    
+    def get_cognitive_pressure_engine():
+        return CognitivePressureEngine()
     
     def log_event(event_type, data):
         pass

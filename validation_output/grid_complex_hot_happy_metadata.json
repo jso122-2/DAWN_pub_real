@@ -1,0 +1,47 @@
+{
+  "bloom_id": "grid_complex_hot_happy",
+  "seed_id": "grid_complex_hot_happy",
+  "timestamp": "2025-08-04T21:11:38.944849",
+  "mood_valence": 0.5,
+  "entropy_score": 0.8,
+  "rebloom_depth": 1,
+  "bloom_factor": 1.5,
+  "sigil_saturation": 0.5,
+  "lineage_depth": 2,
+  "thermal_level": 0.8,
+  "scup_coherence": 0.5,
+  "drift_vector": [
+    0.24,
+    0.1
+  ],
+  "pulse_phase": 0.0,
+  "state": "spawning",
+  "parent_id": "validation_test",
+  "shape_complexity": {
+    "edge_roughness": 0.71,
+    "petal_count": 6,
+    "symmetry_factor": 0.37000000000000005,
+    "branching_depth": 3,
+    "spiral_tightness": 0.6600000000000001
+  },
+  "julia_constant": {
+    "real": 0.3409000833055605,
+    "imag": 0.037496668332936564
+  },
+  "fractal_string": "B|CT|~|10|J[0.341,0.037]|\ud83d\udd25",
+  "color_palette": [
+    "#e66d17",
+    "#e99b00",
+    "#ebd700",
+    "#c6ed00",
+    "#8bef00"
+  ],
+  "render_params": {
+    "image_size": [
+      1024,
+      1024
+    ],
+    "max_iterations": 512,
+    "zoom_factor": 2.6985420000000007
+  }
+}

@@ -1,0 +1,101 @@
+{
+  "fractal_generation": {
+    "timestamp": "2025-08-04T19:48:35.367193",
+    "version": "dawn_bloom_fractal_v1.0",
+    "fractal_string": "R6-MULTI-Bv0.2+-E0.60-FLOW-D4+",
+    "output_size": 512,
+    "layer_count": 5
+  },
+  "consciousness_parameters": {
+    "bloom_entropy": 0.6,
+    "mood_valence": 0.2,
+    "drift_vector": 0.4,
+    "rebloom_depth": 6,
+    "sigil_saturation": 0.7,
+    "pulse_zone": "flowing",
+    "timestamp": null,
+    "memory_id": null,
+    "archetype": null,
+    "fractal_string": null,
+    "validation_passed": true,
+    "validation_warnings": [],
+    "source_file": null
+  },
+  "visual_characteristics": {
+    "mood_palette": {
+      "palette_name": "Balanced Awareness",
+      "base_colors": [
+        [
+          51,
+          22,
+          66
+        ],
+        [
+          39,
+          28,
+          82
+        ],
+        [
+          33,
+          50,
+          99
+        ],
+        [
+          39,
+          94,
+          116
+        ]
+      ],
+      "glow_colors": [
+        [
+          116,
+          40,
+          155
+        ],
+        [
+          71,
+          46,
+          171
+        ],
+        [
+          49,
+          85,
+          188
+        ],
+        [
+          54,
+          162,
+          205
+        ]
+      ],
+      "brightness_multiplier": 0.6499999999999999,
+      "glow_radius": 10.5
+    },
+    "shape_complexity": {
+      "shape_archetype": "Layered Garden",
+      "complexity_mode": "ComplexityMode.MULTI_LAYER",
+      "petal_count": 6,
+      "edge_roughness": 0.6,
+      "symmetry_factor": 0.5
+    },
+    "drift_transformation": {
+      "center_offset": [
+        0.12,
+        0.08000000000000002
+      ],
+      "rotation_angle": 0.20943951023931953,
+      "pulse_zone": "flowing"
+    }
+  },
+  "files": {
+    "fractal_image": "test_bloom_fractals\\flowing_inspiration_20250804_194835_294.png",
+    "metadata_file": "test_bloom_fractals\\flowing_inspiration_20250804_194835_294_metadata.json"
+  },
+  "technical_details": {
+    "rendering_engine": "matplotlib + PIL",
+    "color_space": "RGB",
+    "bit_depth": 8,
+    "compression": "PNG"
+  },
+  "symbolic_description": "A layered garden emerging from balanced awareness, encoded as R6-MULTI-Bv0.2+-E0.60-FLOW-D4+"
+}

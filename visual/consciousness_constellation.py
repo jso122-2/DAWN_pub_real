@@ -1,6 +1,5 @@
-# Add parent directory to Python path for imports
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 #!/usr/bin/env python3
+# Add parent directory to Python path for imports
 """
 DAWN Visualization #12: Consciousness Constellation
 The capstone 4D SCUP trajectory visualization mapping DAWN's consciousness 
@@ -18,9 +17,6 @@ from matplotlib.cm import ScalarMappable
 from matplotlib.colors import LinearSegmentedColormap
 import json
 import os
-import os
-import os
-import os
 import sys
 import argparse
 import time
@@ -31,6 +27,8 @@ import queue
 from scipy.spatial import ConvexHull
 from scipy.interpolate import interp1d
 
+
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 # Consciousness state archetypes
 CONSCIOUSNESS_ARCHETYPES = {
     'dormant_equilibrium': {

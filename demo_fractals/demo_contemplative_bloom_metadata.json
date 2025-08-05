@@ -1,0 +1,47 @@
+{
+  "bloom_id": "demo_contemplative_bloom",
+  "seed_id": "demo_contemplative_bloom",
+  "timestamp": "2025-08-04T20:38:45.040627",
+  "mood_valence": 0.1,
+  "entropy_score": 0.7,
+  "rebloom_depth": 5,
+  "bloom_factor": 2.2,
+  "sigil_saturation": 0.4,
+  "lineage_depth": 7,
+  "thermal_level": 0.3,
+  "scup_coherence": 0.65,
+  "drift_vector": [
+    0.0,
+    0.0
+  ],
+  "pulse_phase": 0.0,
+  "state": "spawning",
+  "parent_id": null,
+  "shape_complexity": {
+    "edge_roughness": 0.85,
+    "petal_count": 10,
+    "symmetry_factor": 0.6300000000000001,
+    "branching_depth": 7,
+    "spiral_tightness": 0.9700000000000002
+  },
+  "julia_constant": {
+    "real": 0.5000041652780258,
+    "imag": 0.22783341664682816
+  },
+  "fractal_string": "F|CT|~|13|J[0.500,0.228]",
+  "color_palette": [
+    "#8fcd52",
+    "#6fcf4e",
+    "#4bd14b",
+    "#48d46b",
+    "#44d68d"
+  ],
+  "render_params": {
+    "image_size": [
+      1024,
+      1024
+    ],
+    "max_iterations": 512,
+    "zoom_factor": 1.27776
+  }
+}

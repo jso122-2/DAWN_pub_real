@@ -1,0 +1,101 @@
+{
+  "fractal_generation": {
+    "timestamp": "2025-08-04T19:49:56.126424",
+    "version": "dawn_bloom_fractal_v1.0",
+    "fractal_string": "R7-JULIET-Bv0.5--E0.30-CALM-D3-",
+    "output_size": 512,
+    "layer_count": 5
+  },
+  "consciousness_parameters": {
+    "bloom_entropy": 0.3,
+    "mood_valence": -0.5,
+    "drift_vector": -0.3,
+    "rebloom_depth": 7,
+    "sigil_saturation": 0.5,
+    "pulse_zone": "calm",
+    "timestamp": null,
+    "memory_id": null,
+    "archetype": null,
+    "fractal_string": null,
+    "validation_passed": true,
+    "validation_warnings": [],
+    "source_file": null
+  },
+  "visual_characteristics": {
+    "mood_palette": {
+      "palette_name": "Deep Introspection",
+      "base_colors": [
+        [
+          38,
+          7,
+          42
+        ],
+        [
+          38,
+          15,
+          56
+        ],
+        [
+          35,
+          25,
+          70
+        ],
+        [
+          37,
+          42,
+          84
+        ]
+      ],
+      "glow_colors": [
+        [
+          95,
+          12,
+          105
+        ],
+        [
+          78,
+          26,
+          119
+        ],
+        [
+          61,
+          41,
+          133
+        ],
+        [
+          57,
+          67,
+          147
+        ]
+      ],
+      "brightness_multiplier": 0.55,
+      "glow_radius": 7.5
+    },
+    "shape_complexity": {
+      "shape_archetype": "Memory Palace",
+      "complexity_mode": "ComplexityMode.JULIET_SET",
+      "petal_count": 4,
+      "edge_roughness": 0.30000000000000004,
+      "symmetry_factor": 0.8
+    },
+    "drift_transformation": {
+      "center_offset": [
+        -0.09,
+        -0.06
+      ],
+      "rotation_angle": -0.15707963267948963,
+      "pulse_zone": "calm"
+    }
+  },
+  "files": {
+    "fractal_image": "consciousness_evolution\\evolution_step_02_settling_grief_20250804_194956_076.png",
+    "metadata_file": "consciousness_evolution\\evolution_step_02_settling_grief_20250804_194956_076_metadata.json"
+  },
+  "technical_details": {
+    "rendering_engine": "matplotlib + PIL",
+    "color_space": "RGB",
+    "bit_depth": 8,
+    "compression": "PNG"
+  },
+  "symbolic_description": "A memory palace emerging from deep introspection, encoded as R7-JULIET-Bv0.5--E0.30-CALM-D3-"
+}

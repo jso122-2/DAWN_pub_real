@@ -4,6 +4,9 @@ from pydantic import BaseModel
 from datetime import datetime
 import asyncio
 import json
+import logging
+
+logger = logging.getLogger(__name__)
 
 # Import conversation and cognitive modules
 from backend.core.conversation_enhanced import EnhancedConversation
@@ -30,6 +33,14 @@ class ConversationHistory(BaseModel):
     messages: List[Dict[str, Any]]
     total_count: int
     session_id: Optional[str] = None
+
+class VoiceCommentary(BaseModel):
+    text: str
+    highlight_color: str = "neutral"
+    clarity: bool = False
+    entropy: float = 0.5
+    pulse_zone: str = "stable"
+    timestamp: str
 
 class TalkHandler:
     def __init__(self, tick_engine, dawn_central, ws_manager):
@@ -279,4 +290,43 @@ async def configure_cognitive_module(
         "status": "configured",
         "config": config,
         "timestamp": datetime.now().isoformat()
-    } 
+    }
+
+@talk_router.post("/voice-commentary")
+async def receive_voice_commentary(commentary: VoiceCommentary):
+    """
+    Receive DAWN's voice commentary for live GUI display.
+    
+    This endpoint receives utterances from DAWN's voice-to-gui-owl pipeline
+    and can be used by the GUI to display real-time voice feedback with
+    emotional coloring and cognitive state information.
+    """
+    try:
+        # Log the received commentary
+        logger.info(f"[VOICE] Received commentary: '{commentary.text[:50]}...' | "
+                   f"Color: {commentary.highlight_color} | "
+                   f"Entropy: {commentary.entropy:.2f} | "
+                   f"Zone: {commentary.pulse_zone}")
+        
+        # Here you could broadcast to connected WebSocket clients
+        # or store in a queue for GUI consumption
+        
+        # For now, just acknowledge receipt
+        response = {
+            "status": "received",
+            "commentary_id": f"voice_{int(datetime.now().timestamp() * 1000)}",
+            "processed_at": datetime.now().isoformat(),
+            "text_length": len(commentary.text),
+            "cognitive_markers": {
+                "highlight_color": commentary.highlight_color,
+                "clarity": commentary.clarity,
+                "entropy": commentary.entropy,
+                "pulse_zone": commentary.pulse_zone
+            }
+        }
+        
+        return response
+        
+    except Exception as e:
+        logger.error(f"[VOICE] Error processing commentary: {e}")
+        raise HTTPException(status_code=500, detail=f"Error processing voice commentary: {str(e)}") 

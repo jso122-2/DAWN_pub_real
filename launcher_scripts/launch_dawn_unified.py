@@ -112,14 +112,21 @@ class DAWNUnifiedLauncher:
                 'error': str(e),
                 'instance': None
             }
-            print(f"  ❌ {name.replace('_', ' ').title()}: Not available")
+            # Only print fallback warning once for pulse controller
+            if 'pulse_controller' in name and 'fallback' not in str(e).lower():
+                print(f"  ⚠️ {name.replace('_', ' ').title()} not available, using fallback")
+            elif 'pulse_controller' not in name:
+                print(f"  ❌ {name.replace('_', ' ').title()}: Not available")
         except Exception as e:
             self.components[name] = {
                 'available': False,
                 'error': str(e),
                 'instance': None
             }
-            print(f"  ⚠️ {name.replace('_', ' ').title()}: Error - {str(e)[:50]}")
+            print(f"  ⚠️ {name.replace('_', ' ').title()}: Error - {str(e)}")
+            return False
+        
+        return True
     
     def _create_integrated_system(self):
         """Create the most complete integrated system possible"""

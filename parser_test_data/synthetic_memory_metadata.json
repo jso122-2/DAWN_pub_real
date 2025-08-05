@@ -1,0 +1,23 @@
+{
+  "memory_id": "parser_test_synthetic_001",
+  "timestamp": "2025-08-04T20:00:00.000000",
+  "version": "dawn_memory_system_v1.0",
+  "parameters": {
+    "bloom_entropy": 0.6,
+    "mood_valence": 0.3,
+    "drift_vector": -0.2,
+    "rebloom_depth": 7,
+    "sigil_saturation": 0.8,
+    "pulse_zone": "transcendent"
+  },
+  "fractal_string": "R4-FS3-Dv2-PzTRAN",
+  "visual_characteristics": {
+    "bloom_shape_descriptor": "synthetic test pattern",
+    "color_mode": "test colors",
+    "consciousness_archetype": "Test State"
+  },
+  "files": {
+    "fractal_image": "test_synthetic.png",
+    "metadata_file": "parser_test_synthetic_001_metadata.json"
+  }
+}

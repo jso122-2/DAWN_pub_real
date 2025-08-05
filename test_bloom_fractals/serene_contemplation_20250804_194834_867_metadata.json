@@ -1,0 +1,101 @@
+{
+  "fractal_generation": {
+    "timestamp": "2025-08-04T19:48:34.923429",
+    "version": "dawn_bloom_fractal_v1.0",
+    "fractal_string": "R4-MULTI-Bv0.3+-E0.20-CALM-D1+",
+    "output_size": 512,
+    "layer_count": 5
+  },
+  "consciousness_parameters": {
+    "bloom_entropy": 0.2,
+    "mood_valence": 0.3,
+    "drift_vector": 0.1,
+    "rebloom_depth": 4,
+    "sigil_saturation": 0.4,
+    "pulse_zone": "calm",
+    "timestamp": null,
+    "memory_id": null,
+    "archetype": null,
+    "fractal_string": null,
+    "validation_passed": true,
+    "validation_warnings": [],
+    "source_file": null
+  },
+  "visual_characteristics": {
+    "mood_palette": {
+      "palette_name": "Creative Fire",
+      "base_colors": [
+        [
+          76,
+          67,
+          39
+        ],
+        [
+          89,
+          69,
+          41
+        ],
+        [
+          102,
+          69,
+          46
+        ],
+        [
+          89,
+          57,
+          46
+        ]
+      ],
+      "glow_colors": [
+        [
+          127,
+          110,
+          60
+        ],
+        [
+          140,
+          106,
+          58
+        ],
+        [
+          153,
+          99,
+          62
+        ],
+        [
+          140,
+          85,
+          66
+        ]
+      ],
+      "brightness_multiplier": 0.5,
+      "glow_radius": 6.0
+    },
+    "shape_complexity": {
+      "shape_archetype": "Nested Mandala",
+      "complexity_mode": "ComplexityMode.MULTI_LAYER",
+      "petal_count": 4,
+      "edge_roughness": 0.23333333333333336,
+      "symmetry_factor": 0.8666666666666667
+    },
+    "drift_transformation": {
+      "center_offset": [
+        0.03,
+        0.020000000000000004
+      ],
+      "rotation_angle": 0.05235987755982988,
+      "pulse_zone": "calm"
+    }
+  },
+  "files": {
+    "fractal_image": "test_bloom_fractals\\serene_contemplation_20250804_194834_867.png",
+    "metadata_file": "test_bloom_fractals\\serene_contemplation_20250804_194834_867_metadata.json"
+  },
+  "technical_details": {
+    "rendering_engine": "matplotlib + PIL",
+    "color_space": "RGB",
+    "bit_depth": 8,
+    "compression": "PNG"
+  },
+  "symbolic_description": "A nested mandala emerging from creative fire, encoded as R4-MULTI-Bv0.3+-E0.20-CALM-D1+"
+}

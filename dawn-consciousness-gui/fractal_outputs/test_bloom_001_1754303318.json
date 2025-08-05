@@ -1,0 +1,19 @@
+{
+  "timestamp": 1754303318.8630037,
+  "bloom_number": 1,
+  "fractal_string": "𝛽𝜂𝜁𝜇𝛽𝜆𝛽𝜆𝜀",
+  "bloom_summary": "Cognitive resonance creates emergent visual structures",
+  "entropy": 0.2,
+  "mood_state": {
+    "valence": -0.5802915296691268,
+    "arousal": 0.5946479677973067
+  },
+  "rebloom_depth": 1,
+  "bloom_type": "memory_bloom",
+  "generation_method": "test_simulation",
+  "visual_complexity": 0.6561538455351268,
+  "cognitive_pressure": 0.18820873661516024,
+  "consciousness_zone": "CALM",
+  "neural_activity": 0.8669018292603567,
+  "thought_coherence": 0.8566468866006323
+}

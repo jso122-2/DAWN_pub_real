@@ -1,0 +1,52 @@
+manifest_metadata:
+  version: 2.0.0
+  created: '2025-08-04T10:52:10.390592+00:00'
+  description: DAWN Symbolic Fractal Archive - Visual Memory Field Index
+  total_blooms: 1
+  last_updated: '2025-08-04T10:52:30.356140+00:00'
+archive_statistics:
+  unique_bloom_ids: 1
+  total_processing_time: 19.6935715675354
+  average_validation_score: 0.8699999999999999
+  mood_distribution:
+    '0.4': 1
+  entropy_distribution:
+    '0.4': 1
+  shape_patterns:
+    asym_bloom_8pt: 1
+  rebloom_depths:
+    '3': 1
+  pulse_zones:
+    stable: 1
+symbolic_patterns:
+  recurring_signatures: []
+  dominant_moods: []
+  complexity_trends: []
+  temporal_clusters: []
+blooms:
+- bloom_id: dawn_test_bloom_001
+  timestamp: '2024-12-19T10:30:00.000Z'
+  fractal_string: D|JY|○|10|J[0.574,0.335]|🌡️
+  pigment_summary: R0.94 G0.41 B0.02 Y0.41 V0.02 O0.78
+  shape_signature: asym_bloom_8pt
+  rebloom_depth: 3
+  entropy: 0.45
+  mood_valence: 0.6
+  drift_vector: 0.14422205101855956
+  pulse_zone: stable
+  file_paths:
+    image: dawn_fractals\dawn_test_bloom_001_20250804_205210.png
+    metadata: dawn_fractals\dawn_test_bloom_001_20250804_205210_metadata.json
+  summary: A gentle blossom formed of flowing patterns and warm essence.
+  bloom_factor: 1.8
+  sigil_saturation: 0.75
+  thermal_level: 0.4
+  scup_coherence: 0.82
+  lineage_depth: 5
+  validation_score: 0.8699999999999999
+  processing_time: 19.6935715675354
+  owl_commentary: '🌸 BLOOM ANALYSIS: GOOD | Validation Score: 0.870 | Bloom ID: dawn_test_bloom_001 | Balanced bloom with
+    gentle positive resonance | Entropy 0.450 → Low entropy, stable crystalline form'
+  hash_signature: 165318f71acd451a
+  archive_size_bytes: 39478
+  color_palette: []

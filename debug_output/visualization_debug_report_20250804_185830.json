@@ -1,0 +1,33 @@
+{
+  "timestamp": "2025-08-04T18:58:30.007231",
+  "summary": {
+    "total_modules_tested": 13,
+    "successful_modules": 1,
+    "warning_modules": 0,
+    "failed_modules": 12,
+    "issues_found": 0
+  },
+  "detailed_results": {
+    "consciousness_visualization_service.py": {
+      "status": "error",
+      "message": "Import failed: name 'sys' is not defined",
+      "error_type": "unknown"
+    },
+    "enhanced_visual_engine.py": {
+      "status": "error",
+      "message": "Import failed: name 'sys' is not defined",
+      "error_type": "unknown"
+    },
+    "consciousness_constellation.py": {
+      "status": "error",
+      "message": "Import failed: name 'sys' is not defined",
+      "error_type": "unknown"
+    },
+    "dawn_visual_beautiful.py": {
+      "status": "success",
+      "message": "All tests passed",
+      "details": {
+        "import": {
+          "status": "success",
+          "message": "Module imported successfully",
+          "module": 

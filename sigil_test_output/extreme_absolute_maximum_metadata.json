@@ -1,0 +1,47 @@
+{
+  "bloom_id": "extreme_absolute_maximum",
+  "seed_id": "extreme_absolute_maximum",
+  "timestamp": "2025-08-04T21:17:17.856570",
+  "mood_valence": 0.6,
+  "entropy_score": 0.6,
+  "rebloom_depth": 2,
+  "bloom_factor": 1.5,
+  "sigil_saturation": 1.0,
+  "lineage_depth": 2,
+  "thermal_level": 0.7,
+  "scup_coherence": 0.7,
+  "drift_vector": [
+    0.1,
+    0.1
+  ],
+  "pulse_phase": 1.5,
+  "state": "blooming",
+  "parent_id": "sigil_test",
+  "shape_complexity": {
+    "edge_roughness": 0.57,
+    "petal_count": 6,
+    "symmetry_factor": 0.54,
+    "branching_depth": 3,
+    "spiral_tightness": 0.7200000000000001
+  },
+  "julia_constant": {
+    "real": -0.6672986684431751,
+    "imag": 0.21137338661590122
+  },
+  "fractal_string": "C|JY|\u25cb|9|J[-0.667,0.211]|\ud83c\udf21\ufe0f",
+  "color_palette": [
+    "#e66000",
+    "#e99b00",
+    "#ebd700",
+    "#c6ed00",
+    "#8bef00"
+  ],
+  "render_params": {
+    "image_size": [
+      1024,
+      1024
+    ],
+    "max_iterations": 512,
+    "zoom_factor": 2.2247280000000003
+  }
+}

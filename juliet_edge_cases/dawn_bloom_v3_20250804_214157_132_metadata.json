@@ -1,0 +1,36 @@
+{
+  "bloom_id": "dawn_bloom_v3_20250804_214157_132",
+  "timestamp": "2025-08-04T21:42:14.288008",
+  "version": "3.0_enhanced",
+  "parameters": {
+    "bloom_entropy": 0.95,
+    "mood_valence": -0.8,
+    "drift_vector": 0.9,
+    "rebloom_depth": 10,
+    "sigil_saturation": 0.9,
+    "pulse_zone": "volatile"
+  },
+  "visual_characteristics": {
+    "bloom_shape": "irregular organic form with chaotic edges with strong directional asymmetry and deep recursive layering",
+    "color_mode": "deep cool blues and purples with high intensity and vivid glow",
+    "pulse_description": "chaotic, explosive energy with irregular patterns"
+  },
+  "consciousness_state": {
+    "archetype": "Deep Chaos",
+    "entropy_state": "chaotic",
+    "emotional_tone": "deep",
+    "directional_bias": "strong"
+  },
+  "summary": "Chaotic Recollection frozen in contemplation and flowing forward, shaped explosive with raw power.",
+  "files": {
+    "fractal_image": "juliet_edge_cases/dawn_bloom_v3_20250804_214157_132.png",
+    "metadata": "dawn_bloom_v3_20250804_214157_132_metadata.json"
+  },
+  "juliet_mode": true,
+  "clarity_optimizations": {
+    "reduced_glow": true,
+    "capped_noise_opacity": true,
+    "structural_priority": true,
+    "clarity_mode_forced": false
+  }
+}

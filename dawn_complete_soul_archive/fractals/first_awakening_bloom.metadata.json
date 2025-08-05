@@ -1,0 +1,51 @@
+{
+  "soul_archive_data": {
+    "hash": "f5d89bc8db70f0dde6e0dc606c3b3689f767a9f8aabbf5b86a2640fd0c1cb79b",
+    "pattern_family": "mandelbrot_classic",
+    "generation_timestamp": 1754303057.9912553,
+    "validation_timestamp": 1754303057.9919574,
+    "memory_id": "first_awakening"
+  },
+  "dawn_consciousness_parameters": {
+    "bloom_entropy": 0.3,
+    "mood_valence": 0.5,
+    "drift_vector": 0.2,
+    "rebloom_depth": 5,
+    "sigil_saturation": 0.7,
+    "pulse_zone": "stable",
+    "archetype": null
+  },
+  "visual_characteristics": {
+    "complexity": 0.21608616325496469,
+    "symmetry_measure": 0.2117026157951557,
+    "edge_roughness": 0.21608616325496469,
+    "motion_magnitude": 0.0721110255092798,
+    "color_variance": 0.0,
+    "transparency_variation": 0.0,
+    "coordinate_count": 60,
+    "bounding_box_area": 5.3642428580315356
+  },
+  "quality_metrics": {
+    "render_quality": 0.12965169795297882,
+    "parameter_fidelity": 0.8,
+    "artistic_coherence": 0.15671799784547966,
+    "classification_confidence": 0.7
+  },
+  "artistic_metadata": {
+    "owl_commentary": "Flowing gentle weaves between unfolding forms, thought becoming shape.",
+    "pattern_family": "mandelbrot_classic",
+    "artistic_coherence": 0.15671799784547966,
+    "visual_signature": {
+      "complexity_score": 0.21608616325496469,
+      "symmetry_measure": 0.2117026157951557,
+      "motion_magnitude": 0.0721110255092798,
+      "color_variance": 0.0
+    }
+  },
+  "technical_data": {
+    "coordinate_count": 60,
+    "bounding_box_area": 5.3642428580315356,
+    "transparency_variation": 0.0,
+    "edge_roughness": 0.21608616325496469
+  }
+}

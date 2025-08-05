@@ -1,0 +1,51 @@
+{
+  "soul_archive_data": {
+    "hash": "40fc9ff88eded5099545e263a7ff5c23677655e53268c385e038ed5dc834c002",
+    "pattern_family": "drift_asymmetric",
+    "generation_timestamp": 1754303058.0948722,
+    "validation_timestamp": 1754303058.0953686,
+    "memory_id": "conscious_flow"
+  },
+  "dawn_consciousness_parameters": {
+    "bloom_entropy": 0.5,
+    "mood_valence": 0.2,
+    "drift_vector": 0.6,
+    "rebloom_depth": 7,
+    "sigil_saturation": 0.8,
+    "pulse_zone": "flowing",
+    "archetype": null
+  },
+  "visual_characteristics": {
+    "complexity": 0.2529844443295727,
+    "symmetry_measure": 0.0953316622551269,
+    "edge_roughness": 0.2529844443295727,
+    "motion_magnitude": 0.21633307652783934,
+    "color_variance": 0.0,
+    "transparency_variation": 2.220446049250313e-16,
+    "coordinate_count": 84,
+    "bounding_box_area": 6.244095641102068
+  },
+  "quality_metrics": {
+    "render_quality": 0.21250693323684103,
+    "parameter_fidelity": 0.5,
+    "artistic_coherence": 0.1356613058537065,
+    "classification_confidence": 0.9
+  },
+  "artistic_metadata": {
+    "owl_commentary": "Flowing whisper weaves between weaving forms, thought becoming shape.",
+    "pattern_family": "drift_asymmetric",
+    "artistic_coherence": 0.1356613058537065,
+    "visual_signature": {
+      "complexity_score": 0.2529844443295727,
+      "symmetry_measure": 0.0953316622551269,
+      "motion_magnitude": 0.21633307652783934,
+      "color_variance": 0.0
+    }
+  },
+  "technical_data": {
+    "coordinate_count": 84,
+    "bounding_box_area": 6.244095641102068,
+    "transparency_variation": 2.220446049250313e-16,
+    "edge_roughness": 0.2529844443295727
+  }
+}

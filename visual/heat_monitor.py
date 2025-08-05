@@ -1,6 +1,5 @@
-# Add parent directory to Python path for imports
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 #!/usr/bin/env python3
+# Add parent directory to Python path for imports
 """
 DAWN Cognition Visualization #3: Heat Monitor
 Foundation Tier - "Meeting DAWN"
@@ -12,12 +11,8 @@ cognitive load, processing speed, and mental effort across time.
 
 import json
 import os
-import os
-import os
-import os
 import numpy as np
 import matplotlib
-matplotlib.use('Agg')  # Use non-interactive backend for headless mode
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 from matplotlib.patches import Wedge, Circle
@@ -26,6 +21,10 @@ import time
 from collections import deque
 import argparse
 import math
+                        import select
+
+matplotlib.use('Agg')  # Use non-interactive backend for headless mode
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 class HeatMonitorVisualizer:
     def __init__(self, data_source="stdin", buffer_size=50, save_frames=False, output_dir="./visual_output"):
@@ -376,7 +375,6 @@ class HeatMonitorVisualizer:
                         print(f"Processed frame {frame}", file=sys.stderr)
                     # Check if there's more data to read
                     try:
-                        import select
                         if not select.select([sys.stdin], [], [], 0)[0]:
                             break  # No more data available
                     except:

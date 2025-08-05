@@ -1,515 +1,155 @@
 #!/usr/bin/env python3
 """
-DAWN Cognitive Engine GUI with Integrated Fractal Bloom Viewer
-Enhanced Tkinter interface with fractal bloom visualization
-
-File: gui/dawn_gui_tk.py (Updated with Fractal Canvas)
+DAWN Fractal Canvas - Blueprint Implementation
+Simple fractal visualization and GUI component
 """
 
+import sys
+import os
 import tkinter as tk
-from tkinter import ttk
+from tkinter import ttk, Canvas
+import numpy as np
 import threading
-import queue
 import time
-import random
-from datetime import datetime
+from typing import Dict, Any, Optional
 
-# Import the fractal canvas component
-try:
-    from fractal_canvas import FractalCanvas
-except ImportError:
-    # Fallback if fractal_canvas.py is not available
-    print("Warning: fractal_canvas.py not found. Fractal viewer will be disabled.")
-    FractalCanvas = None
-
+# Add project root to path
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 class DAWNGui:
-    def __init__(self, root):
-        self.root = root
-        self.update_queue = queue.Queue()
-        self.running = True
-        
-        # Current cognitive state data
-        self.current_data = {
-            "heat": 0,
-            "zone": "calm",
-            "summary": "DAWN cognitive engine initializing...",
-            "tick": "System startup - Waiting for first cognitive tick...",
-            "bloom_data": {
-                "depth": 3,
-                "entropy": 0.5,
-                "lineage": [1, 2, 3],
-                "semantic_drift": 0.3,
-                "rebloom_status": "stable",
-                "complexity": 0.6
-            }
-        }
-        
-        # Zone color mapping
-        self.zone_colors = {
-            "calm": "#4CAF50",      # Green
-            "active": "#FF9800",    # Orange  
-            "surge": "#F44336",     # Red
-            "dormant": "#757575",   # Gray
-            "transcendent": "#9C27B0"  # Purple
-        }
-        
-        self.setup_gui()
-        self.start_update_thread()
-        
-        # Bind window close event
-        self.root.protocol("WM_DELETE_WINDOW", self.on_closing)
+    """Simple DAWN GUI with fractal canvas"""
     
-    def setup_gui(self):
-        """Initialize the GUI layout and widgets"""
-        self.root.title("DAWN Cognitive Engine - Real-time Monitor with Fractal Blooms")
-        self.root.geometry("1200x700")  # Wider to accommodate fractal panel
-        self.root.configure(bg="#1a1a1a")
+    def __init__(self):
+        self.root = None
+        self.canvas = None
+        self.is_running = False
+        self.data = {}
         
-        # Configure styles
-        style = ttk.Style()
-        style.theme_use('clam')
-        style.configure('Dark.TFrame', background='#1a1a1a')
-        style.configure('Dark.TLabel', background='#1a1a1a', foreground='#ffffff')
+    def create_gui(self):
+        """Create the main GUI window"""
+        self.root = tk.Tk()
+        self.root.title("🌅 DAWN Fractal Canvas")
+        self.root.geometry("800x600")
+        self.root.configure(bg='#1a1a1a')
         
-        # Main container with horizontal layout
-        main_frame = ttk.Frame(self.root, style='Dark.TFrame')
-        main_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
+        # Main frame
+        main_frame = ttk.Frame(self.root)
+        main_frame.pack(fill='both', expand=True, padx=10, pady=10)
         
-        # Title header
-        title_label = tk.Label(main_frame, text="DAWN Cognitive Engine", 
-                              font=("Arial", 18, "bold"), 
-                              bg="#1a1a1a", fg="#00ff88")
-        title_label.pack(pady=(0, 15))
+        # Title
+        title_label = ttk.Label(main_frame, text="🌅 DAWN Consciousness Visualization", 
+                               font=('Arial', 16, 'bold'))
+        title_label.pack(pady=10)
         
-        # Create main content area with left and right panels
-        content_frame = ttk.Frame(main_frame, style='Dark.TFrame')
-        content_frame.pack(fill=tk.BOTH, expand=True)
+        # Canvas for fractal visualization
+        self.canvas = Canvas(main_frame, width=600, height=400, bg='#000000')
+        self.canvas.pack(pady=10)
         
-        # Left panel for existing monitoring components
-        left_panel = ttk.Frame(content_frame, style='Dark.TFrame')
-        left_panel.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=(0, 10))
+        # Status frame
+        status_frame = ttk.Frame(main_frame)
+        status_frame.pack(fill='x', pady=5)
         
-        # Right panel for fractal bloom viewer
-        right_panel = ttk.Frame(content_frame, style='Dark.TFrame')
-        right_panel.pack(side=tk.RIGHT, fill=tk.Y, padx=(10, 0))
+        self.status_label = ttk.Label(status_frame, text="Status: Initializing...")
+        self.status_label.pack(side='left')
         
-        # Setup existing components in left panel
-        self.setup_left_panel_components(left_panel)
+        # Control buttons
+        control_frame = ttk.Frame(main_frame)
+        control_frame.pack(fill='x', pady=5)
         
-        # Setup fractal bloom viewer in right panel
-        self.setup_fractal_panel(right_panel)
+        self.start_button = ttk.Button(control_frame, text="Start", command=self.start)
+        self.start_button.pack(side='left', padx=5)
+        
+        self.stop_button = ttk.Button(control_frame, text="Stop", command=self.stop)
+        self.stop_button.pack(side='left', padx=5)
+        
+        self.clear_button = ttk.Button(control_frame, text="Clear", command=self.clear_canvas)
+        self.clear_button.pack(side='left', padx=5)
+        
+        return self.root
     
-    def setup_left_panel_components(self, parent):
-        """Setup existing monitoring components in left panel"""
-        # Top row: Heat and Zone display
-        top_frame = ttk.Frame(parent, style='Dark.TFrame')
-        top_frame.pack(fill=tk.X, pady=(0, 15))
-        
-        self.setup_heat_display(top_frame)
-        self.setup_zone_display(top_frame)
-        
-        # Middle: Claude memory summary
-        self.setup_summary_display(parent)
-        
-        # Bottom: Tick activity log
-        self.setup_tick_log(parent)
-        
-        # Status bar
-        self.setup_status_bar(parent)
+    def start(self):
+        """Start the visualization"""
+        if not self.is_running:
+            self.is_running = True
+            self.status_label.config(text="Status: Running")
+            # Start animation thread
+            threading.Thread(target=self._animation_loop, daemon=True).start()
     
-    def setup_fractal_panel(self, parent):
-        """Setup fractal bloom viewer panel"""
-        if FractalCanvas is None:
-            # Fallback panel if fractal canvas is not available
-            fallback_label = tk.Label(parent, text="Fractal Bloom Viewer\n(Component Not Available)", 
-                                     font=("Arial", 12, "bold"),
-                                     bg="#1a1a1a", fg="#888888",
-                                     width=25, height=20)
-            fallback_label.pack(pady=20)
-            self.fractal_canvas = None
+    def stop(self):
+        """Stop the visualization"""
+        self.is_running = False
+        self.status_label.config(text="Status: Stopped")
+    
+    def clear_canvas(self):
+        """Clear the canvas"""
+        if self.canvas:
+            self.canvas.delete('all')
+    
+    def _animation_loop(self):
+        """Simple animation loop"""
+        frame = 0
+        while self.is_running:
+            try:
+                self._draw_fractal_frame(frame)
+                frame += 1
+                time.sleep(0.1)  # 10 FPS
+            except Exception as e:
+                print(f"Animation error: {e}")
+                break
+    
+    def _draw_fractal_frame(self, frame):
+        """Draw a simple fractal pattern"""
+        if not self.canvas:
             return
-        
-        # Create fractal canvas
-        self.fractal_canvas = FractalCanvas(parent, width=350, height=350)
-        self.fractal_canvas.pack(pady=(0, 15))
-        
-        # Bloom control panel
-        self.setup_bloom_controls(parent)
-    
-    def setup_bloom_controls(self, parent):
-        """Setup bloom data control panel"""
-        control_frame = ttk.Frame(parent, style='Dark.TFrame')
-        control_frame.pack(fill=tk.X, pady=(10, 0))
-        
-        # Bloom controls title
-        controls_title = tk.Label(control_frame, text="Bloom Parameters", 
-                                 font=("Arial", 11, "bold"),
-                                 bg="#1a1a1a", fg="#cccccc")
-        controls_title.pack()
-        
-        # Bloom data display
-        self.bloom_info_text = tk.Text(control_frame, height=8, width=35,
-                                      bg="#2a2a2a", fg="#ffffff", 
-                                      font=("Courier", 8),
-                                      relief=tk.FLAT, bd=3)
-        self.bloom_info_text.pack(pady=(5, 0))
-        
-        # Update bloom info
-        self.update_bloom_info_display()
-    
-    def setup_heat_display(self, parent):
-        """Setup pulse heat level display"""
-        heat_frame = ttk.Frame(parent, style='Dark.TFrame')
-        heat_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=(0, 10))
-        
-        # Heat label
-        heat_title = tk.Label(heat_frame, text="Pulse Heat", 
-                             font=("Arial", 12, "bold"),
-                             bg="#1a1a1a", fg="#cccccc")
-        heat_title.pack()
-        
-        # Heat value display
-        self.heat_value_label = tk.Label(heat_frame, text="0", 
-                                        font=("Arial", 36, "bold"),
-                                        bg="#1a1a1a", fg="#00ff88")
-        self.heat_value_label.pack(pady=(5, 10))
-        
-        # Heat progress bar (using Canvas)
-        self.heat_canvas = tk.Canvas(heat_frame, width=200, height=20, 
-                                   bg="#333333", highlightthickness=0)
-        self.heat_canvas.pack()
-        
-        # Heat bar background
-        self.heat_bg = self.heat_canvas.create_rectangle(2, 2, 198, 18, 
-                                                        fill="#444444", outline="#666666")
-        
-        # Heat bar foreground
-        self.heat_bar = self.heat_canvas.create_rectangle(2, 2, 2, 18, 
-                                                         fill="#00ff88", outline="")
-        
-        # Heat percentage label
-        self.heat_percent_label = tk.Label(heat_frame, text="0%", 
-                                          font=("Arial", 10),
-                                          bg="#1a1a1a", fg="#888888")
-        self.heat_percent_label.pack(pady=(5, 0))
-    
-    def setup_zone_display(self, parent):
-        """Setup pulse zone display"""
-        zone_frame = ttk.Frame(parent, style='Dark.TFrame')
-        zone_frame.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True, padx=(10, 0))
-        
-        # Zone label
-        zone_title = tk.Label(zone_frame, text="Pulse Zone", 
-                             font=("Arial", 12, "bold"),
-                             bg="#1a1a1a", fg="#cccccc")
-        zone_title.pack()
-        
-        # Zone value display
-        self.zone_value_label = tk.Label(zone_frame, text="CALM", 
-                                        font=("Arial", 24, "bold"),
-                                        bg="#1a1a1a", fg="#4CAF50")
-        self.zone_value_label.pack(pady=(5, 10))
-        
-        # Zone indicator (circular)
-        self.zone_canvas = tk.Canvas(zone_frame, width=80, height=80, 
-                                   bg="#1a1a1a", highlightthickness=0)
-        self.zone_canvas.pack()
-        
-        # Zone circle
-        self.zone_circle = self.zone_canvas.create_oval(10, 10, 70, 70, 
-                                                       fill="#4CAF50", outline="#ffffff", width=2)
-        
-        # Zone description
-        self.zone_desc_label = tk.Label(zone_frame, text="Minimal cognitive activity", 
-                                       font=("Arial", 9),
-                                       bg="#1a1a1a", fg="#888888")
-        self.zone_desc_label.pack(pady=(5, 0))
-    
-    def setup_summary_display(self, parent):
-        """Setup Claude memory summary display"""
-        summary_frame = ttk.Frame(parent, style='Dark.TFrame')
-        summary_frame.pack(fill=tk.X, pady=(0, 15))
-        
-        # Summary title
-        summary_title = tk.Label(summary_frame, text="Claude Memory Summary", 
-                                font=("Arial", 12, "bold"),
-                                bg="#1a1a1a", fg="#cccccc")
-        summary_title.pack(anchor=tk.W)
-        
-        # Summary text area
-        summary_text_frame = tk.Frame(summary_frame, bg="#1a1a1a")
-        summary_text_frame.pack(fill=tk.X, pady=(5, 0))
-        
-        self.summary_text = tk.Text(summary_text_frame, height=3, 
-                                   bg="#2a2a2a", fg="#ffffff", 
-                                   font=("Arial", 10),
-                                   relief=tk.FLAT, bd=5,
-                                   wrap=tk.WORD)
-        
-        summary_scrollbar = tk.Scrollbar(summary_text_frame, command=self.summary_text.yview)
-        self.summary_text.configure(yscrollcommand=summary_scrollbar.set)
-        
-        self.summary_text.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
-        summary_scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
-    
-    def setup_tick_log(self, parent):
-        """Setup tick activity log display"""
-        log_frame = ttk.Frame(parent, style='Dark.TFrame')
-        log_frame.pack(fill=tk.BOTH, expand=True)
-        
-        # Log title
-        log_title = tk.Label(log_frame, text="Tick Activity Log", 
-                            font=("Arial", 12, "bold"),
-                            bg="#1a1a1a", fg="#cccccc")
-        log_title.pack(anchor=tk.W)
-        
-        # Log text area
-        log_text_frame = tk.Frame(log_frame, bg="#1a1a1a")
-        log_text_frame.pack(fill=tk.BOTH, expand=True, pady=(5, 0))
-        
-        self.tick_log_text = tk.Text(log_text_frame, 
-                                    bg="#0a0a0a", fg="#00ff88", 
-                                    font=("Courier", 9),
-                                    relief=tk.FLAT, bd=5,
-                                    wrap=tk.WORD)
-        
-        log_scrollbar = tk.Scrollbar(log_text_frame, command=self.tick_log_text.yview)
-        self.tick_log_text.configure(yscrollcommand=log_scrollbar.set)
-        
-        self.tick_log_text.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
-        log_scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
-        
-        # Auto-scroll to bottom
-        self.tick_log_text.see(tk.END)
-    
-    def setup_status_bar(self, parent):
-        """Setup status bar at bottom"""
-        status_frame = ttk.Frame(parent, style='Dark.TFrame')
-        status_frame.pack(fill=tk.X, pady=(10, 0))
-        
-        self.status_label = tk.Label(status_frame, text="Status: Monitoring DAWN cognitive engine...", 
-                                    font=("Arial", 9),
-                                    bg="#1a1a1a", fg="#888888")
-        self.status_label.pack(side=tk.LEFT)
-        
-        self.time_label = tk.Label(status_frame, text="", 
-                                  font=("Arial", 9),
-                                  bg="#1a1a1a", fg="#888888")
-        self.time_label.pack(side=tk.RIGHT)
-    
-    def inject(self, data):
-        """Inject data from external DAWN engine (thread-safe)"""
-        try:
-            # Add timestamp
-            data['timestamp'] = datetime.now().strftime("%H:%M:%S")
-            self.update_queue.put(data)
-        except Exception as e:
-            print(f"Error injecting data: {e}")
-    
-    def update_gui(self):
-        """Process queued updates and refresh GUI (called from main thread)"""
-        try:
-            # Process all queued updates
-            while not self.update_queue.empty():
-                try:
-                    data = self.update_queue.get_nowait()
-                    self.current_data.update(data)
-                    self.refresh_widgets()
-                except queue.Empty:
-                    break
             
-            # Update timestamp
-            current_time = datetime.now().strftime("%H:%M:%S")
-            self.time_label.config(text=f"Last update: {current_time}")
+        # Clear previous frame
+        self.canvas.delete('all')
+        
+        # Get canvas dimensions
+        width = self.canvas.winfo_width()
+        height = self.canvas.winfo_height()
+        
+        if width <= 1 or height <= 1:
+            width, height = 600, 400
+        
+        # Simple spiral pattern
+        center_x = width // 2
+        center_y = height // 2
+        
+        for i in range(50):
+            angle = (frame * 0.1 + i * 0.3) % (2 * np.pi)
+            radius = 2 + i * 3
             
-            # Schedule next update
-            if self.running:
-                self.root.after(100, self.update_gui)  # Update every 100ms
-                
-        except Exception as e:
-            print(f"Error updating GUI: {e}")
+            x = center_x + int(radius * np.cos(angle))
+            y = center_y + int(radius * np.sin(angle))
+            
+            # Color based on time and position
+            color_val = int(128 + 127 * np.sin(frame * 0.05 + i * 0.2))
+            color = f"#{color_val:02x}{(255-color_val):02x}ff"
+            
+            self.canvas.create_oval(x-3, y-3, x+3, y+3, fill=color, outline="")
     
-    def refresh_widgets(self):
-        """Refresh all widget displays with current data"""
-        try:
-            # Update heat display
-            heat = self.current_data.get('heat', 0)
-            self.heat_value_label.config(text=str(heat))
-            self.heat_percent_label.config(text=f"{heat}%")
-            
-            # Update heat bar
-            bar_width = int((heat / 100.0) * 196)  # 196 = 198 - 2 (padding)
-            heat_color = self.get_heat_color(heat)
-            self.heat_canvas.coords(self.heat_bar, 2, 2, 2 + bar_width, 18)
-            self.heat_canvas.itemconfig(self.heat_bar, fill=heat_color)
-            
-            # Update zone display
-            zone = self.current_data.get('zone', 'calm')
-            zone_color = self.zone_colors.get(zone, '#888888')
-            
-            self.zone_value_label.config(text=zone.upper(), fg=zone_color)
-            self.zone_canvas.itemconfig(self.zone_circle, fill=zone_color)
-            
-            # Zone descriptions
-            zone_descriptions = {
-                'calm': 'Minimal cognitive activity',
-                'active': 'Engaged processing state', 
-                'surge': 'High-intensity cognitive work',
-                'dormant': 'System at rest',
-                'transcendent': 'Peak awareness state'
-            }
-            self.zone_desc_label.config(text=zone_descriptions.get(zone, 'Unknown state'))
-            
-            # Update summary
-            summary = self.current_data.get('summary', '')
-            if summary:
-                self.summary_text.delete(1.0, tk.END)
-                self.summary_text.insert(tk.END, summary)
-            
-            # Update tick log (append new tick)
-            tick = self.current_data.get('tick', '')
-            if tick:
-                timestamp = self.current_data.get('timestamp', datetime.now().strftime("%H:%M:%S"))
-                log_entry = f"[{timestamp}] {tick}\n"
-                
-                self.tick_log_text.insert(tk.END, log_entry)
-                
-                # Limit log length (keep last 100 lines)
-                lines = self.tick_log_text.get("1.0", tk.END).split('\n')
-                if len(lines) > 100:
-                    self.tick_log_text.delete("1.0", f"{len(lines)-100}.0")
-                
-                # Auto-scroll to bottom
-                self.tick_log_text.see(tk.END)
-            
-            # Update fractal bloom viewer
-            if self.fractal_canvas:
-                bloom_data = self.current_data.get('bloom_data', {})
-                if bloom_data:
-                    self.fractal_canvas.draw_bloom_signature(bloom_data)
-                    self.update_bloom_info_display()
-                
-        except Exception as e:
-            print(f"Error refreshing widgets: {e}")
-    
-    def update_bloom_info_display(self):
-        """Update bloom information display"""
-        if hasattr(self, 'bloom_info_text'):
-            bloom_data = self.current_data.get('bloom_data', {})
-            
-            info_text = f"""BLOOM SIGNATURE DATA
-{"="*25}
-Depth: {bloom_data.get('depth', 0)}
-Entropy: {bloom_data.get('entropy', 0.0):.3f}
-Lineage: {bloom_data.get('lineage', [])}
-Semantic Drift: {bloom_data.get('semantic_drift', 0.0):.3f}
-Status: {bloom_data.get('rebloom_status', 'unknown')}
-Complexity: {bloom_data.get('complexity', 0.0):.3f}
+    def update_data(self, data: Dict[str, Any]):
+        """Update visualization with new data"""
+        self.data = data
+        
+    def run(self):
+        """Run the GUI"""
+        if not self.root:
+            self.create_gui()
+        
+        self.start()
+        self.root.mainloop()
 
-FRACTAL PARAMETERS
-{"="*25}
-Iterations: {getattr(self.fractal_canvas, 'max_iterations', 'N/A') if self.fractal_canvas else 'N/A'}
-Julia C: {getattr(self.fractal_canvas, 'cx', 'N/A') if self.fractal_canvas else 'N/A'}
-Zoom: {getattr(self.fractal_canvas, 'zoom', 'N/A') if self.fractal_canvas else 'N/A'}"""
-            
-            self.bloom_info_text.delete(1.0, tk.END)
-            self.bloom_info_text.insert(tk.END, info_text)
-    
-    def get_heat_color(self, heat):
-        """Get color for heat level"""
-        if heat < 20:
-            return "#4CAF50"      # Green - low heat
-        elif heat < 40:
-            return "#8BC34A"      # Light green
-        elif heat < 60:
-            return "#FFC107"      # Yellow
-        elif heat < 80:
-            return "#FF9800"      # Orange
-        else:
-            return "#F44336"      # Red - high heat
-    
-    def start_update_thread(self):
-        """Start the GUI update thread"""
-        self.update_gui()  # Start the update loop
-    
-    def simulate_data(self):
-        """Generate simulated cognitive data for testing"""
-        heat = random.randint(0, 100)
-        zone = random.choice(["calm", "active", "surge", "dormant", "transcendent"])
-        
-        summaries = [
-            "Pressure holding steady. Recursive loops active in memory layer 3.",
-            "Schema coherence increasing. Pattern recognition module engaged.", 
-            "Entropy spike detected. Creative synthesis pathways activated.",
-            "Meta-cognitive monitoring stable. Deep reflection mode engaged.",
-            "Information integration in progress. Bloom genealogy expanding.",
-            "Transcendent state achieved. Consciousness constellation mapped.",
-            "SCUP pressure dynamics fluctuating. Cognitive zones shifting.",
-            "Semantic flow networks optimizing. Meaning propagation stable."
-        ]
-        
-        tick_events = [
-            f"T{random.randint(1000, 9999)} - Bloom active in memory layer {random.randint(1, 5)}",
-            f"T{random.randint(1000, 9999)} - SCUP recalibration complete", 
-            f"T{random.randint(1000, 9999)} - Sigil command stream processing",
-            f"T{random.randint(1000, 9999)} - Recursive depth {random.randint(1, 4)} engaged",
-            f"T{random.randint(1000, 9999)} - Entropy flow cascade detected",
-            f"T{random.randint(1000, 9999)} - Mood vector updated: [{random.random():.2f}]",
-            f"T{random.randint(1000, 9999)} - Cognitive zone transition: {zone}",
-            f"T{random.randint(1000, 9999)} - Meta-awareness pulse: {heat}%"
-        ]
-        
-        # Generate bloom data based on cognitive state
-        bloom_data = {
-            "depth": random.randint(1, 8),
-            "entropy": random.random(),
-            "lineage": random.sample(range(10), random.randint(2, 5)),
-            "semantic_drift": random.random(),
-            "rebloom_status": random.choice(["stable", "reblooming", "dormant", "emerging", "fragmenting"]),
-            "complexity": random.random()
-        }
-        
-        return {
-            "heat": heat,
-            "zone": zone,
-            "summary": random.choice(summaries),
-            "tick": random.choice(tick_events),
-            "bloom_data": bloom_data
-        }
-    
-    def on_closing(self):
-        """Handle window closing"""
-        self.running = False
-        self.root.destroy()
-
+def create_dawn_gui():
+    """Factory function to create DAWN GUI"""
+    return DAWNGui()
 
 def main():
     """Main entry point"""
-    root = tk.Tk()
-    gui = DAWNGui(root)
-    
-    # Start simulation thread
-    def simulation_thread():
-        while gui.running:
-            try:
-                simulated_data = gui.simulate_data()
-                gui.inject(simulated_data)
-                time.sleep(0.5)  # Update every 0.5 seconds
-            except Exception as e:
-                print(f"Simulation error: {e}")
-                break
-    
-    # Start simulation in background thread
-    sim_thread = threading.Thread(target=simulation_thread, daemon=True)
-    sim_thread.start()
-    
-    print("DAWN Cognitive Engine GUI with Fractal Bloom Viewer started")
-    print("Simulated data mode - real DAWN engine interface coming soon")
-    
-    # Start GUI main loop
-    root.mainloop()
-
+    print("🌅 Starting DAWN Fractal Canvas...")
+    gui = create_dawn_gui()
+    gui.run()
 
 if __name__ == "__main__":
     main()

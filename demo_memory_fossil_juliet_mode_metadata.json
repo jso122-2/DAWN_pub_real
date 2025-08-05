@@ -1,0 +1,47 @@
+{
+  "bloom_id": "demo_juliet_mode",
+  "seed_id": "demo_juliet_mode",
+  "timestamp": "2025-08-04T21:28:10.325341",
+  "mood_valence": 0.6,
+  "entropy_score": 0.85,
+  "rebloom_depth": 7,
+  "bloom_factor": 1.5,
+  "sigil_saturation": 0.6,
+  "lineage_depth": 2,
+  "thermal_level": 0.6,
+  "scup_coherence": 0.7,
+  "drift_vector": [
+    0.1,
+    0.1
+  ],
+  "pulse_phase": 1.5,
+  "state": "blooming",
+  "parent_id": "demo",
+  "shape_complexity": {
+    "edge_roughness": 0.745,
+    "petal_count": 12,
+    "symmetry_factor": 0.5900000000000001,
+    "branching_depth": 8,
+    "spiral_tightness": 0.645
+  },
+  "julia_constant": {
+    "real": -0.7647031562543103,
+    "imag": 0.1961343537447538
+  },
+  "fractal_string": "H|JY|~|10|J[-0.765,0.196]|\ud83c\udf21\ufe0f",
+  "color_palette": [
+    "#e6680d",
+    "#e99b00",
+    "#ebd700",
+    "#c6ed00",
+    "#8bef00"
+  ],
+  "render_params": {
+    "image_size": [
+      1024,
+      1024
+    ],
+    "max_iterations": 512,
+    "zoom_factor": 2.2855932
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "bloom_id": "dawn_bloom_20250804_185835",
+  "timestamp": "20250804_185835",
+  "parameters": {
+    "bloom_entropy": 0.2,
+    "mood_valence": -0.3,
+    "drift_vector": -0.4,
+    "rebloom_depth": 9,
+    "sigil_saturation": 0.7,
+    "pulse_zone": "flowing"
+  },
+  "consciousness_state": {
+    "entropy": {
+      "state": "crystalline",
+      "description": "ordered, structured, clear"
+    },
+    "valence": {
+      "state": "negative",
+      "description": "cool, introspective, deep"
+    },
+    "drift": {
+      "state": "centered",
+      "description": "centered, balanced, exploring"
+    },
+    "pulse_zone": "flowing",
+    "overall_archetype": "Quiet Analysis"
+  },
+  "visual_characteristics": {
+    "edges": "sharp, crystalline edges with geometric precision",
+    "colors": "cool, deep colors emphasizing blues and violets",
+    "saturation": "moderate color intensity with balanced glow",
+    "geometry": "organic, wave-like patterns with natural movement",
+    "overall": "A flowing consciousness bloom with sharp, crystalline edges with geometric precision, featuring cool, deep colors emphasizing blues and violets and moderate color intensity with balanced glow"
+  },
+  "files": {
+    "fractal_image": "dawn_memory_blooms\\dawn_bloom_20250804_185835.png",
+    "metadata": "dawn_bloom_20250804_185835_metadata.json"
+  }
+}

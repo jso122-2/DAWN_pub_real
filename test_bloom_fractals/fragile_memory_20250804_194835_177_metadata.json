@@ -1,0 +1,101 @@
+{
+  "fractal_generation": {
+    "timestamp": "2025-08-04T19:48:35.233431",
+    "version": "dawn_bloom_fractal_v1.0",
+    "fractal_string": "R7-JULIET-Bv0.4--E0.40-FRAG-D3-",
+    "output_size": 512,
+    "layer_count": 5
+  },
+  "consciousness_parameters": {
+    "bloom_entropy": 0.4,
+    "mood_valence": -0.4,
+    "drift_vector": -0.3,
+    "rebloom_depth": 7,
+    "sigil_saturation": 0.3,
+    "pulse_zone": "fragile",
+    "timestamp": null,
+    "memory_id": null,
+    "archetype": null,
+    "fractal_string": null,
+    "validation_passed": true,
+    "validation_warnings": [],
+    "source_file": null
+  },
+  "visual_characteristics": {
+    "mood_palette": {
+      "palette_name": "Deep Introspection",
+      "base_colors": [
+        [
+          33,
+          4,
+          34
+        ],
+        [
+          32,
+          10,
+          45
+        ],
+        [
+          29,
+          18,
+          57
+        ],
+        [
+          29,
+          31,
+          68
+        ]
+      ],
+      "glow_colors": [
+        [
+          70,
+          6,
+          72
+        ],
+        [
+          58,
+          16,
+          83
+        ],
+        [
+          46,
+          27,
+          95
+        ],
+        [
+          42,
+          45,
+          106
+        ]
+      ],
+      "brightness_multiplier": 0.44999999999999996,
+      "glow_radius": 4.5
+    },
+    "shape_complexity": {
+      "shape_archetype": "Flowing Ancestry",
+      "complexity_mode": "ComplexityMode.JULIET_SET",
+      "petal_count": 7,
+      "edge_roughness": 0.4,
+      "symmetry_factor": 0.7
+    },
+    "drift_transformation": {
+      "center_offset": [
+        -0.09,
+        -0.06
+      ],
+      "rotation_angle": -0.15707963267948963,
+      "pulse_zone": "fragile"
+    }
+  },
+  "files": {
+    "fractal_image": "test_bloom_fractals\\fragile_memory_20250804_194835_177.png",
+    "metadata_file": "test_bloom_fractals\\fragile_memory_20250804_194835_177_metadata.json"
+  },
+  "technical_details": {
+    "rendering_engine": "matplotlib + PIL",
+    "color_space": "RGB",
+    "bit_depth": 8,
+    "compression": "PNG"
+  },
+  "symbolic_description": "A flowing ancestry emerging from deep introspection, encoded as R7-JULIET-Bv0.4--E0.40-FRAG-D3-"
+}

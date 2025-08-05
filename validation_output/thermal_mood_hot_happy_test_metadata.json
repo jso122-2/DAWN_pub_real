@@ -1,0 +1,47 @@
+{
+  "bloom_id": "thermal_mood_hot_happy",
+  "seed_id": "thermal_mood_hot_happy",
+  "timestamp": "2025-08-04T21:10:23.567063",
+  "mood_valence": 0.8,
+  "entropy_score": 0.5,
+  "rebloom_depth": 2,
+  "bloom_factor": 1.5,
+  "sigil_saturation": 0.5,
+  "lineage_depth": 2,
+  "thermal_level": 0.9,
+  "scup_coherence": 0.5,
+  "drift_vector": [
+    0.0,
+    0.0
+  ],
+  "pulse_phase": 0.0,
+  "state": "spawning",
+  "parent_id": "validation_test",
+  "shape_complexity": {
+    "edge_roughness": 0.5,
+    "petal_count": 6,
+    "symmetry_factor": 0.6,
+    "branching_depth": 3,
+    "spiral_tightness": 0.75
+  },
+  "julia_constant": {
+    "real": -0.7072986684431751,
+    "imag": 0.19287338661590123
+  },
+  "fractal_string": "C|JY|\u25cb|9|J[-0.707,0.193]|\ud83d\udd25",
+  "color_palette": [
+    "#f73d00",
+    "#f87c00",
+    "#fabb00",
+    "#fbfb00",
+    "#befd00"
+  ],
+  "render_params": {
+    "image_size": [
+      1024,
+      1024
+    ],
+    "max_iterations": 512,
+    "zoom_factor": 2.1384000000000003
+  }
+}

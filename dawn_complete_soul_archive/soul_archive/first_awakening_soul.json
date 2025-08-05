@@ -1,0 +1,50 @@
+{
+  "memory_id": "first_awakening",
+  "generation_status": "success",
+  "generation_timestamp": 1754303057.9898329,
+  "completion_timestamp": 1754303057.9927824,
+  "generation_duration": 0.0029497146606445312,
+  "consciousness_state": {
+    "bloom_entropy": 0.3,
+    "mood_valence": 0.5,
+    "drift_vector": 0.2,
+    "rebloom_depth": 5,
+    "sigil_saturation": 0.7,
+    "pulse_zone": "stable",
+    "timestamp": null,
+    "memory_id": "first_awakening",
+    "archetype": null,
+    "fractal_string": null,
+    "validation_passed": true,
+    "validation_warnings": [],
+    "source_file": null
+  },
+  "fractal_data": {
+    "cache_key": "39adf2c2068a",
+    "file_path": "dawn_complete_soul_archive/fractals/bloom_20250804_202417_39adf2c2068a.json",
+    "visual_signature": {
+      "complexity": 0.1643167672515498,
+      "edge_roughness": 0.30000000000000004,
+      "color_variance": 0.11880826710152499,
+      "petal_count": 5.0,
+      "motion_potential": 0.0,
+      "fractal_string": "R3-E3-V7"
+    },
+    "generation_timestamp": 1754303057.989985
+  },
+  "validation_result": {
+    "result": "acceptable_variance",
+    "parameter_accuracy": 0.785225917846947,
+    "pattern_family": "mandelbrot_classic",
+    "owl_commentary": "Flowing gentle weaves between unfolding forms, thought becoming shape.",
+    "soul_archive_hash": "f5d89bc8db70f0dde6e0dc606c3b3689f767a9f8aabbf5b86a2640fd0c1cb79b",
+    "quality_scores": {
+      "render_quality": 0.12965169795297882,
+      "parameter_fidelity": 0.8,
+      "artistic_coherence": 0.15671799784547966
+    },
+    "warnings": [],
+    "errors": []
+  },
+  "soul_archive_hash": "f5d89bc8db70f0dde6e0dc606c3b3689f767a9f8aabbf5b86a2640fd0c1cb79b"
+}

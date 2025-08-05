@@ -1,0 +1,47 @@
+{
+  "bloom_id": "dawn_test_bloom_001",
+  "seed_id": "consciousness_seed_alpha",
+  "timestamp": "2024-12-19T10:30:00.000Z",
+  "mood_valence": 0.6,
+  "entropy_score": 0.45,
+  "rebloom_depth": 3,
+  "bloom_factor": 1.8,
+  "sigil_saturation": 0.75,
+  "lineage_depth": 5,
+  "thermal_level": 0.4,
+  "scup_coherence": 0.82,
+  "drift_vector": [
+    0.12,
+    -0.08
+  ],
+  "pulse_phase": 2.1,
+  "state": "blooming",
+  "parent_id": "consciousness_seed_root",
+  "shape_complexity": {
+    "edge_roughness": 0.5549999999999999,
+    "petal_count": 7,
+    "symmetry_factor": 0.68,
+    "branching_depth": 4,
+    "spiral_tightness": 0.885
+  },
+  "julia_constant": {
+    "real": -0.7183932702174879,
+    "imag": 0.11866040413322679
+  },
+  "fractal_string": "D|JY|\u25cb|10|J[-0.718,0.119]|\ud83c\udf21\ufe0f",
+  "color_palette": [
+    "#e66406",
+    "#e99b00",
+    "#ebd700",
+    "#c6ed00",
+    "#8bef00"
+  ],
+  "render_params": {
+    "image_size": [
+      1024,
+      1024
+    ],
+    "max_iterations": 512,
+    "zoom_factor": 2.1468816
+  }
+}

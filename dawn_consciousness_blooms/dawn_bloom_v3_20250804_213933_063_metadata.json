@@ -1,0 +1,36 @@
+{
+  "bloom_id": "dawn_bloom_v3_20250804_213933_063",
+  "timestamp": "2025-08-04T21:39:48.088814",
+  "version": "3.0_enhanced",
+  "parameters": {
+    "bloom_entropy": 0.9,
+    "mood_valence": 0.8,
+    "drift_vector": 0.7,
+    "rebloom_depth": 8,
+    "sigil_saturation": 0.9,
+    "pulse_zone": "surge"
+  },
+  "visual_characteristics": {
+    "bloom_shape": "irregular organic form with chaotic edges with strong directional asymmetry and deep recursive layering",
+    "color_mode": "radiant golds and creative fire with high intensity and vivid glow",
+    "pulse_description": "intense energy with sharp, flaring boundaries"
+  },
+  "consciousness_state": {
+    "archetype": "Creative Fire",
+    "entropy_state": "chaotic",
+    "emotional_tone": "radiant",
+    "directional_bias": "strong"
+  },
+  "summary": "A bloom of consciousness incandescent with life, scattered thought flowing forward sharp with electric energy.",
+  "files": {
+    "fractal_image": "dawn_consciousness_blooms/dawn_bloom_v3_20250804_213933_063.png",
+    "metadata": "dawn_bloom_v3_20250804_213933_063_metadata.json"
+  },
+  "juliet_mode": true,
+  "clarity_optimizations": {
+    "reduced_glow": true,
+    "capped_noise_opacity": true,
+    "structural_priority": true,
+    "clarity_mode_forced": false
+  }
+}

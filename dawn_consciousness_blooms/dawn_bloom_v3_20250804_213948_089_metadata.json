@@ -1,0 +1,36 @@
+{
+  "bloom_id": "dawn_bloom_v3_20250804_213948_089",
+  "timestamp": "2025-08-04T21:40:13.122428",
+  "version": "3.0_enhanced",
+  "parameters": {
+    "bloom_entropy": 0.3,
+    "mood_valence": -0.4,
+    "drift_vector": -0.5,
+    "rebloom_depth": 9,
+    "sigil_saturation": 0.6,
+    "pulse_zone": "flowing"
+  },
+  "visual_characteristics": {
+    "bloom_shape": "geometric form with precise boundaries with gentle asymmetric bias and deep recursive layering",
+    "color_mode": "cool balanced tones with moderate brightness",
+    "pulse_description": "organic, fluid motion with natural boundaries"
+  },
+  "consciousness_state": {
+    "archetype": "Balanced Awareness",
+    "entropy_state": "crystalline",
+    "emotional_tone": "cool",
+    "directional_bias": "gentle"
+  },
+  "summary": "A dynamic recollection washed in twilight, pulling inward fluid as conscious stream.",
+  "files": {
+    "fractal_image": "dawn_consciousness_blooms/dawn_bloom_v3_20250804_213948_089.png",
+    "metadata": "dawn_bloom_v3_20250804_213948_089_metadata.json"
+  },
+  "juliet_mode": false,
+  "clarity_optimizations": {
+    "reduced_glow": false,
+    "capped_noise_opacity": false,
+    "structural_priority": true,
+    "clarity_mode_forced": false
+  }
+}

@@ -1,6 +1,5 @@
-# Add parent directory to Python path for imports
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 #!/usr/bin/env python3
+# Add parent directory to Python path for imports
 """
 DAWN Visualization #9: Bloom Genealogy Network
 A dynamic force-directed network showing DAWN's memory system as fractal blooms
@@ -21,6 +20,7 @@ import numpy as np
 import threading
 import queue
 
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 try:
     import pygame
     import pygame.gfxdraw

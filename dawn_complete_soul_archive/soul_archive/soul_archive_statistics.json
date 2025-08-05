@@ -1,0 +1,26 @@
+{
+  "total_blooms": 4,
+  "pattern_families": {
+    "mandelbrot_classic": 2,
+    "drift_asymmetric": 1,
+    "juliet_memory": 1
+  },
+  "validation_summary": {
+    "perfect_matches": 0,
+    "acceptable_variance": 3,
+    "parameter_mismatches": 1,
+    "generation_errors": 0
+  },
+  "owl_commentaries": [
+    "Flowing soft weaves between blooming forms, thought becoming shape.",
+    "Flowing gentle weaves between unfolding forms, thought becoming shape.",
+    "Flowing whisper weaves between weaving forms, thought becoming shape.",
+    "Ancestral peaceful weaves through flowing space, remembering itself."
+  ],
+  "soul_hashes": [
+    "4043294c43cbae0f94c250bc33a7f23ca46b65fd434712dc2680bea1d9bd9eb6",
+    "f5d89bc8db70f0dde6e0dc606c3b3689f767a9f8aabbf5b86a2640fd0c1cb79b",
+    "40fc9ff88eded5099545e263a7ff5c23677655e53268c385e038ed5dc834c002",
+    "a3f32402903ed283742b906750fa3a7f23ea43fd247cc219e5d1a54abeca40eb"
+  ]
+}

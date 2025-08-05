@@ -1,6 +1,5 @@
-# Add parent directory to Python path for imports
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 #!/usr/bin/env python3
+# Add parent directory to Python path for imports
 """
 DAWN Visualization #6: SCUP Pressure Grid
 A real-time 4x4 heatmap showing dynamic interactions between DAWN's four core
@@ -21,6 +20,7 @@ from collections import deque
 import threading
 import queue
 
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 class SCUPPressureGrid:
     """SCUP Pressure Grid Visualization"""
     

@@ -1,0 +1,47 @@
+{
+  "bloom_id": "rebloom_test_5",
+  "seed_id": "rebloom_test_5",
+  "timestamp": "2025-08-04T21:09:16.890757",
+  "mood_valence": 0.0,
+  "entropy_score": 0.5,
+  "rebloom_depth": 5,
+  "bloom_factor": 1.5,
+  "sigil_saturation": 0.5,
+  "lineage_depth": 2,
+  "thermal_level": 0.5,
+  "scup_coherence": 0.5,
+  "drift_vector": [
+    0.0,
+    0.0
+  ],
+  "pulse_phase": 0.0,
+  "state": "spawning",
+  "parent_id": "validation_test",
+  "shape_complexity": {
+    "edge_roughness": 0.5,
+    "petal_count": 9,
+    "symmetry_factor": 0.75,
+    "branching_depth": 6,
+    "spiral_tightness": 0.75
+  },
+  "julia_constant": {
+    "real": -1.0194483487621924,
+    "imag": 0.17958851077208407
+  },
+  "fractal_string": "F|CM|\u25cb|9|J[-1.019,0.180]|\ud83c\udf21\ufe0f",
+  "color_palette": [
+    "#67bcbc",
+    "#69aabf",
+    "#6b96c2",
+    "#6c83c5",
+    "#6e6ec8"
+  ],
+  "render_params": {
+    "image_size": [
+      1024,
+      1024
+    ],
+    "max_iterations": 512,
+    "zoom_factor": 1.7820000000000003
+  }
+}

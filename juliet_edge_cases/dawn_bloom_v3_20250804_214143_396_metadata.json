@@ -1,0 +1,36 @@
+{
+  "bloom_id": "dawn_bloom_v3_20250804_214143_396",
+  "timestamp": "2025-08-04T21:41:57.129643",
+  "version": "3.0_enhanced",
+  "parameters": {
+    "bloom_entropy": 0.9,
+    "mood_valence": -0.5,
+    "drift_vector": 0.6,
+    "rebloom_depth": 4,
+    "sigil_saturation": 0.8,
+    "pulse_zone": "volatile"
+  },
+  "visual_characteristics": {
+    "bloom_shape": "irregular organic form with chaotic edges with strong directional asymmetry and simple layered structure",
+    "color_mode": "cool balanced tones with high intensity and vivid glow",
+    "pulse_description": "chaotic, explosive energy with irregular patterns"
+  },
+  "consciousness_state": {
+    "archetype": "Deep Chaos",
+    "entropy_state": "chaotic",
+    "emotional_tone": "deep",
+    "directional_bias": "strong"
+  },
+  "summary": "Scattered Thought touched by quiet sadness and flowing forward, shaped explosive with raw power.",
+  "files": {
+    "fractal_image": "juliet_edge_cases/dawn_bloom_v3_20250804_214143_396.png",
+    "metadata": "dawn_bloom_v3_20250804_214143_396_metadata.json"
+  },
+  "juliet_mode": false,
+  "clarity_optimizations": {
+    "reduced_glow": false,
+    "capped_noise_opacity": false,
+    "structural_priority": false,
+    "clarity_mode_forced": false
+  }
+}

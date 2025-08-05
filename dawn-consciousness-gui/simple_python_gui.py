@@ -242,17 +242,106 @@ class DAWNConsciousnessGUI:
                 value_widget.config(text=display_value)
                 
     def monitor_consciousness(self):
-        """Background thread to monitor consciousness data"""
+        """Monitor consciousness data from memory map or simulation"""
         while self.running:
             try:
-                if self.read_consciousness_data():
-                    # Update GUI in main thread
-                    self.root.after(0, self.update_display)
-                time.sleep(0.1)  # 10 Hz update rate
+                # Try to read from memory map file first
+                if self.read_consciousness_mmap():
+                    time.sleep(0.0625)  # 16Hz update rate
+                else:
+                    # Fallback to simulation mode
+                    self.simulate_consciousness_data()
+                    time.sleep(0.1)  # 10Hz in simulation mode
+                    
             except Exception as e:
                 print(f"Monitor error: {e}")
-                time.sleep(1)
+                # Continue with simulation
+                self.simulate_consciousness_data()
+                time.sleep(0.1)
+    
+    def read_consciousness_mmap(self):
+        """Try to read from memory mapped file"""
+        try:
+            if not self.mmap_path.exists():
+                return False
                 
+            with open(self.mmap_path, 'rb') as f:
+                with mmap.mmap(f.fileno(), 0, access=mmap.ACCESS_READ) as mm:
+                    # Read header
+                    mm.seek(0)
+                    magic = mm.read(4)
+                    if magic != b'DAWN':
+                        return False
+                    
+                    # Skip reserved bytes (12)
+                    mm.seek(16)
+                    
+                    # Read tick number
+                    tick = struct.unpack('<I', mm.read(4))[0]
+                    
+                    # Read timestamp
+                    timestamp = struct.unpack('<Q', mm.read(8))[0]
+                    
+                    # Read more data from consciousness stream
+                    mm.seek(64)  # Skip to data section
+                    
+                    # Read SCUP, entropy, mood data
+                    scup = struct.unpack('<f', mm.read(4))[0]
+                    entropy = struct.unpack('<f', mm.read(4))[0]
+                    mood_val = struct.unpack('<f', mm.read(4))[0]
+                    mood_arousal = struct.unpack('<f', mm.read(4))[0]
+                    
+                    # Update consciousness data
+                    self.consciousness_data.update({
+                        'tick': tick,
+                        'scup': scup,
+                        'entropy': entropy,
+                        'mood_val': mood_val,
+                        'mood_arousal': mood_arousal,
+                        'last_update': time.strftime('%H:%M:%S')
+                    })
+                    
+                    # Schedule GUI update
+                    self.root.after(0, self.update_display)
+                    return True
+                    
+        except (FileNotFoundError, OSError, struct.error):
+            return False
+        except Exception as e:
+            print(f"Memory map read error: {e}")
+            return False
+    
+    def simulate_consciousness_data(self):
+        """Generate simulated consciousness data"""
+        import math
+        import random
+        
+        current_time = time.time()
+        
+        # Generate realistic-looking consciousness metrics
+        base_scup = 50 + 20 * math.sin(current_time * 0.1)
+        scup_noise = random.uniform(-5, 5)
+        scup = max(0, min(100, base_scup + scup_noise))
+        
+        base_entropy = 0.5 + 0.3 * math.sin(current_time * 0.07)
+        entropy_noise = random.uniform(-0.1, 0.1)
+        entropy = max(0, min(1, base_entropy + entropy_noise))
+        
+        mood_val = 0.5 + 0.4 * math.sin(current_time * 0.05)
+        mood_arousal = 0.3 + 0.2 * math.cos(current_time * 0.08)
+        
+        self.consciousness_data.update({
+            'tick': int(current_time * 16) % 10000,  # 16Hz simulation
+            'scup': scup,
+            'entropy': entropy,
+            'mood_val': mood_val,
+            'mood_arousal': mood_arousal,
+            'last_update': time.strftime('%H:%M:%S') + " (sim)"
+        })
+        
+        # Schedule GUI update
+        self.root.after(0, self.update_display)
+        
     def manual_refresh(self):
         """Manual refresh button handler"""
         self.read_consciousness_data()

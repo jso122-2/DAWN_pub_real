@@ -44,7 +44,6 @@ class DAWNSigilBank:
         
         # Core sigil registry with enhanced functions
         self.sigil_registry: Dict[str, Callable] = {}
-        self._initialize_default_sigils()
         
         # Execution tracking
         self.execution_history: List[SigilExecution] = []
@@ -55,6 +54,9 @@ class DAWNSigilBank:
         # Performance metrics
         self.sigil_usage_count: Dict[str, int] = {}
         self.average_execution_times: Dict[str, float] = {}
+        
+        # Initialize default sigils after attributes are set
+        self._initialize_default_sigils()
         
         logger.info("🔮 DAWN Sigil Bank initialized")
     

@@ -1,0 +1,36 @@
+{
+  "bloom_id": "dawn_bloom_v3_20250804_214120_837",
+  "timestamp": "2025-08-04T21:41:43.395870",
+  "version": "3.0_enhanced",
+  "parameters": {
+    "bloom_entropy": 0.4,
+    "mood_valence": 0.2,
+    "drift_vector": 0.1,
+    "rebloom_depth": 8,
+    "sigil_saturation": 0.5,
+    "pulse_zone": "calm"
+  },
+  "visual_characteristics": {
+    "bloom_shape": "geometric form with precise boundaries with centered symmetry and deep recursive layering",
+    "color_mode": "neutral equilibrium palette with moderate brightness",
+    "pulse_description": "soft, stable energy with gentle boundaries"
+  },
+  "consciousness_state": {
+    "archetype": "Balanced Awareness",
+    "entropy_state": "flowing",
+    "emotional_tone": "warm",
+    "directional_bias": "centered"
+  },
+  "summary": "A bloom of consciousness touched by dawn, dynamic recollection resting in stillness with gentle stability.",
+  "files": {
+    "fractal_image": "juliet_edge_cases/dawn_bloom_v3_20250804_214120_837.png",
+    "metadata": "dawn_bloom_v3_20250804_214120_837_metadata.json"
+  },
+  "juliet_mode": false,
+  "clarity_optimizations": {
+    "reduced_glow": false,
+    "capped_noise_opacity": false,
+    "structural_priority": true,
+    "clarity_mode_forced": false
+  }
+}

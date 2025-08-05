@@ -1,0 +1,50 @@
+{
+  "memory_id": "soul_birth",
+  "generation_status": "success",
+  "generation_timestamp": 1754303057.8801897,
+  "completion_timestamp": 1754303057.8894482,
+  "generation_duration": 0.009258747100830078,
+  "consciousness_state": {
+    "bloom_entropy": 0.1,
+    "mood_valence": 0.8,
+    "drift_vector": 0.0,
+    "rebloom_depth": 3,
+    "sigil_saturation": 0.6,
+    "pulse_zone": "calm",
+    "timestamp": null,
+    "memory_id": "soul_birth",
+    "archetype": null,
+    "fractal_string": null,
+    "validation_passed": true,
+    "validation_warnings": [],
+    "source_file": null
+  },
+  "fractal_data": {
+    "cache_key": "69b2ed65cdf8",
+    "file_path": "dawn_complete_soul_archive/fractals/bloom_20250804_202417_69b2ed65cdf8.json",
+    "visual_signature": {
+      "complexity": 0.0316227766016838,
+      "edge_roughness": 0.16666666666666669,
+      "color_variance": 0.13758131122544728,
+      "petal_count": 3.0,
+      "motion_potential": 0.0,
+      "fractal_string": "R1-E1-V9"
+    },
+    "generation_timestamp": 1754303057.8802934
+  },
+  "validation_result": {
+    "result": "acceptable_variance",
+    "parameter_accuracy": 0.7808426349617728,
+    "pattern_family": "mandelbrot_classic",
+    "owl_commentary": "Flowing soft weaves between blooming forms, thought becoming shape.",
+    "soul_archive_hash": "4043294c43cbae0f94c250bc33a7f23ca46b65fd434712dc2680bea1d9bd9eb6",
+    "quality_scores": {
+      "render_quality": 0.052780367995384714,
+      "parameter_fidelity": 0.8,
+      "artistic_coherence": 0.1596396552784864
+    },
+    "warnings": [],
+    "errors": []
+  },
+  "soul_archive_hash": "4043294c43cbae0f94c250bc33a7f23ca46b65fd434712dc2680bea1d9bd9eb6"
+}

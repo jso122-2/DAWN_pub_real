@@ -1,0 +1,47 @@
+{
+  "bloom_id": "demo_joyful_bloom",
+  "seed_id": "demo_joyful_bloom",
+  "timestamp": "2025-08-04T20:38:26.014687",
+  "mood_valence": 0.8,
+  "entropy_score": 0.3,
+  "rebloom_depth": 2,
+  "bloom_factor": 1.5,
+  "sigil_saturation": 0.9,
+  "lineage_depth": 3,
+  "thermal_level": 0.6,
+  "scup_coherence": 0.85,
+  "drift_vector": [
+    0.0,
+    0.0
+  ],
+  "pulse_phase": 0.0,
+  "state": "spawning",
+  "parent_id": null,
+  "shape_complexity": {
+    "edge_roughness": 0.36,
+    "petal_count": 5,
+    "symmetry_factor": 0.7200000000000001,
+    "branching_depth": 2,
+    "spiral_tightness": 0.81
+  },
+  "julia_constant": {
+    "real": 0.585200106660978,
+    "imag": 0.38698933418663417
+  },
+  "fractal_string": "C|JY|\u25cb|8|J[0.585,0.387]|\ud83c\udf21\ufe0f",
+  "color_palette": [
+    "#f73d00",
+    "#f87c00",
+    "#fabb00",
+    "#fbfb00",
+    "#befd00"
+  ],
+  "render_params": {
+    "image_size": [
+      1024,
+      1024
+    ],
+    "max_iterations": 512,
+    "zoom_factor": 1.5532500000000002
+  }
+}

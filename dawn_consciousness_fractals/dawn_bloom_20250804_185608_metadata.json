@@ -1,0 +1,40 @@
+{
+  "bloom_id": "dawn_bloom_20250804_185608",
+  "timestamp": "20250804_185608",
+  "parameters": {
+    "bloom_entropy": 0.8,
+    "mood_valence": 0.7,
+    "drift_vector": 0.5,
+    "rebloom_depth": 6,
+    "sigil_saturation": 0.9,
+    "pulse_zone": "volatile"
+  },
+  "consciousness_state": {
+    "entropy": {
+      "state": "high_chaos",
+      "description": "chaotic, creative, cascading"
+    },
+    "valence": {
+      "state": "positive",
+      "description": "warm, energetic, assertive"
+    },
+    "drift": {
+      "state": "centered",
+      "description": "centered, balanced, exploring"
+    },
+    "pulse_zone": "volatile",
+    "overall_archetype": "Creative Fire"
+  },
+  "visual_characteristics": {
+    "edges": "chaotic, fractal edges with organic irregularity",
+    "colors": "warm, energetic colors trending toward reds and yellows",
+    "saturation": "high intensity with vivid, glowing colors",
+    "geometry": "dynamic, explosive patterns with high movement",
+    "overall": "A volatile consciousness bloom with chaotic, fractal edges with organic irregularity, featuring warm, energetic colors trending toward reds and yellows and high intensity with vivid, glowing colors"
+  },
+  "files": {
+    "fractal_image": "dawn_consciousness_fractals/dawn_bloom_20250804_185608.png",
+    "metadata": "dawn_bloom_20250804_185608_metadata.json"
+  },
+  "symbolic_narrative": "A fractal thought exploding into infinite fragments with recursive beauty, incandescent with pure assertion volatile as pure inspiration."
+}

@@ -1,0 +1,33 @@
+{
+  "memory_id": "dawn_memory_20250804_190732_594",
+  "consciousness_parameters": {
+    "bloom_entropy": 0.9,
+    "mood_valence": 0.8,
+    "drift_vector": 0.7,
+    "rebloom_depth": 8,
+    "sigil_saturation": 0.9,
+    "pulse_zone": "surge"
+  },
+  "old_system_analysis": {
+    "complexity_score": 0.3,
+    "color_variance": 0.2,
+    "symmetry_measure": 0.9,
+    "edge_roughness": 0.1,
+    "overall_complexity": 0.25
+  },
+  "new_system_analysis": {
+    "complexity_score": 0.24039790797387933,
+    "color_variance": 0.17084315963400146,
+    "symmetry_measure": 0.07214101697002617,
+    "edge_roughness": 0.9,
+    "motion_magnitude": 0.0,
+    "transparency_variation": 0.0,
+    "overall_complexity": 0.4268598009249589,
+    "parameter_sensitivity": 0.4112529478902005
+  },
+  "comparison_metrics": {
+    "complexity_improvement": 0.1768598009249589,
+    "visual_difference_score": 0.3881127488151594,
+    "parameter_correlation": 0.4112529478902005
+  }
+}

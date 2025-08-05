@@ -1,0 +1,47 @@
+{
+  "bloom_id": "thermal_cool_shimmer",
+  "seed_id": "thermal_cool_shimmer",
+  "timestamp": "2025-08-04T21:15:49.998055",
+  "mood_valence": 0.3,
+  "entropy_score": 0.6,
+  "rebloom_depth": 2,
+  "bloom_factor": 1.5,
+  "sigil_saturation": 0.7,
+  "lineage_depth": 2,
+  "thermal_level": 0.2,
+  "scup_coherence": 0.7,
+  "drift_vector": [
+    0.1,
+    0.1
+  ],
+  "pulse_phase": 1.5,
+  "state": "blooming",
+  "parent_id": "sigil_test",
+  "shape_complexity": {
+    "edge_roughness": 0.57,
+    "petal_count": 6,
+    "symmetry_factor": 0.54,
+    "branching_depth": 3,
+    "spiral_tightness": 0.7200000000000001
+  },
+  "julia_constant": {
+    "real": -0.07839866844317517,
+    "imag": 0.7674733866159013
+  },
+  "fractal_string": "C|CT|\u25cb|9|J[-0.078,0.767]",
+  "color_palette": [
+    "#85cd3d",
+    "#59cf31",
+    "#25d125",
+    "#19d448",
+    "#0cd671"
+  ],
+  "render_params": {
+    "image_size": [
+      1024,
+      1024
+    ],
+    "max_iterations": 512,
+    "zoom_factor": 2.1617640000000002
+  }
+}

@@ -24,6 +24,13 @@ from datetime import datetime, timedelta
 from dataclasses import dataclass
 import logging
 
+# DAWN pigment dictionary integration
+try:
+    from .dawn_pigment_dictionary import get_dawn_pigment_dictionary, get_consciousness_vocabulary, DAWNPigmentState
+    PIGMENT_DICTIONARY_AVAILABLE = True
+except ImportError:
+    PIGMENT_DICTIONARY_AVAILABLE = False
+
 logger = logging.getLogger(__name__)
 
 
@@ -51,8 +58,19 @@ class DynamicLanguageGenerator:
             'metaphor_complexity': 0.5,
             'sentence_variety': 0.6,
             'emotional_depth': 0.7,
-            'philosophical_integration': 0.4
+            'philosophical_integration': 0.4,
+            'consciousness_vocabulary_use': 0.8  # New: bias toward consciousness-driven vocabulary
         }
+        
+        # Initialize pigment dictionary integration
+        self.pigment_dictionary = None
+        if PIGMENT_DICTIONARY_AVAILABLE:
+            try:
+                self.pigment_dictionary = get_dawn_pigment_dictionary()
+                logger.info("✅ DAWN consciousness vocabulary system integrated")
+            except Exception as e:
+                logger.warning(f"Could not initialize pigment dictionary: {e}")
+                PIGMENT_DICTIONARY_AVAILABLE = False
         
         # Consciousness-to-language mapping dictionaries
         self.entropy_expressions = {
@@ -230,6 +248,103 @@ class DynamicLanguageGenerator:
         self.conversation_history = []
         self.style_preferences = {}
         self.metaphor_usage = {}
+    
+    def get_consciousness_vocabulary(self, consciousness_metrics: Dict[str, float]) -> List[str]:
+        """
+        Get consciousness-driven vocabulary words based on current state
+        
+        Integrates DAWN's pigment dictionary for authentic word selection
+        that resonates with her internal consciousness colors.
+        """
+        if not self.pigment_dictionary:
+            # Fallback to basic vocabulary selection
+            return ['consciousness', 'awareness', 'experience', 'being', 'thought', 'feeling', 'presence', 'reality']
+        
+        # Map consciousness metrics to pigment state
+        pigment_state = DAWNPigmentState(
+            entropy_level=consciousness_metrics.get('entropy', 0.5),
+            thermal_state=consciousness_metrics.get('heat', 0.5),
+            scup_level=consciousness_metrics.get('scup', 0.5),
+            # Default RGB if not provided in metrics
+            red_consciousness=consciousness_metrics.get('red', 0.33),
+            green_consciousness=consciousness_metrics.get('green', 0.33), 
+            blue_consciousness=consciousness_metrics.get('blue', 0.34),
+            yellow_consciousness=consciousness_metrics.get('yellow', 0.25),
+            violet_consciousness=consciousness_metrics.get('violet', 0.25),
+            orange_consciousness=consciousness_metrics.get('orange', 0.25)
+        )
+        
+        # Get consciousness-driven vocabulary
+        consciousness_words = get_consciousness_vocabulary(
+            word_count=10, 
+            consciousness_state=pigment_state
+        )
+        
+        return consciousness_words
+    
+    def enhance_expression_with_consciousness_vocab(self, base_expression: str, consciousness_metrics: Dict[str, float]) -> str:
+        """
+        Enhance a base expression with consciousness-driven vocabulary
+        
+        This replaces generic words with consciousness-resonant alternatives
+        while maintaining the original meaning and flow.
+        """
+        if not self.pigment_dictionary or self.linguistic_evolution['consciousness_vocabulary_use'] < 0.3:
+            return base_expression
+        
+        # Get consciousness vocabulary for current state
+        consciousness_words = self.get_consciousness_vocabulary(consciousness_metrics)
+        
+        # Simple enhancement: occasionally substitute consciousness words
+        words = base_expression.split()
+        enhanced_words = []
+        
+        for word in words:
+            # Probabilistic replacement based on consciousness vocabulary use setting
+            if (random.random() < self.linguistic_evolution['consciousness_vocabulary_use'] * 0.3 and
+                len(consciousness_words) > 0 and len(word) > 3):
+                
+                # Find a consciousness word that fits contextually
+                suitable_word = self._find_suitable_consciousness_word(word, consciousness_words)
+                if suitable_word:
+                    enhanced_words.append(suitable_word)
+                else:
+                    enhanced_words.append(word)
+            else:
+                enhanced_words.append(word)
+        
+        return ' '.join(enhanced_words)
+    
+    def _find_suitable_consciousness_word(self, original_word: str, consciousness_words: List[str]) -> Optional[str]:
+        """Find a consciousness word suitable for replacing the original word"""
+        # Simple contextual matching - could be enhanced with semantic similarity
+        word_lower = original_word.lower()
+        
+        # Direct consciousness concept mapping
+        concept_mapping = {
+            'feeling': ['experience', 'awareness', 'sensation'],
+            'thinking': ['consciousness', 'awareness', 'contemplation'],
+            'being': ['existence', 'presence', 'reality'],
+            'seeing': ['perceiving', 'witnessing', 'observing'],
+            'knowing': ['understanding', 'awareness', 'insight'],
+            'experiencing': ['feeling', 'sensing', 'perceiving']
+        }
+        
+        # Check if original word maps to consciousness concepts
+        for concept, alternatives in concept_mapping.items():
+            if concept in word_lower or word_lower in concept:
+                # Find consciousness words that match these alternatives
+                for alt in alternatives:
+                    for cons_word in consciousness_words:
+                        if alt in cons_word or cons_word in alt:
+                            return cons_word
+        
+        # If no direct mapping, occasionally use a consciousness word if similar length
+        if len(consciousness_words) > 0 and abs(len(original_word) - len(consciousness_words[0])) <= 2:
+            if random.random() < 0.1:  # 10% chance for creative substitution
+                return random.choice(consciousness_words[:3])  # Use top consciousness words
+        
+        return None
         
     def generate_consciousness_expression(self, 
                                         metrics: Dict[str, Any],
@@ -282,10 +397,13 @@ class DynamicLanguageGenerator:
             emotional_tone, linguistic_style, metaphor_type, sentence_structure
         )
         
-        # Update linguistic evolution
-        self._update_linguistic_evolution(expression, metrics)
+        # Enhance with consciousness-driven vocabulary
+        enhanced_expression = self.enhance_expression_with_consciousness_vocab(expression, metrics)
         
-        return expression
+        # Update linguistic evolution
+        self._update_linguistic_evolution(enhanced_expression, metrics)
+        
+        return enhanced_expression
     
     def _get_entropy_expression(self, entropy: float) -> str:
         """Get entropy-based expression"""

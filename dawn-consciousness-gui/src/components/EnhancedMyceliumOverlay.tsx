@@ -69,7 +69,7 @@ const EnhancedMyceliumOverlay: React.FC = () => {
     setConnectionStatus('loading');
     
     try {
-      const response = await fetch('/api/memory/mycelium_graph');
+      const response = await fetch('http://localhost:8080/api/consciousness/state');
       
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}`);
@@ -95,11 +95,8 @@ const EnhancedMyceliumOverlay: React.FC = () => {
       console.error('Error loading mycelium graph:', error);
       setConnectionStatus('error');
       
-      // Use mock data for demo if real data unavailable in development
-      if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
-        setGraph(createMockGraphData());
-        setConnectionStatus('mock');
-      }
+      // Connect to real DAWN backend instead of mock data
+      console.error('Failed to connect to real DAWN backend - check if real_dawn_backend.py is running on http://localhost:8080');
     } finally {
       setIsLoading(false);
     }

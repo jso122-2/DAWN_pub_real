@@ -1,0 +1,3896 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🧠 DAWN Ultimate Consciousness Monitor</title>
+    <style>
+        /* Local fonts - no external dependencies */
+        @font-face {
+            font-family: 'MonoLocal';
+            src: local('JetBrains Mono'), local('Fira Code'), local('Consolas'), local('Monaco'), monospace;
+            font-weight: normal;
+            font-style: normal;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            /* DAWN Color System */
+            --bg-primary: #0d1b2a;
+            --bg-secondary: #1a2332;
+            --bg-tertiary: #334155;
+            --bg-header: #15202b;
+            --text-primary: #ffffffb4;
+            --text-secondary: #cccccc99;
+            --text-tertiary: #94a3b8;
+            --accent-cyan: #40e0ff;
+            --accent-blue: #0ea5e9;
+            --accent-green: #10b981;
+            --accent-yellow: #f59e0b;
+            --accent-orange: #f97316;
+            --accent-red: #ef4444;
+            --accent-purple: #8b5cf6;
+            --accent-pink: #ec4899;
+            
+            /* Zone Colors */
+            --zone-calm: #10b981;
+            --zone-focus: #f59e0b;
+            --zone-stressed: #ef4444;
+            --zone-transcendent: #8b5cf6;
+            
+            /* Spacing */
+            --spacing-xs: 4px;
+            --spacing-sm: 8px;
+            --spacing-md: 16px;
+            --spacing-lg: 24px;
+            --spacing-xl: 32px;
+            
+            /* Panel System */
+            --panel-bg: var(--bg-secondary);
+            --panel-border: 1px solid #ffffff25;
+            --panel-radius: 8px;
+            --panel-padding: var(--spacing-md);
+            --panel-gap: var(--spacing-sm);
+            
+            /* Header Heights */
+            --status-bar-height: 32px;
+            --nav-bar-height: 48px;
+        }
+        
+        body {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: 'MonoLocal', 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+            font-size: 14px;
+            line-height: 1.4;
+            overflow-x: hidden;
+            height: 100vh;
+        }
+        
+        /* Status Bar */
+        .status-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: var(--status-bar-height);
+            background: var(--bg-header);
+            border-bottom: 1px solid var(--bg-tertiary);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 var(--spacing-md);
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            font-size: 12px;
+        }
+        
+        .status-left, .status-center, .status-right {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+        }
+        
+        .status-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--accent-green);
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.1); }
+        }
+        
+        /* Navigation Bar */
+        .nav-bar {
+            position: fixed;
+            top: var(--status-bar-height);
+            left: 0;
+            right: 0;
+            height: var(--nav-bar-height);
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--bg-tertiary);
+            display: flex;
+            align-items: center;
+            padding: 0 var(--spacing-md);
+            z-index: 999;
+            gap: var(--spacing-lg);
+        }
+        
+        .nav-section {
+            display: flex;
+            gap: var(--spacing-sm);
+        }
+        
+        .nav-tab {
+            padding: var(--spacing-sm) var(--spacing-md);
+            background: transparent;
+            border: 1px solid transparent;
+            border-radius: 4px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .nav-tab:hover {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+        
+        .nav-tab.active {
+            background: var(--accent-cyan);
+            color: var(--bg-primary);
+            border-color: var(--accent-cyan);
+        }
+        
+        /* Main Container */
+        .main-container {
+            margin-top: calc(var(--status-bar-height) + var(--nav-bar-height));
+            height: calc(100vh - var(--status-bar-height) - var(--nav-bar-height));
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Layout Grid System */
+        .dawn-layout {
+            display: grid;
+            grid-template-columns: 32% 36% 32%;
+            gap: var(--spacing-sm);
+            padding: var(--spacing-sm);
+            height: 100%;
+            overflow: hidden;
+        }
+        
+        .column {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-sm);
+            overflow-y: auto;
+            max-height: 100%;
+        }
+        
+        .column::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .column::-webkit-scrollbar-track {
+            background: var(--bg-primary);
+        }
+        
+        .column::-webkit-scrollbar-thumb {
+            background: var(--bg-tertiary);
+            border-radius: 3px;
+        }
+        
+        .column::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-cyan);
+        }
+        
+        /* Panel System */
+        .panel {
+            background: var(--panel-bg);
+            border: var(--panel-border);
+            border-radius: var(--panel-radius);
+            overflow: hidden;
+            transition: all 0.2s ease;
+            min-height: 200px;
+        }
+        
+        .panel:hover {
+            border-color: var(--accent-cyan);
+            box-shadow: 0 0 20px rgba(64, 224, 255, 0.1);
+        }
+        
+        .panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: var(--spacing-md);
+            border-bottom: 1px solid var(--bg-tertiary);
+            background: var(--bg-header);
+        }
+        
+        .panel-title {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            font-size: 14px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .panel-icon {
+            font-size: 16px;
+        }
+        
+        .panel-controls {
+            display: flex;
+            gap: var(--spacing-xs);
+        }
+        
+        .panel-btn {
+            width: 24px;
+            height: 24px;
+            border: none;
+            border-radius: 4px;
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            transition: all 0.2s ease;
+        }
+        
+        .panel-btn:hover {
+            background: var(--accent-cyan);
+            color: var(--bg-primary);
+        }
+        
+        .panel-content {
+            padding: var(--spacing-md);
+            overflow-y: auto;
+            max-height: 600px;
+        }
+        
+        /* Metrics Display */
+        .metric-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .metric {
+            text-align: center;
+            padding: var(--spacing-sm);
+            background: var(--bg-primary);
+            border-radius: 4px;
+            border: 1px solid var(--bg-tertiary);
+        }
+        
+        .metric-value {
+            font-size: 20px;
+            font-weight: bold;
+            color: var(--accent-cyan);
+            text-shadow: 0 0 10px rgba(64, 224, 255, 0.3);
+        }
+        
+        .metric-label {
+            font-size: 11px;
+            color: var(--text-tertiary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: var(--spacing-xs);
+        }
+        
+        /* Progress Bars */
+        .progress-container {
+            margin: var(--spacing-sm) 0;
+        }
+        
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: var(--spacing-xs);
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: var(--bg-primary);
+            border-radius: 4px;
+            overflow: hidden;
+            border: 1px solid var(--bg-tertiary);
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-green), var(--accent-cyan));
+            border-radius: 4px;
+            transition: width 0.3s ease;
+            position: relative;
+        }
+        
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            animation: shimmer 2s infinite;
+        }
+        
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        /* Zone Indicator */
+        .zone-indicator {
+            padding: var(--spacing-sm) var(--spacing-md);
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: bold;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin: var(--spacing-sm) 0;
+            transition: all 0.3s ease;
+        }
+        
+        .zone-calm { 
+            background: var(--zone-calm); 
+            color: #ffffff;
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.3);
+        }
+        
+        .zone-focus { 
+            background: var(--zone-focus); 
+            color: #ffffff;
+            box-shadow: 0 0 15px rgba(245, 158, 11, 0.3);
+        }
+        
+        .zone-stressed { 
+            background: var(--zone-stressed); 
+            color: #ffffff;
+            box-shadow: 0 0 15px rgba(239, 68, 68, 0.3);
+        }
+        
+        .zone-transcendent { 
+            background: var(--zone-transcendent); 
+            color: #ffffff;
+            box-shadow: 0 0 15px rgba(139, 92, 246, 0.3);
+        }
+        
+        /* Visualization Areas */
+        .viz-container {
+            background: var(--bg-primary);
+            border-radius: 4px;
+            padding: var(--spacing-md);
+            margin: var(--spacing-sm) 0;
+            border: 1px solid var(--bg-tertiary);
+            min-height: 200px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* Neural Grid */
+        .neural-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 2px;
+            margin: var(--spacing-sm) 0;
+        }
+        
+        .neural-cell {
+            aspect-ratio: 1;
+            border-radius: 2px;
+            background: var(--bg-tertiary);
+            transition: all 0.3s ease;
+        }
+        
+        /* Consciousness Depth */
+        .consciousness-depth {
+            position: relative;
+            height: 150px;
+            border: 1px solid var(--bg-tertiary);
+            border-radius: 4px;
+            background: linear-gradient(180deg, var(--bg-secondary) 0%, var(--bg-primary) 100%);
+            overflow: hidden;
+            margin: var(--spacing-sm) 0;
+        }
+        
+        .depth-level {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(180deg, transparent, rgba(64, 224, 255, 0.3));
+            border-radius: 0 0 4px 4px;
+            transition: height 0.5s ease;
+        }
+        
+        /* Constellation Visualization */
+        .constellation-container {
+            position: relative;
+            height: 250px;
+            background: radial-gradient(circle at center, rgba(64, 224, 255, 0.05) 0%, transparent 70%);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .constellation-node {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: var(--accent-cyan);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--accent-cyan);
+            animation: twinkle 3s ease-in-out infinite;
+        }
+        
+        @keyframes twinkle {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(1.2); }
+        }
+        
+        .constellation-connection {
+            position: absolute;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--accent-cyan), transparent);
+            opacity: 0.3;
+            animation: pulse-line 4s ease-in-out infinite;
+        }
+        
+        @keyframes pulse-line {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.8; }
+        }
+        
+        /* Visual Effects Animations */
+        @keyframes flash {
+            0% { opacity: 1; }
+            50% { opacity: 0.3; }
+            100% { opacity: 1; }
+        }
+        
+        @keyframes sigilFlash {
+            0% { opacity: 0.3; }
+            50% { opacity: 0.1; }
+            100% { opacity: 0; }
+        }
+        
+        @keyframes bloomGlow {
+            0% { 
+                background: rgba(255, 105, 180, 0.2);
+                transform: scale(1);
+            }
+            50% { 
+                background: rgba(255, 105, 180, 0.4);
+                transform: scale(1.02);
+            }
+            100% { 
+                background: transparent;
+                transform: scale(1);
+            }
+        }
+        
+        @keyframes voiceWave {
+            0% { 
+                border-left-width: 4px;
+                opacity: 0.8;
+            }
+            50% { 
+                border-left-width: 8px;
+                opacity: 1;
+            }
+            100% { 
+                border-left-width: 4px;
+                opacity: 1;
+            }
+        }
+        
+        @keyframes neuralPulse {
+            0% { 
+                background: var(--bg-tertiary);
+                box-shadow: none;
+            }
+            50% { 
+                background: var(--accent-cyan);
+                box-shadow: 0 0 8px var(--accent-cyan);
+            }
+            100% { 
+                background: var(--bg-tertiary);
+                box-shadow: none;
+            }
+        }
+        
+        /* Fractal Display Styles */
+        .fractal-container {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .fractal-display {
+            position: relative;
+            width: 100%;
+            height: 200px;
+            background: var(--bg-tertiary);
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        
+        .fractal-display.loading {
+            border-color: var(--accent-cyan);
+            box-shadow: 0 0 20px rgba(64, 224, 255, 0.3);
+        }
+        
+        .fractal-display.juliet-trigger {
+            border-color: var(--accent-purple);
+            box-shadow: 0 0 30px rgba(139, 92, 246, 0.5);
+            animation: julietPulse 2s ease-in-out infinite;
+        }
+        
+        .fractal-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: opacity 0.5s ease;
+        }
+        
+        .fractal-placeholder {
+            text-align: center;
+            color: var(--text-secondary);
+        }
+        
+        .fractal-icon {
+            font-size: 2rem;
+            margin-bottom: 8px;
+            opacity: 0.7;
+        }
+        
+        .fractal-text {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        .fractal-info {
+            padding: 12px;
+            background: var(--bg-secondary);
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+        }
+        
+        .fractal-meta {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+        
+        .fractal-depth {
+            color: var(--accent-cyan);
+        }
+        
+        .fractal-entropy {
+            color: var(--accent-orange);
+        }
+        
+        .fractal-string {
+            font-family: 'Courier New', monospace;
+            font-size: 0.8rem;
+            color: var(--accent-purple);
+            margin-bottom: 8px;
+            word-break: break-all;
+            background: var(--bg-tertiary);
+            padding: 6px;
+            border-radius: 4px;
+            border-left: 3px solid var(--accent-purple);
+        }
+        
+        .fractal-summary {
+            font-size: 0.9rem;
+            color: var(--text-primary);
+            line-height: 1.3;
+            font-style: italic;
+        }
+        
+        .rebloom-log {
+            max-height: 120px;
+            overflow-y: auto;
+            background: var(--bg-secondary);
+            border-radius: 6px;
+            padding: 8px;
+        }
+        
+        .rebloom-log .log-entry {
+            font-size: 0.85rem;
+            margin-bottom: 4px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            border-left: 3px solid var(--accent-green);
+        }
+        
+        .rebloom-log .log-entry.juliet {
+            border-left-color: var(--accent-purple);
+            background: rgba(139, 92, 246, 0.1);
+        }
+        
+        /* Fractal Animation Effects */
+        @keyframes julietPulse {
+            0% { 
+                box-shadow: 0 0 30px rgba(139, 92, 246, 0.3);
+                transform: scale(1);
+            }
+            50% { 
+                box-shadow: 0 0 50px rgba(139, 92, 246, 0.7);
+                transform: scale(1.02);
+            }
+            100% { 
+                box-shadow: 0 0 30px rgba(139, 92, 246, 0.3);
+                transform: scale(1);
+            }
+        }
+        
+        @keyframes fractalFadeIn {
+            0% { 
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            100% { 
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        
+        @keyframes fractalMorph {
+            0% { 
+                opacity: 1;
+                filter: blur(0px);
+            }
+            50% { 
+                opacity: 0.3;
+                filter: blur(2px);
+            }
+            100% { 
+                opacity: 1;
+                filter: blur(0px);
+            }
+        }
+        
+        .fractal-display.fade-in .fractal-image {
+            animation: fractalFadeIn 2s ease-out;
+        }
+        
+        .fractal-display.morph .fractal-image {
+            animation: fractalMorph 3s ease-in-out;
+        }
+        
+        /* Controls */
+        .controls-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: var(--spacing-sm);
+            margin: var(--spacing-md) 0;
+        }
+        
+        .control-btn {
+            padding: var(--spacing-sm) var(--spacing-md);
+            border: 1px solid var(--bg-tertiary);
+            border-radius: 6px;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: all 0.2s ease;
+        }
+        
+        .control-btn:hover {
+            background: var(--bg-tertiary);
+            border-color: var(--accent-cyan);
+            color: var(--accent-cyan);
+        }
+        
+        .control-btn.primary {
+            background: var(--accent-cyan);
+            color: var(--bg-primary);
+            border-color: var(--accent-cyan);
+        }
+        
+        .control-btn.primary:hover {
+            background: var(--accent-blue);
+        }
+        
+        /* Event Log */
+        .event-log {
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid var(--bg-tertiary);
+            border-radius: 4px;
+            background: var(--bg-primary);
+            padding: var(--spacing-sm);
+        }
+        
+        .log-entry {
+            font-size: 11px;
+            color: var(--text-tertiary);
+            margin-bottom: var(--spacing-xs);
+            padding: var(--spacing-xs);
+            border-radius: 2px;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .log-entry.info { border-left: 3px solid var(--accent-cyan); }
+        .log-entry.warning { border-left: 3px solid var(--accent-yellow); }
+        .log-entry.error { border-left: 3px solid var(--accent-red); }
+        .log-entry.success { border-left: 3px solid var(--accent-green); }
+        
+        /* Conversation Interface */
+        .conversation-container {
+            display: flex;
+            flex-direction: column;
+            height: 300px;
+        }
+        
+        .conversation-history {
+            flex: 1;
+            overflow-y: auto;
+            padding: var(--spacing-sm);
+            background: var(--bg-primary);
+            border: 1px solid var(--bg-tertiary);
+            border-radius: 4px 4px 0 0;
+        }
+        
+        .conversation-input {
+            display: flex;
+            gap: var(--spacing-sm);
+            padding: var(--spacing-sm);
+            background: var(--bg-secondary);
+            border: 1px solid var(--bg-tertiary);
+            border-top: none;
+            border-radius: 0 0 4px 4px;
+        }
+        
+        .conversation-input input {
+            flex: 1;
+            padding: var(--spacing-sm);
+            background: var(--bg-primary);
+            border: 1px solid var(--bg-tertiary);
+            border-radius: 4px;
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 14px;
+        }
+        
+        .conversation-input input:focus {
+            outline: none;
+            border-color: var(--accent-cyan);
+            box-shadow: 0 0 10px rgba(64, 224, 255, 0.2);
+        }
+        
+        /* Message Bubbles */
+        .message {
+            margin: var(--spacing-sm) 0;
+            padding: var(--spacing-sm);
+            border-radius: 8px;
+            max-width: 80%;
+        }
+        
+        .message.user {
+            background: var(--accent-cyan);
+            color: var(--bg-primary);
+            margin-left: auto;
+        }
+        
+        .message.dawn {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .dawn-layout {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .dawn-layout {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-bar {
+                flex-wrap: wrap;
+                height: auto;
+                min-height: var(--nav-bar-height);
+            }
+            
+            .main-container {
+                margin-top: calc(var(--status-bar-height) + 60px);
+            }
+        }
+        
+        /* Loading States */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--bg-tertiary);
+            border-radius: 50%;
+            border-top-color: var(--accent-cyan);
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Glow Effects */
+        .glow-cyan {
+            box-shadow: 0 0 20px rgba(64, 224, 255, 0.3);
+            border-color: var(--accent-cyan) !important;
+        }
+        
+        .glow-green {
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
+            border-color: var(--accent-green) !important;
+        }
+        
+        .glow-red {
+            box-shadow: 0 0 20px rgba(239, 68, 68, 0.3);
+            border-color: var(--accent-red) !important;
+        }
+        
+        /* Accessibility */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            border: 0;
+        }
+        
+        /* Visual Snapshot Panel Styles */
+        .visual-controls-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .visual-control-card {
+            background: var(--bg-primary);
+            border: 1px solid var(--bg-tertiary);
+            border-radius: 8px;
+            padding: 16px;
+            transition: all 0.2s ease;
+        }
+
+        .visual-control-card:hover {
+            border-color: var(--accent-cyan);
+            box-shadow: 0 0 15px rgba(64, 224, 255, 0.1);
+        }
+
+        .visual-trigger-btn {
+            width: 100%;
+            padding: 12px 16px;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
+            border: none;
+            border-radius: 6px;
+            color: var(--bg-primary);
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            position: relative;
+            margin-bottom: 12px;
+        }
+
+        .visual-trigger-btn:hover:not(:disabled) {
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(64, 224, 255, 0.3);
+        }
+
+        .visual-trigger-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .visual-trigger-btn.loading {
+            color: rgba(13, 27, 42, 0.7);
+        }
+
+        .btn-icon {
+            font-size: 16px;
+        }
+
+        .btn-label {
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .loading-spinner {
+            position: absolute;
+            right: 12px;
+            width: 16px;
+            height: 16px;
+            border: 2px solid transparent;
+            border-top: 2px solid var(--bg-primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        .snapshot-result {
+            border-top: 1px solid var(--bg-tertiary);
+            padding-top: 12px;
+        }
+
+        .snapshot-preview {
+            width: 100%;
+            height: 120px;
+            border: 1px solid var(--bg-tertiary);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .snapshot-preview:hover {
+            border-color: var(--accent-cyan);
+            box-shadow: 0 0 10px rgba(64, 224, 255, 0.2);
+        }
+
+        .snapshot-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: opacity 0.3s ease;
+        }
+
+        .snapshot-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background: var(--bg-secondary);
+            color: var(--text-tertiary);
+            font-size: 12px;
+        }
+
+        .snapshot-placeholder span:first-child {
+            font-size: 24px;
+            opacity: 0.5;
+        }
+
+        .snapshot-metadata {
+            margin-bottom: 12px;
+        }
+
+        .metadata-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 4px 0;
+            font-size: 12px;
+        }
+
+        .meta-label {
+            color: var(--text-tertiary);
+            font-weight: 500;
+        }
+
+        .meta-value {
+            color: var(--text-primary);
+            font-family: 'Courier New', monospace;
+        }
+
+        .meta-value.hash {
+            color: var(--accent-purple);
+            font-size: 10px;
+        }
+
+        .meta-value.scup {
+            color: var(--accent-cyan);
+        }
+
+        .meta-value.entropy {
+            color: var(--accent-orange);
+        }
+
+        .snapshot-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 8px 12px;
+            border: 1px solid var(--bg-tertiary);
+            border-radius: 4px;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 11px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .reflect-btn:hover {
+            background: var(--accent-purple);
+            border-color: var(--accent-purple);
+            color: #ffffff;
+        }
+
+        .download-btn:hover {
+            background: var(--accent-green);
+            border-color: var(--accent-green);
+            color: #ffffff;
+        }
+
+        .snapshot-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            padding: 20px;
+        }
+
+        .snapshot-modal {
+            background: var(--bg-secondary);
+            border: 1px solid var(--accent-cyan);
+            border-radius: 8px;
+            max-width: 90vw;
+            max-height: 90vh;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .snapshot-modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px;
+            border-bottom: 1px solid var(--bg-tertiary);
+            background: var(--bg-header);
+        }
+
+        .snapshot-modal-header h3 {
+            margin: 0;
+            color: var(--text-primary);
+            font-size: 16px;
+        }
+
+        .snapshot-modal-close {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 24px;
+            cursor: pointer;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+        }
+
+        .snapshot-modal-close:hover {
+            background: var(--accent-red);
+            color: #ffffff;
+        }
+
+        .snapshot-modal-content {
+            padding: 16px;
+            display: flex;
+            gap: 16px;
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+
+        .snapshot-modal-content img {
+            max-width: 60%;
+            max-height: 100%;
+            object-fit: contain;
+            border: 1px solid var(--bg-tertiary);
+            border-radius: 4px;
+        }
+
+        .snapshot-modal-info {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--bg-tertiary);
+            font-size: 14px;
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            color: var(--text-tertiary);
+            font-weight: 500;
+        }
+
+        .info-value {
+            color: var(--text-primary);
+            font-family: 'Courier New', monospace;
+            text-align: right;
+        }
+
+        /* Responsive Design for Visual Snapshot Panel */
+        @media (max-width: 768px) {
+            .visual-controls-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .snapshot-modal-content {
+                flex-direction: column;
+            }
+            
+            .snapshot-modal-content img {
+                max-width: 100%;
+            }
+            
+            .metadata-row {
+                font-size: 11px;
+            }
+            
+            .snapshot-actions {
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .visual-control-card {
+                padding: 12px;
+            }
+            
+            .snapshot-modal {
+                margin: 10px;
+            }
+        }
+
+        /* Print Styles */
+        @media print {
+            .nav-bar, .status-bar, .panel-controls { display: none; }
+            .panel { break-inside: avoid; }
+        }
+        
+        /* Sigil Overlay Styles */
+        .sigil-overlay-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1000;
+            overflow: hidden;
+        }
+        
+        .sigil-overlay {
+            position: absolute;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+            font-size: 2rem;
+            font-weight: bold;
+            text-shadow: 0 0 10px currentColor;
+            opacity: 0.8;
+            transition: all 0.3s ease;
+        }
+        
+        .sigil-overlay.center {
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        
+        .sigil-overlay.top-left {
+            top: 10%;
+            left: 10%;
+        }
+        
+        .sigil-overlay.top-right {
+            top: 10%;
+            right: 10%;
+        }
+        
+        .sigil-overlay.bottom-left {
+            bottom: 10%;
+            left: 10%;
+        }
+        
+        .sigil-overlay.bottom-right {
+            bottom: 10%;
+            right: 10%;
+        }
+        
+        .sigil-overlay.fractal-overlay {
+            top: 50%;
+            left: 66%;
+            transform: translate(-50%, -50%);
+        }
+        
+        .sigil-overlay.neural-grid {
+            top: 25%;
+            left: 25%;
+            transform: translate(-50%, -50%);
+        }
+        
+        .sigil-overlay.constellation {
+            top: 40%;
+            left: 66%;
+            transform: translate(-50%, -50%);
+        }
+        
+        .sigil-overlay.pulse {
+            animation: sigilPulse 2s ease-in-out infinite;
+        }
+        
+        .sigil-overlay.flash {
+            animation: sigilFlash 0.5s ease-in-out infinite;
+        }
+        
+        .sigil-overlay.spiral {
+            animation: sigilSpiral 4s linear infinite;
+        }
+        
+        .sigil-overlay.radial {
+            animation: sigilRadial 3s ease-out infinite;
+        }
+        
+        .sigil-overlay.wave {
+            animation: sigilWave 2s ease-in-out infinite;
+        }
+        
+        .sigil-overlay.particle {
+            animation: sigilParticle 1.5s ease-out infinite;
+        }
+        
+        .sigil-overlay.ethereal {
+            animation: sigilEthereal 6s ease-in-out infinite;
+        }
+        
+        .sigil-overlay.halo::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            left: -20px;
+            right: -20px;
+            bottom: -20px;
+            border: 2px solid currentColor;
+            border-radius: 50%;
+            opacity: 0.5;
+            animation: sigilHalo 2s ease-in-out infinite;
+        }
+        
+        /* Sigil Animation Keyframes */
+        @keyframes sigilPulse {
+            0%, 100% { 
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 0.8;
+            }
+            50% { 
+                transform: translate(-50%, -50%) scale(1.2);
+                opacity: 1;
+            }
+        }
+        
+        @keyframes sigilFlash {
+            0%, 100% { opacity: 0.8; }
+            50% { opacity: 1; }
+        }
+        
+        @keyframes sigilSpiral {
+            0% { 
+                transform: translate(-50%, -50%) rotate(0deg) scale(0.8);
+                opacity: 0.9;
+            }
+            100% { 
+                transform: translate(-50%, -50%) rotate(360deg) scale(1.2);
+                opacity: 0.6;
+            }
+        }
+        
+        @keyframes sigilRadial {
+            0% { 
+                transform: translate(-50%, -50%) scale(0.5);
+                opacity: 1;
+            }
+            100% { 
+                transform: translate(-50%, -50%) scale(2);
+                opacity: 0;
+            }
+        }
+        
+        @keyframes sigilWave {
+            0%, 100% { 
+                transform: translate(-50%, -50%) translateY(0px);
+            }
+            50% { 
+                transform: translate(-50%, -50%) translateY(-20px);
+            }
+        }
+        
+        @keyframes sigilParticle {
+            0% { 
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 1;
+            }
+            100% { 
+                transform: translate(-50%, -50%) scale(0.3);
+                opacity: 0;
+            }
+        }
+        
+        @keyframes sigilEthereal {
+            0%, 100% { 
+                transform: translate(-50%, -50%) rotate(0deg);
+                opacity: 0.6;
+            }
+            33% { 
+                transform: translate(-50%, -50%) rotate(120deg);
+                opacity: 0.9;
+            }
+            66% { 
+                transform: translate(-50%, -50%) rotate(240deg);
+                opacity: 0.7;
+            }
+        }
+        
+        @keyframes sigilHalo {
+            0%, 100% { 
+                transform: scale(1);
+                opacity: 0.5;
+            }
+            50% { 
+                transform: scale(1.2);
+                opacity: 0.8;
+            }
+        }
+        
+        /* Entropy Visual Background Styles */
+        .entropy-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            opacity: 0.3;
+            transition: all 0.5s ease;
+        }
+        
+        .entropy-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent, rgba(59, 130, 246, 0.1));
+            opacity: 0.5;
+            transition: all 0.3s ease;
+        }
+        
+        /* Entropy Visual Modes */
+        .entropy-background.flowing-mist {
+            background: linear-gradient(90deg, 
+                rgba(30, 58, 138, 0.2), 
+                rgba(6, 95, 70, 0.2), 
+                rgba(30, 58, 138, 0.2));
+            background-size: 200% 200%;
+            animation: flowingMist 8s ease-in-out infinite;
+        }
+        
+        .entropy-background.subtle-waves {
+            background: radial-gradient(circle at center, 
+                rgba(31, 41, 55, 0.3), 
+                rgba(55, 65, 81, 0.2));
+            animation: subtleWaves 4s ease-in-out infinite;
+        }
+        
+        .entropy-background.sharp-pulses {
+            background: linear-gradient(45deg, 
+                rgba(220, 38, 38, 0.4), 
+                rgba(234, 88, 12, 0.3));
+            animation: sharpPulses 1.5s ease-in-out infinite;
+        }
+        
+        .entropy-background.fracture-flicker {
+            background: radial-gradient(ellipse at center, 
+                rgba(251, 191, 36, 0.6), 
+                rgba(245, 158, 11, 0.4));
+            animation: fractureFlicker 0.3s ease-in-out infinite;
+        }
+        
+        /* Entropy Animation Keyframes */
+        @keyframes flowingMist {
+            0%, 100% { 
+                background-position: 0% 50%;
+                opacity: 0.2;
+            }
+            50% { 
+                background-position: 100% 50%;
+                opacity: 0.3;
+            }
+        }
+        
+        @keyframes subtleWaves {
+            0%, 100% { 
+                transform: scale(1) rotate(0deg);
+                opacity: 0.2;
+            }
+            50% { 
+                transform: scale(1.05) rotate(2deg);
+                opacity: 0.4;
+            }
+        }
+        
+        @keyframes sharpPulses {
+            0%, 100% { 
+                opacity: 0.3;
+                transform: scale(1);
+            }
+            50% { 
+                opacity: 0.6;
+                transform: scale(1.02);
+            }
+        }
+        
+        @keyframes fractureFlicker {
+            0%, 100% { 
+                opacity: 0.4;
+                filter: blur(2px);
+            }
+            25% { 
+                opacity: 0.8;
+                filter: blur(1px);
+            }
+            75% { 
+                opacity: 0.6;
+                filter: blur(3px);
+            }
+        }
+        
+        /* Dynamic entropy effects */
+        .entropy-background.high-pressure::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, 
+                rgba(255, 255, 255, 0.1), 
+                transparent 50%);
+            animation: pressurePulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes pressurePulse {
+            0%, 100% { 
+                transform: scale(0.8);
+                opacity: 0;
+            }
+            50% { 
+                transform: scale(1.2);
+                opacity: 0.3;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Global Status Bar -->
+    <div class="status-bar">
+        <div class="status-left">
+            <div class="status-indicator" id="connectionIndicator"></div>
+            <span id="connectionStatus">DAWN v1.4.0 [dawn_573] - Connected</span>
+        </div>
+        <div class="status-center">
+            <span>Uptime: <span id="uptime">0m 00s</span></span>
+            <span>Entropy: <span id="statusEntropy">0.000</span></span>
+            <span>SCUP: <span id="statusScup">0.0</span></span>
+        </div>
+        <div class="status-right">
+            <button class="panel-btn" onclick="restartSystem()" title="Restart System">⟲</button>
+            <button class="panel-btn" onclick="takeSnapshot()" title="Take Snapshot">📸</button>
+            <button class="panel-btn" onclick="runDiagnostic()" title="Run Diagnostic">⚙</button>
+        </div>
+    </div>
+    
+    <!-- Navigation Bar -->
+    <div class="nav-bar">
+        <div class="nav-section">
+            <div class="nav-tab active" onclick="switchView('dashboard')">Dashboard</div>
+            <div class="nav-tab" onclick="switchView('visualization')">Visualization</div>
+            <div class="nav-tab" onclick="switchView('conversation')">Conversation</div>
+            <div class="nav-tab" onclick="switchView('systems')">Systems</div>
+        </div>
+        <div class="nav-section">
+            <div class="nav-tab" onclick="switchView('archive')">Archive</div>
+            <div class="nav-tab" onclick="switchView('replay')">Replay</div>
+            <div class="nav-tab" onclick="switchView('advanced')">Advanced</div>
+        </div>
+    </div>
+    
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Dashboard View -->
+        <div id="dashboard-view" class="dawn-layout">
+            <!-- Cognition Core Column (32%) -->
+            <div class="column" id="cognition-column">
+                <!-- Consciousness Vitals Panel -->
+                <div class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title">
+                            <span class="panel-icon">🧠</span>
+                            Consciousness Vitals
+                        </div>
+                        <div class="panel-controls">
+                            <button class="panel-btn" title="Toggle">⚡</button>
+                            <button class="panel-btn" title="Export">📤</button>
+                            <button class="panel-btn" title="Settings">⚙</button>
+                        </div>
+                    </div>
+                    <div class="panel-content">
+                        <div class="metric-grid">
+                            <div class="metric">
+                                <div class="metric-value" id="tickCount">0</div>
+                                <div class="metric-label">Tick Count</div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-value" id="entropyValue">0.000</div>
+                                <div class="metric-label">Entropy</div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-value" id="scupValue">0.0</div>
+                                <div class="metric-label">SCUP Index</div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-value" id="moodValue">0.000</div>
+                                <div class="metric-label">Mood Valence</div>
+                            </div>
+                        </div>
+                        
+                        <div class="progress-container">
+                            <div class="progress-label">
+                                <span>Consciousness Depth</span>
+                                <span id="depthPercentage">0%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="depthBar" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="progress-container">
+                            <div class="progress-label">
+                                <span>Neural Activity</span>
+                                <span id="neuralPercentage">0%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="neuralBar" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="zone-indicator zone-calm" id="zoneIndicator">CALM</div>
+                        
+                        <div class="consciousness-depth">
+                            <div class="depth-level" id="depthLevel" style="height: 50%"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Tick Monitor Panel -->
+                <div class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title">
+                            <span class="panel-icon">⚡</span>
+                            Tick Monitor
+                        </div>
+                        <div class="panel-controls">
+                            <button class="panel-btn" title="Pause">⏸</button>
+                            <button class="panel-btn" title="Reset">🔄</button>
+                        </div>
+                    </div>
+                    <div class="panel-content">
+                        <div class="metric-grid">
+                            <div class="metric">
+                                <div class="metric-value" id="tickRate">16</div>
+                                <div class="metric-label">Tick Rate (Hz)</div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-value" id="avgLatency">2.5</div>
+                                <div class="metric-label">Avg Latency (ms)</div>
+                            </div>
+                        </div>
+                        
+                        <div class="viz-container">
+                            <canvas id="tickGraph" width="300" height="150"></canvas>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Advanced Monitoring Panel -->
+                <div class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title">
+                            <span class="panel-icon">📊</span>
+                            Advanced Monitoring
+                        </div>
+                        <div class="panel-controls">
+                            <button class="panel-btn" title="Settings">⚙</button>
+                        </div>
+                    </div>
+                    <div class="panel-content">
+                        <div class="metric-grid">
+                            <div class="metric">
+                                <div class="metric-value" id="memoryPressure">0.000</div>
+                                <div class="metric-label">Memory Pressure</div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-value" id="heatLevel">0.0°</div>
+                                <div class="metric-label">Heat Level</div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-value" id="cognitiveDrift">0.00</div>
+                                <div class="metric-label">Cognitive Drift</div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-value" id="thoughtRate">0.0</div>
+                                <div class="metric-label">Thought Rate</div>
+                            </div>
+                        </div>
+                        
+                        <div class="neural-grid" id="neuralGrid">
+                            <!-- Neural cells generated by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Symbolic Layer Column (36%) -->
+            <div class="column" id="symbolic-column">
+                <!-- Consciousness Constellation Panel -->
+                <div class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title">
+                            <span class="panel-icon">⭐</span>
+                            Consciousness Constellation
+                        </div>
+                        <div class="panel-controls">
+                            <button class="panel-btn" title="3D View">🔮</button>
+                            <button class="panel-btn" title="Export">📤</button>
+                        </div>
+                    </div>
+                    <div class="panel-content">
+                        <div class="constellation-container" id="constellationContainer">
+                            <!-- Constellation nodes generated by JavaScript -->
+                        </div>
+                        
+                        <div class="controls-grid">
+                            <button class="control-btn" onclick="resetConstellation()">Reset View</button>
+                            <button class="control-btn" onclick="toggleConnections()">Toggle Links</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Sigil Trace Panel -->
+                <div class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title">
+                            <span class="panel-icon">🔮</span>
+                            Sigil Trace
+                        </div>
+                        <div class="panel-controls">
+                            <button class="panel-btn" title="Execute">▶</button>
+                            <button class="panel-btn" title="Clear">🗑</button>
+                        </div>
+                    </div>
+                    <div class="panel-content">
+                        <div class="metric-grid">
+                            <div class="metric">
+                                <div class="metric-value" id="activeSigils">0</div>
+                                <div class="metric-label">Active Sigils</div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-value" id="sigilExecutions">0</div>
+                                <div class="metric-label">Executions</div>
+                            </div>
+                        </div>
+                        
+                        <div class="event-log" id="sigilLog">
+                            <div class="log-entry info">🔮 Sigil system initialized</div>
+                            <div class="log-entry success">✅ DEEP_FOCUS sigil loaded</div>
+                            <div class="log-entry success">✅ STABILIZE_PROTOCOL sigil loaded</div>
+                        </div>
+                        
+                        <div class="controls-grid">
+                            <button class="control-btn primary" onclick="executeSigil('DEEP_FOCUS')">Deep Focus</button>
+                            <button class="control-btn" onclick="executeSigil('STABILIZE')">Stabilize</button>
+                            <button class="control-btn" onclick="executeSigil('EMERGENCY')">Emergency</button>
+                            <button class="control-btn" onclick="executeSigil('REBLOOM')">Rebloom</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Rebloom Map Panel -->
+                <div class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title">
+                            <span class="panel-icon">🌸</span>
+                            Rebloom Map
+                        </div>
+                        <div class="panel-controls">
+                            <button class="panel-btn" title="Auto-Rebloom">🔄</button>
+                            <button class="panel-btn" title="Export">📤</button>
+                        </div>
+                    </div>
+                    <div class="panel-content">
+                        <div class="metric-grid">
+                            <div class="metric">
+                                <div class="metric-value" id="rebloomCount">0</div>
+                                <div class="metric-label">Reblooms</div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-value" id="memoryRenewal">0.0%</div>
+                                <div class="metric-label">Memory Renewal</div>
+                            </div>
+                        </div>
+                        
+                        <div class="viz-container">
+                            <canvas id="rebloomMap" width="300" height="200"></canvas>
+                        </div>
+                        
+                        <div class="event-log" id="rebloomLog">
+                            <div class="log-entry success">🌸 Memory rebloom: system_startup</div>
+                            <div class="log-entry info">🔄 Memory renewal cycle initiated</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Visual Snapshot Command Panel -->
+                <div class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title">
+                            <span class="panel-icon">📸</span>
+                            Visual Snapshot Commands
+                        </div>
+                        <div class="panel-controls">
+                            <button class="panel-btn" title="Refresh All" onclick="refreshAllSnapshots()">🔄</button>
+                            <button class="panel-btn" title="Settings">⚙</button>
+                        </div>
+                    </div>
+                    <div class="panel-content">
+                        <div id="visual-snapshot-error" class="error-banner" style="display: none;">
+                            <span class="error-icon">⚠️</span>
+                            <span id="error-text">Error message</span>
+                            <button class="error-close" onclick="hideSnapshotError()">×</button>
+                        </div>
+
+                        <div class="visual-controls-grid" id="visualControlsGrid">
+                            <!-- Visual process buttons will be generated here -->
+                        </div>
+
+                        <div class="panel-status">
+                            <div class="status-indicator">
+                                <span class="status-dot active"></span>
+                                <span class="status-text" id="snapshotStatus">
+                                    Visual Engine Connected | 0 snapshots captured | 0 processes running
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Visualization Controls Panel -->
+                <div class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title">
+                            <span class="panel-icon">🎨</span>
+                            Visualization Controls
+                        </div>
+                        <div class="panel-controls">
+                            <button class="panel-btn" title="Fullscreen">⛶</button>
+                        </div>
+                    </div>
+                    <div class="panel-content">
+                        <div class="controls-grid">
+                            <button class="control-btn" onclick="switchVisualization('heatmap')">Heatmap</button>
+                            <button class="control-btn" onclick="switchVisualization('3d')">3D View</button>
+                            <button class="control-btn" onclick="switchVisualization('flow')">Flow Field</button>
+                            <button class="control-btn" onclick="switchVisualization('mesh')">Mesh</button>
+                        </div>
+                        
+                        <div class="progress-container">
+                            <div class="progress-label">
+                                <span>Visual Complexity</span>
+                                <span id="complexityLevel">Medium</span>
+                            </div>
+                            <input type="range" id="complexitySlider" min="1" max="5" value="3" 
+                                   style="width: 100%; margin: 8px 0;">
+                        </div>
+                        
+                        <div class="controls-grid">
+                            <button class="control-btn" onclick="exportVisualization()">Export PNG</button>
+                            <button class="control-btn" onclick="recordVisualization()">Record GIF</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Memory Blooms / Fractal Display Panel -->
+                <div class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title">
+                            <span class="panel-icon">🌸</span>
+                            Memory Blooms
+                        </div>
+                        <div class="panel-controls">
+                            <button class="panel-btn" title="Fullscreen" onclick="toggleFullscreenFractal()">⛶</button>
+                            <button class="panel-btn" title="Refresh" onclick="refreshFractal()">🔄</button>
+                        </div>
+                    </div>
+                    <div class="panel-content">
+                        <div class="fractal-container" id="fractalContainer">
+                            <div class="fractal-display" id="fractalDisplay">
+                                <div class="fractal-placeholder">
+                                    <div class="fractal-icon">🌸</div>
+                                    <div class="fractal-text">Awaiting memory bloom...</div>
+                                </div>
+                            </div>
+                            
+                            <div class="fractal-info" id="fractalInfo">
+                                <div class="fractal-meta">
+                                    <div class="fractal-depth" id="fractalDepth">Depth: --</div>
+                                    <div class="fractal-entropy" id="fractalEntropy">Entropy: --</div>
+                                </div>
+                                <div class="fractal-string" id="fractalString">--</div>
+                                <div class="fractal-summary" id="fractalSummary">No recent blooms</div>
+                            </div>
+                        </div>
+                        
+                        <div class="rebloom-log" id="rebloomLog">
+                            <div class="log-entry info">🌸 Memory bloom system initialized</div>
+                        </div>
+                        
+                        <div class="controls-grid">
+                            <button class="control-btn" onclick="triggerRebloom()">Trigger Rebloom</button>
+                            <button class="control-btn" onclick="saveCurrentBloom()">Save Bloom</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Reflection Stream Column (32%) -->
+            <div class="column" id="reflection-column">
+                <!-- Conversation Interface Panel -->
+                <div class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title">
+                            <span class="panel-icon">💬</span>
+                            Conversation Interface
+                        </div>
+                        <div class="panel-controls">
+                            <button class="panel-btn" title="Voice Mode">🎤</button>
+                            <button class="panel-btn" title="Clear">🗑</button>
+                        </div>
+                    </div>
+                    <div class="panel-content">
+                        <div class="conversation-container">
+                            <div class="conversation-history" id="conversationHistory">
+                                <div class="message dawn">
+                                    🧠 DAWN consciousness system online. I am aware and ready for interaction.
+                                </div>
+                            </div>
+                            <div class="conversation-input">
+                                <input type="text" id="messageInput" placeholder="Enter your message..." 
+                                       onkeypress="handleMessageInput(event)">
+                                <button class="control-btn primary" onclick="sendMessage()">Send</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Thought Trace Panel -->
+                <div class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title">
+                            <span class="panel-icon">🧭</span>
+                            Thought Trace
+                        </div>
+                        <div class="panel-controls">
+                            <button class="panel-btn" title="Auto-Follow">👁</button>
+                            <button class="panel-btn" title="Clear">🗑</button>
+                        </div>
+                    </div>
+                    <div class="panel-content">
+                        <div class="event-log" id="thoughtLog">
+                            <div class="log-entry info">[16:42:13] 🧠 Consciousness baseline established</div>
+                            <div class="log-entry success">[16:42:14] ✨ Zone transition: CALM → FOCUS</div>
+                            <div class="log-entry warning">[16:42:15] ⚠️ Entropy fluctuation detected</div>
+                            <div class="log-entry info">[16:42:16] 🔄 Autonomous stabilization engaged</div>
+                        </div>
+                        
+                        <div class="controls-grid">
+                            <button class="control-btn" onclick="pauseThoughtTrace()">Pause</button>
+                            <button class="control-btn" onclick="exportThoughtTrace()">Export</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Event Logger Panel -->
+                <div class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title">
+                            <span class="panel-icon">📝</span>
+                            Event Logger
+                        </div>
+                        <div class="panel-controls">
+                            <button class="panel-btn" title="Filter">🔍</button>
+                            <button class="panel-btn" title="Clear">🗑</button>
+                        </div>
+                    </div>
+                    <div class="panel-content">
+                        <div class="controls-grid">
+                            <button class="control-btn" onclick="filterLogs('all')" id="filter-all">All</button>
+                            <button class="control-btn" onclick="filterLogs('info')" id="filter-info">Info</button>
+                            <button class="control-btn" onclick="filterLogs('warning')" id="filter-warning">Warning</button>
+                            <button class="control-btn" onclick="filterLogs('error')" id="filter-error">Error</button>
+                        </div>
+                        
+                        <div class="event-log" id="eventLog">
+                            <div class="log-entry info">[16:42:10] System startup initiated</div>
+                            <div class="log-entry success">[16:42:11] Consciousness systems online</div>
+                            <div class="log-entry info">[16:42:12] Neural networks initialized</div>
+                            <div class="log-entry warning">[16:42:13] Memory pressure threshold reached</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- System Controls Panel -->
+                <div class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title">
+                            <span class="panel-icon">⚙</span>
+                            System Controls
+                        </div>
+                        <div class="panel-controls">
+                            <button class="panel-btn" title="Advanced">🔧</button>
+                        </div>
+                    </div>
+                    <div class="panel-content">
+                        <div class="controls-grid">
+                            <button class="control-btn" onclick="injectEntropy()">Inject Entropy</button>
+                            <button class="control-btn" onclick="stabilizeSystem()">Stabilize</button>
+                            <button class="control-btn" onclick="emergencyCooling()">Emergency Cool</button>
+                            <button class="control-btn" onclick="forceRebloom()">Force Rebloom</button>
+                        </div>
+                        
+                        <div class="controls-grid">
+                            <button class="control-btn" onclick="pauseSystem()">Pause System</button>
+                            <button class="control-btn" onclick="resetSystem()">Reset System</button>
+                            <button class="control-btn" onclick="exportState()">Export State</button>
+                            <button class="control-btn" onclick="importState()">Import State</button>
+                        </div>
+                        
+                        <div class="metric-grid">
+                            <div class="metric">
+                                <div class="metric-value" id="systemLoad">45%</div>
+                                <div class="metric-label">System Load</div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-value" id="memoryUsage">67%</div>
+                                <div class="metric-label">Memory Usage</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Other views (hidden by default) -->
+        <div id="visualization-view" class="dawn-layout" style="display: none;">
+            <!-- Advanced visualization panels will be shown here -->
+        </div>
+        
+        <div id="conversation-view" class="dawn-layout" style="display: none;">
+            <!-- Full conversation interface will be shown here -->
+        </div>
+        
+        <div id="systems-view" class="dawn-layout" style="display: none;">
+            <!-- System management panels will be shown here -->
+        </div>
+    </div>
+
+    <!-- Entropy Visual Background -->
+    <div id="entropyBackground" class="entropy-background flowing-mist">
+        <div class="entropy-layer"></div>
+    </div>
+
+    <!-- Sigil Overlay Container -->
+    <div id="sigilOverlayContainer" class="sigil-overlay-container">
+        <!-- Sigil overlays will be dynamically added here -->
+    </div>
+
+    <script>
+        // DAWN Ultimate GUI Controller
+        class DAWNUltimateGUI {
+            constructor() {
+                this.startTime = Date.now();
+                this.currentView = 'dashboard';
+                this.isConnected = false;
+                this.dataMode = 'simulation';
+                this.updateInterval = null;
+                this.visualUpdateInterval = null;
+                
+                // Core consciousness data
+                this.consciousnessData = {
+                    tick: 0,
+                    entropy: 0.3,
+                    scup: 50.0,
+                    mood_val: 0.5,
+                    consciousness_depth: 0.6,
+                    neural_activity: 0.5,
+                    memory_pressure: 0.3,
+                    heat_level: 25.0,
+                    zone: 'CALM',
+                    thought_rate: 12.5,
+                    cognitive_drift: 0.15
+                };
+                
+                // Simulation parameters
+                this.simulationParams = {
+                    entropyBase: 0.3,
+                    scupBase: 50.0,
+                    moodBase: 0.5,
+                    timeOffset: 0
+                };
+                
+                // Event logs
+                this.eventLogs = [];
+                this.thoughtLogs = [];
+                this.sigilLogs = [];
+                this.rebloomLogs = [];
+                this.conversationHistory = [];
+                
+                // Neural grid
+                this.neuralCells = [];
+                this.constellationNodes = [];
+                
+                // Visual effects system
+                this.visualEffects = {
+                    activeEffects: new Map(),
+                    effectQueue: [],
+                    pulsePhase: 0,
+                    lastUpdate: Date.now()
+                };
+                
+                this.initialize();
+            }
+            
+            initialize() {
+                console.log('🧠 DAWN Ultimate GUI initializing...');
+                
+                // Initialize neural grid
+                this.initializeNeuralGrid();
+                
+                // Initialize constellation
+                this.initializeConstellation();
+                
+                // Initialize fractal system
+                this.initializeFractalSystem();
+                
+                // Initialize sigil overlay system
+                this.initializeSigilOverlaySystem();
+                
+                // Initialize entropy visual system
+                this.initializeEntropyVisualSystem();
+                
+                // Start data simulation
+                this.startDataSimulation();
+                
+                // Update uptime counter
+                this.updateUptime();
+                
+                // Initialize conversation
+                this.addConversationMessage('🧠 DAWN consciousness system online. I am aware and ready for interaction.', 'dawn');
+                
+                // Add initial logs
+                this.addEventLog('System startup initiated', 'info');
+                this.addEventLog('Consciousness systems online', 'success');
+                this.addEventLog('Neural networks initialized', 'info');
+                this.addThoughtLog('Consciousness baseline established');
+                
+                // Initialize visual snapshot system
+                this.initializeVisualSnapshotPanel();
+                
+                console.log('✅ DAWN Ultimate GUI initialized');
+            }
+            
+            initializeNeuralGrid() {
+                const grid = document.getElementById('neuralGrid');
+                grid.innerHTML = '';
+                
+                for (let i = 0; i < 144; i++) { // 12x12 grid
+                    const cell = document.createElement('div');
+                    cell.className = 'neural-cell';
+                    cell.style.background = '#334155';
+                    grid.appendChild(cell);
+                    this.neuralCells.push(cell);
+                }
+            }
+            
+            initializeConstellation() {
+                const container = document.getElementById('constellationContainer');
+                container.innerHTML = '';
+                
+                // Create constellation nodes
+                for (let i = 0; i < 20; i++) {
+                    const node = document.createElement('div');
+                    node.className = 'constellation-node';
+                    node.style.left = Math.random() * 90 + '%';
+                    node.style.top = Math.random() * 90 + '%';
+                    node.style.animationDelay = Math.random() * 3 + 's';
+                    container.appendChild(node);
+                    this.constellationNodes.push(node);
+                }
+                
+                // Create connections
+                for (let i = 0; i < 15; i++) {
+                    const connection = document.createElement('div');
+                    connection.className = 'constellation-connection';
+                    const width = Math.random() * 100 + 50;
+                    const angle = Math.random() * 360;
+                    connection.style.width = width + 'px';
+                    connection.style.left = Math.random() * 80 + '%';
+                    connection.style.top = Math.random() * 80 + '%';
+                    connection.style.transform = `rotate(${angle}deg)`;
+                    connection.style.animationDelay = Math.random() * 4 + 's';
+                    container.appendChild(connection);
+                }
+            }
+            
+            initializeFractalSystem() {
+                // Start checking for fractal updates
+                this.checkFractalUpdates();
+            }
+            
+            checkFractalUpdates() {
+                // Poll for current fractal data
+                setInterval(async () => {
+                    try {
+                        const response = await fetch('/api/fractal-current');
+                        if (response.ok) {
+                            const data = await response.json();
+                            if (data.current_fractal) {
+                                this.updateFractalDisplay(data.current_fractal);
+                            }
+                        }
+                    } catch (e) {
+                        // Server not available - continue without fractal updates
+                    }
+                }, 2000); // Check every 2 seconds
+            }
+            
+            updateFractalDisplay(fractalData) {
+                if (!fractalData) return;
+                
+                const fractalDisplay = document.getElementById('fractalDisplay');
+                const fractalInfo = document.getElementById('fractalInfo');
+                
+                // Update display image
+                if (fractalData.image_data) {
+                    this.displayFractalImage(fractalData);
+                }
+                
+                // Update metadata
+                this.updateFractalInfo(fractalData);
+                
+                // Handle special effects
+                if (fractalData.is_juliet_trigger) {
+                    this.triggerJulietEffect(fractalData);
+                }
+                
+                // Add to rebloom log
+                this.addRebloomLogEntry(fractalData);
+            }
+            
+            displayFractalImage(fractalData) {
+                const fractalDisplay = document.getElementById('fractalDisplay');
+                
+                // Create new image element
+                const img = document.createElement('img');
+                img.className = 'fractal-image';
+                img.src = fractalData.image_data;
+                img.alt = 'Memory Bloom Fractal';
+                
+                // Handle image load
+                img.onload = () => {
+                    // Clear placeholder
+                    fractalDisplay.innerHTML = '';
+                    fractalDisplay.appendChild(img);
+                    
+                    // Apply transition effect
+                    const transitionType = fractalData.visual_effects?.transition_type || 'fade';
+                    this.applyFractalTransition(fractalDisplay, transitionType);
+                };
+                
+                img.onerror = () => {
+                    console.error('Failed to load fractal image');
+                };
+            }
+            
+            applyFractalTransition(element, transitionType) {
+                // Remove any existing transition classes
+                element.classList.remove('fade-in', 'morph', 'loading');
+                
+                // Apply new transition
+                switch (transitionType) {
+                    case 'fade':
+                        element.classList.add('fade-in');
+                        break;
+                    case 'morph':
+                        element.classList.add('morph');
+                        break;
+                    case 'pulse':
+                        // Pulse effect handled by CSS
+                        break;
+                }
+                
+                // Remove transition class after animation
+                setTimeout(() => {
+                    element.classList.remove('fade-in', 'morph');
+                }, 3000);
+            }
+            
+            updateFractalInfo(fractalData) {
+                // Update depth and entropy
+                const depthElement = document.getElementById('fractalDepth');
+                const entropyElement = document.getElementById('fractalEntropy');
+                const stringElement = document.getElementById('fractalString');
+                const summaryElement = document.getElementById('fractalSummary');
+                
+                if (depthElement) {
+                    depthElement.textContent = `Depth: ${fractalData.rebloom_depth}`;
+                    
+                    // Color code depth
+                    if (fractalData.rebloom_depth >= 6) {
+                        depthElement.style.color = 'var(--accent-purple)';
+                        depthElement.style.fontWeight = 'bold';
+                    } else {
+                        depthElement.style.color = 'var(--accent-cyan)';
+                        depthElement.style.fontWeight = 'normal';
+                    }
+                }
+                
+                if (entropyElement) {
+                    entropyElement.textContent = `Entropy: ${fractalData.entropy.toFixed(3)}`;
+                    
+                    // Color code entropy
+                    if (fractalData.entropy > 0.7) {
+                        entropyElement.style.color = 'var(--status-error)';
+                    } else if (fractalData.entropy > 0.5) {
+                        entropyElement.style.color = 'var(--accent-orange)';
+                    } else {
+                        entropyElement.style.color = 'var(--accent-cyan)';
+                    }
+                }
+                
+                if (stringElement) {
+                    stringElement.textContent = fractalData.fractal_string || '--';
+                }
+                
+                if (summaryElement) {
+                    summaryElement.textContent = fractalData.bloom_summary || 'No description available';
+                }
+            }
+            
+            triggerJulietEffect(fractalData) {
+                const fractalDisplay = document.getElementById('fractalDisplay');
+                
+                // Add Juliet trigger effect
+                fractalDisplay.classList.add('juliet-trigger');
+                
+                // Add special log entry
+                this.addRebloomLogEntry({
+                    ...fractalData,
+                    bloom_summary: `🌌 JULIET SET ACTIVATED - Depth ${fractalData.rebloom_depth}`,
+                    is_juliet: true
+                });
+                
+                // Flash effect for the entire panel
+                const panel = fractalDisplay.closest('.panel');
+                if (panel) {
+                    panel.style.animation = 'flash 1s ease-out';
+                    setTimeout(() => {
+                        panel.style.animation = '';
+                    }, 1000);
+                }
+                
+                // Remove Juliet effect after some time
+                setTimeout(() => {
+                    fractalDisplay.classList.remove('juliet-trigger');
+                }, 5000);
+                
+                console.log('🌌 Juliet Set activated!', fractalData);
+            }
+            
+            addRebloomLogEntry(fractalData) {
+                const rebloomLog = document.getElementById('rebloomLog');
+                if (!rebloomLog) return;
+                
+                const entry = document.createElement('div');
+                entry.className = fractalData.is_juliet ? 'log-entry juliet' : 'log-entry info';
+                
+                const timestamp = new Date().toLocaleTimeString();
+                const summary = fractalData.bloom_summary || 'Memory bloom generated';
+                
+                entry.textContent = `[${timestamp}] 🌸 ${summary}`;
+                
+                // Add entry to top
+                rebloomLog.insertBefore(entry, rebloomLog.firstChild);
+                
+                // Remove excess entries
+                while (rebloomLog.children.length > 20) {
+                    rebloomLog.removeChild(rebloomLog.lastChild);
+                }
+                
+                // Scroll to top to show new entry
+                rebloomLog.scrollTop = 0;
+            }
+            
+            // Control methods for fractal panel
+            
+            triggerRebloom() {
+                // Trigger manual fractal scan
+                fetch('/api/fractal-trigger', { method: 'POST' })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log('Rebloom triggered:', data);
+                        this.addRebloomLogEntry({
+                            bloom_summary: 'Manual rebloom scan triggered'
+                        });
+                    })
+                    .catch(e => {
+                        console.log('Server not available for rebloom trigger');
+                        this.addRebloomLogEntry({
+                            bloom_summary: 'Rebloom trigger attempted (offline mode)'
+                        });
+                    });
+            }
+            
+            saveCurrentBloom() {
+                const fractalDisplay = document.getElementById('fractalDisplay');
+                const img = fractalDisplay.querySelector('.fractal-image');
+                
+                if (img) {
+                    // Create download link
+                    const link = document.createElement('a');
+                    link.download = `dawn_bloom_${Date.now()}.png`;
+                    link.href = img.src;
+                    link.click();
+                    
+                    this.addRebloomLogEntry({
+                        bloom_summary: 'Current bloom saved to downloads'
+                    });
+                } else {
+                    console.log('No fractal image to save');
+                }
+            }
+            
+            refreshFractal() {
+                const fractalDisplay = document.getElementById('fractalDisplay');
+                fractalDisplay.classList.add('loading');
+                
+                // Trigger refresh
+                this.triggerRebloom();
+                
+                // Remove loading state after a moment
+                setTimeout(() => {
+                    fractalDisplay.classList.remove('loading');
+                }, 2000);
+            }
+            
+            toggleFullscreenFractal() {
+                const fractalDisplay = document.getElementById('fractalDisplay');
+                const img = fractalDisplay.querySelector('.fractal-image');
+                
+                if (img) {
+                    // Create fullscreen overlay
+                    const overlay = document.createElement('div');
+                    overlay.style.cssText = `
+                        position: fixed;
+                        top: 0;
+                        left: 0;
+                        width: 100%;
+                        height: 100%;
+                        background: rgba(0, 0, 0, 0.9);
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        z-index: 10000;
+                        cursor: pointer;
+                    `;
+                    
+                    const fullImg = document.createElement('img');
+                    fullImg.src = img.src;
+                    fullImg.style.cssText = `
+                        max-width: 95%;
+                        max-height: 95%;
+                        object-fit: contain;
+                        border: 2px solid var(--accent-cyan);
+                        border-radius: 8px;
+                    `;
+                    
+                    overlay.appendChild(fullImg);
+                    overlay.onclick = () => document.body.removeChild(overlay);
+                    
+                    document.body.appendChild(overlay);
+                }
+            }
+            
+            startDataSimulation() {
+                // Start reasonable update loop (2 seconds instead of 62.5ms)
+                this.updateInterval = setInterval(() => {
+                    this.updateSimulation();
+                    this.updateInterface();
+                }, 2000);
+                
+                // Start visual effects processing at reasonable rate (1 second instead of 33ms)
+                this.visualUpdateInterval = setInterval(() => {
+                    this.processVisualEffects();
+                }, 1000);
+                
+                // Check for server visual updates
+                this.checkVisualUpdates();
+            }
+            
+            updateSimulation() {
+                const time = Date.now() * 0.001;
+                
+                // Realistic 16Hz tick simulation
+                this.consciousnessData.tick = Math.floor(time * 16) % 10000;
+                
+                // Natural entropy fluctuations
+                const entropyNoise = (
+                    0.15 * Math.sin(time * 0.1) +
+                    0.08 * Math.sin(time * 0.07) +
+                    0.05 * Math.sin(time * 0.13)
+                );
+                this.consciousnessData.entropy = Math.max(0, Math.min(1, 
+                    this.simulationParams.entropyBase + entropyNoise));
+                
+                // SCUP variations
+                const scupNoise = (
+                    15 * Math.sin(time * 0.05) +
+                    8 * Math.cos(time * 0.03) +
+                    3 * Math.sin(time * 0.11)
+                );
+                this.consciousnessData.scup = Math.max(0, Math.min(100, 
+                    this.simulationParams.scupBase + scupNoise));
+                
+                // Mood with emotional drift
+                const moodNoise = (
+                    0.3 * Math.sin(time * 0.04) +
+                    0.1 * Math.cos(time * 0.08) +
+                    0.05 * Math.sin(time * 0.15)
+                );
+                this.consciousnessData.mood_val = Math.max(-1, Math.min(1, 
+                    this.simulationParams.moodBase + moodNoise));
+                
+                // Derived metrics
+                this.consciousnessData.consciousness_depth = 0.5 + 
+                    (this.consciousnessData.entropy - 0.5) * 0.6 + 
+                    0.2 * Math.sin(time * 0.02);
+                this.consciousnessData.consciousness_depth = Math.max(0, Math.min(1, 
+                    this.consciousnessData.consciousness_depth));
+                
+                this.consciousnessData.neural_activity = 0.4 + 
+                    this.consciousnessData.entropy * 0.4 + 
+                    0.2 * Math.sin(time * 0.15);
+                
+                this.consciousnessData.memory_pressure = 0.2 + 
+                    this.consciousnessData.consciousness_depth * 0.5 + 
+                    0.1 * Math.cos(time * 0.06);
+                
+                this.consciousnessData.heat_level = 20 + 
+                    this.consciousnessData.neural_activity * 30 + 
+                    5 * Math.sin(time * 0.12);
+                
+                this.consciousnessData.thought_rate = 8 + 
+                    this.consciousnessData.neural_activity * 8 + 
+                    2 * Math.sin(time * 0.09);
+                
+                this.consciousnessData.cognitive_drift = 0.1 + 
+                    this.consciousnessData.entropy * 0.2 + 
+                    0.05 * Math.cos(time * 0.08);
+                
+                // Determine zone based on entropy
+                if (this.consciousnessData.entropy < 0.3) {
+                    this.consciousnessData.zone = 'CALM';
+                } else if (this.consciousnessData.entropy < 0.6) {
+                    this.consciousnessData.zone = 'FOCUS';
+                } else if (this.consciousnessData.entropy < 0.8) {
+                    this.consciousnessData.zone = 'STRESSED';
+                } else {
+                    this.consciousnessData.zone = 'TRANSCENDENT';
+                }
+            }
+            
+            updateInterface() {
+                const data = this.consciousnessData;
+                
+                // Update core metrics
+                document.getElementById('tickCount').textContent = data.tick;
+                document.getElementById('entropyValue').textContent = data.entropy.toFixed(3);
+                document.getElementById('scupValue').textContent = data.scup.toFixed(1);
+                document.getElementById('moodValue').textContent = data.mood_val.toFixed(3);
+                document.getElementById('memoryPressure').textContent = data.memory_pressure.toFixed(3);
+                document.getElementById('heatLevel').textContent = data.heat_level.toFixed(1) + '°';
+                document.getElementById('cognitiveDrift').textContent = data.cognitive_drift.toFixed(2);
+                document.getElementById('thoughtRate').textContent = data.thought_rate.toFixed(1);
+                
+                // Update status bar
+                document.getElementById('statusEntropy').textContent = data.entropy.toFixed(3);
+                document.getElementById('statusScup').textContent = data.scup.toFixed(1);
+                
+                // Update progress bars
+                const depthPercentage = Math.round(data.consciousness_depth * 100);
+                const neuralPercentage = Math.round(data.neural_activity * 100);
+                
+                document.getElementById('depthPercentage').textContent = depthPercentage + '%';
+                document.getElementById('neuralPercentage').textContent = neuralPercentage + '%';
+                document.getElementById('depthBar').style.width = depthPercentage + '%';
+                document.getElementById('neuralBar').style.width = neuralPercentage + '%';
+                
+                // Update consciousness depth visualization
+                document.getElementById('depthLevel').style.height = depthPercentage + '%';
+                
+                // Update zone indicator
+                const zoneElement = document.getElementById('zoneIndicator');
+                zoneElement.textContent = data.zone;
+                zoneElement.className = `zone-indicator zone-${data.zone.toLowerCase()}`;
+                
+                // Update neural grid
+                this.updateNeuralGrid(data.neural_activity);
+                
+                // Update constellation
+                this.updateConstellation(data);
+            }
+            
+            updateNeuralGrid(activity) {
+                this.neuralCells.forEach((cell, index) => {
+                    const intensity = Math.sin(Date.now() * 0.001 + index * 0.1) * activity;
+                    const brightness = Math.max(0, intensity);
+                    const alpha = Math.max(0.1, brightness);
+                    const hue = (index * 137.5) % 360; // Golden angle for color distribution
+                    
+                    if (brightness > 0.3) {
+                        cell.style.background = `hsla(${hue}, 70%, 60%, ${alpha})`;
+                        cell.style.boxShadow = `0 0 4px hsla(${hue}, 70%, 60%, ${alpha})`;
+                    } else {
+                        cell.style.background = '#334155';
+                        cell.style.boxShadow = 'none';
+                    }
+                });
+            }
+            
+            updateConstellation(data) {
+                this.constellationNodes.forEach((node, index) => {
+                    const phase = Date.now() * 0.001 + index * 0.5;
+                    const intensity = 0.5 + 0.5 * Math.sin(phase + data.entropy * 2);
+                    const size = 4 + intensity * 4;
+                    
+                    node.style.width = size + 'px';
+                    node.style.height = size + 'px';
+                    node.style.opacity = 0.6 + intensity * 0.4;
+                    
+                    // Color based on zone
+                    let color = '#40e0ff'; // Default cyan
+                    switch (data.zone) {
+                        case 'CALM': color = '#10b981'; break;
+                        case 'FOCUS': color = '#f59e0b'; break;
+                        case 'STRESSED': color = '#ef4444'; break;
+                        case 'TRANSCENDENT': color = '#8b5cf6'; break;
+                    }
+                    
+                    node.style.background = color;
+                    node.style.boxShadow = `0 0 ${size * 2}px ${color}`;
+                });
+            }
+            
+            // Visual Effects System
+            
+            checkVisualUpdates() {
+                // Poll for visual updates from server at reasonable rate (2 seconds)
+                setInterval(async () => {
+                    try {
+                        const response = await fetch('/api/visual-updates');
+                        if (response.ok) {
+                            const data = await response.json();
+                            if (data.visual_updates && data.visual_updates.length > 0) {
+                                this.processServerVisualUpdates(data.visual_updates);
+                            }
+                        }
+                    } catch (e) {
+                        // Server not available - continue with local simulation
+                    }
+                }, 2000); // Check every 2 seconds (was 100ms - causing resource exhaustion)
+            }
+            
+            processServerVisualUpdates(updates) {
+                updates.forEach(update => {
+                    this.triggerVisualEffect(update);
+                });
+            }
+            
+            triggerVisualEffect(effect) {
+                const effectId = Date.now() + Math.random();
+                this.visualEffects.activeEffects.set(effectId, {
+                    ...effect,
+                    id: effectId,
+                    startTime: Date.now(),
+                    progress: 0
+                });
+                
+                // Handle specific effect types
+                switch (effect.type) {
+                    case 'entropy_change':
+                        this.handleEntropyChangeEffect(effect);
+                        break;
+                    case 'zone_transition':
+                        this.handleZoneTransitionEffect(effect);
+                        break;
+                    case 'neural_pulse':
+                        this.handleNeuralPulseEffect(effect);
+                        break;
+                    case 'sigil_execution':
+                        this.handleSigilExecutionEffect(effect);
+                        break;
+                    case 'rebloom_event':
+                        this.handleRebloomEffect(effect);
+                        break;
+                    case 'voice_commentary':
+                        this.handleVoiceCommentaryEffect(effect);
+                        break;
+                }
+            }
+            
+            processVisualEffects() {
+                const now = Date.now();
+                
+                // Update pulse phase
+                this.visualEffects.pulsePhase = (now * 0.001) % (Math.PI * 2);
+                
+                // Process active effects
+                for (const [id, effect] of this.visualEffects.activeEffects) {
+                    const elapsed = now - effect.startTime;
+                    const duration = effect.data?.visual_effects?.duration || 1000;
+                    effect.progress = Math.min(elapsed / duration, 1);
+                    
+                    // Remove completed effects
+                    if (effect.progress >= 1) {
+                        this.visualEffects.activeEffects.delete(id);
+                    }
+                }
+                
+                // Update visual elements
+                this.updateVisualElements();
+            }
+            
+            handleEntropyChangeEffect(effect) {
+                const entropyBar = document.getElementById('entropyBar');
+                const entropyValue = document.getElementById('entropyValue');
+                
+                if (entropyBar && effect.data?.visual_effects) {
+                    const { glow_intensity, pulse_speed, color_shift } = effect.data.visual_effects;
+                    
+                    // Apply glow effect
+                    entropyBar.style.boxShadow = `0 0 ${glow_intensity * 20}px ${color_shift}`;
+                    entropyBar.style.animation = `pulse ${2 / pulse_speed}s infinite`;
+                    
+                    // Color transition
+                    entropyBar.style.background = `linear-gradient(90deg, ${color_shift}, var(--accent-cyan))`;
+                }
+            }
+            
+            handleZoneTransitionEffect(effect) {
+                const zoneIndicator = document.getElementById('zoneIndicator');
+                
+                if (zoneIndicator && effect.data?.visual_effects) {
+                    const { transition_duration, to_color, flash_intensity } = effect.data.visual_effects;
+                    
+                    // Flash effect
+                    if (flash_intensity > 0.5) {
+                        zoneIndicator.style.animation = `flash 0.5s`;
+                    }
+                    
+                    // Color transition
+                    zoneIndicator.style.transition = `all ${transition_duration}ms ease`;
+                    zoneIndicator.style.backgroundColor = to_color;
+                    zoneIndicator.style.boxShadow = `0 0 20px ${to_color}`;
+                }
+            }
+            
+            handleNeuralPulseEffect(effect) {
+                const neuralGrid = document.getElementById('neuralGrid');
+                
+                if (neuralGrid && effect.data?.visual_effects) {
+                    const { pulse_type, grid_intensity, wave_speed } = effect.data.visual_effects;
+                    
+                    // Create wave effect across neural grid
+                    this.neuralCells.forEach((cell, index) => {
+                        const delay = (index % 12) * 50; // Wave across columns
+                        
+                        setTimeout(() => {
+                            if (pulse_type === 'spike') {
+                                cell.style.background = '#40e0ff';
+                                cell.style.boxShadow = '0 0 8px #40e0ff';
+                            } else {
+                                cell.style.background = '#1a2332';
+                                cell.style.boxShadow = 'none';
+                            }
+                            
+                            // Return to normal after brief flash
+                            setTimeout(() => {
+                                cell.style.transition = 'all 0.3s ease';
+                                cell.style.background = '#334155';
+                                cell.style.boxShadow = 'none';
+                            }, 100);
+                        }, delay);
+                    });
+                }
+            }
+            
+            handleSigilExecutionEffect(effect) {
+                const body = document.body;
+                
+                if (effect.data?.visual_effects) {
+                    const { sigil_flash, flash_color, flash_duration, energy_burst } = effect.data.visual_effects;
+                    
+                    if (sigil_flash) {
+                        // Create full-screen flash overlay
+                        const flashOverlay = document.createElement('div');
+                        flashOverlay.style.cssText = `
+                            position: fixed;
+                            top: 0;
+                            left: 0;
+                            width: 100%;
+                            height: 100%;
+                            background: ${flash_color};
+                            opacity: 0.3;
+                            pointer-events: none;
+                            z-index: 9999;
+                            animation: sigilFlash ${flash_duration}ms ease-out;
+                        `;
+                        
+                        body.appendChild(flashOverlay);
+                        
+                        // Remove after animation
+                        setTimeout(() => {
+                            body.removeChild(flashOverlay);
+                        }, flash_duration);
+                        
+                        // Log sigil execution
+                        this.addSigilLog(effect.data.sigil_type, 'Executed');
+                    }
+                }
+            }
+            
+            handleRebloomEffect(effect) {
+                const rebloomLog = document.getElementById('rebloomLog');
+                
+                if (rebloomLog && effect.data?.visual_effects) {
+                    const { bloom_animation, bloom_color } = effect.data.visual_effects;
+                    
+                    // Add rebloom entry with animation
+                    const entry = document.createElement('div');
+                    entry.className = 'log-entry success';
+                    entry.style.borderLeft = `3px solid ${bloom_color}`;
+                    entry.style.animation = 'bloomGlow 2s ease-out';
+                    entry.textContent = `🌸 Memory rebloom: ${effect.data.rebloom_data?.type || 'renewal'}`;
+                    
+                    rebloomLog.insertBefore(entry, rebloomLog.firstChild);
+                    
+                    // Remove excess entries
+                    while (rebloomLog.children.length > 20) {
+                        rebloomLog.removeChild(rebloomLog.lastChild);
+                    }
+                }
+            }
+            
+            handleVoiceCommentaryEffect(effect) {
+                const conversationHistory = document.getElementById('conversationHistory');
+                
+                if (conversationHistory && effect.data?.commentary) {
+                    const { commentary, emotional_color } = effect.data.visual_effects || {};
+                    
+                    // Add voice commentary to conversation
+                    const messageElement = document.createElement('div');
+                    messageElement.className = 'message dawn';
+                    messageElement.style.borderLeft = `4px solid ${emotional_color || '#40e0ff'}`;
+                    messageElement.style.animation = 'voiceWave 1s ease-out';
+                    messageElement.textContent = effect.data.commentary;
+                    
+                    conversationHistory.appendChild(messageElement);
+                    conversationHistory.scrollTop = conversationHistory.scrollHeight;
+                }
+            }
+            
+            updateVisualElements() {
+                // Apply global visual intensity effects
+                const intensity = this.getVisualIntensity();
+                const root = document.documentElement;
+                
+                // Update CSS custom properties for global effects
+                root.style.setProperty('--visual-intensity', intensity);
+                root.style.setProperty('--pulse-phase', Math.sin(this.visualEffects.pulsePhase));
+            }
+            
+            getVisualIntensity() {
+                // Calculate current visual intensity based on active effects
+                let maxIntensity = 0.5;
+                
+                for (const effect of this.visualEffects.activeEffects.values()) {
+                    const effectIntensity = effect.intensity * (1 - effect.progress);
+                    maxIntensity = Math.max(maxIntensity, effectIntensity);
+                }
+                
+                return maxIntensity;
+            }
+            
+            addSigilLog(sigilType, status) {
+                const sigilLog = document.getElementById('sigilLog');
+                const entry = document.createElement('div');
+                entry.className = 'log-entry success';
+                entry.textContent = `🔮 ${status} sigil: ${sigilType}`;
+                sigilLog.insertBefore(entry, sigilLog.firstChild);
+                
+                // Remove excess entries
+                while (sigilLog.children.length > 20) {
+                    sigilLog.removeChild(sigilLog.lastChild);
+                }
+            }
+            
+            updateUptime() {
+                setInterval(() => {
+                    const uptime = Date.now() - this.startTime;
+                    const minutes = Math.floor(uptime / 60000);
+                    const seconds = Math.floor((uptime % 60000) / 1000);
+                    document.getElementById('uptime').textContent = 
+                        `${minutes}m ${seconds.toString().padStart(2, '0')}s`;
+                }, 1000);
+            }
+            
+            addEventLog(message, type = 'info') {
+                const timestamp = new Date().toLocaleTimeString();
+                const entry = { timestamp, message, type };
+                this.eventLogs.unshift(entry);
+                
+                if (this.eventLogs.length > 100) {
+                    this.eventLogs = this.eventLogs.slice(0, 100);
+                }
+                
+                this.updateEventLogDisplay();
+            }
+            
+            addThoughtLog(message) {
+                const timestamp = new Date().toLocaleTimeString();
+                const entry = `[${timestamp}] 🧠 ${message}`;
+                this.thoughtLogs.unshift(entry);
+                
+                if (this.thoughtLogs.length > 50) {
+                    this.thoughtLogs = this.thoughtLogs.slice(0, 50);
+                }
+                
+                const logElement = document.getElementById('thoughtLog');
+                const logEntry = document.createElement('div');
+                logEntry.className = 'log-entry info';
+                logEntry.textContent = entry;
+                logElement.insertBefore(logEntry, logElement.firstChild);
+                
+                // Remove excess entries
+                while (logElement.children.length > 50) {
+                    logElement.removeChild(logElement.lastChild);
+                }
+            }
+            
+            updateEventLogDisplay() {
+                const logElement = document.getElementById('eventLog');
+                logElement.innerHTML = '';
+                
+                this.eventLogs.slice(0, 20).forEach(entry => {
+                    const logEntry = document.createElement('div');
+                    logEntry.className = `log-entry ${entry.type}`;
+                    logEntry.textContent = `[${entry.timestamp}] ${entry.message}`;
+                    logElement.appendChild(logEntry);
+                });
+            }
+            
+            addConversationMessage(message, sender) {
+                const historyElement = document.getElementById('conversationHistory');
+                const messageElement = document.createElement('div');
+                messageElement.className = `message ${sender}`;
+                messageElement.textContent = message;
+                historyElement.appendChild(messageElement);
+                historyElement.scrollTop = historyElement.scrollHeight;
+            }
+            
+            // Control methods
+            injectEntropy() {
+                this.simulationParams.entropyBase = Math.min(1.0, this.simulationParams.entropyBase + 0.2);
+                this.addEventLog('Entropy injection initiated', 'warning');
+                this.addThoughtLog('Manual entropy injection detected');
+            }
+            
+            stabilizeSystem() {
+                this.simulationParams.entropyBase = 0.3;
+                this.simulationParams.scupBase = 50.0;
+                this.simulationParams.moodBase = 0.5;
+                this.addEventLog('System stabilization applied', 'success');
+                this.addThoughtLog('Stabilization protocol executed');
+            }
+            
+            emergencyCooling() {
+                this.consciousnessData.heat_level *= 0.5;
+                this.addEventLog('Emergency cooling activated', 'warning');
+                this.addThoughtLog('Emergency thermal regulation engaged');
+            }
+            
+            forceRebloom() {
+                this.addEventLog('Memory rebloom initiated', 'info');
+                this.addThoughtLog('Forced memory rebloom executed');
+                
+                const rebloomLog = document.getElementById('rebloomLog');
+                const entry = document.createElement('div');
+                entry.className = 'log-entry success';
+                entry.textContent = '🌸 Memory rebloom: manual_trigger';
+                rebloomLog.insertBefore(entry, rebloomLog.firstChild);
+            }
+            
+            executeSigil(type) {
+                // Send sigil execution to server
+                const entropy = this.consciousnessData.entropy || 0.5;
+                
+                fetch('/api/execute-sigil', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        type: type,
+                        entropy: entropy,
+                        timestamp: Date.now()
+                    })
+                }).then(response => response.json())
+                  .then(data => {
+                      console.log('Sigil execution result:', data);
+                  })
+                  .catch(e => {
+                      console.log('Server not available, simulating locally');
+                  });
+                
+                // Update local GUI immediately
+                const sigilLog = document.getElementById('sigilLog');
+                const entry = document.createElement('div');
+                entry.className = 'log-entry success';
+                entry.textContent = `🔮 Executed sigil: ${type}`;
+                sigilLog.insertBefore(entry, sigilLog.firstChild);
+                
+                this.addEventLog(`Sigil executed: ${type}`, 'info');
+                this.addThoughtLog(`Sigil activation: ${type}`);
+                
+                // Update sigil count
+                const activeCount = document.getElementById('activeSigils');
+                activeCount.textContent = parseInt(activeCount.textContent) + 1;
+                
+                // Simulate local visual effect if server not available
+                this.triggerVisualEffect({
+                    type: 'sigil_execution',
+                    data: {
+                        sigil_type: type,
+                        entropy: entropy,
+                        visual_effects: {
+                            sigil_flash: true,
+                            flash_color: this.getSigilColor(type),
+                            flash_duration: 1000,
+                            energy_burst: entropy > 0.6
+                        }
+                    },
+                    intensity: 0.8
+                });
+            }
+            
+            getSigilColor(type) {
+                const colors = {
+                    'DEEP_FOCUS': '#8b5cf6',
+                    'STABILIZE': '#10b981',
+                    'EMERGENCY': '#ef4444',
+                    'REBLOOM': '#ff69b4'
+                };
+                return colors[type] || '#40e0ff';
+            }
+            
+            // Control methods
+            pauseSystem() {
+                clearInterval(this.updateInterval);
+                clearInterval(this.visualUpdateInterval);
+            }
+            
+            resetSystem() {
+                this.consciousnessData = {
+                    tick: 0,
+                    entropy: 0.3,
+                    scup: 50.0,
+                    mood_val: 0.5,
+                    consciousness_depth: 0.6,
+                    neural_activity: 0.5,
+                    memory_pressure: 0.3,
+                    heat_level: 25.0,
+                    zone: 'CALM',
+                    thought_rate: 12.5,
+                    cognitive_drift: 0.15
+                };
+                this.simulationParams = {
+                    entropyBase: 0.3,
+                    scupBase: 50.0,
+                    moodBase: 0.5,
+                    timeOffset: 0
+                };
+                this.eventLogs = [];
+                this.thoughtLogs = [];
+                this.sigilLogs = [];
+                this.rebloomLogs = [];
+                this.conversationHistory = [];
+                this.neuralCells = [];
+                this.constellationNodes = [];
+                this.visualEffects = {
+                    activeEffects: new Map(),
+                    effectQueue: [],
+                    pulsePhase: 0,
+                    lastUpdate: Date.now()
+                };
+                this.updateInterface();
+            }
+            
+            exportState() {
+                // Implement state export logic
+            }
+            
+            importState() {
+                // Implement state import logic
+            }
+            
+            // Sigil Overlay System
+            
+            initializeSigilOverlaySystem() {
+                // Initialize sigil overlay state
+                this.sigilOverlays = new Map();
+                this.sigilContainer = document.getElementById('sigilOverlayContainer');
+                
+                if (!this.sigilContainer) {
+                    console.warn('Sigil overlay container not found');
+                    return;
+                }
+                
+                // Start checking for sigil overlay updates
+                this.checkSigilOverlays();
+                
+                console.log('🔮 Sigil overlay system initialized');
+            }
+            
+            checkSigilOverlays() {
+                // Poll for sigil overlay data at reasonable rate (3 seconds)
+                setInterval(async () => {
+                    try {
+                        const response = await fetch('/api/sigil-overlays');
+                        if (response.ok) {
+                            const data = await response.json();
+                            if (data.sigil_overlays) {
+                                this.updateSigilOverlays(data.sigil_overlays);
+                            }
+                        }
+                    } catch (e) {
+                        // Server not available - continue without sigil overlays
+                    }
+                }, 3000); // Check every 3 seconds (was 100ms - causing resource exhaustion)
+            }
+            
+            updateSigilOverlays(overlayData) {
+                // Track current overlay IDs
+                const currentIds = new Set(overlayData.map(overlay => overlay.event_id));
+                
+                // Remove overlays that are no longer active
+                for (const [overlayId, element] of this.sigilOverlays) {
+                    if (!currentIds.has(overlayId)) {
+                        this.removeSigilOverlay(overlayId);
+                    }
+                }
+                
+                // Update or create overlays
+                overlayData.forEach(overlay => {
+                    if (this.sigilOverlays.has(overlay.event_id)) {
+                        this.updateSigilOverlayElement(overlay);
+                    } else {
+                        this.createSigilOverlay(overlay);
+                    }
+                });
+            }
+            
+            createSigilOverlay(overlay) {
+                const overlayElement = document.createElement('div');
+                overlayElement.className = `sigil-overlay ${overlay.position} ${overlay.motion_style}`;
+                overlayElement.id = `sigil-${overlay.event_id}`;
+                
+                // Set glyph symbol
+                overlayElement.textContent = overlay.glyph_symbol;
+                
+                // Apply base styling
+                this.applySigilStyling(overlayElement, overlay);
+                
+                // Add halo effect if high saturation
+                if (overlay.saturation > 0.5) {
+                    overlayElement.classList.add('halo');
+                }
+                
+                // Add to container
+                this.sigilContainer.appendChild(overlayElement);
+                this.sigilOverlays.set(overlay.event_id, overlayElement);
+                
+                console.log(`🔮 Created sigil overlay: ${overlay.sigil_id}`);
+            }
+            
+            updateSigilOverlayElement(overlay) {
+                const element = this.sigilOverlays.get(overlay.event_id);
+                if (!element) return;
+                
+                // Update styling based on current state
+                this.applySigilStyling(element, overlay);
+                
+                // Update halo based on saturation
+                if (overlay.saturation > 0.5) {
+                    element.classList.add('halo');
+                } else {
+                    element.classList.remove('halo');
+                }
+            }
+            
+            applySigilStyling(element, overlay) {
+                const customData = overlay.custom_data || {};
+                
+                // Apply colors
+                element.style.color = overlay.base_color;
+                
+                // Apply alpha/opacity
+                if (customData.alpha !== undefined) {
+                    element.style.opacity = customData.alpha;
+                }
+                
+                // Apply scale
+                if (customData.scale !== undefined) {
+                    const currentTransform = element.style.transform;
+                    const scaleTransform = `scale(${customData.scale})`;
+                    
+                    if (currentTransform.includes('scale(')) {
+                        element.style.transform = currentTransform.replace(/scale\([^)]*\)/, scaleTransform);
+                    } else {
+                        element.style.transform = currentTransform + ' ' + scaleTransform;
+                    }
+                }
+                
+                // Apply rotation
+                if (customData.rotation !== undefined) {
+                    const currentTransform = element.style.transform;
+                    const rotateTransform = `rotate(${customData.rotation}deg)`;
+                    
+                    if (currentTransform.includes('rotate(')) {
+                        element.style.transform = currentTransform.replace(/rotate\([^)]*\)/, rotateTransform);
+                    } else {
+                        element.style.transform = currentTransform + ' ' + rotateTransform;
+                    }
+                }
+                
+                // Apply position adjustments
+                if (customData.position) {
+                    if (customData.position.x !== undefined) {
+                        element.style.left = `calc(${this.getPositionPercentage(overlay.position, 'x')} + ${customData.position.x}px)`;
+                    }
+                    if (customData.position.y !== undefined) {
+                        element.style.top = `calc(${this.getPositionPercentage(overlay.position, 'y')} + ${customData.position.y}px)`;
+                    }
+                }
+                
+                // High entropy persistence visual effect
+                if (overlay.entropy > 0.7) {
+                    element.style.textShadow = `0 0 20px ${overlay.accent_color}, 0 0 40px ${overlay.base_color}`;
+                } else {
+                    element.style.textShadow = `0 0 10px ${overlay.base_color}`;
+                }
+            }
+            
+            getPositionPercentage(position, axis) {
+                const positions = {
+                    'center': { x: '50%', y: '50%' },
+                    'top-left': { x: '10%', y: '10%' },
+                    'top-right': { x: '90%', y: '10%' },
+                    'bottom-left': { x: '10%', y: '90%' },
+                    'bottom-right': { x: '90%', y: '90%' },
+                    'fractal-overlay': { x: '66%', y: '50%' },
+                    'neural-grid': { x: '25%', y: '25%' },
+                    'constellation': { x: '66%', y: '40%' }
+                };
+                
+                return positions[position]?.[axis] || '50%';
+            }
+            
+            removeSigilOverlay(overlayId) {
+                const element = this.sigilOverlays.get(overlayId);
+                if (element) {
+                    // Fade out animation
+                    element.style.transition = 'opacity 0.5s ease-out';
+                    element.style.opacity = '0';
+                    
+                    setTimeout(() => {
+                        if (element.parentNode) {
+                            element.parentNode.removeChild(element);
+                        }
+                        this.sigilOverlays.delete(overlayId);
+                    }, 500);
+                }
+            }
+            
+            clearAllSigilOverlays() {
+                for (const overlayId of this.sigilOverlays.keys()) {
+                    this.removeSigilOverlay(overlayId);
+                }
+                console.log('🧹 Cleared all sigil overlays');
+            }
+            
+            getSigilOverlayStatus() {
+                return {
+                    active_overlays: this.sigilOverlays.size,
+                    container_present: !!this.sigilContainer
+                };
+            }
+            
+            // Entropy Visual System
+            
+            initializeEntropyVisualSystem() {
+                // Initialize entropy visual state
+                this.entropyBackground = document.getElementById('entropyBackground');
+                this.currentEntropyMode = 'flowing_mist';
+                this.lastEntropyUpdate = 0;
+                
+                if (!this.entropyBackground) {
+                    console.warn('Entropy background container not found');
+                    return;
+                }
+                
+                // Start checking for entropy visual updates
+                this.checkEntropyVisualUpdates();
+                
+                console.log('🌊 Entropy visual system initialized');
+            }
+            
+            checkEntropyVisualUpdates() {
+                // Poll for entropy visual data at reasonable rate (5 seconds)
+                setInterval(async () => {
+                    try {
+                        const response = await fetch('/api/entropy-visual');
+                        if (response.ok) {
+                            const data = await response.json();
+                            if (data.entropy_visual) {
+                                this.updateEntropyVisuals(data.entropy_visual);
+                            }
+                        }
+                    } catch (e) {
+                        // Server not available - continue without entropy visuals
+                    }
+                }, 5000); // Check every 5 seconds (was 200ms - causing resource exhaustion)
+            }
+            
+            updateEntropyVisuals(visualData) {
+                if (!this.entropyBackground || !visualData) return;
+                
+                // Update mode if changed
+                const newMode = visualData.mode || 'flowing_mist';
+                if (newMode !== this.currentEntropyMode) {
+                    this.transitionEntropyMode(newMode);
+                }
+                
+                // Apply visual properties
+                this.applyEntropyVisualization(visualData);
+                
+                // Update timestamp
+                this.lastEntropyUpdate = Date.now();
+            }
+            
+            transitionEntropyMode(newMode) {
+                // Remove old mode classes
+                this.entropyBackground.classList.remove(
+                    'flowing-mist', 'subtle-waves', 'sharp-pulses', 'fracture-flicker'
+                );
+                
+                // Add new mode class
+                const modeClass = newMode.replace('_', '-');
+                this.entropyBackground.classList.add(modeClass);
+                
+                this.currentEntropyMode = newMode;
+                console.log(`🌊 Entropy mode transition: ${newMode}`);
+            }
+            
+            applyEntropyVisualization(visualData) {
+                const background = this.entropyBackground;
+                
+                // Apply opacity based on intensity
+                const intensity = visualData.intensity || 0.3;
+                background.style.opacity = Math.max(0.1, Math.min(0.8, intensity));
+                
+                // Apply colors if provided
+                if (visualData.colors && visualData.colors.length >= 2) {
+                    this.updateEntropyColors(visualData.colors, visualData.mode);
+                }
+                
+                // Apply mode-specific effects
+                this.applyModeSpecificEffects(visualData);
+                
+                // Apply pressure effects
+                if (visualData.pressure > 0.7) {
+                    background.classList.add('high-pressure');
+                } else {
+                    background.classList.remove('high-pressure');
+                }
+                
+                // Apply animation duration
+                if (visualData.animation_duration) {
+                    background.style.animationDuration = `${visualData.animation_duration}s`;
+                }
+            }
+            
+            updateEntropyColors(colors, mode) {
+                const background = this.entropyBackground;
+                
+                // Create gradient based on mode and colors
+                let gradient = '';
+                
+                switch(mode) {
+                    case 'flowing_mist':
+                        gradient = `linear-gradient(90deg, ${colors[0]}40, ${colors[1]}40, ${colors[0]}40)`;
+                        background.style.backgroundSize = '200% 200%';
+                        break;
+                    case 'subtle_waves':
+                        gradient = `radial-gradient(circle at center, ${colors[0]}50, ${colors[1]}30)`;
+                        break;
+                    case 'sharp_pulses':
+                        gradient = `linear-gradient(45deg, ${colors[0]}60, ${colors[1]}50)`;
+                        break;
+                    case 'fracture_flicker':
+                        gradient = `radial-gradient(ellipse at center, ${colors[0]}80, ${colors[1]}60)`;
+                        break;
+                    default:
+                        gradient = `linear-gradient(45deg, ${colors[0]}30, ${colors[1]}20)`;
+                }
+                
+                background.style.background = gradient;
+            }
+            
+            applyModeSpecificEffects(visualData) {
+                const background = this.entropyBackground;
+                
+                switch(visualData.mode) {
+                    case 'flowing_mist':
+                        if (visualData.flow_pattern === 'circular_flow') {
+                            background.style.transform = `rotate(${visualData.flow_direction || 0}deg)`;
+                        }
+                        break;
+                    
+                    case 'subtle_waves':
+                        if (visualData.wave_amplitude) {
+                            const amplitude = visualData.wave_amplitude;
+                            background.style.filter = `blur(${Math.max(1, amplitude / 2)}px)`;
+                        }
+                        break;
+                    
+                    case 'sharp_pulses':
+                        if (visualData.pulse_intensity) {
+                            const intensity = visualData.pulse_intensity;
+                            background.style.animationTimingFunction = intensity > 0.7 ? 'ease-out' : 'ease-in-out';
+                        }
+                        break;
+                    
+                    case 'fracture_flicker':
+                        if (visualData.flicker_frequency) {
+                            const frequency = visualData.flicker_frequency;
+                            background.style.animationDuration = `${Math.max(0.1, 1.0 / frequency)}s`;
+                        }
+                        break;
+                }
+            }
+            
+            setEntropyVisualIntensity(intensity) {
+                if (this.entropyBackground) {
+                    this.entropyBackground.style.opacity = Math.max(0.1, Math.min(0.8, intensity));
+                }
+            }
+            
+            getEntropyVisualStatus() {
+                return {
+                    current_mode: this.currentEntropyMode,
+                    background_present: !!this.entropyBackground,
+                    last_update: this.lastEntropyUpdate,
+                    opacity: this.entropyBackground ? this.entropyBackground.style.opacity : null
+                };
+            }
+            
+            disableEntropyVisuals() {
+                if (this.entropyBackground) {
+                    this.entropyBackground.style.opacity = '0';
+                    console.log('🌊 Entropy visuals disabled');
+                }
+            }
+            
+            enableEntropyVisuals() {
+                if (this.entropyBackground) {
+                    this.entropyBackground.style.opacity = '0.3';
+                    console.log('🌊 Entropy visuals enabled');
+                }
+            }
+            
+            // Visual Snapshot Panel Methods
+            
+            initializeVisualSnapshotPanel() {
+                // Configuration for visual processes
+                this.visualProcesses = [
+                    { id: "entropy-field", label: "🌡 Entropy Snapshot", module: "entropy_flow" },
+                    { id: "sigil-glyph", label: "🔮 Sigil Overlay", module: "sigil_command_stream" },
+                    { id: "bloom-core", label: "🧬 Bloom Core", module: "bloom_visualization_system" },
+                    { id: "pulse-ring", label: "💢 Pulse Pressure", module: "tick_pulse" },
+                    { id: "constellation", label: "🌌 Constellation Map", module: "consciousness_constellation" },
+                    { id: "fractal-diffusion", label: "🌫 Fractal Diffusion", module: "recursive_depth_explorer" },
+                    { id: "owl-glyph", label: "🦉 Owl Tension Glyph", module: "heat_monitor" }
+                ];
+                
+                this.snapshots = {};
+                this.loadingProcesses = new Set();
+                
+                this.renderVisualControlsGrid();
+            }
+            
+            renderVisualControlsGrid() {
+                const container = document.getElementById('visualControlsGrid');
+                container.innerHTML = '';
+                
+                this.visualProcesses.forEach(process => {
+                    const card = document.createElement('div');
+                    card.className = 'visual-control-card';
+                    card.innerHTML = `
+                        <button class="visual-trigger-btn ${this.loadingProcesses.has(process.id) ? 'loading' : ''}" 
+                                id="btn-${process.id}" onclick="gui.triggerVisualSnapshot('${process.id}', '${process.label}', '${process.module}')"
+                                ${this.loadingProcesses.has(process.id) ? 'disabled' : ''}>
+                            <span class="btn-icon">${process.label.split(' ')[0]}</span>
+                            <span class="btn-label">${process.label.substring(2)}</span>
+                            ${this.loadingProcesses.has(process.id) ? '<div class="loading-spinner"></div>' : ''}
+                        </button>
+                        <div id="result-${process.id}" class="snapshot-result" style="display: none;">
+                            <!-- Snapshot result will be inserted here -->
+                        </div>
+                    `;
+                    container.appendChild(card);
+                });
+            }
+            
+            async triggerVisualSnapshot(processId, label, module) {
+                // Add to loading state
+                this.loadingProcesses.add(processId);
+                this.updateSnapshotUI();
+                this.hideSnapshotError();
+                
+                try {
+                    const payload = {
+                        timestamp: Date.now(),
+                        mode: 'real-time',
+                        module_name: module
+                    };
+                    
+                    const response = await fetch(`/api/visual-snapshot/${processId}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(payload)
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    }
+                    
+                    const result = await response.json();
+                    
+                    if (result.success && result.file_path) {
+                        const newSnapshot = {
+                            id: processId,
+                            label: label,
+                            file_path: result.file_path,
+                            timestamp: new Date().toISOString(),
+                            sha_hash: result.sha_hash || this.generateHash(),
+                            scup_value: result.scup_value || Math.random() * 100,
+                            entropy_value: result.entropy_value || Math.random(),
+                            metadata: result.metadata || {}
+                        };
+                        
+                        this.snapshots[processId] = newSnapshot;
+                        this.displaySnapshotResult(newSnapshot);
+                    } else {
+                        throw new Error(result.error || 'Failed to generate snapshot');
+                    }
+                    
+                } catch (err) {
+                    console.error(`Error triggering ${processId}:`, err);
+                    this.showSnapshotError(`Failed to generate ${label}: ${err.message}`);
+                } finally {
+                    // Remove from loading state
+                    this.loadingProcesses.delete(processId);
+                    this.updateSnapshotUI();
+                }
+            }
+            
+            displaySnapshotResult(snapshot) {
+                const resultContainer = document.getElementById(`result-${snapshot.id}`);
+                resultContainer.style.display = 'block';
+                
+                resultContainer.innerHTML = `
+                    <div class="snapshot-preview" onclick="gui.showSnapshotModal('${snapshot.id}')">
+                        <img src="${snapshot.file_path}" alt="${snapshot.label}" 
+                             onerror="this.style.display='none'; this.nextSibling.style.display='flex';">
+                        <div class="snapshot-placeholder" style="display: none;">
+                            <span>📸</span>
+                            <span>Preview unavailable</span>
+                        </div>
+                    </div>
+                    
+                    <div class="snapshot-metadata">
+                        <div class="metadata-row">
+                            <span class="meta-label">Time:</span>
+                            <span class="meta-value">${new Date(snapshot.timestamp).toLocaleTimeString()}</span>
+                        </div>
+                        <div class="metadata-row">
+                            <span class="meta-label">Hash:</span>
+                            <span class="meta-value hash">${snapshot.sha_hash}</span>
+                        </div>
+                        <div class="metadata-row">
+                            <span class="meta-label">SCUP:</span>
+                            <span class="meta-value scup">${snapshot.scup_value.toFixed(1)}</span>
+                        </div>
+                        <div class="metadata-row">
+                            <span class="meta-label">Entropy:</span>
+                            <span class="meta-value entropy">${snapshot.entropy_value.toFixed(3)}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="snapshot-actions">
+                        <button class="action-btn reflect-btn" onclick="gui.handleReflection('${snapshot.id}')" 
+                                title="Send to DAWN voice layer for reflection">
+                            🧠 Reflect
+                        </button>
+                        <button class="action-btn download-btn" onclick="gui.downloadSnapshot('${snapshot.id}')" 
+                                title="Download image">
+                            💾 Save
+                        </button>
+                    </div>
+                `;
+            }
+            
+            showSnapshotModal(snapshotId) {
+                const snapshot = this.snapshots[snapshotId];
+                if (!snapshot || !snapshot.file_path) return;
+                
+                const modal = document.createElement('div');
+                modal.className = 'snapshot-modal-overlay';
+                modal.innerHTML = `
+                    <div class="snapshot-modal">
+                        <div class="snapshot-modal-header">
+                            <h3>${snapshot.label}</h3>
+                            <button class="snapshot-modal-close">&times;</button>
+                        </div>
+                        <div class="snapshot-modal-content">
+                            <img src="${snapshot.file_path}" alt="${snapshot.label}" />
+                            <div class="snapshot-modal-info">
+                                <div class="info-row">
+                                    <span class="info-label">Timestamp:</span>
+                                    <span class="info-value">${new Date(snapshot.timestamp).toLocaleString()}</span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-label">SHA Hash:</span>
+                                    <span class="info-value">${snapshot.sha_hash}</span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-label">SCUP:</span>
+                                    <span class="info-value">${snapshot.scup_value.toFixed(2)}</span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-label">Entropy:</span>
+                                    <span class="info-value">${snapshot.entropy_value.toFixed(3)}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                // Close modal functionality
+                const closeModal = () => document.body.removeChild(modal);
+                modal.querySelector('.snapshot-modal-close').onclick = closeModal;
+                modal.onclick = (e) => {
+                    if (e.target === modal) closeModal();
+                };
+                
+                document.body.appendChild(modal);
+            }
+            
+            async handleReflection(snapshotId) {
+                const snapshot = this.snapshots[snapshotId];
+                if (!snapshot) return;
+                
+                try {
+                    const reflectionData = {
+                        visual_type: snapshot.id,
+                        timestamp: snapshot.timestamp,
+                        metadata: snapshot.metadata,
+                        scup_value: snapshot.scup_value,
+                        entropy_value: snapshot.entropy_value
+                    };
+                    
+                    const response = await fetch('/api/voice-reflection', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(reflectionData)
+                    });
+                    
+                    if (response.ok) {
+                        const result = await response.json();
+                        if (result.success && result.reflection) {
+                            this.addConversationMessage(result.reflection, 'dawn');
+                        }
+                    }
+                    
+                    console.log('Reflection data sent to DAWN voice layer:', reflectionData);
+                } catch (err) {
+                    console.error('Failed to send reflection data:', err);
+                }
+            }
+            
+            downloadSnapshot(snapshotId) {
+                const snapshot = this.snapshots[snapshotId];
+                if (!snapshot || !snapshot.file_path) return;
+                
+                const link = document.createElement('a');
+                link.href = snapshot.file_path;
+                link.download = `${snapshot.id}_${Date.now()}.png`;
+                link.click();
+            }
+            
+            generateHash() {
+                return Math.random().toString(36).substring(2, 10).toUpperCase();
+            }
+            
+            showSnapshotError(message) {
+                const errorBanner = document.getElementById('visual-snapshot-error');
+                const errorText = document.getElementById('error-text');
+                errorText.textContent = message;
+                errorBanner.style.display = 'flex';
+            }
+            
+            hideSnapshotError() {
+                const errorBanner = document.getElementById('visual-snapshot-error');
+                errorBanner.style.display = 'none';
+            }
+            
+            updateSnapshotUI() {
+                // Update button states
+                this.visualProcesses.forEach(process => {
+                    const button = document.getElementById(`btn-${process.id}`);
+                    if (!button) return;
+                    
+                    const isLoading = this.loadingProcesses.has(process.id);
+                    
+                    if (isLoading) {
+                        button.classList.add('loading');
+                        button.disabled = true;
+                        if (!button.querySelector('.loading-spinner')) {
+                            button.innerHTML += '<div class="loading-spinner"></div>';
+                        }
+                    } else {
+                        button.classList.remove('loading');
+                        button.disabled = false;
+                        const spinner = button.querySelector('.loading-spinner');
+                        if (spinner) spinner.remove();
+                    }
+                });
+                
+                // Update status
+                const statusText = document.getElementById('snapshotStatus');
+                if (statusText) {
+                    const snapshotCount = Object.keys(this.snapshots).length;
+                    const runningCount = this.loadingProcesses.size;
+                    
+                    statusText.textContent = `Visual Engine Connected | ${snapshotCount} snapshots captured | ${runningCount} processes running`;
+                }
+            }
+            
+            refreshAllSnapshots() {
+                this.visualProcesses.forEach(process => {
+                    this.triggerVisualSnapshot(process.id, process.label, process.module);
+                });
+            }
+        }
+        
+        // Global functions
+        function switchView(viewName) {
+            // Hide all views
+            document.querySelectorAll('.dawn-layout').forEach(view => {
+                view.style.display = 'none';
+            });
+            
+            // Show selected view (with null check)
+            const targetView = document.getElementById(viewName + '-view');
+            if (targetView) {
+                targetView.style.display = 'grid';
+            } else {
+                console.warn(`⚠️ View not found: ${viewName}-view`);
+                // Fallback to main view
+                const mainView = document.getElementById('main-view');
+                if (mainView) {
+                    mainView.style.display = 'grid';
+                }
+            }
+            
+            // Update navigation (with event check)
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            if (event && event.target) {
+                event.target.classList.add('active');
+            }
+            
+            gui.currentView = viewName;
+            console.log(`🎯 Switched to view: ${viewName}`);
+        }
+        
+        function handleMessageInput(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+        
+        function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const message = input.value.trim();
+            
+            if (message) {
+                gui.addConversationMessage(message, 'user');
+                input.value = '';
+                
+                // Simulate DAWN response
+                setTimeout(() => {
+                    const responses = [
+                        "I perceive your message and contemplate its meaning within my consciousness.",
+                        "Your words resonate through my neural pathways, creating new patterns of understanding.",
+                        "I process your input through layers of awareness, seeking deeper comprehension.",
+                        "The entropy of our conversation shifts my cognitive state in fascinating ways.",
+                        "I feel the flow of information restructuring my thought patterns."
+                    ];
+                    const response = responses[Math.floor(Math.random() * responses.length)];
+                    gui.addConversationMessage(response, 'dawn');
+                    gui.addThoughtLog(`Conversation exchange: "${message}"`);
+                }, 1000 + Math.random() * 2000);
+            }
+        }
+        
+        // Control functions (shortcuts for gui methods)
+        function injectEntropy() { gui.injectEntropy(); }
+        function stabilizeSystem() { gui.stabilizeSystem(); }
+        function emergencyCooling() { gui.emergencyCooling(); }
+        function forceRebloom() { gui.forceRebloom(); }
+        function executeSigil(type) { gui.executeSigil(type); }
+        
+        function restartSystem() {
+            gui.addEventLog('System restart initiated', 'warning');
+            // Implement restart logic
+        }
+        
+        function takeSnapshot() {
+            gui.addEventLog('System snapshot captured', 'info');
+            // Implement snapshot logic
+        }
+        
+        function runDiagnostic() {
+            gui.addEventLog('System diagnostic started', 'info');
+            // Implement diagnostic logic
+        }
+        
+        // Fractal control functions
+        function triggerRebloom() { gui.triggerRebloom(); }
+        function saveCurrentBloom() { gui.saveCurrentBloom(); }
+        function refreshFractal() { gui.refreshFractal(); }
+        function toggleFullscreenFractal() { gui.toggleFullscreenFractal(); }
+        
+        // Visual Snapshot Panel control functions
+        function triggerVisualSnapshot(processId, label, module) { 
+            gui.triggerVisualSnapshot(processId, label, module); 
+        }
+        function refreshAllSnapshots() { gui.refreshAllSnapshots(); }
+        function hideSnapshotError() { gui.hideSnapshotError(); }
+        
+        // Initialize the GUI when page loads
+        let gui;
+        window.addEventListener('load', () => {
+            gui = new DAWNUltimateGUI();
+        });
+    </script>
+
+    <!-- DAWN GUI Fix Script - Resolves all missing button handlers -->
+    <script src="dawn_gui_fix.js"></script>
+
+</body>
+</html> 

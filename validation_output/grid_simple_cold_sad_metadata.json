@@ -1,0 +1,47 @@
+{
+  "bloom_id": "grid_simple_cold_sad",
+  "seed_id": "grid_simple_cold_sad",
+  "timestamp": "2025-08-04T21:11:21.708139",
+  "mood_valence": -0.5,
+  "entropy_score": 0.2,
+  "rebloom_depth": 1,
+  "bloom_factor": 1.5,
+  "sigil_saturation": 0.5,
+  "lineage_depth": 2,
+  "thermal_level": 0.2,
+  "scup_coherence": 0.5,
+  "drift_vector": [
+    0.06,
+    -0.1
+  ],
+  "pulse_phase": 0.0,
+  "state": "spawning",
+  "parent_id": "validation_test",
+  "shape_complexity": {
+    "edge_roughness": 0.29,
+    "petal_count": 4,
+    "symmetry_factor": 0.7300000000000001,
+    "branching_depth": 1,
+    "spiral_tightness": 0.8400000000000001
+  },
+  "julia_constant": {
+    "real": 0.3139000833055605,
+    "imag": -0.013503331667063438
+  },
+  "fractal_string": "B|ML|\u25cb|7|J[0.314,-0.014]",
+  "color_palette": [
+    "#b51b41",
+    "#b90909",
+    "#be2f00",
+    "#c26100",
+    "#c79500"
+  ],
+  "render_params": {
+    "image_size": [
+      1024,
+      1024
+    ],
+    "max_iterations": 512,
+    "zoom_factor": 1.5424200000000001
+  }
+}

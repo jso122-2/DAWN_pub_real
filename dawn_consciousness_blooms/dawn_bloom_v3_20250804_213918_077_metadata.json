@@ -1,0 +1,36 @@
+{
+  "bloom_id": "dawn_bloom_v3_20250804_213918_077",
+  "timestamp": "2025-08-04T21:39:33.063012",
+  "version": "3.0_enhanced",
+  "parameters": {
+    "bloom_entropy": 0.2,
+    "mood_valence": 0.4,
+    "drift_vector": 0.1,
+    "rebloom_depth": 4,
+    "sigil_saturation": 0.5,
+    "pulse_zone": "crystalline"
+  },
+  "visual_characteristics": {
+    "bloom_shape": "geometric form with precise boundaries with centered symmetry and simple layered structure",
+    "color_mode": "warm engagement colors with moderate brightness",
+    "pulse_description": "precise, geometric forms with clear definition"
+  },
+  "consciousness_state": {
+    "archetype": "Crystalline Truth",
+    "entropy_state": "crystalline",
+    "emotional_tone": "warm",
+    "directional_bias": "centered"
+  },
+  "summary": "Crystalline Memory touched by dawn and poised in equilibrium, shaped precise as perfect geometry.",
+  "files": {
+    "fractal_image": "dawn_consciousness_blooms/dawn_bloom_v3_20250804_213918_077.png",
+    "metadata": "dawn_bloom_v3_20250804_213918_077_metadata.json"
+  },
+  "juliet_mode": false,
+  "clarity_optimizations": {
+    "reduced_glow": false,
+    "capped_noise_opacity": false,
+    "structural_priority": false,
+    "clarity_mode_forced": false
+  }
+}

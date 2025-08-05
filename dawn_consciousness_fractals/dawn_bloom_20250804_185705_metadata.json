@@ -1,0 +1,40 @@
+{
+  "bloom_id": "dawn_bloom_20250804_185705",
+  "timestamp": "20250804_185705",
+  "parameters": {
+    "bloom_entropy": 0.5,
+    "mood_valence": 0.2,
+    "drift_vector": 0.1,
+    "rebloom_depth": 5,
+    "sigil_saturation": 0.7,
+    "pulse_zone": "stable"
+  },
+  "consciousness_state": {
+    "entropy": {
+      "state": "balanced",
+      "description": "balanced, flowing, dynamic"
+    },
+    "valence": {
+      "state": "neutral",
+      "description": "balanced, contemplative, stable"
+    },
+    "drift": {
+      "state": "centered",
+      "description": "centered, balanced, exploring"
+    },
+    "pulse_zone": "stable",
+    "overall_archetype": "Balanced Awareness"
+  },
+  "visual_characteristics": {
+    "edges": "flowing edges with moderate complexity",
+    "colors": "balanced color palette with purple and blue tones",
+    "saturation": "moderate color intensity with balanced glow",
+    "geometry": "balanced, symmetric patterns with reliable structure",
+    "overall": "A stable consciousness bloom with flowing edges with moderate complexity, featuring balanced color palette with purple and blue tones and moderate color intensity with balanced glow"
+  },
+  "files": {
+    "fractal_image": "dawn_consciousness_fractals\\dawn_bloom_20250804_185705.png",
+    "metadata": "dawn_bloom_20250804_185705_metadata.json"
+  },
+  "symbolic_narrative": "Awareness dancing between chaos and form blazing with intensity, grounded in eternal presence in perfect balance."
+}

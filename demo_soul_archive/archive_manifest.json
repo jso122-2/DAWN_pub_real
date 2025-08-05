@@ -1,0 +1,15 @@
+{
+  "entries": [
+    {
+      "archive_name": "20250804_204001_d40ee8516a27",
+      "timestamp": "20250804_204001",
+      "hash": "d40ee8516a27",
+      "fractal_string": "C|CT|\u25cb|9|J[0.516,0.264]|\ud83c\udf21\ufe0f",
+      "validation_score": 0.9099999999999999,
+      "processing_time": 18.97837543487549,
+      "owl_commentary": "\u2728 BLOOM ANALYSIS: EXCELLENT | Validation Score: 0.910 | Bloom ID: archival_test_bloom | Balanced bloom with gentle positive resonance | Entropy 0.600 \u2192 Moderate complexity, balanced structure"
+    }
+  ],
+  "last_updated": "2025-08-04T20:40:01.851994",
+  "total_archived": 1
+}

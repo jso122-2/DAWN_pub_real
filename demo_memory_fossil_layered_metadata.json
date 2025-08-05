@@ -1,0 +1,47 @@
+{
+  "bloom_id": "demo_layered",
+  "seed_id": "demo_layered",
+  "timestamp": "2025-08-04T21:27:41.891935",
+  "mood_valence": 0.3,
+  "entropy_score": 0.5,
+  "rebloom_depth": 4,
+  "bloom_factor": 1.5,
+  "sigil_saturation": 0.6,
+  "lineage_depth": 2,
+  "thermal_level": 0.6,
+  "scup_coherence": 0.7,
+  "drift_vector": [
+    0.1,
+    0.1
+  ],
+  "pulse_phase": 1.5,
+  "state": "blooming",
+  "parent_id": "demo",
+  "shape_complexity": {
+    "edge_roughness": 0.5,
+    "petal_count": 8,
+    "symmetry_factor": 0.7,
+    "branching_depth": 5,
+    "spiral_tightness": 0.75
+  },
+  "julia_constant": {
+    "real": -0.5015787801199423,
+    "imag": 0.5627883668461731
+  },
+  "fractal_string": "E|CT|\u25cb|9|J[-0.502,0.563]|\ud83c\udf21\ufe0f",
+  "color_palette": [
+    "#87cd41",
+    "#5ccf35",
+    "#29d129",
+    "#1dd44b",
+    "#11d673"
+  ],
+  "render_params": {
+    "image_size": [
+      1024,
+      1024
+    ],
+    "max_iterations": 512,
+    "zoom_factor": 2.0394
+  }
+}

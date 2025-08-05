@@ -23,9 +23,9 @@ from pathlib import Path
 
 # Import integration components
 try:
-    from cognitive_pressure_bridge import get_cognitive_pressure_bridge, EnhancedConsciousnessState
-    from tracer_activation_system import get_tracer_activation_system, TracerActivationContext
-    from voice_integration_system import get_voice_integration_system
+    from integration.cognitive_pressure_bridge import get_cognitive_pressure_bridge, EnhancedConsciousnessState
+    from integration.tracer_activation_system import get_tracer_activation_system, TracerActivationContext
+    from integration.voice_integration_system import get_voice_integration_system
     INTEGRATION_COMPONENTS_AVAILABLE = True
 except ImportError as e:
     logging.warning(f"Integration components not available: {e}")

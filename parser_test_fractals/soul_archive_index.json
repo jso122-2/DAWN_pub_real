@@ -1,0 +1,38 @@
+{
+  "created": "2025-08-04T19:30:43.865169",
+  "total_memories": 3,
+  "pattern_families": {
+    "simple_recursive_crystalline": 2,
+    "moderate_recursive_organic": 1
+  },
+  "consciousness_archetypes": {
+    "Crystalline Truth": 2,
+    "Creative Fire": 1
+  },
+  "memories": [
+    {
+      "memory_id": "dawn_memory_20250804_193039_156",
+      "timestamp": "2025-08-04T19:30:43.858809",
+      "fractal_string": "R2-FS5-Dv1-PzCRYS",
+      "archetype": "Crystalline Truth",
+      "pattern_family": "simple_recursive_crystalline",
+      "consciousness_hash": "9a3465d7b2f3"
+    },
+    {
+      "memory_id": "dawn_memory_20250804_193043_872",
+      "timestamp": "2025-08-04T19:30:48.504633",
+      "fractal_string": "R2-FS5-Dv1-PzCRYS",
+      "archetype": "Crystalline Truth",
+      "pattern_family": "simple_recursive_crystalline",
+      "consciousness_hash": "9a3465d7b2f3"
+    },
+    {
+      "memory_id": "dawn_memory_20250804_193048_527",
+      "timestamp": "2025-08-04T19:31:00.326048",
+      "fractal_string": "R4-FS1-Dv4-PzSURG",
+      "archetype": "Creative Fire",
+      "pattern_family": "moderate_recursive_organic",
+      "consciousness_hash": "7ab86198083d"
+    }
+  ]
+}

@@ -1,0 +1,51 @@
+manifest_metadata:
+  version: 2.0.0
+  created: '2025-08-04T10:52:03.713555+00:00'
+  description: DAWN Symbolic Fractal Archive - Visual Memory Field Index
+  total_blooms: 1
+  last_updated: '2025-08-04T10:52:03.715556+00:00'
+archive_statistics:
+  unique_bloom_ids: 1
+  total_processing_time: 19.4
+  average_validation_score: 0.82
+  mood_distribution:
+    '0.2': 1
+  entropy_distribution:
+    '0.6': 1
+  shape_patterns:
+    asym_wave_13pt: 1
+  rebloom_depths:
+    '7': 1
+  pulse_zones:
+    fragile: 1
+symbolic_patterns:
+  recurring_signatures: []
+  dominant_moods: []
+  complexity_trends: []
+  temporal_clusters: []
+blooms:
+- bloom_id: demo_bloom_001
+  timestamp: '2025-08-04T10:52:03.714555+00:00'
+  fractal_string: R7-G-Bv0.3-E0.62-fragile
+  pigment_summary: R0.50 G0.50 B0.50 Y0.40 V0.40 O0.30
+  shape_signature: asym_wave_13pt
+  rebloom_depth: 7
+  entropy: 0.62
+  mood_valence: 0.3
+  drift_vector: 0.31622776601683794
+  pulse_zone: fragile
+  file_paths:
+    image: demo_bloom_001.png
+    metadata: demo_bloom_001.json
+  summary: A fragile bloom weaving gentle threads of cool shadows.
+  bloom_factor: 2.1
+  sigil_saturation: 0.75
+  thermal_level: 0.3
+  scup_coherence: 0.45
+  lineage_depth: 3
+  validation_score: 0.82
+  processing_time: 19.4
+  owl_commentary: A contemplative bloom navigating complex emotional currents
+  hash_signature: 2b87dc3cb9f0b014
+  archive_size_bytes: 0
+  color_palette: []

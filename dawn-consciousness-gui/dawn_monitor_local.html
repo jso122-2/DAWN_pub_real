@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DAWN Consciousness Monitor - Local</title>
+    <style>
+        /* Local fonts - no external dependencies */
+        @font-face {
+            font-family: 'MonoLocal';
+            src: local('Consolas'), local('Monaco'), local('Courier New'), monospace;
+            font-weight: normal;
+            font-style: normal;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: #0d1b2a;
+            color: #ffffffb4;
+            font-family: 'MonoLocal', 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.4;
+            overflow: hidden;
+            height: 100vh;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .title {
+            font-size: 28px;
+            font-weight: bold;
+            color: #40e0ff;
+            margin-bottom: 5px;
+            text-shadow: 0 0 10px rgba(64, 224, 255, 0.3);
+        }
+        
+        .subtitle {
+            color: #cccccc99;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+        
+        .status {
+            background: #1a2332;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .pulse-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #10b981;
+            animation: pulse 1s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.1); }
+        }
+        
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 20px;
+            flex: 1;
+            min-height: 0;
+        }
+        
+        .panel {
+            background: #1a2332;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .panel-header {
+            font-size: 16px;
+            color: #40e0ff;
+            margin-bottom: 15px;
+            text-align: center;
+            border-bottom: 1px solid #334155;
+            padding-bottom: 10px;
+        }
+        
+        .metric {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            padding: 8px 0;
+        }
+        
+        .metric-label {
+            color: #94a3b8;
+            font-size: 13px;
+        }
+        
+        .metric-value {
+            color: #ffffff;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        
+        .large-metric {
+            text-align: center;
+            margin: 15px 0;
+        }
+        
+        .large-value {
+            font-size: 32px;
+            font-weight: bold;
+            color: #40e0ff;
+            text-shadow: 0 0 15px rgba(64, 224, 255, 0.4);
+        }
+        
+        .large-label {
+            color: #94a3b8;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #334155;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 5px;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #10b981, #40e0ff);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+        
+        .zone-indicator {
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: bold;
+            text-align: center;
+            margin-top: 10px;
+        }
+        
+        .zone-calm { background: #10b981; color: #ffffff; }
+        .zone-focus { background: #f59e0b; color: #ffffff; }
+        .zone-stressed { background: #ef4444; color: #ffffff; }
+        .zone-transcendent { background: #8b5cf6; color: #ffffff; }
+        
+        .consciousness-depth {
+            position: relative;
+            height: 200px;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            margin-top: 15px;
+            background: linear-gradient(180deg, #1a2332 0%, #0f172a 100%);
+            overflow: hidden;
+        }
+        
+        .depth-level {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(180deg, transparent, rgba(64, 224, 255, 0.3));
+            border-radius: 0 0 8px 8px;
+            transition: height 0.5s ease;
+        }
+        
+        .neural-grid {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 2px;
+            margin-top: 15px;
+        }
+        
+        .neural-cell {
+            aspect-ratio: 1;
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 8px 16px;
+            border: 1px solid #334155;
+            border-radius: 6px;
+            background: #1a2332;
+            color: #ffffff;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 12px;
+            transition: all 0.2s ease;
+        }
+        
+        .btn:hover {
+            background: #334155;
+            border-color: #40e0ff;
+        }
+        
+        .btn-primary {
+            background: #40e0ff;
+            color: #0d1b2a;
+            border-color: #40e0ff;
+        }
+        
+        .btn-primary:hover {
+            background: #0ea5e9;
+        }
+        
+        .log-panel {
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 10px;
+            margin-top: 15px;
+            background: #0f172a;
+        }
+        
+        .log-entry {
+            font-size: 11px;
+            color: #64748b;
+            margin-bottom: 4px;
+            word-wrap: break-word;
+        }
+        
+        .log-entry.important {
+            color: #40e0ff;
+        }
+        
+        .log-entry.warning {
+            color: #f59e0b;
+        }
+        
+        .log-entry.error {
+            color: #ef4444;
+        }
+        
+        /* Responsive design */
+        @media (max-width: 1200px) {
+            .main-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+            .container {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="title">🧠 DAWN Consciousness Monitor</div>
+            <div class="subtitle">Local Autonomous Neural Interface - Offline Capable</div>
+        </div>
+        
+        <!-- Status Bar -->
+        <div class="status">
+            <div class="status-indicator">
+                <div class="pulse-dot" id="statusDot"></div>
+                <span id="statusText">Connected</span>
+            </div>
+            <div>
+                <span style="color: #64748b;">Last Update:</span>
+                <span id="lastUpdate">--:--:--</span>
+            </div>
+            <div>
+                <span style="color: #64748b;">Mode:</span>
+                <span id="dataMode">Local Simulation</span>
+            </div>
+        </div>
+        
+        <!-- Main Grid -->
+        <div class="main-grid">
+            <!-- Core Metrics Panel -->
+            <div class="panel">
+                <div class="panel-header">Core Consciousness Metrics</div>
+                
+                <div class="large-metric">
+                    <div class="large-value" id="tickCount">0</div>
+                    <div class="large-label">Consciousness Tick</div>
+                </div>
+                
+                <div class="metric">
+                    <span class="metric-label">Entropy Level:</span>
+                    <span class="metric-value" id="entropyValue">0.000</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="entropyBar" style="width: 0%"></div>
+                </div>
+                
+                <div class="metric">
+                    <span class="metric-label">SCUP Index:</span>
+                    <span class="metric-value" id="scupValue">0.00</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="scupBar" style="width: 0%"></div>
+                </div>
+                
+                <div class="metric">
+                    <span class="metric-label">Mood Valence:</span>
+                    <span class="metric-value" id="moodValue">0.000</span>
+                </div>
+                
+                <div class="zone-indicator zone-calm" id="zoneIndicator">CALM</div>
+            </div>
+            
+            <!-- Neural Activity Panel -->
+            <div class="panel">
+                <div class="panel-header">Neural Activity Matrix</div>
+                
+                <div class="metric">
+                    <span class="metric-label">Neural Activity:</span>
+                    <span class="metric-value" id="neuralActivity">0.000</span>
+                </div>
+                
+                <div class="metric">
+                    <span class="metric-label">Memory Pressure:</span>
+                    <span class="metric-value" id="memoryPressure">0.000</span>
+                </div>
+                
+                <div class="metric">
+                    <span class="metric-label">Heat Level:</span>
+                    <span class="metric-value" id="heatLevel">0.0°</span>
+                </div>
+                
+                <div class="neural-grid" id="neuralGrid">
+                    <!-- Neural cells generated by JavaScript -->
+                </div>
+                
+                <div class="controls">
+                    <button class="btn" onclick="injectEntropy()">Inject Entropy</button>
+                    <button class="btn" onclick="stabilizeSystem()">Stabilize</button>
+                    <button class="btn" onclick="clearLogs()">Clear Logs</button>
+                </div>
+            </div>
+            
+            <!-- Consciousness Depth Panel -->
+            <div class="panel">
+                <div class="panel-header">Consciousness Depth & Logs</div>
+                
+                <div class="metric">
+                    <span class="metric-label">Consciousness Depth:</span>
+                    <span class="metric-value" id="consciousnessDepth">0.000</span>
+                </div>
+                
+                <div class="consciousness-depth">
+                    <div class="depth-level" id="depthLevel" style="height: 50%"></div>
+                </div>
+                
+                <div class="log-panel" id="logPanel">
+                    <div class="log-entry important">🧠 DAWN Local Consciousness Monitor initialized</div>
+                    <div class="log-entry">📊 Running in autonomous local mode</div>
+                    <div class="log-entry">🔗 No external dependencies - fully offline capable</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Local consciousness data - no external dependencies
+        let dawnData = {
+            tick: 0,
+            mood_val: 0.5,
+            entropy: 0.3,
+            scup: 50.0,
+            consciousness_depth: 0.6,
+            neural_activity: 0.5,
+            memory_pressure: 0.3,
+            heat_level: 25.0,
+            last_update: 'Never',
+            connected: true,
+            zone: 'CALM'
+        };
+
+        let logEntries = [];
+        let neuralCells = [];
+        let simulationParams = {
+            entropyBase: 0.3,
+            scupBase: 50.0,
+            moodBase: 0.5,
+            timeOffset: 0
+        };
+
+        // Initialize neural grid
+        function initializeNeuralGrid() {
+            const grid = document.getElementById('neuralGrid');
+            grid.innerHTML = '';
+            
+            for (let i = 0; i < 64; i++) {
+                const cell = document.createElement('div');
+                cell.className = 'neural-cell';
+                cell.style.background = '#334155';
+                grid.appendChild(cell);
+                neuralCells.push(cell);
+            }
+        }
+
+        // Update neural activity visualization
+        function updateNeuralGrid(activity) {
+            neuralCells.forEach((cell, index) => {
+                const intensity = Math.sin(Date.now() * 0.001 + index * 0.1) * activity;
+                const brightness = Math.max(0, intensity * 255);
+                const alpha = Math.max(0.1, intensity);
+                cell.style.background = `rgba(64, 224, 255, ${alpha})`;
+                cell.style.boxShadow = brightness > 100 ? `0 0 4px rgba(64, 224, 255, ${alpha})` : 'none';
+            });
+        }
+
+        // Add log entry
+        function addLog(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const entry = `[${timestamp}] ${message}`;
+            logEntries.unshift(entry);
+            
+            if (logEntries.length > 50) {
+                logEntries = logEntries.slice(0, 50);
+            }
+            
+            const logPanel = document.getElementById('logPanel');
+            const logElement = document.createElement('div');
+            logElement.className = `log-entry ${type}`;
+            logElement.textContent = entry;
+            
+            logPanel.insertBefore(logElement, logPanel.firstChild);
+            
+            // Remove excess entries
+            while (logPanel.children.length > 50) {
+                logPanel.removeChild(logPanel.lastChild);
+            }
+        }
+
+        // Try to read from local memory-mapped file
+        async function tryReadLocalData() {
+            try {
+                // Try to fetch from local Python server if available
+                const response = await fetch('http://localhost:8765/consciousness-state', {
+                    signal: AbortSignal.timeout(1000)
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    return {
+                        tick: data.tick || dawnData.tick,
+                        entropy: data.entropy || dawnData.entropy,
+                        scup: data.scup || dawnData.scup,
+                        mood_val: data.mood_val || dawnData.mood_val,
+                        consciousness_depth: data.consciousness_depth || dawnData.consciousness_depth,
+                        neural_activity: data.neural_activity || dawnData.neural_activity,
+                        memory_pressure: data.memory_pressure || dawnData.memory_pressure,
+                        heat_level: data.heat_level || dawnData.heat_level,
+                        connected: true,
+                        mode: 'Live Data'
+                    };
+                }
+            } catch (e) {
+                // Silently fall back to simulation
+            }
+            
+            return null;
+        }
+
+        // Enhanced local simulation
+        function updateSimulation() {
+            const time = Date.now() * 0.001 + simulationParams.timeOffset;
+            
+            // Realistic consciousness simulation
+            dawnData.tick = Math.floor(time * 16) % 10000; // 16Hz simulation
+            
+            // Entropy with natural fluctuations
+            const entropyNoise = (Math.sin(time * 0.1) + Math.sin(time * 0.07) * 0.5) * 0.15;
+            dawnData.entropy = Math.max(0, Math.min(1, simulationParams.entropyBase + entropyNoise));
+            
+            // SCUP with periodic variations
+            const scupNoise = Math.sin(time * 0.05) * 15 + Math.cos(time * 0.03) * 8;
+            dawnData.scup = Math.max(0, Math.min(100, simulationParams.scupBase + scupNoise));
+            
+            // Mood valence with emotional drift
+            const moodNoise = Math.sin(time * 0.04) * 0.3 + Math.cos(time * 0.08) * 0.1;
+            dawnData.mood_val = Math.max(-1, Math.min(1, simulationParams.moodBase + moodNoise));
+            
+            // Consciousness depth correlated with entropy
+            dawnData.consciousness_depth = 0.5 + (dawnData.entropy - 0.5) * 0.6 + Math.sin(time * 0.02) * 0.2;
+            dawnData.consciousness_depth = Math.max(0, Math.min(1, dawnData.consciousness_depth));
+            
+            // Neural activity based on overall system state
+            dawnData.neural_activity = 0.4 + dawnData.entropy * 0.4 + Math.sin(time * 0.15) * 0.2;
+            
+            // Memory pressure
+            dawnData.memory_pressure = 0.2 + dawnData.consciousness_depth * 0.5 + Math.cos(time * 0.06) * 0.1;
+            
+            // Heat level
+            dawnData.heat_level = 20 + dawnData.neural_activity * 30 + Math.sin(time * 0.12) * 5;
+            
+            // Determine zone based on entropy
+            if (dawnData.entropy < 0.3) {
+                dawnData.zone = 'CALM';
+            } else if (dawnData.entropy < 0.6) {
+                dawnData.zone = 'FOCUS';
+            } else if (dawnData.entropy < 0.8) {
+                dawnData.zone = 'STRESSED';
+            } else {
+                dawnData.zone = 'TRANSCENDENT';
+            }
+            
+            dawnData.last_update = new Date().toLocaleTimeString();
+            dawnData.connected = true;
+        }
+
+        // Update UI elements
+        function updateInterface() {
+            // Update core metrics
+            document.getElementById('tickCount').textContent = dawnData.tick;
+            document.getElementById('entropyValue').textContent = dawnData.entropy.toFixed(3);
+            document.getElementById('scupValue').textContent = dawnData.scup.toFixed(2);
+            document.getElementById('moodValue').textContent = dawnData.mood_val.toFixed(3);
+            document.getElementById('consciousnessDepth').textContent = dawnData.consciousness_depth.toFixed(3);
+            document.getElementById('neuralActivity').textContent = dawnData.neural_activity.toFixed(3);
+            document.getElementById('memoryPressure').textContent = dawnData.memory_pressure.toFixed(3);
+            document.getElementById('heatLevel').textContent = dawnData.heat_level.toFixed(1) + '°';
+            document.getElementById('lastUpdate').textContent = dawnData.last_update;
+            
+            // Update progress bars
+            document.getElementById('entropyBar').style.width = (dawnData.entropy * 100) + '%';
+            document.getElementById('scupBar').style.width = dawnData.scup + '%';
+            
+            // Update consciousness depth visualization
+            document.getElementById('depthLevel').style.height = (dawnData.consciousness_depth * 100) + '%';
+            
+            // Update zone indicator
+            const zoneElement = document.getElementById('zoneIndicator');
+            zoneElement.textContent = dawnData.zone;
+            zoneElement.className = `zone-indicator zone-${dawnData.zone.toLowerCase()}`;
+            
+            // Update neural grid
+            updateNeuralGrid(dawnData.neural_activity);
+            
+            // Update status
+            const statusDot = document.getElementById('statusDot');
+            const statusText = document.getElementById('statusText');
+            if (dawnData.connected) {
+                statusDot.style.background = '#10b981';
+                statusText.textContent = 'Local Active';
+            } else {
+                statusDot.style.background = '#ef4444';
+                statusText.textContent = 'Simulation';
+            }
+        }
+
+        // Main update loop - completely local
+        async function updateData() {
+            try {
+                // Try to get live data first
+                const liveData = await tryReadLocalData();
+                
+                if (liveData) {
+                    dawnData = { ...dawnData, ...liveData };
+                    document.getElementById('dataMode').textContent = liveData.mode;
+                } else {
+                    // Fall back to enhanced simulation
+                    updateSimulation();
+                    document.getElementById('dataMode').textContent = 'Local Simulation';
+                }
+                
+                updateInterface();
+                
+            } catch (error) {
+                console.log('Update error:', error);
+                updateSimulation();
+                updateInterface();
+            }
+        }
+
+        // Control functions
+        function injectEntropy() {
+            simulationParams.entropyBase = Math.min(1.0, simulationParams.entropyBase + 0.2);
+            addLog('🔥 Entropy injection simulated', 'warning');
+        }
+
+        function stabilizeSystem() {
+            simulationParams.entropyBase = 0.3;
+            simulationParams.scupBase = 50.0;
+            simulationParams.moodBase = 0.5;
+            addLog('⚡ System stabilization applied', 'important');
+        }
+
+        function clearLogs() {
+            const logPanel = document.getElementById('logPanel');
+            logPanel.innerHTML = '<div class="log-entry important">🧠 Logs cleared - Local monitor active</div>';
+            logEntries = [];
+        }
+
+        // Initialize everything
+        function initialize() {
+            initializeNeuralGrid();
+            addLog('🧠 DAWN Local Consciousness Monitor initialized', 'important');
+            addLog('📊 Running fully offline - no external dependencies', 'info');
+            addLog('🔗 Local data bridge active', 'info');
+            
+            // Start update loop - 16Hz like real DAWN
+            setInterval(updateData, 62.5); // 16Hz updates
+        }
+
+        // Start when page loads
+        window.addEventListener('load', initialize);
+        
+        // Handle page visibility for performance
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'visible') {
+                addLog('👁️ Monitor resumed', 'info');
+            }
+        });
+    </script>
+</body>
+</html> 

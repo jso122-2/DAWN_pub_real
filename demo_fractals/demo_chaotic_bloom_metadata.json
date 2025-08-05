@@ -1,0 +1,47 @@
+{
+  "bloom_id": "demo_chaotic_bloom",
+  "seed_id": "demo_chaotic_bloom",
+  "timestamp": "2025-08-04T20:39:04.662656",
+  "mood_valence": -0.3,
+  "entropy_score": 0.9,
+  "rebloom_depth": 1,
+  "bloom_factor": 3.0,
+  "sigil_saturation": 0.8,
+  "lineage_depth": 2,
+  "thermal_level": 0.9,
+  "scup_coherence": 0.2,
+  "drift_vector": [
+    0.0,
+    0.0
+  ],
+  "pulse_phase": 0.0,
+  "state": "spawning",
+  "parent_id": null,
+  "shape_complexity": {
+    "edge_roughness": 1.0,
+    "petal_count": 6,
+    "symmetry_factor": 0.31,
+    "branching_depth": 3,
+    "spiral_tightness": 1.0
+  },
+  "julia_constant": {
+    "real": 0.4398000066665779,
+    "imag": 0.20599866669333303
+  },
+  "fractal_string": "B|CM|~|17|J[0.440,0.206]|\ud83d\udd25",
+  "color_palette": [
+    "#277282",
+    "#205c86",
+    "#193f8b",
+    "#111b8f",
+    "#200894"
+  ],
+  "render_params": {
+    "image_size": [
+      1024,
+      1024
+    ],
+    "max_iterations": 512,
+    "zoom_factor": 1.524
+  }
+}
